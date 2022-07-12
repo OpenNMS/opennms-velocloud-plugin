@@ -1,0 +1,19 @@
+<events xmlns="http://xmlns.opennms.org/xsd/eventconf">
+    <event>
+        <uei>uei.opennms.org/velocloudPlugin/sendEventSuccessful</uei>
+        <event-label>Velocloud Intergration: Successfully sent event</event-label>
+        <descr>Successfully sent event via REST API for alarm with reduction key: %parm[reductionKey]%</descr>
+        <logmsg dest="logndisplay">Velocloud Intergration: Successfully sent event for alarm: %parm[reductionKey]%</logmsg>
+        <severity>Normal</severity>
+        <alarm-data reduction-key="%uei%:%parm[reductionKey]%" alarm-type="2"
+                    clear-key="uei.opennms.org/velocloudPlugin/sendEventFailed:%parm[reductionKey]%"/>
+    </event>
+    <event>
+        <uei>uei.opennms.org/velocloudPlugin/sendEventFailed</uei>
+        <event-label>Velocloud Intergration: Failed to forward event</event-label>
+        <descr>Failed to sent event via REST API for alarm with reduction key: %parm[reductionKey]%. Message is: %parm[message]%</descr>
+        <logmsg dest="logndisplay">Velocloud Intergration: Failed to sent event for alarm: %parm[reductionKey]%</logmsg>
+        <severity>Critical</severity>
+        <alarm-data reduction-key="%uei%:%parm[reductionKey]%" alarm-type="1" />
+    </event>
+</events>

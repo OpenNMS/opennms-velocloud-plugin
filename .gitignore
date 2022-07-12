@@ -1,0 +1,27 @@
+*~
+.swp
+.*.swp
+.swp
+.gwt
+.gwt-tmp
+target
+.classpath
+.externalToolBuilders
+.project
+.settings
+.springBeans
+.vscode
+.DS_Store
+*.iml
+*.iws
+*.ipr
+.launch
+.*launch
+.idea
+.jqwik-database
+npm-debug.log
+yarn-error.log
+.factorypath
+
+# Ignore jenv local version files
+.java-version
