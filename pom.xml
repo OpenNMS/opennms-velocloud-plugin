@@ -190,5 +190,6 @@
         <module>assembly</module>
         <module>plugin</module>
         <module>karaf-features</module>
+        <module>swagger-code-generator</module>
     </modules>
 </project>
