@@ -6,11 +6,11 @@
         <feature dependency="true">shell</feature>
         <feature version="${opennms.api.version}" dependency="true">opennms-integration-api</feature>
         <feature version="${guava.version}" dependency="true">guava</feature>
-        <feature version="${project.version}">client</feature>
+        <feature version="${project.version}">opennms-plugins-velocloud-client</feature>
         <bundle dependency="true">mvn:org.apache.commons/commons-jexl3/${jexl.version}</bundle>
         <bundle dependency="true">mvn:io.dropwizard.metrics/metrics-core/${metrics.version}</bundle>
         <bundle dependency="true">mvn:javax.ws.rs/javax.ws.rs-api/2.1.1</bundle>
-        <bundle>mvn:org.opennms/velocloud-plugin/${project.version}</bundle>
+        <bundle>mvn:org.opennms.plugins.velocloud/velocloud-plugin/${project.version}</bundle>
     </feature>
 
     <feature name="guava" description="guava" version="${guava.version}">
@@ -26,7 +26,7 @@
         <bundle dependency="true">mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/${jackson.version}</bundle>
     </feature>
 
-    <feature name="client" description="Velocloud API client" version="${project.version}">
+    <feature name="opennms-plugins-velocloud-client" description="Velocloud API client" version="${project.version}">
         <feature version="${jackson.version}" dependency="true">jackson</feature>
         <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.version}</bundle>
 
@@ -42,7 +42,6 @@
         <bundle dependency="true">mvn:org.jvnet.mimepull/mimepull/1.10.0</bundle>
         <bundle dependency="true">mvn:javax.annotation/javax.annotation-api/1.3.2</bundle>
         
-
-        <bundle>mvn:org.opennms/velocloud-client/${project.version}</bundle>
+        <bundle>mvn:org.opennms.plugins.velocloud/velocloud-client/${project.version}</bundle>
     </feature>
 </features>
