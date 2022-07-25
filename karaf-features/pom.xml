@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.opennms</groupId>
-        <artifactId>velocloud-integration</artifactId>
+        <groupId>org.opennms.plugins.velocloud</groupId>
+        <artifactId>velocloud-plugin-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -84,8 +84,9 @@
                             </framework>
                             <features>
                                 <feature>opennms-plugins-velocloud</feature>
-                                <feature>client</feature>
+                                <feature>opennms-plugins-velocloud-client</feature>
                                 <feature>guava</feature>
+                                <feature>jackson</feature>
                             </features>
                         </configuration>
                     </execution>
@@ -112,13 +113,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.opennms</groupId>
+            <groupId>org.opennms.plugins.velocloud</groupId>
             <artifactId>velocloud-plugin</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.opennms</groupId>
+            <groupId>org.opennms.plugins.velocloud</groupId>
             <artifactId>velocloud-client</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>

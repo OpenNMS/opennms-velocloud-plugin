@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.opennms</groupId>
+        <groupId>org.opennms.plugins.velocloud</groupId>
         <artifactId>assembly</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
@@ -24,7 +24,7 @@
                             <goal>kar</goal>
                         </goals>
                         <configuration>
-                            <featuresFile>mvn:org.opennms/karaf-features/${project.version}/xml</featuresFile>
+                            <featuresFile>mvn:org.opennms.plugins.velocloud/karaf-features/${project.version}/xml</featuresFile>
                             <finalName>opennms-velocloud-plugin</finalName>
                             <ignoreDependencyFlag>true</ignoreDependencyFlag>
                             <archive>
@@ -41,7 +41,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.opennms</groupId>
+            <groupId>org.opennms.plugins.velocloud</groupId>
             <artifactId>karaf-features</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
