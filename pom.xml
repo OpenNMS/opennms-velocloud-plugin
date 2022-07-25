@@ -196,7 +196,6 @@
 
     <modules>
         <module>assembly</module>
-        <module>client</module>
         <module>plugin</module>
         <module>karaf-features</module>
         <module>client</module>
