@@ -58,7 +58,6 @@
                             <inputSpec>${project.basedir}/src/build/resources/vmware-sdwan-api-doc.yaml</inputSpec>
                             <language>java</language>
                             <library>resttemplate</library>
-                            <!--                            <packageName>org.opennms.velocloud</packageName>-->
                             <apiPackage>org.opennms.velocloud.client.api</apiPackage>
                             <modelPackage>org.opennms.velocloud.client.model</modelPackage>
                             <invokerPackage>org.opennms.velocloud.client.handler</invokerPackage>
@@ -73,51 +72,6 @@
                                 <dateLibrary>java8</dateLibrary>
                                 <java8>true</java8>
                             </configOptions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dist</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>./src/</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/target/generated-sources/swagger/src/
-                                    </directory>
-                                    <includes>
-                                        <include>**/*.*</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>2.5</version>
-                <executions>
-                    <execution>
-                        <id>auto-clean</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>${project.basedir}/target/generated-sources/swagger/src/</directory>
-                                </fileset>
-                            </filesets>
                         </configuration>
                     </execution>
                 </executions>
@@ -151,13 +105,10 @@
             <artifactId>spring-web</artifactId>
             <version>${springframework.version}</version>
         </dependency>
-
-        <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>
