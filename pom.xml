@@ -7,6 +7,9 @@
     <packaging>pom</packaging>
 
     <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <guava.version>30.1.1-jre</guava.version>
@@ -193,7 +196,6 @@
         <module>assembly</module>
         <module>plugin</module>
         <module>karaf-features</module>
-        <module>swagger-code-generator</module>
         <module>client</module>
     </modules>
 </project>
