@@ -36,42 +36,7 @@ public class AlarmForwarder implements AlarmLifecycleListener {
 
     @Override
     public void handleNewOrUpdatedAlarm(Alarm alarm) {
-        if (alarm.getReductionKey().startsWith(UEI_PREFIX)) {
-            // Never forward alarms that the plugin itself creates
-            return;
-        }
-
-        // Map the alarm to the corresponding model object that the API requires
-        Alert alert = toAlert(alarm);
-
-        // Forward the alarm
-        apiClient.sendAlert(alert).whenComplete((v,ex) -> {
-            if (ex != null) {
-                eventsForwarded.mark();
-                eventForwarder.sendAsync(ImmutableInMemoryEvent.newBuilder()
-                        .setUei(SEND_EVENT_FAILED_UEI)
-                        .addParameter(ImmutableEventParameter.newBuilder()
-                                .setName("reductionKey")
-                                .setValue(alarm.getReductionKey())
-                                .build())
-                        .addParameter(ImmutableEventParameter.newBuilder()
-                                .setName("message")
-                                .setValue(ex.getMessage())
-                                .build())
-                        .build());
-                LOG.warn("Sending event for alarm with reduction-key: {} failed.", alarm.getReductionKey(), ex);
-            } else {
-                eventsFailed.mark();
-                eventForwarder.sendAsync(ImmutableInMemoryEvent.newBuilder()
-                        .setUei(SEND_EVENT_SUCCESSFUL_UEI)
-                        .addParameter(ImmutableEventParameter.newBuilder()
-                                .setName("reductionKey")
-                                .setValue(alarm.getReductionKey())
-                                .build())
-                        .build());
-                LOG.info("Event sent successfully for alarm with reduction-key: {}", alarm.getReductionKey());
-            }
-        });
+        // pass
     }
 
     @Override
@@ -82,32 +47,6 @@ public class AlarmForwarder implements AlarmLifecycleListener {
     @Override
     public void handleDeletedAlarm(int alarmId, String reductionKey) {
         // pass
-    }
-
-    public static Alert toAlert(Alarm alarm) {
-        Alert alert = new Alert();
-        alert.setStatus(toStatus(alarm));
-        alert.setDescription(alarm.getDescription());
-        return alert;
-    }
-
-    private static Alert.Status toStatus(Alarm alarm) {
-        if (alarm.isAcknowledged()) {
-            return Alert.Status.ACKNOWLEDGED;
-        }
-        switch (alarm.getSeverity()) {
-            case INDETERMINATE:
-            case CLEARED:
-            case NORMAL:
-                return Alert.Status.OK;
-            case WARNING:
-            case MINOR:
-                return Alert.Status.WARNING;
-            case MAJOR:
-            case CRITICAL:
-            default:
-                return Alert.Status.CRITICAL;
-        }
     }
 
     public MetricRegistry getMetrics() {
