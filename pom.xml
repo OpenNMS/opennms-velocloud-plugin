@@ -22,8 +22,6 @@
         <junit.version>4.13.2</junit.version>
         <karaf.version>4.3.6</karaf.version>
         <log4j.version>2.17.2</log4j.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <metrics.version>4.1.12.1</metrics.version>
         <mockito.version>2.18.0</mockito.version>
         <opennms.api.version>1.0.0</opennms.api.version>
