@@ -41,19 +41,7 @@
         <bundle dependency="true">mvn:org.glassfish.hk2/osgi-resource-locator/1.0.3</bundle>
         <bundle dependency="true">mvn:org.jvnet.mimepull/mimepull/1.10.0</bundle>
         <bundle dependency="true">mvn:javax.annotation/javax.annotation-api/1.3.2</bundle>
-        <!--        <bundle dependency="true">mvn://</bundle>-->
-
-<!--        <bundle dependency="true">mvn:com.google.code.gson/gson/${gson.version}</bundle>-->
-
-<!--        <bundle dependency="true">mvn:io.github.openfeign/feign-core/${feign.version}</bundle>-->
-<!--        <bundle dependency="true">mvn:io.github.openfeign/feign-jackson/${feign.version}</bundle>-->
-<!--        <bundle dependency="true">mvn:io.github.openfeign/feign-slf4j/${feign.version}</bundle>-->
-<!--        <bundle dependency="true">mvn:io.github.openfeign.form/feign-form/${feign.form.version}</bundle>-->
-<!--        <bundle dependency="true">mvn:org.apache.oltu.oauth2/org.apache.oltu.oauth2.client/${oltu.version}</bundle>-->
-<!--        <bundle dependency="true">mvn:org.apache.oltu.oauth2/org.apache.oltu.oauth2.common/${oltu.version}</bundle>-->
-<!--        <bundle dependency="true">mvn:javax.servlet/javax.servlet-api</bundle>-->
-<!--        <bundle dependency="true">mvn:commons-codec/commons-codec</bundle>-->
-<!--        <bundle dependency="true">mvn:org.json/json</bundle>-->
+        
 
         <bundle>mvn:org.opennms/velocloud-client/${project.version}</bundle>
     </feature>

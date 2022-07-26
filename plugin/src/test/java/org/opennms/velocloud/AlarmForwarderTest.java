@@ -13,14 +13,5 @@ public class AlarmForwarderTest {
 
     @Test
     public void canConvertAlarmToAlert() {
-//        Alarm alarm = ImmutableAlarm.newBuilder()
-//                .setId(1)
-//                .setReductionKey("hey:oh")
-//                .setSeverity(Severity.CRITICAL)
-//                .build();
-//
-//        Alert alert = AlarmForwarder.toAlert(alarm);
-//
-//        assertThat(alert.getStatus(), equalTo(Alert.Status.CRITICAL));
     }
 }
