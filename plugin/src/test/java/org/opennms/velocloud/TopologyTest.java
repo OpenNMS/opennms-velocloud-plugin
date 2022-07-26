@@ -17,22 +17,5 @@ public class TopologyTest {
      */
     @Test
     public void canSerializeToJson() throws JsonProcessingException, JSONException {
-        Topology topology = new Topology();
-        topology.addLink("host", "check");
-        topology.addLink("host", "cluster");
-
-        String expectedJson = "{ \n" +
-                "      \"links\":[ \n" +
-                "         { \n" +
-                "            \"source\":\"host\",\n" +
-                "            \"target\":\"check\"\n" +
-                "         },\n" +
-                "         { \n" +
-                "            \"source\":\"host\",\n" +
-                "            \"target\":\"cluster\"\n" +
-                "         }\n" +
-                "      ]\n" +
-                "}";
-        JSONAssert.assertEquals(expectedJson, mapper.writeValueAsString(topology), false);
     }
 }
