@@ -9,7 +9,8 @@
     <cm:property-placeholder id="velocloudPluginProperties" persistent-id="org.opennms.velocloud" update-strategy="reload">
         <cm:default-properties>
             <cm:property name="url" value="http://127.0.0.1:8888/target" />
-            <cm:property name="apiKey" value="TOKEN" />
+            <cm:property name="params" value="TOKEN" />
+            <cm:property name="authType" value="ApiKeyAuth" />
         </cm:default-properties>
     </cm:property-placeholder>
 
@@ -21,7 +22,8 @@
     <!-- Build our API client -->
     <bean id="apiClient" class="org.opennms.velocloud.ApiClient">
         <argument value="${url}"/>
-        <argument value="${apiKey}"/>
+        <argument value="${params}"/>
+        <argument value="${authType}"/>
     </bean>
 
     <!-- Build our forwarder bean -->
