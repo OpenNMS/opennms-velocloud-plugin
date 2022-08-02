@@ -22,7 +22,7 @@
                     <instructions>
                         <Karaf-Commands>*</Karaf-Commands>
                         <!-- Nothing to export -->
-                        <Export-Package></Export-Package>
+                        <Export-Package>org.opennms.velocloud.client.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
