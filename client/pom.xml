@@ -21,6 +21,8 @@
                 <configuration>
                     <instructions>
                         <Karaf-Commands>*</Karaf-Commands>
+                        <!-- Nothing to export -->
+                        <Export-Package>org.opennms.velocloud.client.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -135,7 +137,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

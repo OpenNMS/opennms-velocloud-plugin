@@ -20,12 +20,12 @@ public class ApiClientTest {
                 ApiClient.AuthTypes.API_KEY_AUTH);
         var auth = (ApiKeyAuth)client.getAuthentication(ApiClient.AuthTypes.API_KEY_AUTH);
         assertEquals(auth.getApiKey(), "kjsncdkjdnsckdjsfncfs");
-        assertEquals(auth.getLocation(), client.HEADER);
-        assertEquals(auth.getParamName(), client.AUTHORIZATION);
-        assertEquals(auth.getApiKeyPrefix(), client.TOKEN);
+        assertEquals(auth.getLocation(), client.AUTH_HEADER_LOCATION);
+        assertEquals(auth.getParamName(), client.AUTH_HEADER_NAME);
+        assertEquals(auth.getApiKeyPrefix(), client.AUTH_HEADER_PREFIX);
         Map<String, String> mapResult = new HashMap<String, String>();
         auth.applyToParams(new ArrayList<>(), mapResult);
-        assertEquals(mapResult.get(client.AUTHORIZATION), "Token kjsncdkjdnsckdjsfncfs" );
+        assertEquals(mapResult.get(client.AUTH_HEADER_NAME), "Token kjsncdkjdnsckdjsfncfs" );
 
     }
 }

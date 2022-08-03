@@ -13,15 +13,15 @@ public class ApiClient extends org.opennms.velocloud.client.handler.ApiClient {
 
     public static final String AUTH_HEADER_NAME = "Authorization";
     public static final String AUTH_HEADER_LOCATION = "header";
-    public static final String AUTH_HEADER _PREFIX = "Token";
+    public static final String AUTH_HEADER_PREFIX = "Token";
 
     public ApiClient(final String url, final String params, final String authType) {
         super();
         setBasePath(url);
         switch (authType){
             case AuthTypes.API_KEY_AUTH:
-                authentications = Map.of("ApiKeyAuth", new ApiKeyAuth(HEADER, AUTHORIZATION));
-                setApiKeyPrefix(TOKEN);
+                authentications = Map.of("ApiKeyAuth", new ApiKeyAuth(AUTH_HEADER_LOCATION, AUTH_HEADER_NAME));
+                setApiKeyPrefix(AUTH_HEADER_PREFIX);
                 setApiKey(params);
                 break;
             case AuthTypes.BASIC_AUTH:
@@ -39,8 +39,6 @@ public class ApiClient extends org.opennms.velocloud.client.handler.ApiClient {
                 break;
         }
         Configuration.setDefaultApiClient(this);
-
-
     }
 
     public CompletableFuture<Void> forwardTopology(Topology topology) {
