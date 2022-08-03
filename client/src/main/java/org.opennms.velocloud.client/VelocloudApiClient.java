@@ -59,17 +59,17 @@ public class VelocloudApiClient extends ApiClient {
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
 
-    public final AlertsApi alertsApi = new AlertsApi(this);
-    public final ApplicationMapsApi applicationMapsApi = new ApplicationMapsApi(this);
-    public final ClientsApi clientsApi = new ClientsApi(this);
-    public final ConfigureApi configureApi = new ConfigureApi(this);
-    public final CustomerProfilesApi customerProfilesApi = new CustomerProfilesApi(this);
-    public final CustomersApi customersApi = new CustomersApi(this);
-    public final EdgesApi edgesApi = new EdgesApi(this);
-    public final EdgeSpecificProfilesApi edgeSpecificProfilesApi = new EdgeSpecificProfilesApi(this);
-    public final EventsApi eventsApi = new EventsApi(this);
-    public final MonitorApi monitorApi = new MonitorApi(this);
-    public final NetworkServicesApi networkServicesApi = new NetworkServicesApi(this);
+    public final AlertsApi alerts = new AlertsApi(this);
+    public final ApplicationMapsApi applicationMaps = new ApplicationMapsApi(this);
+    public final ClientsApi clients = new ClientsApi(this);
+    public final ConfigureApi configure = new ConfigureApi(this);
+    public final CustomerProfilesApi customerProfiles = new CustomerProfilesApi(this);
+    public final CustomersApi customers = new CustomersApi(this);
+    public final EdgesApi edges = new EdgesApi(this);
+    public final EdgeSpecificProfilesApi edgeSpecificProfiles = new EdgeSpecificProfilesApi(this);
+    public final EventsApi events = new EventsApi(this);
+    public final MonitorApi monitor = new MonitorApi(this);
+    public final NetworkServicesApi networkServices = new NetworkServicesApi(this);
 
     public VelocloudApiClient(final String url, final String apiKey) {
         super();
