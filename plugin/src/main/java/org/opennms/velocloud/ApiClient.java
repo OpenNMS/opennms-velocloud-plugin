@@ -13,7 +13,7 @@ public class ApiClient extends org.opennms.velocloud.client.handler.ApiClient {
 
     public static final String AUTHORIZATION = "Authorization";
     public static final String HEADER = "header";
-    public static final String TOKEN = "Token";
+    public static final String AUTH_HEADER _PREFIX = "Token";
 
     public ApiClient(final String url, final String params, final String authType) {
         super();
