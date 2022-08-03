@@ -2,6 +2,8 @@ package org.opennms.velocloud;
 
 
 import org.junit.Test;
+import org.opennms.velocloud.client.AuthTypes;
+import org.opennms.velocloud.client.VelocloudApiClient;
 import org.opennms.velocloud.client.handler.auth.ApiKeyAuth;
 
 import java.util.ArrayList;
@@ -10,15 +12,14 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class ApiClientTest {
+public class VelocloudApiClientTest {
 
     @Test
     public void TestAuth(){
-        ApiClient client = new ApiClient(
+        VelocloudApiClient client = new VelocloudApiClient(
                 "https://localhost:9999/",
-                "kjsncdkjdnsckdjsfncfs",
-                ApiClient.AuthTypes.API_KEY_AUTH);
-        var auth = (ApiKeyAuth)client.getAuthentication(ApiClient.AuthTypes.API_KEY_AUTH);
+                "kjsncdkjdnsckdjsfncfs");
+        var auth = (ApiKeyAuth)client.getAuthentication(AuthTypes.API_KEY_AUTH.toString());
         assertEquals(auth.getApiKey(), "kjsncdkjdnsckdjsfncfs");
         assertEquals(auth.getLocation(), client.AUTH_HEADER_LOCATION);
         assertEquals(auth.getParamName(), client.AUTH_HEADER_NAME);
