@@ -21,8 +21,6 @@
                 <configuration>
                     <instructions>
                         <Karaf-Commands>*</Karaf-Commands>
-                        <!-- Nothing to export -->
-                        <Export-Package>org.opennms.velocloud.client.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
