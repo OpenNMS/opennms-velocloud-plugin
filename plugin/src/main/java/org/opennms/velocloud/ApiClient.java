@@ -12,7 +12,7 @@ import org.opennms.velocloud.model.Topology;
 public class ApiClient extends org.opennms.velocloud.client.handler.ApiClient {
 
     public static final String AUTHORIZATION = "Authorization";
-    public static final String HEADER = "header";
+    public static final String AUTH_HEADER_LOCATION = "header";
     public static final String AUTH_HEADER _PREFIX = "Token";
 
     public ApiClient(final String url, final String params, final String authType) {
