@@ -29,7 +29,6 @@ package org.opennms.velocloud;
 
 
 import org.junit.Test;
-import org.opennms.velocloud.client.AuthTypes;
 import org.opennms.velocloud.client.VelocloudApiClient;
 import org.opennms.velocloud.client.handler.auth.ApiKeyAuth;
 
@@ -46,7 +45,7 @@ public class VelocloudApiClientTest {
         VelocloudApiClient client = new VelocloudApiClient(
                 "https://localhost:9999/",
                 "kjsncdkjdnsckdjsfncfs");
-        var auth = (ApiKeyAuth)client.getAuthentication(AuthTypes.API_KEY_AUTH.toString());
+        var auth = (ApiKeyAuth)client.getAuthentication("ApiKeyAuth");
         assertEquals(auth.getApiKey(), "kjsncdkjdnsckdjsfncfs");
         assertEquals(auth.getLocation(), client.AUTH_HEADER_LOCATION);
         assertEquals(auth.getParamName(), client.AUTH_HEADER_NAME);

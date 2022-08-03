@@ -39,7 +39,6 @@ import org.opennms.velocloud.client.api.EventsApi;
 import org.opennms.velocloud.client.api.MonitorApi;
 import org.opennms.velocloud.client.api.NetworkServicesApi;
 import org.opennms.velocloud.client.handler.ApiClient;
-import org.opennms.velocloud.client.handler.Configuration;
 
 
 public class VelocloudApiClient extends ApiClient {
@@ -60,102 +59,23 @@ public class VelocloudApiClient extends ApiClient {
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
 
-    private AlertsApi alertsApi;
-    private ApplicationMapsApi applicationMapsApi;
-    private ClientsApi clientsApi;
-    private ConfigureApi configureApi;
-    private CustomerProfilesApi customerProfilesApi;
-    private CustomersApi customersApi;
-    private EdgesApi edgesApi;
-    private EdgeSpecificProfilesApi edgeSpecificProfilesApi;
-    private EventsApi eventsApi;
-    private MonitorApi monitorApi;
-    private NetworkServicesApi networkServicesApi;
+    public final AlertsApi alertsApi = new AlertsApi(this);
+    public final ApplicationMapsApi applicationMapsApi = new ApplicationMapsApi(this);
+    public final ClientsApi clientsApi = new ClientsApi(this);
+    public final ConfigureApi configureApi = new ConfigureApi(this);
+    public final CustomerProfilesApi customerProfilesApi = new CustomerProfilesApi(this);
+    public final CustomersApi customersApi = new CustomersApi(this);
+    public final EdgesApi edgesApi = new EdgesApi(this);
+    public final EdgeSpecificProfilesApi edgeSpecificProfilesApi = new EdgeSpecificProfilesApi(this);
+    public final EventsApi eventsApi = new EventsApi(this);
+    public final MonitorApi monitorApi = new MonitorApi(this);
+    public final NetworkServicesApi networkServicesApi = new NetworkServicesApi(this);
 
     public VelocloudApiClient(final String url, final String apiKey) {
         super();
         setBasePath(url);
         setApiKeyPrefix(AUTH_HEADER_PREFIX);
         setApiKey(apiKey);
-        Configuration.setDefaultApiClient(this);
     }
-
-    public AlertsApi getAlertsApi(){
-        if(alertsApi == null){
-            alertsApi = new AlertsApi(this);
-        }
-        return alertsApi;
-    }
-
-    public ApplicationMapsApi getApplicationMapsApi() {
-        if(applicationMapsApi == null){
-            applicationMapsApi = new ApplicationMapsApi(this);
-        }
-        return applicationMapsApi;
-    }
-
-    public ClientsApi getClientsApi() {
-        if(clientsApi == null){
-            clientsApi = new ClientsApi(this);
-        }
-        return clientsApi;
-    }
-
-    public ConfigureApi getConfigureApi() {
-        if(configureApi == null ){
-            configureApi = new ConfigureApi(this);
-        }
-        return configureApi;
-    }
-
-    public CustomerProfilesApi getCustomerProfilesApi() {
-        if(customerProfilesApi == null){
-            customerProfilesApi = new CustomerProfilesApi(this);
-        }
-        return customerProfilesApi;
-    }
-
-    public CustomersApi getCustomersApi() {
-        if(customersApi == null){
-            customersApi = new CustomersApi(this);
-        }
-        return customersApi;
-    }
-
-    public EdgesApi getEdgesApi() {
-        if(edgesApi == null){
-            edgesApi = new EdgesApi(this);
-        }
-        return edgesApi;
-    }
-
-    public EdgeSpecificProfilesApi getEdgeSpecificProfilesApi() {
-        if(edgeSpecificProfilesApi == null){
-            edgeSpecificProfilesApi = new EdgeSpecificProfilesApi(this);
-        }
-        return edgeSpecificProfilesApi;
-    }
-
-    public EventsApi getEventsApi() {
-        if(eventsApi == null){
-            eventsApi = new EventsApi(this);
-        }
-        return eventsApi;
-    }
-
-    public MonitorApi getMonitorApi() {
-        if(monitorApi == null ){
-            monitorApi = new MonitorApi(this);
-        }
-        return monitorApi;
-    }
-
-    public NetworkServicesApi getNetworkServicesApi() {
-        if(networkServicesApi == null){
-            networkServicesApi = new NetworkServicesApi(this);
-        }
-        return networkServicesApi;
-    }
-
 }
 
