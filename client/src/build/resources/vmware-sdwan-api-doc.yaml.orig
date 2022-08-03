@@ -6576,27 +6576,7 @@ paths:
           description: A comma-separated list of field names corresponding to linked resources. Where supported, the server will resolve resource attributes for the specified resources.
           schema:
             type: string
-
-security:
-  - ApiKeyAuth:
-        - read
-#  - BasicAuth:
-#      - read
-#  - BearerAuth:
-#      - read
 components:
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
-    BearerAuth:
-      type: http
-      scheme: bearer
-    ApiKeyAuth: # arbitrary name for the security scheme
-      type: apiKey
-      in: header       # can be "header", "query" or "cookie"
-      name: Authorization
-
   schemas:
     ValidationError:
       type: object
