@@ -27,18 +27,18 @@
  *******************************************************************************/
 package org.opennms.velocloud.client;
 
-import org.opennms.velocloud.client.api.AlertsApi;
-import org.opennms.velocloud.client.api.ApplicationMapsApi;
-import org.opennms.velocloud.client.api.ClientsApi;
-import org.opennms.velocloud.client.api.ConfigureApi;
-import org.opennms.velocloud.client.api.CustomerProfilesApi;
-import org.opennms.velocloud.client.api.CustomersApi;
-import org.opennms.velocloud.client.api.EdgeSpecificProfilesApi;
-import org.opennms.velocloud.client.api.EdgesApi;
-import org.opennms.velocloud.client.api.EventsApi;
-import org.opennms.velocloud.client.api.MonitorApi;
-import org.opennms.velocloud.client.api.NetworkServicesApi;
-import org.opennms.velocloud.client.handler.ApiClient;
+import org.opennms.velocloud.client.v2.api.AlertsApi;
+import org.opennms.velocloud.client.v2.api.ApplicationMapsApi;
+import org.opennms.velocloud.client.v2.api.ClientsApi;
+import org.opennms.velocloud.client.v2.api.ConfigureApi;
+import org.opennms.velocloud.client.v2.api.CustomerProfilesApi;
+import org.opennms.velocloud.client.v2.api.CustomersApi;
+import org.opennms.velocloud.client.v2.api.EdgeSpecificProfilesApi;
+import org.opennms.velocloud.client.v2.api.EdgesApi;
+import org.opennms.velocloud.client.v2.api.EventsApi;
+import org.opennms.velocloud.client.v2.api.MonitorApi;
+import org.opennms.velocloud.client.v2.api.NetworkServicesApi;
+import org.opennms.velocloud.client.v2.handler.ApiClient;
 
 
 public class VelocloudApiClient extends ApiClient {

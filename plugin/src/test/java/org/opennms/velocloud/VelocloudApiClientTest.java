@@ -30,7 +30,7 @@ package org.opennms.velocloud;
 
 import org.junit.Test;
 import org.opennms.velocloud.client.VelocloudApiClient;
-import org.opennms.velocloud.client.handler.auth.ApiKeyAuth;
+import org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth;
 
 import java.util.ArrayList;
 import java.util.HashMap;

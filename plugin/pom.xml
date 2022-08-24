@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>velocloud-plugin</artifactId>
-    <name>OpenNMS :: Plugins :: Velocloud Intergration</name>
+    <name>OpenNMS :: Plugins :: Velocloud Intergration :: Plugin</name>
     <packaging>bundle</packaging>
 
     <build>
@@ -83,7 +83,7 @@
         </dependency>
         <dependency>
             <groupId>org.opennms.plugins.velocloud</groupId>
-            <artifactId>velocloud-client</artifactId>
+            <artifactId>velocloud-client-v2</artifactId>
             <version>${project.version}</version>
         </dependency>
 

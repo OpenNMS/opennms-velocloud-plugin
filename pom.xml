@@ -30,6 +30,7 @@
         <osgi.enterprise.version>5.0.0</osgi.enterprise.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
         <swagger.version>2.1.7</swagger.version>
+<!--        <swagger.version>1.5.21</swagger.version>-->
     </properties>
 
     <version>0.1.0-SNAPSHOT</version>

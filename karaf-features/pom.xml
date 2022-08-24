@@ -84,7 +84,8 @@
                             </framework>
                             <features>
                                 <feature>opennms-plugins-velocloud</feature>
-                                <feature>opennms-plugins-velocloud-client</feature>
+                                <feature>opennms-plugins-velocloud-client-v1</feature>
+                                <feature>opennms-plugins-velocloud-client-v2</feature>
                                 <feature>guava</feature>
                                 <feature>jackson</feature>
                             </features>
@@ -120,7 +121,13 @@
         </dependency>
         <dependency>
             <groupId>org.opennms.plugins.velocloud</groupId>
-            <artifactId>velocloud-client</artifactId>
+            <artifactId>velocloud-client-v1</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opennms.plugins.velocloud</groupId>
+            <artifactId>velocloud-client-v2</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
