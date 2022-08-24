@@ -35,7 +35,7 @@ import java.util.Objects;
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.requisition.RequisitionProvider;
 import org.opennms.integration.api.v1.requisition.RequisitionRequest;
-import org.opennms.velocloud.client.VelocloudApiClient;
+import org.opennms.velocloud.client.api.VelocloudApiClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -59,10 +59,10 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     public final Requisition getRequisition(final RequisitionRequest rawRequest) {
         final var request = (Req) rawRequest;
 
-        final var client = new VelocloudApiClient(request.getOrchestratorUrl(),
-                                                  request.getApiKey());
+       // final var client = new VelocloudApiClientV2(request.getOrchestratorUrl(),
+       //                                           request.getApiKey());
 
-        return this.handleRequest(request, client);
+        return this.handleRequest(request, null);
     }
 
     @Override

@@ -6,7 +6,7 @@
         <feature dependency="true">shell</feature>
         <feature version="${opennms.api.version}" dependency="true">opennms-integration-api</feature>
         <feature version="${guava.version}" dependency="true">guava</feature>
-        <feature version="${project.version}">opennms-plugins-velocloud-client</feature>
+        <feature version="${project.version}">opennms-plugins-velocloud-client-v1</feature>
         <bundle dependency="true">mvn:org.apache.commons/commons-jexl3/${jexl.version}</bundle>
         <bundle dependency="true">mvn:io.dropwizard.metrics/metrics-core/${metrics.version}</bundle>
         <bundle dependency="true">mvn:javax.ws.rs/javax.ws.rs-api/2.1.1</bundle>
@@ -28,7 +28,7 @@
 
     <feature name="opennms-plugins-velocloud-client-v1" description="Velocloud API client" version="${project.version}">
         <feature version="${jackson.version}" dependency="true">jackson</feature>
-        <bundle dependency="true">mvn:io.swagger/swagger-annotations/${swagger.annotation.version.v1}</bundle>
+        <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.version}</bundle>
 
         <bundle dependency="true">mvn:javax.ws.rs/javax.ws.rs-api/2.1.1</bundle>
         <bundle dependency="true">mvn:org.glassfish.jersey.core/jersey-client/${jersey.version}</bundle>
@@ -48,7 +48,7 @@
 
     <feature name="opennms-plugins-velocloud-client-v2" description="Velocloud API client" version="${project.version}">
         <feature version="${jackson.version}" dependency="true">jackson</feature>
-        <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.annotation.version.v2}</bundle>
+        <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.version}</bundle>
 
         <bundle dependency="true">mvn:javax.ws.rs/javax.ws.rs-api/2.1.1</bundle>
         <bundle dependency="true">mvn:org.glassfish.jersey.core/jersey-client/${jersey.version}</bundle>

@@ -25,8 +25,9 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.client;
+package org.opennms.velocloud.client.v2;
 
+import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.v2.api.AlertsApi;
 import org.opennms.velocloud.client.v2.api.ApplicationMapsApi;
 import org.opennms.velocloud.client.v2.api.ClientsApi;
@@ -41,7 +42,7 @@ import org.opennms.velocloud.client.v2.api.NetworkServicesApi;
 import org.opennms.velocloud.client.v2.handler.ApiClient;
 
 
-public class VelocloudApiClient extends ApiClient {
+public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClient {
 
     /**
      * Authentication parameter for ApiKeyAuth heather parameter name/key
@@ -71,7 +72,7 @@ public class VelocloudApiClient extends ApiClient {
     public final MonitorApi monitor = new MonitorApi(this);
     public final NetworkServicesApi networkServices = new NetworkServicesApi(this);
 
-    public VelocloudApiClient(final String url, final String apiKey) {
+    public VelocloudApiClientV2(final String url, final String apiKey) {
         super();
         setBasePath(url);
         setApiKeyPrefix(AUTH_HEADER_PREFIX);
