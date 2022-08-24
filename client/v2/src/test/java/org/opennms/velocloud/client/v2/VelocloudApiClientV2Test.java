@@ -37,7 +37,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class VelocloudApiClientTest {
+public class VelocloudApiClientV2Test {
 
     @Test
     public void TestAuth(){

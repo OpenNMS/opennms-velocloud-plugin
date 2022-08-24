@@ -35,7 +35,6 @@ import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 
-
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
 
     public final static String TYPE = "VelocloudCustomerRequisition";
