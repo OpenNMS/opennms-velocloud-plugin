@@ -45,9 +45,9 @@
             </plugin>
 
             <plugin>
-                <groupId>io.swagger</groupId>
+                <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>2.4.28</version>
+                <version>3.0.25</version>
                 <executions>
                     <execution>
                         <goals>
@@ -66,7 +66,7 @@
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <configOptions>
-                                <sourceFolder>src/main/java/v1</sourceFolder>
+                                <sourceFolder>src/main/java</sourceFolder>
                                 <interfaceOnly>true</interfaceOnly>
                                 <dateLibrary>java8</dateLibrary>
                                 <java11>true</java11>
@@ -91,7 +91,7 @@
         </dependency>
         <!-- V1 -->
         <dependency>
-            <groupId>io.swagger</groupId>
+            <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>${swagger.version}</version>
         </dependency>
@@ -144,8 +144,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-<properties>
-    <swagger.version>1.5.21</swagger.version>
-</properties>
-
 </project>

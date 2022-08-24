@@ -65,7 +65,7 @@
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <configOptions>
-                                <sourceFolder>src/main/java/v2</sourceFolder>
+                                <sourceFolder>src/main/java</sourceFolder>
                                 <interfaceOnly>true</interfaceOnly>
                                 <dateLibrary>java8</dateLibrary>
                                 <java11>true</java11>
@@ -143,8 +143,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <properties>
-        <swagger.version>2.1.7</swagger.version>
-</properties>
 </project>

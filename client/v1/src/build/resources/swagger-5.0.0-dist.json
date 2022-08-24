@@ -39657,7 +39657,14 @@
           "type": "string"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "STANDBY",
+            "UP",
+            "DOWN",
+            "UNKNOWN"
+          ]
         },
         "dataKey": {
           "type": "string"
@@ -39742,17 +39749,6 @@
             },
             "edgeLogicalId": {
               "type": "string"
-            },
-            "edgeState": {
-              "type": "string",
-              "enum": [
-                "NEVER_ACTIVATED",
-                "DEGRADED",
-                "OFFLINE",
-                "DISABLED",
-                "EXPIRED",
-                "CONNECTED"
-              ]
             },
             "tag": {
               "type": "string",
