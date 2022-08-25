@@ -32,7 +32,7 @@ import java.util.Map;
 
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
-import org.opennms.velocloud.client.VelocloudApiClient;
+import org.opennms.velocloud.client.api.VelocloudApiClient;
 
 public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
 

@@ -25,12 +25,11 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud;
+package org.opennms.velocloud.client.v2;
 
 
 import org.junit.Test;
-import org.opennms.velocloud.client.VelocloudApiClient;
-import org.opennms.velocloud.client.handler.auth.ApiKeyAuth;
+import org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,11 +37,11 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class VelocloudApiClientTest {
+public class VelocloudApiClientV2Test {
 
     @Test
     public void TestAuth(){
-        VelocloudApiClient client = new VelocloudApiClient(
+        VelocloudApiClientV2 client = new VelocloudApiClientV2(
                 "https://localhost:9999/",
                 "kjsncdkjdnsckdjsfncfs");
         var auth = (ApiKeyAuth)client.getAuthentication("ApiKeyAuth");
