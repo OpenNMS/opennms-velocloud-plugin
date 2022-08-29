@@ -36,10 +36,21 @@ import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.requisition.RequisitionProvider;
 import org.opennms.integration.api.v1.requisition.RequisitionRequest;
 import org.opennms.velocloud.client.api.VelocloudApiClient;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitionProvider.Request> implements RequisitionProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
+
+    private final VelocloudApiClientProvider clientProvider;
+
+    protected AbstractRequisitionProvider(final VelocloudApiClientProvider clientProvider) {
+        this.clientProvider = Objects.requireNonNull(clientProvider);
+    }
 
     protected abstract Req createRequest(final Map<String, String> parameters);
 
@@ -59,10 +70,16 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     public final Requisition getRequisition(final RequisitionRequest rawRequest) {
         final var request = (Req) rawRequest;
 
-       // final var client = new VelocloudApiClientV2(request.getOrchestratorUrl(),
-       //                                           request.getApiKey());
+        try {
+            final var client = this.clientProvider.connect(request.getOrchestratorUrl(),
+                                                           request.getApiKey());
 
-        return this.handleRequest(request, null);
+            return this.handleRequest(request, client);
+
+        } catch (VelocloudApiException e) {
+            LOG.error("Velocloud Orchestrator communication failed", e);
+            return null;
+        }
     }
 
     @Override

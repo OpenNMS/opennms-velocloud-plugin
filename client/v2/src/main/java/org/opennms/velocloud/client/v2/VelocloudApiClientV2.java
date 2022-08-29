@@ -27,7 +27,14 @@
  *******************************************************************************/
 package org.opennms.velocloud.client.v2;
 
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+
 import org.opennms.velocloud.client.api.VelocloudApiClient;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.v2.api.AlertsApi;
 import org.opennms.velocloud.client.v2.api.ApplicationMapsApi;
 import org.opennms.velocloud.client.v2.api.ClientsApi;
@@ -45,32 +52,22 @@ import org.opennms.velocloud.client.v2.handler.ApiClient;
 public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClient {
 
     /**
-     * Authentication parameter for ApiKeyAuth heather parameter name/key
-     * @see org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth
-     */
-    public static final String AUTH_HEADER_NAME = "Authorization";
-    /**
-     * Authentication parameter for ApiKeyAuth header location
-     * @see org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth
-     */
-    public static final String AUTH_HEADER_LOCATION = "header";
-    /**
      * Authentication parameter for ApiKeyAuth used in header parameter value
      * @see org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth
      */
-    public static final String AUTH_HEADER_PREFIX = "Token";
+    private static final String AUTH_HEADER_PREFIX = "Token";
 
-    public final AlertsApi alerts = new AlertsApi(this);
-    public final ApplicationMapsApi applicationMaps = new ApplicationMapsApi(this);
-    public final ClientsApi clients = new ClientsApi(this);
-    public final ConfigureApi configure = new ConfigureApi(this);
-    public final CustomerProfilesApi customerProfiles = new CustomerProfilesApi(this);
-    public final CustomersApi customers = new CustomersApi(this);
-    public final EdgesApi edges = new EdgesApi(this);
-    public final EdgeSpecificProfilesApi edgeSpecificProfiles = new EdgeSpecificProfilesApi(this);
-    public final EventsApi events = new EventsApi(this);
-    public final MonitorApi monitor = new MonitorApi(this);
-    public final NetworkServicesApi networkServices = new NetworkServicesApi(this);
+    private final AlertsApi alerts = new AlertsApi(this);
+    private final ApplicationMapsApi applicationMaps = new ApplicationMapsApi(this);
+    private final ClientsApi clients = new ClientsApi(this);
+    private final ConfigureApi configure = new ConfigureApi(this);
+    private final CustomerProfilesApi customerProfiles = new CustomerProfilesApi(this);
+    private final CustomersApi customers = new CustomersApi(this);
+    private final EdgesApi edges = new EdgesApi(this);
+    private final EdgeSpecificProfilesApi edgeSpecificProfiles = new EdgeSpecificProfilesApi(this);
+    private final EventsApi events = new EventsApi(this);
+    private final MonitorApi monitor = new MonitorApi(this);
+    private final NetworkServicesApi networkServices = new NetworkServicesApi(this);
 
     public VelocloudApiClientV2(final String url, final String apiKey) {
         super();
@@ -78,5 +75,11 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
         setApiKeyPrefix(AUTH_HEADER_PREFIX);
         setApiKey(apiKey);
     }
+
+    @Override
+    public List<Edge> getEdges(final UUID enterpriseId) throws VelocloudApiException {
+        throw new UnsupportedOperationException();
+    }
+
 }
 

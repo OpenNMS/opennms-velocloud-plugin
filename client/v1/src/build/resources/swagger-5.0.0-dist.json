@@ -48506,17 +48506,17 @@
     }
   },
   "securityDefinitions": {
-    "api_key": {
+    "ApiKeyAuth": {
       "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
+      "in": "header",
+      "name": "Authorization"
     }
   },
-  "security": {
-    "api_key": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
+  "security": [
+    {
+      "ApiKeyAuth": [
+        "read"
+      ]
     }
-  }
+  ]
 }

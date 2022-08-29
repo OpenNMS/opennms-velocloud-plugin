@@ -27,7 +27,11 @@
     </feature>
 
     <feature name="opennms-plugins-velocloud-client-v1" description="Velocloud API client" version="${project.version}">
+        <feature dependency="true">aries-blueprint</feature>
+
         <feature version="${jackson.version}" dependency="true">jackson</feature>
+        <feature version="${guava.version}" dependency="true">guava</feature>
+
         <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.version}</bundle>
 
         <bundle dependency="true">mvn:javax.ws.rs/javax.ws.rs-api/2.1.1</bundle>
@@ -47,7 +51,11 @@
     </feature>
 
     <feature name="opennms-plugins-velocloud-client-v2" description="Velocloud API client" version="${project.version}">
+        <feature dependency="true">aries-blueprint</feature>
+
         <feature version="${jackson.version}" dependency="true">jackson</feature>
+        <feature version="${guava.version}" dependency="true">guava</feature>
+
         <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.version}</bundle>
 
         <bundle dependency="true">mvn:javax.ws.rs/javax.ws.rs-api/2.1.1</bundle>

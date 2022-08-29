@@ -25,11 +25,11 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.client.v2;
+package org.opennms.velocloud.client.v1;
 
 
 import org.junit.Test;
-import org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth;
+import org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,24 +37,24 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class VelocloudApiClientV2Test {
+public class VelocloudApiClientV1Test {
     public static final String AUTH_HEADER_NAME = "Authorization";
     public static final String AUTH_HEADER_PREFIX = "Token";
     public static final String AUTH_HEADER_LOCATION = "header";
 
     @Test
     public void testBaseUrl() throws Exception {
-        final var client = new VelocloudApiClientProviderV2()
+        final var client = new VelocloudApiClientProviderV1()
                 .connect("https://localhost:9999/", "");
 
-        assertEquals(client.getBasePath(), "https://localhost:9999/api/sdwan/v2");
+        assertEquals(client.getBasePath(), "https://localhost:9999/portal/rest");
     }
 
     @Test
     public void testAuth() throws Exception {
         final var key = "kjsncdkjdnsckdjsfncfs";
 
-        final var client = new VelocloudApiClientProviderV2()
+        final var client = new VelocloudApiClientProviderV1()
                 .connect("https://localhost:9999/", key);
 
         var auth = (ApiKeyAuth)client.getAuthentication("ApiKeyAuth");
