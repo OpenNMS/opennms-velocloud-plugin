@@ -28,6 +28,7 @@
 package org.opennms.velocloud.client.v1;
 
 import org.opennms.velocloud.client.api.VelocloudApiClient;
+import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.api.ApiTokenApi;
 import org.opennms.velocloud.client.v1.api.ClientDeviceApi;
@@ -66,21 +67,22 @@ import org.opennms.velocloud.client.v1.api.VcoInventoryApi;
 import org.opennms.velocloud.client.v1.api.VpnApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
 
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.Edge;
+import org.opennms.velocloud.client.v1.handler.ApiException;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdgesResultItem;
 
 public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClient {
 
     /**
-     * Authentication parameter for ApiKeyAuth heather parameter name/key
-     * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
-     */
-    public static final String AUTH_HEADER_NAME = "Authorization";
-    /**
-     * Authentication parameter for ApiKeyAuth header location
-     * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
-     */
-    public static final String AUTH_HEADER_LOCATION = "header";
-    /**
      * Authentication parameter for ApiKeyAuth used in header parameter value
+     *
      * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
@@ -128,5 +130,22 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
         setApiKeyPrefix(AUTH_HEADER_PREFIX);
         setApiKey(apiKey);
     }
-}
 
+    @Override
+    public List<Edge> getEdges(final UUID enterpriseId) throws VelocloudApiException {
+        try {
+            final List<EnterpriseGetEnterpriseEdgesResultItem> edges = this.enterpriseApi.enterpriseGetEnterpriseEdges(new EnterpriseGetEnterpriseEdges());
+            return edges.stream()
+                        .map(e -> Edge.builder()
+                                      .withEnterpriseId(enterpriseId)
+                                      .withSite(e.getSite().getName())
+                                      .withOperator(e.getConfiguration().getOperator().getName())
+                                      .withHub(e.isIsHub())
+                                      .build())
+                        .collect(Collectors.toList());
+        } catch (final ApiException e) {
+            throw new VelocloudApiException("Error requesting edges", e);
+        }
+    }
+
+}

@@ -34,10 +34,15 @@ import java.util.UUID;
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
 import org.opennms.velocloud.client.api.VelocloudApiClient;
+import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
 
     public final static String TYPE = "VelocloudCustomerRequisition";
+
+    public CustomerRequisitionProvider(final VelocloudApiClientProvider clientProvider) {
+        super(clientProvider);
+    }
 
     @Override
     public String getType() {

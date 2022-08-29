@@ -26,32 +26,17 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
+package org.opennms.velocloud.client.v1;
 
-import org.junit.Test;
-import org.opennms.velocloud.client.v1.VelocloudApiClientV1;
-import org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth;
+import java.net.URI;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.client.api.VelocloudApiException;
 
-import static org.junit.Assert.assertEquals;
+public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
 
-public class VelocloudApiClientV1Test {
-
-    @Test
-    public void TestAuth(){
-        VelocloudApiClientV1 client = new VelocloudApiClientV1(
-                "https://localhost:9999/",
-                "kjsncdkjdnsckdjsfncfs");
-        var auth = (ApiKeyAuth)client.getAuthentication("api_key");
-        assertEquals(auth.getApiKey(), "kjsncdkjdnsckdjsfncfs");
-        assertEquals(auth.getLocation(), client.AUTH_HEADER_LOCATION);
-        assertEquals(auth.getParamName(), client.AUTH_HEADER_NAME);
-        assertEquals(auth.getApiKeyPrefix(), client.AUTH_HEADER_PREFIX);
-        Map<String, String> mapResult = new HashMap<String, String>();
-        auth.applyToParams(new ArrayList<>(), mapResult);
-        assertEquals(mapResult.get(client.AUTH_HEADER_NAME), "Token kjsncdkjdnsckdjsfncfs" );
-
+    @Override
+    public VelocloudApiClientV1 connect(final String orchestratorUrl, final String apiKey) throws VelocloudApiException {
+        return new VelocloudApiClientV1(URI.create(orchestratorUrl).resolve("portal/rest").toString(), apiKey);
     }
 }

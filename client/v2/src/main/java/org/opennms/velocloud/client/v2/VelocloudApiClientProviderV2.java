@@ -26,45 +26,16 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.requisition;
+package org.opennms.velocloud.client.v2;
 
-import java.util.Map;
+import java.net.URI;
 
-import org.opennms.integration.api.v1.config.requisition.Requisition;
-import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
-import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 
-public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
-
-    public final static String TYPE = "VelocloudPartnerRequisition";
-
-    public PartnerRequisitionProvider(final VelocloudApiClientProvider clientProvider) {
-        super(clientProvider);
-    }
+public class VelocloudApiClientProviderV2 implements VelocloudApiClientProvider {
 
     @Override
-    public String getType() {
-        return TYPE;
-    }
-
-    @Override
-    protected Request createRequest(final Map<String, String> parameters) {
-        final var request = new Request();
-
-        request.setForeignSource("velocloud-partner");
-
-        return request;
-    }
-
-    @Override
-    protected Requisition handleRequest(final Request request, final VelocloudApiClient client) {
-        final var requisition = ImmutableRequisition.newBuilder()
-                .setForeignSource(request.getForeignSource());
-
-        return requisition.build();
-    }
-
-    public static class Request extends AbstractRequisitionProvider.Request {
+    public VelocloudApiClientV2 connect(final String orchestratorUrl, final String apiKey) {
+        return new VelocloudApiClientV2(URI.create(orchestratorUrl).resolve("api/sdwan/v2").toString(), apiKey);
     }
 }
