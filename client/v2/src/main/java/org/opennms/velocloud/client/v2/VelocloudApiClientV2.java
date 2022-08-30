@@ -46,17 +46,17 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
 
     /**
      * Authentication parameter for ApiKeyAuth heather parameter name/key
-     * @see org.opennms.velocloud.client.handler.auth.ApiKeyAuth
+     * @see org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_NAME = "Authorization";
     /**
      * Authentication parameter for ApiKeyAuth header location
-     * @see org.opennms.velocloud.client.handler.auth.ApiKeyAuth
+     * @see org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_LOCATION = "header";
     /**
      * Authentication parameter for ApiKeyAuth used in header parameter value
-     * @see org.opennms.velocloud.client.handler.auth.ApiKeyAuth
+     * @see org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
 
