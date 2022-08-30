@@ -25,6 +25,7 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.client.v1;
 
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.v1.api.AllApi;

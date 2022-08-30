@@ -28,6 +28,7 @@
 
 
 import org.junit.Test;
+import org.opennms.velocloud.client.v1.VelocloudApiClientV1;
 import org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth;
 
 import java.util.ArrayList;
