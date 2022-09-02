@@ -28,12 +28,20 @@
 
 package org.opennms.velocloud.requisition;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
+import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionInterface;
+import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
+import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.User;
+
 
 public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
 
@@ -62,6 +70,63 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
         final var requisition = ImmutableRequisition.newBuilder()
                 .setForeignSource(request.getForeignSource());
 
+        try {
+            for (var enterprise : client.getEnterprises()) {
+                final List<User> users = client.getUsers(enterprise.id);
+
+                //TODO: confirm  gateway roles are coming from enterprise users
+                //TODO: confirm Gateway AssetNodes destination.
+                client.getGateways(enterprise.enterpriseId).stream().forEach(gateway -> {
+                    requisition.addNode(ImmutableRequisitionNode.newBuilder()
+                            .setForeignId(gateway.gatewayId)
+                            .setNodeLabel(gateway.gatewayName)
+                            .setLocation(gateway.siteName)
+                            .setInterfaces(List.of(ImmutableRequisitionInterface.newBuilder()
+                                    .setIpAddress(gateway.ipAddress)
+                                    .build()))
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setKey("roles")
+                                    .setValue(users.stream().map(u ->
+                                            String.format("%s:%s", u.roleId, u.roleName)).collect(Collectors.joining(",")))
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setKey("deviceId")
+                                    .setValue(gateway.deviceId)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setKey("gatewayId")
+                                    .setValue(gateway.gatewayId)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setKey("gatewayName")
+                                    .setValue(gateway.gatewayName)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setKey("enterpriseId")
+                                    .setValue(gateway.enterpriseId.toString())
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setKey("buildNumber")
+                                    .setValue(gateway.buildNumber)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setKey("softwareVersion")
+                                    .setValue(gateway.softwareVersion)
+                                    .build())
+                            .build());
+                });
+
+            }
+        } catch (VelocloudApiException e) {
+            LOG.error(e.getMessage());
+        }
         return requisition.build();
     }
 

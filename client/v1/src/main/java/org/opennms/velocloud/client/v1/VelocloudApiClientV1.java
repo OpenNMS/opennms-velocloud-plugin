@@ -29,6 +29,9 @@ package org.opennms.velocloud.client.v1;
 
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.client.api.model.Enterprise;
+import org.opennms.velocloud.client.api.model.Gateway;
+import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.api.ApiTokenApi;
 import org.opennms.velocloud.client.v1.api.ClientDeviceApi;
@@ -67,7 +70,8 @@ import org.opennms.velocloud.client.v1.api.VcoInventoryApi;
 import org.opennms.velocloud.client.v1.api.VpnApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
 
-import java.net.URI;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -77,6 +81,12 @@ import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.v1.handler.ApiException;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdgesResultItem;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsers;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsersResultItem;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprises;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGatewaysResultItem;
 
 public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClient {
 
@@ -87,7 +97,7 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
 
-    public final AllApi alerts = new AllApi(this);
+    public final AllApi allApi = new AllApi(this);
     public final ApiTokenApi apiTokenApi = new ApiTokenApi(this);
     public final ClientDeviceApi clientDeviceApi = new ClientDeviceApi(this);
     public final CompositeRoleApi compositeRoleApi = new CompositeRoleApi(this);
@@ -145,6 +155,105 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                         .collect(Collectors.toList());
         } catch (final ApiException e) {
             throw new VelocloudApiException("Error requesting edges", e);
+        }
+    }
+
+    @Override
+    public List<Gateway> getGateways(final UUID enterpriseId) throws VelocloudApiException {
+
+        try {
+            List<EnterpriseProxyGetEnterpriseProxyGatewaysResultItem> enterpriseGateways = this.allApi.enterpriseProxyGetEnterpriseProxyGateways(
+                    new EnterpriseProxyGetEnterpriseProxyGateways()
+                            .addWithItem(EnterpriseProxyGetEnterpriseProxyGateways.WithEnum.SITE));
+            return enterpriseGateways.stream()
+                    .map(g ->
+                    {
+                        return Gateway.builder()
+                                .withEnterpriseId(enterpriseId)
+                                .withDeviceId(g.getDeviceId())
+                                .withGatewayId(g.getLogicalId())
+                                .withIpAddress(getValidInet4Address(g.getIpAddress()))
+                                .withGatewayName(g.getName())
+                                .withSiteId(g.getSiteId())
+                                .withSiteName(g.getSite().getName())
+                                .withAddress(g.getSite().getStreetAddress())
+                                .withAddress2((g.getSite().getStreetAddress2()))
+                                .withZip(g.getSite().getPostalCode())
+                                .withCity(g.getSite().getCity())
+                                .withState(g.getSite().getState())
+                                .withCountry(g.getSite().getCountry())
+                                .withLatitude(g.getSite().getLat())
+                                .withLongitude(g.getSite().getLon())
+                                .withGatewayState(g.getGatewayState().getValue())
+                                .withServiceState(g.getServiceState().getValue())
+                                .withBuildNumber(g.getBuildNumber())
+                                .withSoftwareVersion(g.getSoftwareVersion())
+                                .build();
+
+                    })
+                    .collect(Collectors.toList());
+        } catch (ApiException e) {
+            throw new VelocloudApiException("Error requesting gateways", e);
+        }
+    }
+
+    @Override
+    public List<Enterprise> getEnterprises() throws VelocloudApiException {
+        try {
+            List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem> enterprises = this.allApi.enterpriseProxyGetEnterpriseProxyEnterprises(
+                    new EnterpriseProxyGetEnterpriseProxyEnterprises()
+                            .addWithItem(EnterpriseProxyGetEnterpriseProxyEnterprises.WithEnum.EDGES)
+            );
+            return enterprises.stream().map(e ->
+                            Enterprise.builder()
+                                    .setEnterpriseId(UUID.fromString(e.getLogicalId()))
+                                    .setId(e.getId())
+                                    .build())
+                    .collect(Collectors.toList());
+        } catch (ApiException e) {
+            throw new VelocloudApiException("Error requesting enterprises", e);
+        }
+    }
+
+    @Override
+    public List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException {
+        final List<EnterpriseGetEnterpriseUsersResultItem> users;
+        try {
+            users = this.userMaintenanceApi.enterpriseGetEnterpriseUsers(
+                    new EnterpriseGetEnterpriseUsers()
+                            .enterpriseId(enterpriseId));
+            return users.stream().map(user->
+                    User.builder()
+                            .setId(user.getId())
+                            .setUserType(user.getUserType())
+                            .setDomain(user.getDomain())
+                            .setUsername(user.getUsername())
+                            .setFirstName(user.getFirstName())
+                            .setLastName(user.getLastName())
+                            .setEmail(user.getEmail())
+                            .setRoleId(user.getRoleId())
+                            .setRoleName(user.getRoleName())
+                            .setAccessLevel(user.getAccessLevel().getValue())
+                            .setActive(user.getIsActive().getValue() == 0 ?  false : true)
+                            .setLocked(user.getIsLocked().getValue() == 0 ? false : true)
+                            .setNative(user.getIsNative() .getValue()== 0 ? false : true)
+                            .setSshUsername(user.getSshUsername())
+                            .build()
+            ).collect(Collectors.toList());
+        } catch (ApiException e) {
+            throw new VelocloudApiException("ApiException:" + e.getMessage());
+        }
+    }
+
+
+    public static InetAddress getValidInet4Address(String ip) {
+        try {
+            InetAddress address = InetAddress.getByName(ip);
+            if (address.getHostAddress().equals(ip)) {
+                return address;
+            } else return null;
+        } catch (UnknownHostException ex) {
+            return null;
         }
     }
 

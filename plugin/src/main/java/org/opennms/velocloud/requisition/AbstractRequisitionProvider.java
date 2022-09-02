@@ -44,7 +44,9 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitionProvider.Request> implements RequisitionProvider {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
+
+    public static final String VELOCLOUD_CONTEXT = "_Velocloud_";
 
     private final VelocloudApiClientProvider clientProvider;
 

@@ -27,14 +27,15 @@
  *******************************************************************************/
 package org.opennms.velocloud.client.v2;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.model.Edge;
+import org.opennms.velocloud.client.api.model.Enterprise;
+import org.opennms.velocloud.client.api.model.Gateway;
+import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v2.api.AlertsApi;
 import org.opennms.velocloud.client.v2.api.ApplicationMapsApi;
 import org.opennms.velocloud.client.v2.api.ClientsApi;
@@ -79,6 +80,21 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
     @Override
     public List<Edge> getEdges(final UUID enterpriseId) throws VelocloudApiException {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<Gateway> getGateways(final UUID enterpriseId) throws VelocloudApiException {
+        return getGateways(enterpriseId);
+    }
+
+    @Override
+    public List<Enterprise> getEnterprises() throws VelocloudApiException {
+        return getEnterprises();
+    }
+
+    @Override
+    public List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException {
+        return null;
     }
 
 }
