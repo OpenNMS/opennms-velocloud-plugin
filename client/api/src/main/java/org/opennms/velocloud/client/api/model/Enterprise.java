@@ -44,7 +44,7 @@ public class Enterprise {
         private UUID enterpriseId;
         private Integer id;
 
-        private Builder(){}
+        private Builder() {}
 
         public Enterprise.Builder setEnterpriseId(final UUID enterpriseId){
             this.enterpriseId = Objects.requireNonNull(enterpriseId);
