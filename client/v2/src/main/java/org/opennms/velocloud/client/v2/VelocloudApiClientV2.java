@@ -84,17 +84,17 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
 
     @Override
     public List<Gateway> getGateways(final UUID enterpriseId) throws VelocloudApiException {
-        return getGateways(enterpriseId);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<Enterprise> getEnterprises() throws VelocloudApiException {
-        return getEnterprises();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 }
