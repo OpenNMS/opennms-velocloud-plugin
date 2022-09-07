@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Edge;
+import org.opennms.velocloud.client.api.model.Link;
 import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
@@ -65,6 +66,46 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                                   .withSite(e.getSite().getName())
                                   .withOperator(e.getConfiguration().getOperator().getName())
                                   .withHub(e.isIsHub())
+                                  .withAlertsEnabled(e.getAlertsEnabled().getValue() != 0)
+                                  .withBuildNumber(e.getBuildNumber())
+                                  .withCustomInfo(e.getCustomInfo())
+                                  .withDescription(e.getDescription())
+                                  .withDeviceFamily(e.getDeviceFamily())
+                                  .withDeviceId(e.getDeviceId())
+                                  .withDnsName(e.getDnsName())
+                                  .withLteRegion(e.getLteRegion())
+                                  .withLogicalId(e.getLogicalId())
+                                  .withModelNumber(e.getModelNumber())
+                                  .withName(e.getName())
+                                  .withOperatorAlertsEnabled(e.getOperatorAlertsEnabled().getValue() != 0)
+                                  .withSelfMacAddress(e.getSelfMacAddress())
+                                  .withSiteId(e.getSiteId())
+                                  .withSoftwareVersion(e.getSoftwareVersion())
+                                  .withLinks(e.getLinks().stream()
+                                              .map(l -> Link.builder()
+                                                            .withId(l.getId())
+                                                            .withCreated(l.getCreated())
+                                                            .withEdgeId(l.getEdgeId())
+                                                            .withLogicalId(l.getLogicalId())
+                                                            .withInternalId(l.getInternalId())
+                                                            .withInterface(l.getInterface())
+                                                            .withMacAddress(l.getMacAddress())
+                                                            .withIpAddress(l.getIpAddress())
+                                                            .withIpv6Address(l.getIpV6Address())
+                                                            .withNetmask(l.getNetmask())
+                                                            .withNetworkSide(l.getNetworkSide().toString())
+                                                            .withNetworkType(l.getNetworkType().toString())
+                                                            .withDisplayName(l.getDisplayName())
+                                                            .withIsp(l.getIsp())
+                                                            .withOrg(l.getOrg())
+                                                            .withLat(l.getLat())
+                                                            .withLon(l.getLon())
+                                                            .withLinkMode(l.getLinkMode().toString())
+                                                            .withAlertsEnabled(l.getAlertsEnabled().getValue() == 1)
+                                                            .withOperatorAlertsEnabled(l.getOperatorAlertsEnabled().getValue() == 1)
+                                                            .withServiceGroups(l.getServiceGroups().toString())
+                                                            .build())
+                                              .collect(Collectors.toList()))
                                   .build())
                     .collect(Collectors.toList());
     }
