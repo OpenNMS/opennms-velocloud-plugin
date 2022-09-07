@@ -29,6 +29,7 @@
 package org.opennms.velocloud.client.api.model;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 
 
 public class User {
@@ -120,8 +121,8 @@ public class User {
             return this;
         }
 
-        public Builder setNative(Boolean aNative) {
-            isNative = aNative;
+        public Builder setNative(Boolean isNative) {
+            this.isNative = isNative;
             return this;
         }
 
@@ -162,5 +163,24 @@ public class User {
 
     public static Builder builder(){
         return new User.Builder();
+    }
+
+    public String toString() {
+        return new StringJoiner(", ")
+                .add("id:" + this.id)
+                .add("userType:" + this.userType)
+                .add("domain:" + this.domain)
+                .add("username:" + this.username)
+                .add("firstName:" + this.firstName)
+                .add("lastName:" + this.lastName)
+                .add("email:" + this.email)
+                .add("isNative:" + this.isNative)
+                .add("isActive:" + this.isActive)
+                .add("isLocked:" + this.isLocked)
+                .add("roleId:" + this.roleId)
+                .add("roleName:" + this.roleName)
+                .add("accessLevel:" + this.accessLevel)
+                .add("sshUsername:" + this.sshUsername)
+                .toString();
     }
 }

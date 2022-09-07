@@ -41,9 +41,13 @@ import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PartnerRequisitionProvider.class);
 
     public final static String TYPE = "VelocloudPartnerRequisition";
 
@@ -85,38 +89,38 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                                     .setIpAddress(gateway.ipAddress)
                                     .build()))
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("roles")
                                     .setValue(users.stream().map(u ->
-                                            String.format("%s:%s", u.roleId, u.roleName)).collect(Collectors.joining(",")))
+                                            String.format("%s:%s", u.roleId, u.roleName)).collect(Collectors.joining("\n")))
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("deviceId")
                                     .setValue(gateway.deviceId)
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("gatewayId")
                                     .setValue(gateway.gatewayId)
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("gatewayName")
                                     .setValue(gateway.gatewayName)
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("enterpriseId")
                                     .setValue(gateway.enterpriseId.toString())
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("buildNumber")
                                     .setValue(gateway.buildNumber)
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_CONTEXT)
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("softwareVersion")
                                     .setValue(gateway.softwareVersion)
                                     .build())
@@ -125,7 +129,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
             }
         } catch (VelocloudApiException e) {
-            LOG.error(e.getMessage());
+            LOG.error("Building requisition failed" ,e);
         }
         return requisition.build();
     }

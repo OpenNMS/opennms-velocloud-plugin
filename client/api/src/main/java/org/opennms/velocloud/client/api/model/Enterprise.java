@@ -28,6 +28,7 @@
 package org.opennms.velocloud.client.api.model;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 public class Enterprise {
@@ -44,15 +45,15 @@ public class Enterprise {
         private UUID enterpriseId;
         private Integer id;
 
-        private Builder(){}
+        private Builder() {}
 
         public Enterprise.Builder setEnterpriseId(final UUID enterpriseId){
-            this.enterpriseId = Objects.requireNonNull(enterpriseId);
+            this.enterpriseId = enterpriseId;
             return this;
         }
 
         public Enterprise.Builder setId(final Integer id){
-            this.id = Objects.requireNonNull(id);
+            this.id = id;
             return this;
         }
 
@@ -63,5 +64,12 @@ public class Enterprise {
 
     public static Builder builder(){
         return new Enterprise.Builder();
+    }
+
+    public String toString(){
+        return new StringJoiner(", ")
+                .add("id:" + this.id)
+                .add("enterpriseId:" + this.enterpriseId)
+                .toString();
     }
 }

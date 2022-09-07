@@ -105,97 +105,97 @@ public class Gateway {
         }
 
         public Gateway.Builder withEnterpriseId(final UUID enterpriseId) {
-            this.enterpriseId = Objects.requireNonNull(enterpriseId);
+            this.enterpriseId = enterpriseId;
             return this;
         }
 
         public Gateway.Builder withGatewayId(final String gatewayId) {
-            this.gatewayId = Objects.requireNonNull(gatewayId);
+            this.gatewayId = gatewayId;
             return this;
         }
 
         public Gateway.Builder withGatewayName(final String gatewayName) {
-            this.gatewayName = Objects.requireNonNull(gatewayName);
+            this.gatewayName = gatewayName;
             return this;
         }
 
         public Gateway.Builder withIpAddress(final InetAddress ipAddress) {
-            this.ipAddress = Objects.requireNonNull(ipAddress);
+            this.ipAddress = ipAddress;
             return this;
         }
 
         public Gateway.Builder withGatewayState(final String gatewayState) {
-            this.gatewayState = Objects.requireNonNull(gatewayState);
+            this.gatewayState = gatewayState;
             return this;
         }
 
         public Gateway.Builder withServiceState(final String serviceState) {
-            this.serviceState = Objects.requireNonNull(serviceState);
+            this.serviceState = serviceState;
             return this;
         }
 
         public Gateway.Builder withDeviceId(final String deviceId) {
-            this.deviceId = Objects.requireNonNull(deviceId);
+            this.deviceId = deviceId;
             return this;
         }
 
         public Gateway.Builder withSiteId(final Integer siteId) {
-            this.siteId = Objects.requireNonNull(siteId);
+            this.siteId = siteId;
             return this;
         }
 
         public Gateway.Builder withSiteName(final String siteName) {
-            this.siteName = Objects.requireNonNull(siteName);
+            this.siteName = siteName;
             return this;
         }
 
         public Gateway.Builder withAddress(final String address) {
-            this.address = Objects.requireNonNull(address);
+            this.address = address;
             return this;
         }
 
         public Gateway.Builder withAddress2(final String address2) {
-            this.address2 = Objects.requireNonNull(address2);
+            this.address2 = address2;
             return this;
         }
 
         public Gateway.Builder withZip(final String zip) {
-            this.zip = Objects.requireNonNull(zip);
+            this.zip = zip;
             return this;
         }
 
         public Gateway.Builder withCity(final String city) {
-            this.city = Objects.requireNonNull(city);
+            this.city = city;
             return this;
         }
 
         public Gateway.Builder withState(final String state) {
-            this.state = Objects.requireNonNull(state);
+            this.state = state;
             return this;
         }
 
         public Gateway.Builder withCountry(final String country) {
-            this.country = Objects.requireNonNull(country);
+            this.country = country;
             return this;
         }
 
         public Gateway.Builder withLatitude(final Double latitude) {
-            this.latitude = Objects.requireNonNull(latitude);
+            this.latitude = latitude;
             return this;
         }
 
         public Gateway.Builder withLongitude(final Double longitude) {
-            this.longitude = Objects.requireNonNull(longitude);
+            this.longitude = longitude;
             return this;
         }
 
         public Gateway.Builder withSoftwareVersion(final String softwareVersion) {
-            this.softwareVersion = Objects.requireNonNull(softwareVersion);
+            this.softwareVersion = softwareVersion;
             return this;
         }
 
         public Gateway.Builder withBuildNumber(final String buildNumber) {
-            this.buildNumber = Objects.requireNonNull(buildNumber);
+            this.buildNumber = buildNumber;
             return this;
         }
 
@@ -212,28 +212,24 @@ public class Gateway {
    public String toString(){
        return new StringJoiner(", ")
                .add("enterpriseId:" + this.enterpriseId)
-               .add("enterpriseId:" + this.gatewayId)
-               .add("enterpriseId:" + this.gatewayName)
-               .add("enterpriseId:" + this.gatewayState)
-               .add("enterpriseId:" + this.deviceId)
-               .add("enterpriseId:" + this.serviceState)
-               .add("enterpriseId:" + this.ipAddress)
-               .add("enterpriseId:" + this.siteId)
-               .add("enterpriseId:" + this.address)
-               .add("enterpriseId:" + this.address2)
-               .add("enterpriseId:" + this.zip)
-               .add("enterpriseId:" + this.city)
-               .add("enterpriseId:" + this.state)
-               .add("enterpriseId:" + this.country)
-               .add("enterpriseId:" + this.longitude)
-               .add("enterpriseId:" + this.latitude)
-               .add("enterpriseId:" + this.softwareVersion)
-               .add("enterpriseId:" + this.buildNumber)
+               .add("gatewayId:" + this.gatewayId)
+               .add("gatewayName:" + this.gatewayName)
+               .add("gatewayState:" + this.gatewayState)
+               .add("deviceId:" + this.deviceId)
+               .add("serviceState:" + this.serviceState)
+               .add("ipAddress:" + this.ipAddress)
+               .add("siteId:" + this.siteId)
+               .add("address:" + this.address)
+               .add("address2:" + this.address2)
+               .add("zip:" + this.zip)
+               .add("city:" + this.city)
+               .add("state:" + this.state)
+               .add("country:" + this.country)
+               .add("longitude:" + this.longitude)
+               .add("latitude:" + this.latitude)
+               .add("softwareVersion:" + this.softwareVersion)
+               .add("buildNumber:" + this.buildNumber)
                .toString();
-
-
-
-
    }
 }
 

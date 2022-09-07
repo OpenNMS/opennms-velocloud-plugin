@@ -28,7 +28,7 @@
 package org.opennms.velocloud.client.v1;
 
 import org.opennms.velocloud.client.api.VelocloudApiClient;
-import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.client.api.internal.Utils;
 import org.opennms.velocloud.client.api.model.Enterprise;
 import org.opennms.velocloud.client.api.model.Gateway;
 import org.opennms.velocloud.client.api.model.User;
@@ -70,8 +70,6 @@ import org.opennms.velocloud.client.v1.api.VcoInventoryApi;
 import org.opennms.velocloud.client.v1.api.VpnApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -166,13 +164,11 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                     new EnterpriseProxyGetEnterpriseProxyGateways()
                             .addWithItem(EnterpriseProxyGetEnterpriseProxyGateways.WithEnum.SITE));
             return enterpriseGateways.stream()
-                    .map(g ->
-                    {
-                        return Gateway.builder()
+                    .map(g -> Gateway.builder()
                                 .withEnterpriseId(enterpriseId)
                                 .withDeviceId(g.getDeviceId())
                                 .withGatewayId(g.getLogicalId())
-                                .withIpAddress(getValidInet4Address(g.getIpAddress()))
+                                .withIpAddress(Utils.getValidInet4Address(g.getIpAddress()))
                                 .withGatewayName(g.getName())
                                 .withSiteId(g.getSiteId())
                                 .withSiteName(g.getSite().getName())
@@ -188,9 +184,8 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                                 .withServiceState(g.getServiceState().getValue())
                                 .withBuildNumber(g.getBuildNumber())
                                 .withSoftwareVersion(g.getSoftwareVersion())
-                                .build();
-
-                    })
+                                .build()
+                    )
                     .collect(Collectors.toList());
         } catch (ApiException e) {
             throw new VelocloudApiException("Error requesting gateways", e);
@@ -244,17 +239,4 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
             throw new VelocloudApiException("ApiException:" + e.getMessage());
         }
     }
-
-
-    public static InetAddress getValidInet4Address(String ip) {
-        try {
-            InetAddress address = InetAddress.getByName(ip);
-            if (address.getHostAddress().equals(ip)) {
-                return address;
-            } else return null;
-        } catch (UnknownHostException ex) {
-            return null;
-        }
-    }
-
 }
