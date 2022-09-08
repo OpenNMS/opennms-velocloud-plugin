@@ -19,7 +19,12 @@ public class VelocloudRestServiceV1Impl extends AbstractVelocloudRestService imp
     @Override
     public Response getCustomersForMSPPartnerConnections(String id) {
         //TODO: figure a way to connect to orchestrator from rest
-
+        try {
+            getClient("", "").getEnterprises();
+            Response.ok().build();
+        } catch (VelocloudApiException e) {
+            e.printStackTrace();
+        }
         return Response.ok().build();
     }
 }
