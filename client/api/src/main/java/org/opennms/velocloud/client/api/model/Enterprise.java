@@ -35,38 +35,39 @@ public class Enterprise {
     public final UUID enterpriseId;
     public final Integer id;
 
-    private Enterprise(final Builder builder){
+    private Enterprise(final Builder builder) {
         this.enterpriseId = Objects.requireNonNull(builder.enterpriseId);
         this.id = Objects.requireNonNull(builder.id);
     }
 
-    public static class Builder{
+    public static class Builder {
 
         private UUID enterpriseId;
         private Integer id;
 
-        private Builder() {}
+        private Builder() {
+        }
 
-        public Enterprise.Builder setEnterpriseId(final UUID enterpriseId){
+        public Enterprise.Builder setEnterpriseId(final UUID enterpriseId) {
             this.enterpriseId = enterpriseId;
             return this;
         }
 
-        public Enterprise.Builder setId(final Integer id){
+        public Enterprise.Builder setId(final Integer id) {
             this.id = id;
             return this;
         }
 
-        public Enterprise build(){
+        public Enterprise build() {
             return new Enterprise(this);
         }
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Enterprise.Builder();
     }
 
-    public String toString(){
+    public String toString() {
         return new StringJoiner(", ")
                 .add("id:" + this.id)
                 .add("enterpriseId:" + this.enterpriseId)

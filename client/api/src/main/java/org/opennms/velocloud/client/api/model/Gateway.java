@@ -56,7 +56,7 @@ public class Gateway {
     public final String buildNumber;
 
 
-    private Gateway(final Builder builder){
+    private Gateway(final Builder builder) {
         this.enterpriseId = Objects.requireNonNull(builder.enterpriseId);
         this.gatewayId = Objects.requireNonNull(builder.gatewayId);
         this.gatewayName = Objects.requireNonNull(builder.gatewayName);
@@ -199,37 +199,37 @@ public class Gateway {
             return this;
         }
 
-        public Gateway build(){
+        public Gateway build() {
             return new Gateway(this);
         }
 
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 
-   public String toString(){
-       return new StringJoiner(", ")
-               .add("enterpriseId:" + this.enterpriseId)
-               .add("gatewayId:" + this.gatewayId)
-               .add("gatewayName:" + this.gatewayName)
-               .add("gatewayState:" + this.gatewayState)
-               .add("deviceId:" + this.deviceId)
-               .add("serviceState:" + this.serviceState)
-               .add("ipAddress:" + this.ipAddress)
-               .add("siteId:" + this.siteId)
-               .add("address:" + this.address)
-               .add("address2:" + this.address2)
-               .add("zip:" + this.zip)
-               .add("city:" + this.city)
-               .add("state:" + this.state)
-               .add("country:" + this.country)
-               .add("longitude:" + this.longitude)
-               .add("latitude:" + this.latitude)
-               .add("softwareVersion:" + this.softwareVersion)
-               .add("buildNumber:" + this.buildNumber)
-               .toString();
-   }
+    public String toString() {
+        return new StringJoiner(", ")
+                .add("enterpriseId:" + this.enterpriseId)
+                .add("gatewayId:" + this.gatewayId)
+                .add("gatewayName:" + this.gatewayName)
+                .add("gatewayState:" + this.gatewayState)
+                .add("deviceId:" + this.deviceId)
+                .add("serviceState:" + this.serviceState)
+                .add("ipAddress:" + this.ipAddress)
+                .add("siteId:" + this.siteId)
+                .add("address:" + this.address)
+                .add("address2:" + this.address2)
+                .add("zip:" + this.zip)
+                .add("city:" + this.city)
+                .add("state:" + this.state)
+                .add("country:" + this.country)
+                .add("longitude:" + this.longitude)
+                .add("latitude:" + this.latitude)
+                .add("softwareVersion:" + this.softwareVersion)
+                .add("buildNumber:" + this.buildNumber)
+                .toString();
+    }
 }
 

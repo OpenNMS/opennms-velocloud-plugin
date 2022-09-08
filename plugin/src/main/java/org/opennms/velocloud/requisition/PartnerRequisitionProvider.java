@@ -129,7 +129,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
             }
         } catch (VelocloudApiException e) {
-            LOG.error("Building requisition failed" ,e);
+            LOG.error("Building requisition failed", e);
         }
         return requisition.build();
     }

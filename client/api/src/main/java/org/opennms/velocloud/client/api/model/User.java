@@ -48,7 +48,7 @@ public class User {
     public final String accessLevel;
     public final String sshUsername;
 
-    private User(final Builder builder){
+    private User(final Builder builder) {
 
         this.id = Objects.requireNonNull(builder.id);
         this.userType = Objects.requireNonNull(builder.userType);
@@ -66,7 +66,7 @@ public class User {
         this.sshUsername = Objects.requireNonNull(builder.sshUsername);
     }
 
-    public static class Builder{
+    public static class Builder {
         private Integer id;
         private String userType;
         private String domain;
@@ -82,7 +82,7 @@ public class User {
         private String accessLevel;
         private String sshUsername;
 
-        private Builder(){
+        private Builder() {
 
         }
 
@@ -156,12 +156,12 @@ public class User {
             return this;
         }
 
-        public User build(){
+        public User build() {
             return new User(this);
         }
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new User.Builder();
     }
 

@@ -144,13 +144,13 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
         try {
             final List<EnterpriseGetEnterpriseEdgesResultItem> edges = this.enterpriseApi.enterpriseGetEnterpriseEdges(new EnterpriseGetEnterpriseEdges());
             return edges.stream()
-                        .map(e -> Edge.builder()
-                                      .withEnterpriseId(enterpriseId)
-                                      .withSite(e.getSite().getName())
-                                      .withOperator(e.getConfiguration().getOperator().getName())
-                                      .withHub(e.isIsHub())
-                                      .build())
-                        .collect(Collectors.toList());
+                    .map(e -> Edge.builder()
+                            .withEnterpriseId(enterpriseId)
+                            .withSite(e.getSite().getName())
+                            .withOperator(e.getConfiguration().getOperator().getName())
+                            .withHub(e.isIsHub())
+                            .build())
+                    .collect(Collectors.toList());
         } catch (final ApiException e) {
             throw new VelocloudApiException("Error requesting edges", e);
         }
@@ -165,26 +165,26 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                             .addWithItem(EnterpriseProxyGetEnterpriseProxyGateways.WithEnum.SITE));
             return enterpriseGateways.stream()
                     .map(g -> Gateway.builder()
-                                .withEnterpriseId(enterpriseId)
-                                .withDeviceId(g.getDeviceId())
-                                .withGatewayId(g.getLogicalId())
-                                .withIpAddress(Utils.getValidInet4Address(g.getIpAddress()))
-                                .withGatewayName(g.getName())
-                                .withSiteId(g.getSiteId())
-                                .withSiteName(g.getSite().getName())
-                                .withAddress(g.getSite().getStreetAddress())
-                                .withAddress2((g.getSite().getStreetAddress2()))
-                                .withZip(g.getSite().getPostalCode())
-                                .withCity(g.getSite().getCity())
-                                .withState(g.getSite().getState())
-                                .withCountry(g.getSite().getCountry())
-                                .withLatitude(g.getSite().getLat())
-                                .withLongitude(g.getSite().getLon())
-                                .withGatewayState(g.getGatewayState().getValue())
-                                .withServiceState(g.getServiceState().getValue())
-                                .withBuildNumber(g.getBuildNumber())
-                                .withSoftwareVersion(g.getSoftwareVersion())
-                                .build()
+                            .withEnterpriseId(enterpriseId)
+                            .withDeviceId(g.getDeviceId())
+                            .withGatewayId(g.getLogicalId())
+                            .withIpAddress(Utils.getValidInet4Address(g.getIpAddress()))
+                            .withGatewayName(g.getName())
+                            .withSiteId(g.getSiteId())
+                            .withSiteName(g.getSite().getName())
+                            .withAddress(g.getSite().getStreetAddress())
+                            .withAddress2((g.getSite().getStreetAddress2()))
+                            .withZip(g.getSite().getPostalCode())
+                            .withCity(g.getSite().getCity())
+                            .withState(g.getSite().getState())
+                            .withCountry(g.getSite().getCountry())
+                            .withLatitude(g.getSite().getLat())
+                            .withLongitude(g.getSite().getLon())
+                            .withGatewayState(g.getGatewayState().getValue())
+                            .withServiceState(g.getServiceState().getValue())
+                            .withBuildNumber(g.getBuildNumber())
+                            .withSoftwareVersion(g.getSoftwareVersion())
+                            .build()
                     )
                     .collect(Collectors.toList());
         } catch (ApiException e) {
@@ -217,7 +217,7 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
             users = this.userMaintenanceApi.enterpriseGetEnterpriseUsers(
                     new EnterpriseGetEnterpriseUsers()
                             .enterpriseId(enterpriseId));
-            return users.stream().map(user->
+            return users.stream().map(user ->
                     User.builder()
                             .setId(user.getId())
                             .setUserType(user.getUserType())
@@ -229,9 +229,9 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                             .setRoleId(user.getRoleId())
                             .setRoleName(user.getRoleName())
                             .setAccessLevel(user.getAccessLevel().getValue())
-                            .setActive(user.getIsActive().getValue() == 0 ?  false : true)
+                            .setActive(user.getIsActive().getValue() == 0 ? false : true)
                             .setLocked(user.getIsLocked().getValue() == 0 ? false : true)
-                            .setNative(user.getIsNative() .getValue()== 0 ? false : true)
+                            .setNative(user.getIsNative().getValue() == 0 ? false : true)
                             .setSshUsername(user.getSshUsername())
                             .build()
             ).collect(Collectors.toList());
