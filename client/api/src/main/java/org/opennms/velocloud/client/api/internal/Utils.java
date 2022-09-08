@@ -27,17 +27,15 @@
  *******************************************************************************/
 package org.opennms.velocloud.client.api.internal;
 
+import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 public class Utils {
-    public static InetAddress getValidInet4Address(String ip) {
+    public static InetAddress getValidInet4Address(final String ip) {
         try {
-            InetAddress address = InetAddress.getByName(ip);
-            if (address.getHostAddress().equals(ip)) {
-                return address;
-            } else return null;
-        } catch (UnknownHostException ex) {
+            final InetAddress address = InetAddresses.forString(ip);
+            return address;
+        } catch (IllegalArgumentException ex) {
             return null;
         }
     }
