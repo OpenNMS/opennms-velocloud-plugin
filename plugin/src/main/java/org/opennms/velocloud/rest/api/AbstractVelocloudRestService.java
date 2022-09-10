@@ -25,6 +25,11 @@ public class AbstractVelocloudRestService implements VelocloudRestService {
     }
 
     @Override
+    public Response getStatus() {
+        throw new NotSupportedException();
+    }
+
+    @Override
     public VelocloudApiClient getClient(final String url, final String token) throws VelocloudApiException {
         return clientProvider.connect(url, token);
     }

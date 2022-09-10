@@ -27,4 +27,13 @@ public class VelocloudRestServiceV1Impl extends AbstractVelocloudRestService imp
         }
         return Response.ok().build();
     }
+
+    @Override
+    public Response getStatus() {
+        //TODO: check for api connection status
+        return Response
+                .status(Response.Status.OK)
+                .entity("{\"status\":TBD\"}")
+                .build();
+    }
 }
