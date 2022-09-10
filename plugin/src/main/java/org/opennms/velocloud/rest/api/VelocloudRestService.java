@@ -18,5 +18,10 @@ public interface VelocloudRestService {
     @Produces(value = {MediaType.APPLICATION_JSON})
     Response getCustomersForMSPPartnerConnections(@PathParam("id") String id) throws VelocloudApiException;
 
+    @GET
+    @Path("/status")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    Response getStatus();
+
     VelocloudApiClient getClient(final String url, final String token) throws VelocloudApiException;
 }
