@@ -31,7 +31,7 @@ import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 
 public class Utils {
-    public static InetAddress getValidInet4Address(final String ip) {
+    public static InetAddress getValidInetAddress(final String ip) {
         try {
             final InetAddress address = InetAddresses.forString(ip);
             return address;

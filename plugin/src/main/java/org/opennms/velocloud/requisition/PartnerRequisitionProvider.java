@@ -28,7 +28,6 @@
 
 package org.opennms.velocloud.requisition;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,6 @@ import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableReq
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,23 +74,23 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
         try {
             for (var enterprise : client.getEnterprises()) {
-                final List<User> users = client.getUsers(enterprise.id);
-
-                //TODO: confirm  gateway roles are coming from enterprise users
-                //TODO: confirm Gateway AssetNodes destination.
                 client.getGateways(enterprise.enterpriseId).stream().forEach(gateway -> {
                     requisition.addNode(ImmutableRequisitionNode.newBuilder()
                             .setForeignId(gateway.gatewayId)
                             .setNodeLabel(gateway.gatewayName)
                             .setLocation(gateway.siteName)
-                            .setInterfaces(List.of(ImmutableRequisitionInterface.newBuilder()
+                            .addInterface(ImmutableRequisitionInterface.newBuilder()
                                     .setIpAddress(gateway.ipAddress)
-                                    .build()))
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("privateIpAddress")
+                                            .setValue(gateway.privateIpAddress.toString())
+                                            .build())
+                                    .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                     .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("roles")
-                                    .setValue(users.stream().map(u ->
-                                            String.format("%s:%s", u.roleId, u.roleName)).collect(Collectors.joining("\n")))
+                                    .setValue(gateway.roles.stream().collect(Collectors.joining("\n")))
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                     .setContext(VELOCLOUD_METADATA_CONTEXT)
@@ -106,8 +104,23 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                     .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("id")
+                                    .setValue(gateway.id.toString())
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("gatewayName")
                                     .setValue(gateway.gatewayName)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("description")
+                                    .setValue(gateway.description)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("dnsName")
+                                    .setValue(gateway.dnsName)
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                     .setContext(VELOCLOUD_METADATA_CONTEXT)
@@ -116,17 +129,13 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                                     .build())
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                     .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                    .setKey("buildNumber")
-                                    .setValue(gateway.buildNumber)
+                                    .setKey("networkId")
+                                    .setValue(gateway.networkId.toString())
                                     .build())
-                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                    .setKey("softwareVersion")
-                                    .setValue(gateway.softwareVersion)
-                                    .build())
+                            .addAsset("buildNumber", gateway.buildNumber)
+                            .addAsset("softwareVersion", gateway.softwareVersion)
                             .build());
                 });
-
             }
         } catch (VelocloudApiException e) {
             LOG.error("Building requisition failed", e);

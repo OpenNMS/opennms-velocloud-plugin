@@ -29,19 +29,25 @@
 package org.opennms.velocloud.client.api.model;
 
 import java.net.InetAddress;
+import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 
 public class Gateway {
 
-    public final UUID enterpriseId;
-    public final String gatewayId;
-    public final String gatewayName;
+    public final UUID enterpriseId;//enterpriseProxyId
+    public final String gatewayId; //logicalId
+    public final Integer id; //id
+    public final String gatewayName; //name
+    public final String description;
     public final InetAddress ipAddress;
+    public final Boolean isLoadBalanced;
     public final String gatewayState;
     public final String serviceState;
+    public final String bastionState;
     public final String deviceId;
+    public final String dnsName;
     public final Integer siteId;
     public final String siteName;
     public final String address;
@@ -54,16 +60,23 @@ public class Gateway {
     public final Double longitude;
     public final String softwareVersion;
     public final String buildNumber;
-
+    public final Integer networkId;
+    public final InetAddress privateIpAddress;
+    public final List<String> roles;
 
     private Gateway(final Builder builder) {
         this.enterpriseId = Objects.requireNonNull(builder.enterpriseId);
         this.gatewayId = Objects.requireNonNull(builder.gatewayId);
+        this.id = Objects.requireNonNull(builder.id);
         this.gatewayName = Objects.requireNonNull(builder.gatewayName);
+        this.description = Objects.requireNonNullElse(builder.description, "");
         this.ipAddress = Objects.requireNonNull(builder.ipAddress);
+        this.isLoadBalanced = Objects.requireNonNull(builder.isLoadBalanced);
         this.gatewayState = Objects.requireNonNull(builder.gatewayState);
         this.serviceState = Objects.requireNonNull(builder.serviceState);
+        this.bastionState = Objects.requireNonNullElse(builder.bastionState, "");
         this.deviceId = Objects.requireNonNull(builder.deviceId);
+        this.dnsName = Objects.requireNonNull(builder.dnsName);
         this.siteId = Objects.requireNonNull(builder.siteId);
         this.siteName = Objects.requireNonNull(builder.siteName);
         this.address = Objects.requireNonNull(builder.address);
@@ -76,17 +89,25 @@ public class Gateway {
         this.longitude = Objects.requireNonNull(builder.longitude);
         this.softwareVersion = Objects.requireNonNull(builder.softwareVersion);
         this.buildNumber = Objects.requireNonNull(builder.buildNumber);
+        this.networkId = Objects.requireNonNull(builder.networkId);
+        this.privateIpAddress = Objects.requireNonNull(builder.privateIpAddress);
+        this.roles = Objects.requireNonNull(builder.roles);
     }
 
     public static class Builder {
 
         private UUID enterpriseId;
         private String gatewayId;
+        private Integer id;
         private String gatewayName;
+        private String description;
         private InetAddress ipAddress;
+        private Boolean isLoadBalanced;
         private String gatewayState;
         private String serviceState;
+        private String bastionState;
         private String deviceId;
+        private String dnsName;
         private Integer siteId;
         private String siteName;
         private String address;
@@ -99,6 +120,9 @@ public class Gateway {
         private Double longitude;
         private String softwareVersion;
         private String buildNumber;
+        private Integer networkId;
+        private InetAddress privateIpAddress;
+        private List<String> roles;
 
 
         private Builder() {
@@ -114,13 +138,28 @@ public class Gateway {
             return this;
         }
 
-        public Gateway.Builder withGatewayName(final String gatewayName) {
+        public Gateway.Builder withId(final Integer gatewayId) {
+            this.id = id;
+            return this;
+        }
+
+        public Gateway.Builder withName(final String gatewayName) {
             this.gatewayName = gatewayName;
+            return this;
+        }
+
+        public Gateway.Builder withDescription(final String description) {
+            this.description = description;
             return this;
         }
 
         public Gateway.Builder withIpAddress(final InetAddress ipAddress) {
             this.ipAddress = ipAddress;
+            return this;
+        }
+
+        public Gateway.Builder withIsLoadBalanceed(final Boolean isLoadBalanced) {
+            this.isLoadBalanced = isLoadBalanced;
             return this;
         }
 
@@ -134,8 +173,18 @@ public class Gateway {
             return this;
         }
 
+        public Gateway.Builder withBastionState(final String bastionState) {
+            this.bastionState = bastionState;
+            return this;
+        }
+
         public Gateway.Builder withDeviceId(final String deviceId) {
             this.deviceId = deviceId;
+            return this;
+        }
+
+        public Gateway.Builder withDnsName(final String dnsName) {
+            this.dnsName = dnsName;
             return this;
         }
 
@@ -199,6 +248,21 @@ public class Gateway {
             return this;
         }
 
+        public Builder withNetworkId(Integer networkId) {
+            this.networkId = networkId;
+            return this;
+        }
+
+        public Builder withPrivateIpAddress(InetAddress privateIpAddress) {
+            this.privateIpAddress = privateIpAddress;
+            return this;
+        }
+
+        public Builder withRoles(List<String> roles) {
+            this.roles = roles;
+            return this;
+        }
+
         public Gateway build() {
             return new Gateway(this);
         }
@@ -213,22 +277,31 @@ public class Gateway {
         return new StringJoiner(", ")
                 .add("enterpriseId:" + this.enterpriseId)
                 .add("gatewayId:" + this.gatewayId)
+                .add("id:" + this.id)
                 .add("gatewayName:" + this.gatewayName)
-                .add("gatewayState:" + this.gatewayState)
-                .add("deviceId:" + this.deviceId)
-                .add("serviceState:" + this.serviceState)
+                .add("description:" + this.description)
                 .add("ipAddress:" + this.ipAddress)
+                .add("isLoadBalanced:" + this.isLoadBalanced)
+                .add("gatewayState:" + this.gatewayState)
+                .add("serviceState:" + this.serviceState)
+                .add("bastionState:" + this.bastionState)
+                .add("deviceId:" + this.deviceId)
+                .add("dnsName:" + this.dnsName)
                 .add("siteId:" + this.siteId)
+                .add("siteName:" + this.siteName)
                 .add("address:" + this.address)
                 .add("address2:" + this.address2)
                 .add("zip:" + this.zip)
                 .add("city:" + this.city)
                 .add("state:" + this.state)
                 .add("country:" + this.country)
-                .add("longitude:" + this.longitude)
                 .add("latitude:" + this.latitude)
+                .add("longitude:" + this.longitude)
                 .add("softwareVersion:" + this.softwareVersion)
                 .add("buildNumber:" + this.buildNumber)
+                .add("networkId:" + this.networkId)
+                .add("privateIpAddress:" + this.privateIpAddress)
+                .add("roles:" + this.roles)
                 .toString();
     }
 }
