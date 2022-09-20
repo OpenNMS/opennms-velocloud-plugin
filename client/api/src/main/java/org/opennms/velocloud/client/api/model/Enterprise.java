@@ -49,7 +49,7 @@ public class Enterprise {
     public final String zip;
     public final String country;
     public final Double latitude;
-    public final Double longitud;
+    public final Double longitude;
     public final String timezone;
     public final String locale;
 
@@ -72,7 +72,7 @@ public class Enterprise {
         this.zip = Objects.requireNonNull(builder.zip);
         this.country = Objects.requireNonNull(builder.country);
         this.latitude = Objects.requireNonNull(builder.latitude);
-        this.longitud = Objects.requireNonNull(builder.longitud);
+        this.longitude = Objects.requireNonNull(builder.longitude);
         this.timezone = Objects.requireNonNull(builder.timezone);
         this.locale = Objects.requireNonNull(builder.locale);
     }
@@ -96,7 +96,7 @@ public class Enterprise {
         private String zip;
         private String country;
         private Double latitude;
-        private Double longitud;
+        private Double longitude;
         private String timezone;
         private String locale;
 
@@ -178,8 +178,8 @@ public class Enterprise {
             return this;
         }
 
-        public Builder withLongitud(Double longitud) {
-            this.longitud = longitud;
+        public Builder withLongitude(Double longitude) {
+            this.longitude = longitude;
             return this;
         }
 
@@ -231,7 +231,7 @@ public class Enterprise {
                 .add("zip:" + this.zip)
                 .add("country:" + this.country)
                 .add("latitude:" + this.latitude)
-                .add("longitud:" + this.longitud)
+                .add("longitude:" + this.longitude)
                 .add("timezone:" + this.timezone)
                 .add("locale:" + this.locale)
                 .toString();

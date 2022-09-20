@@ -27,46 +27,42 @@
  *******************************************************************************/
 package org.opennms.velocloud.shell;
 
-import com.google.common.base.Strings;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.integration.api.v1.scv.Credentials;
 import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
-import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
-import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.integration.api.v1.scv.immutables.ImmutableCredentials;
+import java.util.Map;
 
-@Command(scope = "opennms-velocloud", name = "list-msp-customers", description = "List MSP Customers", detailedDescription = "List Enterprises for MSP")
+@Command(scope = "opennms-velocloud", name = "set-credentials", description = "Set Enterprise Credentials", detailedDescription = "Set Enterprise User Credentials")
 @Service
-public class VelocloudListCustomersCommand implements Action {
+public class VelocloudSetCredentialsCommand implements Action {
 
     @Reference
     public SecureCredentialsVault secureCredentialsVault;
 
-    @Reference
-    private VelocloudApiClientProvider clientProvider;
-
-    @Argument(index = 0, name = "alias", description = "Velocloud URL", required = true, multiValued = false)
-    @Completion(AliasCompleter.class)
+    @Argument(index = 0, name = "alias", description = "Alias", required = true, multiValued = false)
     public String alias = null;
+
+    @Argument(index = 1, name = "username", description = "Username to store.", required = true, multiValued = false)
+    public String username = null;
+
+    @Argument(index = 2, name = "password", description = "Password to store.", required = true, multiValued = false)
+    public String password = null;
+
+    @Argument(index = 3, name = "url", description = "Url API", required = true, multiValued = false)
+    public String url = null;
+
+    @Argument(index = 4, name = "token", description = "API Token", required = false, multiValued = false)
+    public String token = null;
 
     @Override
     public Object execute() throws Exception {
-
-        final Credentials credentials = secureCredentialsVault.getCredentials(alias);
-        final String username = credentials.getUsername();
-        if (Strings.isNullOrEmpty(username)) {
-            throw new VelocloudApiException("Unable to retrieve velocloud credentials");
-        }
-        final String url = credentials.getAttribute("url");
-        final String token = credentials.getAttribute("token");
-        if (Strings.isNullOrEmpty(token)) {
-            throw new VelocloudApiException("Unable to retrieve velocloud token");
-        }
-        clientProvider.connect(url, token).getEnterprises().forEach(e -> System.out.println(e.toString()));
+        final Credentials credentials = new ImmutableCredentials(username, password, Map.of("url", url, "token", token == null ? "" : token));
+        secureCredentialsVault.setCredentials(alias, credentials);
         return null;
     }
 }

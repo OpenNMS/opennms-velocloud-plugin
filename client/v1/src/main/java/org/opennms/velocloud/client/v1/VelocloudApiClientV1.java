@@ -218,7 +218,7 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                                     .withDomain(e.getDomain())
                                     .withGatewayPoolId(e.getGatewayPoolId())
                                     .withLocale(e.getLocale())
-                                    .withLongitud(e.getLon())
+                                    .withLongitude(e.getLon())
                                     .withLatitude(e.getLat())
                                     .withName(e.getName())
                                     .withNetworkId(e.getNetworkId())

@@ -25,13 +25,34 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.rest.v1;
+package org.opennms.velocloud.shell;
 
-import org.opennms.velocloud.rest.api.VelocloudRestService;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.karaf.shell.api.console.CommandLine;
+import org.apache.karaf.shell.api.console.Completer;
+import org.apache.karaf.shell.api.console.Session;
+import org.apache.karaf.shell.support.completers.StringsCompleter;
+import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 
-import javax.ws.rs.Path;
+import java.util.List;
 
-@Path("/velocloud/api/v1")
-public interface VelocloudRestServiceV1 extends VelocloudRestService {
+
+@Service
+public class AliasCompleter implements Completer {
+
+    @Reference
+    public SecureCredentialsVault secureCredentialsVault;
+
+    @Override
+    public int complete(Session session, CommandLine commandLine, List<String> candidates) {
+        StringsCompleter delegate = new StringsCompleter();
+
+        for (String alias : secureCredentialsVault.getAliases()) {
+            delegate.getStrings().add(String.valueOf(alias));
+        }
+        return delegate.complete(session, commandLine, candidates);
+    }
+
 
 }
