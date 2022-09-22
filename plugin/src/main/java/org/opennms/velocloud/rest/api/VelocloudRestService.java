@@ -45,7 +45,7 @@ public interface VelocloudRestService {
     Response getMspPartnerConnections(@QueryParam("alias") String alias) throws VelocloudApiException;
 
     @GET
-    @Path("/partner/customers/{id}")
+    @Path("/partner/customers")
     @Produces(value = {MediaType.APPLICATION_JSON})
     Response getCustomersForMspPartner(@QueryParam("alias") String alias) throws VelocloudApiException;
 
