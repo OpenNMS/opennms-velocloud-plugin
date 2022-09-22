@@ -35,7 +35,16 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.integration.api.v1.scv.Credentials;
 import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.integration.api.v1.scv.immutables.ImmutableCredentials;
+
+import javax.security.auth.Subject;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.Principal;
 import java.util.Map;
+import java.util.Set;
+
+import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_TOKEN;
+import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_URL;
 
 @Command(scope = "opennms-velocloud", name = "set-credentials", description = "Set Enterprise Credentials", detailedDescription = "Set Enterprise User Credentials")
 @Service
@@ -61,7 +70,7 @@ public class VelocloudSetCredentialsCommand implements Action {
 
     @Override
     public Object execute() throws Exception {
-        final Credentials credentials = new ImmutableCredentials(username, password, Map.of("url", url, "token", token == null ? "" : token));
+        final Credentials credentials = new ImmutableCredentials(username, password, Map.of(VELOCLOUD_URL, url, VELOCLOUD_TOKEN, token == null ? "" : token));
         secureCredentialsVault.setCredentials(alias, credentials);
         return null;
     }

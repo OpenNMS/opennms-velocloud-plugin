@@ -77,6 +77,7 @@ import java.util.stream.Collectors;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.v1.handler.ApiException;
+import org.opennms.velocloud.client.v1.model.AuthObject;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdgesResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsers;
@@ -86,6 +87,11 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEn
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGatewaysResultItem;
 
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyUsers;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyUsersResultItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClient {
 
     /**
@@ -94,6 +100,9 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
      * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
+
+    private static final Logger LOG = LoggerFactory.getLogger(VelocloudApiClientV1.class);
+
 
     public final AllApi allApi = new AllApi(this);
     public final ApiTokenApi apiTokenApi = new ApiTokenApi(this);
@@ -201,7 +210,7 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
     }
 
     @Override
-    public List<Enterprise> getEnterprises() throws VelocloudApiException {
+    public List<Enterprise> getEnterpriseProxies() throws VelocloudApiException {
         try {
             List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem> enterprises = this.allApi.enterpriseProxyGetEnterpriseProxyEnterprises(
                     new EnterpriseProxyGetEnterpriseProxyEnterprises()
@@ -262,6 +271,61 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                             .build()
             ).collect(Collectors.toList());
         } catch (ApiException e) {
+            throw new VelocloudApiException("ApiException:" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void enterpriseLogin(String username, String password) {
+        try {
+            loginApi.loginEnterpriseLogin(new AuthObject()
+                    .username(username)
+                    .password(password)
+                    .password2(password)
+                    .email(username));
+        } catch (ApiException e) {
+            LOG.error("Couldn't login with credentials provided", e.getCause());
+        }
+    }
+
+    @Override
+    public void operatorLogin(String username, String password) {
+        try {
+            loginApi.loginOperatorLogin(new AuthObject()
+                    .username(username)
+                    .password(password)
+                    .password2(password)
+                    .email(username));
+        } catch (ApiException e) {
+            LOG.error("Couldn't login with credentials provided", e.getCause());
+        }
+    }
+
+    @Override
+    public List<User> getEnterpriseProxyConnections(Integer enterpriseProxyId, Integer id) throws VelocloudApiException {
+        try {
+            final List<EnterpriseProxyGetEnterpriseProxyUsersResultItem> partnerConnections = userMaintenanceApi.enterpriseProxyGetEnterpriseProxyUsers(new EnterpriseProxyGetEnterpriseProxyUsers()
+                    .enterpriseProxyId(0)
+                    .id(0));
+            return partnerConnections.stream().map(user -> User.builder()
+                    .setId(user.getId())
+                    .setUserType(user.getUserType())
+                    .setDomain(user.getDomain())
+                    .setUsername(user.getUsername())
+                    .setFirstName(user.getFirstName())
+                    .setLastName(user.getLastName())
+                    .setEmail(user.getEmail())
+                    .setRoleId(user.getRoleId())
+                    .setRoleName(user.getRoleName())
+                    .setAccessLevel(user.getAccessLevel().getValue())
+                    .setActive(user.getIsActive().getValue() == 0 ? false : true)
+                    .setLocked(user.getIsLocked().getValue() == 0 ? false : true)
+                    .setNative(user.getIsNative().getValue() == 0 ? false : true)
+                    .setSshUsername(user.getSshUsername())
+                    .build()
+            ).collect(Collectors.toList());
+        } catch (ApiException e) {
+            LOG.error("Error requesting partner connections");
             throw new VelocloudApiException("ApiException:" + e.getMessage());
         }
     }

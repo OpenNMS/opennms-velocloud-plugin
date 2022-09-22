@@ -27,13 +27,12 @@
  *******************************************************************************/
 package org.opennms.velocloud.rest.api;
 
-import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -41,14 +40,17 @@ import javax.ws.rs.core.Response;
 public interface VelocloudRestService {
 
     @GET
-    @Path("/customers/{id}")
+    @Path("/partner/connections")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    Response getCustomersForMSPPartnerConnections(@PathParam("id") String id) throws VelocloudApiException;
+    Response getMspPartnerConnections(@QueryParam("alias") String alias) throws VelocloudApiException;
+
+    @GET
+    @Path("/partner/customers/{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    Response getCustomersForMspPartner(@QueryParam("alias") String alias) throws VelocloudApiException;
 
     @GET
     @Path("/status")
     @Produces(value = {MediaType.APPLICATION_JSON})
     Response getStatus();
-
-    VelocloudApiClient getClient(final String url, final String token) throws VelocloudApiException;
 }

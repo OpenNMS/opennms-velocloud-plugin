@@ -73,7 +73,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                 .setForeignSource(request.getForeignSource());
 
         try {
-            for (var enterprise : client.getEnterprises()) {
+            for (var enterprise : client.getEnterpriseProxies()) {
                 client.getGateways(enterprise.enterpriseId).stream().forEach(gateway -> {
                     requisition.addNode(ImmutableRequisitionNode.newBuilder()
                             .setForeignId(gateway.gatewayId)

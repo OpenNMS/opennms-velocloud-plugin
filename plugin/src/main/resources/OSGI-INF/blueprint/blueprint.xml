@@ -2,8 +2,9 @@
            xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
     <!--    Use reference instead of service to test the rest api, since plugin installation fails otherwise-->
-    <service ref="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>
-    <!--    <reference id="clientProvider"  interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider" availability="optional"/>-->
+<!--    <service ref="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>-->
+    <reference id="clientProvider"  interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider" availability="optional"/>
+    <reference id="secureCredentialsVault"  interface="org.opennms.integration.api.v1.scv.SecureCredentialsVault" availability="optional"/>
 
     <!--    Requisition-->
     <bean id="partnerRequisitionProvider" class="org.opennms.velocloud.requisition.PartnerRequisitionProvider">
@@ -19,6 +20,7 @@
     <!--    Rest-->
     <bean id="velocloudRestServiceV1" class="org.opennms.velocloud.rest.v1.VelocloudRestServiceV1Impl">
         <argument ref="clientProvider"/>
+        <argument ref="secureCredentialsVault"/>
     </bean>
     <service interface="org.opennms.velocloud.rest.v1.VelocloudRestServiceV1" ref="velocloudRestServiceV1">
         <service-properties>

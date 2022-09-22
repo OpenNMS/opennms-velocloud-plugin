@@ -39,9 +39,12 @@ import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 
-@Command(scope = "opennms-velocloud", name = "list-msp-customers", description = "List MSP Customers", detailedDescription = "List Enterprises for MSP")
+import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_TOKEN;
+import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_URL;
+
+@Command(scope = "opennms-velocloud", name = "list-msp-partner-customers", description = "List MSP Customers", detailedDescription = "List Enterprises for MSP")
 @Service
-public class VelocloudListCustomersCommand implements Action {
+public class VelocloudListMspPartnerCustomersCommand implements Action {
 
     @Reference
     public SecureCredentialsVault secureCredentialsVault;
@@ -61,12 +64,12 @@ public class VelocloudListCustomersCommand implements Action {
         if (Strings.isNullOrEmpty(username)) {
             throw new VelocloudApiException("Unable to retrieve velocloud credentials");
         }
-        final String url = credentials.getAttribute("url");
-        final String token = credentials.getAttribute("token");
+        final String url = credentials.getAttribute(VELOCLOUD_URL);
+        final String token = credentials.getAttribute(VELOCLOUD_TOKEN);
         if (Strings.isNullOrEmpty(token)) {
             throw new VelocloudApiException("Unable to retrieve velocloud token");
         }
-        clientProvider.connect(url, token).getEnterprises().forEach(e -> System.out.println(e.toString()));
+        clientProvider.connect(url, token).getEnterpriseProxies().forEach(e -> System.out.println(e.toString()));
         return null;
     }
 }

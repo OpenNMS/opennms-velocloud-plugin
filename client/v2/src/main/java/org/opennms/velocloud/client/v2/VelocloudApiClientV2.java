@@ -89,8 +89,8 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
     }
 
     @Override
-    public List<Enterprise> getEnterprises() throws VelocloudApiException {
-        throw new UnsupportedOperationException();
+    public List<Enterprise> getEnterpriseProxies() throws VelocloudApiException {
+        return null;
     }
 
     @Override
@@ -98,5 +98,19 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void enterpriseLogin(String username, String password) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void operatorLogin(String username, String password) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<User> getEnterpriseProxyConnections(Integer enterpriseProxyId, Integer id) {
+        throw new UnsupportedOperationException();
+    }
 }
 

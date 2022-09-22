@@ -41,7 +41,13 @@ public interface VelocloudApiClient {
 
     List<Gateway> getGateways(final UUID enterpriseId) throws VelocloudApiException;
 
-    List<Enterprise> getEnterprises() throws VelocloudApiException;
+    List<Enterprise> getEnterpriseProxies() throws VelocloudApiException;
 
     List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException;
+
+    void enterpriseLogin(final String username, final String password);
+
+    void operatorLogin(final String username, final String password);
+
+    List<User> getEnterpriseProxyConnections(final Integer enterpriseProxyId, final Integer id) throws VelocloudApiException;
 }

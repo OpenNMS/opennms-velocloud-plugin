@@ -27,6 +27,9 @@
  *******************************************************************************/
 package org.opennms.velocloud.rest.api;
 
+import com.google.common.base.Strings;
+import org.opennms.integration.api.v1.scv.Credentials;
+import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
@@ -36,18 +39,29 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.NotSupportedException;
 import javax.ws.rs.core.Response;
 
+import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_TOKEN;
+import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_URL;
+
 public class AbstractVelocloudRestService implements VelocloudRestService {
 
     private final VelocloudApiClientProvider clientProvider;
 
+    private final SecureCredentialsVault secureCredentialsVault;
+
     private static final Logger LOG = LoggerFactory.getLogger(AbstractVelocloudRestService.class);
 
-    public AbstractVelocloudRestService(final VelocloudApiClientProvider clientProvider) {
+    public AbstractVelocloudRestService(final VelocloudApiClientProvider clientProvider, final SecureCredentialsVault secureCredentialsVault) {
         this.clientProvider = clientProvider;
+        this.secureCredentialsVault = secureCredentialsVault;
     }
 
     @Override
-    public Response getCustomersForMSPPartnerConnections(String id) {
+    public Response getMspPartnerConnections(String alias) {
+        throw new NotSupportedException();
+    }
+
+    @Override
+    public Response getCustomersForMspPartner(String alias) {
         throw new NotSupportedException();
     }
 
@@ -56,8 +70,14 @@ public class AbstractVelocloudRestService implements VelocloudRestService {
         throw new NotSupportedException();
     }
 
-    @Override
-    public VelocloudApiClient getClient(final String url, final String token) throws VelocloudApiException {
+    public VelocloudApiClient getClientFor(final String alias) throws VelocloudApiException {
+        Credentials credentials = this.secureCredentialsVault.getCredentials(alias);
+        final String url = credentials.getAttribute(VELOCLOUD_URL);
+        final String token = credentials.getAttribute(VELOCLOUD_TOKEN);
+        if (Strings.isNullOrEmpty(url) || Strings.isNullOrEmpty(token)) {
+            throw new VelocloudApiException("Couldn't find Velocloud credentials for alias " + alias);
+        }
+
         return clientProvider.connect(url, token);
     }
 }
