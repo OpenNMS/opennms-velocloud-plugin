@@ -39,7 +39,7 @@ public class Edge {
     public final String site;
     public final boolean hub;
     public final List<Link> links;
-    public final Boolean alertsEnabled;
+    public final boolean alertsEnabled;
     public final String buildNumber;
     public final String customInfo;
     public final String description;
@@ -50,9 +50,9 @@ public class Edge {
     public final String logicalId;
     public final String modelNumber;
     public final String name;
-    public final Boolean operatorAlertsEnabled;
+    public final boolean operatorAlertsEnabled;
     public final String selfMacAddress;
-    public final Integer siteId;
+    public final int siteId;
     public final String softwareVersion;
 
     private Edge(final Builder builder) {
@@ -84,9 +84,7 @@ public class Edge {
                           .add("operator", this.operator)
                           .add("site", this.site)
                           .add("hub", this.hub)
-                          .add("links", this.links.stream()
-                                                        .map(l -> l.toString())
-                                                        .collect(Collectors.joining(",")))
+                          .add("links", this.links)
                           .add("alertsEnabled", this.alertsEnabled)
                           .add("buildNumber", this.buildNumber)
                           .add("customInfo", this.customInfo)
@@ -110,7 +108,7 @@ public class Edge {
         private String site;
         private boolean hub;
         private List<Link> links;
-        private Boolean alertsEnabled;
+        private boolean alertsEnabled;
         private String buildNumber;
         private String customInfo;
         private String description;
@@ -121,9 +119,9 @@ public class Edge {
         private String logicalId;
         private String modelNumber;
         private String name;
-        private Boolean operatorAlertsEnabled;
+        private boolean operatorAlertsEnabled;
         private String selfMacAddress;
-        private Integer siteId;
+        private int siteId;
         private String softwareVersion;
 
         private Builder() {
