@@ -28,7 +28,6 @@
 
 package org.opennms.velocloud.requisition;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.config.requisition.Requisition;
@@ -39,9 +38,10 @@ import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableReq
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.connections.Connection;
+import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
 
@@ -49,8 +49,9 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
     public final static String TYPE = "VelocloudPartnerRequisition";
 
-    public PartnerRequisitionProvider(final VelocloudApiClientProvider clientProvider) {
-        super(clientProvider);
+    public PartnerRequisitionProvider(final VelocloudApiClientProvider clientProvider,
+                                      final ConnectionManager connectionManager) {
+        super(clientProvider, connectionManager);
     }
 
     @Override
@@ -59,12 +60,8 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
     }
 
     @Override
-    protected Request createRequest(final Map<String, String> parameters) {
-        final var request = new Request();
-
-        request.setForeignSource("velocloud-partner");
-
-        return request;
+    protected Request createRequest(final Connection connection) {
+        return new Request(connection);
     }
 
     @Override
@@ -144,5 +141,11 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
     }
 
     public static class Request extends AbstractRequisitionProvider.Request {
+        public Request() {
+        }
+
+        public Request(final Connection connection) {
+            super("velocloud-partner", connection);
+        }
     }
 }
