@@ -28,20 +28,22 @@
 
 package org.opennms.velocloud.requisition;
 
-import java.util.Map;
 import java.util.UUID;
 
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.connections.Connection;
+import org.opennms.velocloud.connections.ConnectionManager;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
 
     public final static String TYPE = "velocloud:customer";
 
-    public CustomerRequisitionProvider(final VelocloudApiClientProvider clientProvider) {
-        super(clientProvider);
+    public CustomerRequisitionProvider(final VelocloudApiClientProvider clientProvider,
+                                       final ConnectionManager connectionManager) {
+        super(clientProvider, connectionManager);
     }
 
     @Override
@@ -50,14 +52,8 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
     }
 
     @Override
-    protected Request createRequest(final Map<String, String> parameters) {
-        final var request = new Request();
-
-        final var enterpriseId = UUID.fromString(parameters.get("enterprise"));
-        request.setEnterpriseId(enterpriseId);
-        request.setForeignSource(String.format("velocloud-customer-%s", enterpriseId));
-
-        return request;
+    protected Request createRequest(final Connection connection) {
+        return new Request(connection);
     }
 
     @Override
@@ -69,6 +65,13 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
     }
 
     public static class Request extends AbstractRequisitionProvider.Request {
+
+        public Request() {}
+
+        public Request(final Connection connection) {
+            super("velocloud-customer", connection);
+            this.enterpriseId = connection.getEnterpriseId().orElse(null);
+        }
 
         private UUID enterpriseId;
 
