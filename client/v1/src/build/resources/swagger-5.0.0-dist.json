@@ -16,6 +16,9 @@
   "produces": [
     "application/json"
   ],
+  "consumes": [
+    "application/json"
+  ],
   "paths": {
     "/login/operatorLogin": {
       "post": {
