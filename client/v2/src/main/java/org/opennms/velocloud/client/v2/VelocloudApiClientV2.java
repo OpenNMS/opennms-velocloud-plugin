@@ -90,21 +90,11 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
 
     @Override
     public List<Enterprise> getEnterpriseProxies() throws VelocloudApiException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void enterpriseLogin(String username, String password) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void operatorLogin(String username, String password) {
         throw new UnsupportedOperationException();
     }
 

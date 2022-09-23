@@ -264,40 +264,14 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                             .setRoleId(user.getRoleId())
                             .setRoleName(user.getRoleName())
                             .setAccessLevel(user.getAccessLevel().getValue())
-                            .setActive(user.getIsActive().getValue() == 0 ? false : true)
-                            .setLocked(user.getIsLocked().getValue() == 0 ? false : true)
-                            .setNative(user.getIsNative().getValue() == 0 ? false : true)
+                            .setActive(user.getIsActive().getValue() == 1)
+                            .setLocked(user.getIsLocked().getValue() == 1)
+                            .setNative(user.getIsNative().getValue() == 1)
                             .setSshUsername(user.getSshUsername())
                             .build()
             ).collect(Collectors.toList());
         } catch (ApiException e) {
             throw new VelocloudApiException("ApiException:" + e.getMessage());
-        }
-    }
-
-    @Override
-    public void enterpriseLogin(String username, String password) {
-        try {
-            loginApi.loginEnterpriseLogin(new AuthObject()
-                    .username(username)
-                    .password(password)
-                    .password2(password)
-                    .email(username));
-        } catch (ApiException e) {
-            LOG.error("Couldn't login with credentials provided", e.getCause());
-        }
-    }
-
-    @Override
-    public void operatorLogin(String username, String password) {
-        try {
-            loginApi.loginOperatorLogin(new AuthObject()
-                    .username(username)
-                    .password(password)
-                    .password2(password)
-                    .email(username));
-        } catch (ApiException e) {
-            LOG.error("Couldn't login with credentials provided", e.getCause());
         }
     }
 
@@ -318,9 +292,9 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                     .setRoleId(user.getRoleId())
                     .setRoleName(user.getRoleName())
                     .setAccessLevel(user.getAccessLevel().getValue())
-                    .setActive(user.getIsActive().getValue() == 0 ? false : true)
-                    .setLocked(user.getIsLocked().getValue() == 0 ? false : true)
-                    .setNative(user.getIsNative().getValue() == 0 ? false : true)
+                    .setActive(user.getIsActive().getValue() == 1)
+                    .setLocked(user.getIsLocked().getValue() == 1)
+                    .setNative(user.getIsNative().getValue() == 1)
                     .setSshUsername(user.getSshUsername())
                     .build()
             ).collect(Collectors.toList());

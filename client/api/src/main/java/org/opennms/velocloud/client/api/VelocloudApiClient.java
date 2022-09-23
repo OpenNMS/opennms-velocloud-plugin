@@ -45,9 +45,5 @@ public interface VelocloudApiClient {
 
     List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException;
 
-    void enterpriseLogin(final String username, final String password);
-
-    void operatorLogin(final String username, final String password);
-
     List<User> getEnterpriseProxyConnections(final Integer enterpriseProxyId, final Integer id) throws VelocloudApiException;
 }
