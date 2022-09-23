@@ -89,7 +89,7 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
     }
 
     @Override
-    public List<Enterprise> getEnterprises() throws VelocloudApiException {
+    public List<Enterprise> getEnterpriseProxies() throws VelocloudApiException {
         throw new UnsupportedOperationException();
     }
 

@@ -138,7 +138,7 @@ public class Gateway {
             return this;
         }
 
-        public Gateway.Builder withId(final Integer gatewayId) {
+        public Gateway.Builder withId(final Integer id) {
             this.id = id;
             return this;
         }

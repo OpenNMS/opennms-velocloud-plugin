@@ -86,6 +86,9 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEn
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGatewaysResultItem;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClient {
 
     /**
@@ -94,6 +97,9 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
      * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
+
+    private static final Logger LOG = LoggerFactory.getLogger(VelocloudApiClientV1.class);
+
 
     public final AllApi allApi = new AllApi(this);
     public final ApiTokenApi apiTokenApi = new ApiTokenApi(this);
@@ -201,7 +207,7 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
     }
 
     @Override
-    public List<Enterprise> getEnterprises() throws VelocloudApiException {
+    public List<Enterprise> getEnterpriseProxies() throws VelocloudApiException {
         try {
             List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem> enterprises = this.allApi.enterpriseProxyGetEnterpriseProxyEnterprises(
                     new EnterpriseProxyGetEnterpriseProxyEnterprises()
@@ -218,7 +224,7 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                                     .withDomain(e.getDomain())
                                     .withGatewayPoolId(e.getGatewayPoolId())
                                     .withLocale(e.getLocale())
-                                    .withLongitud(e.getLon())
+                                    .withLongitude(e.getLon())
                                     .withLatitude(e.getLat())
                                     .withName(e.getName())
                                     .withNetworkId(e.getNetworkId())
@@ -255,9 +261,9 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                             .setRoleId(user.getRoleId())
                             .setRoleName(user.getRoleName())
                             .setAccessLevel(user.getAccessLevel().getValue())
-                            .setActive(user.getIsActive().getValue() == 0 ? false : true)
-                            .setLocked(user.getIsLocked().getValue() == 0 ? false : true)
-                            .setNative(user.getIsNative().getValue() == 0 ? false : true)
+                            .setActive(user.getIsActive().getValue() == 1)
+                            .setLocked(user.getIsLocked().getValue() == 1)
+                            .setNative(user.getIsNative().getValue() == 1)
                             .setSshUsername(user.getSshUsername())
                             .build()
             ).collect(Collectors.toList());
