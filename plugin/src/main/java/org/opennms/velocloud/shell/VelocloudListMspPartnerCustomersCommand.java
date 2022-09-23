@@ -38,6 +38,10 @@ import org.opennms.integration.api.v1.scv.Credentials;
 import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.connections.Connection;
+import org.opennms.velocloud.connections.ConnectionManager;
+
+import java.util.Optional;
 
 import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_TOKEN;
 import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_URL;
@@ -47,7 +51,7 @@ import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_URL;
 public class VelocloudListMspPartnerCustomersCommand implements Action {
 
     @Reference
-    public SecureCredentialsVault secureCredentialsVault;
+    public ConnectionManager connectionManager;
 
     @Reference
     private VelocloudApiClientProvider clientProvider;
@@ -59,17 +63,14 @@ public class VelocloudListMspPartnerCustomersCommand implements Action {
     @Override
     public Object execute() throws Exception {
 
-        final Credentials credentials = secureCredentialsVault.getCredentials(alias);
-        final String username = credentials.getUsername();
-        if (Strings.isNullOrEmpty(username)) {
-            throw new VelocloudApiException("Unable to retrieve velocloud credentials");
-        }
-        final String url = credentials.getAttribute(VELOCLOUD_URL);
-        final String token = credentials.getAttribute(VELOCLOUD_TOKEN);
-        if (Strings.isNullOrEmpty(token)) {
+        final Optional<Connection> connection = connectionManager.getConnection(alias);
+
+        final String url = connection.get().getOrchestratorUrl();
+        final String apiKey = connection.get().getApiKey();
+        if (Strings.isNullOrEmpty(apiKey) || Strings.isNullOrEmpty(url)) {
             throw new VelocloudApiException("Unable to retrieve velocloud token");
         }
-        clientProvider.connect(url, token).getEnterpriseProxies().forEach(e -> System.out.println(e.toString()));
+        clientProvider.connect(url, apiKey).getEnterpriseProxies().forEach(e -> System.out.println(e.toString()));
         return null;
     }
 }

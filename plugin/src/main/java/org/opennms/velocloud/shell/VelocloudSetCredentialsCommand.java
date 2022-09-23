@@ -32,46 +32,30 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.opennms.integration.api.v1.scv.Credentials;
-import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
-import org.opennms.integration.api.v1.scv.immutables.ImmutableCredentials;
-
-import javax.security.auth.Subject;
-import java.security.AccessControlContext;
-import java.security.AccessController;
-import java.security.Principal;
-import java.util.Map;
-import java.util.Set;
-
-import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_TOKEN;
-import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_URL;
+import org.opennms.velocloud.connections.ConnectionManager;
 
 @Command(scope = "opennms-velocloud", name = "set-credentials", description = "Set Enterprise Credentials", detailedDescription = "Set Enterprise User Credentials")
 @Service
 public class VelocloudSetCredentialsCommand implements Action {
 
     @Reference
-    public SecureCredentialsVault secureCredentialsVault;
+    private ConnectionManager connectionManager;
 
     @Argument(index = 0, name = "alias", description = "Alias", required = true, multiValued = false)
     public String alias = null;
 
-    @Argument(index = 1, name = "username", description = "Username to store.", required = true, multiValued = false)
-    public String username = null;
-
-    @Argument(index = 2, name = "password", description = "Password to store.", required = true, multiValued = false)
-    public String password = null;
-
-    @Argument(index = 3, name = "url", description = "Url API", required = true, multiValued = false)
+    @Argument(index = 1, name = "url", description = "Orchestrator Url", required = true, multiValued = false)
     public String url = null;
 
-    @Argument(index = 4, name = "token", description = "API Token", required = false, multiValued = false)
-    public String token = null;
+    @Argument(index = 2, name = "apiKey", description = "Orchestrator API Key", required = true, multiValued = false)
+    public String apiKey = null;
+
+    @Argument(index = 3, name = "enterprise id", description = "Enterprise ID", required = false, multiValued = false)
+    public String enterpriseId = null;
 
     @Override
     public Object execute() throws Exception {
-        final Credentials credentials = new ImmutableCredentials(username, password, Map.of(VELOCLOUD_URL, url, VELOCLOUD_TOKEN, token == null ? "" : token));
-        secureCredentialsVault.setCredentials(alias, credentials);
+        connectionManager.addConnection(alias, url, apiKey, enterpriseId);
         return null;
     }
 }

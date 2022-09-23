@@ -38,6 +38,9 @@ import org.opennms.integration.api.v1.requisition.RequisitionRequest;
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.connections.Connection;
+import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.connections.ConnectionValidationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,22 +53,30 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
     private final VelocloudApiClientProvider clientProvider;
 
-    protected AbstractRequisitionProvider(final VelocloudApiClientProvider clientProvider) {
+    private final ConnectionManager connectionManager;
+
+    protected AbstractRequisitionProvider(final VelocloudApiClientProvider clientProvider,
+                                          final ConnectionManager connectionManager) {
         this.clientProvider = Objects.requireNonNull(clientProvider);
+        this.connectionManager = Objects.requireNonNull(connectionManager);
     }
 
-    protected abstract Req createRequest(final Map<String, String> parameters);
+    protected abstract Req createRequest(final Connection connection);
 
     protected abstract Requisition handleRequest(final Req request, final VelocloudApiClient client);
 
     @Override
     public final RequisitionRequest getRequest(final Map<String, String> parameters) {
-        final var request = Objects.requireNonNull(this.createRequest(parameters));
-        request.setForeignSource(Objects.requireNonNullElseGet(parameters.get("name"), request::getForeignSource));
-        request.setOrchestratorUrl(Objects.requireNonNull(parameters.get("url")));
-        request.setApiKey(Objects.requireNonNull(parameters.get("apiKey")));
+        final var alias = Objects.requireNonNull(parameters.get("alias"), "Missing requisition parameter: alias");
+        try {
+            final var connection = this.connectionManager.getConnection(alias)
+                    .orElseThrow(() -> new NullPointerException("Connection not found for alias: " + alias));
 
-        return request;
+            return Objects.requireNonNull(this.createRequest(connection));
+
+        } catch (final ConnectionValidationError e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -107,6 +118,12 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     protected static abstract class Request implements RequisitionRequest {
 
         public Request() {
+        }
+
+        public Request(final String type, final Connection connection) {
+            this.foreignSource = String.format("%s-%s", type, connection.getAlias());
+            this.orchestratorUrl = Objects.requireNonNull(connection.getOrchestratorUrl());
+            this.apiKey = Objects.requireNonNull(connection.getApiKey());
         }
 
         private String foreignSource;

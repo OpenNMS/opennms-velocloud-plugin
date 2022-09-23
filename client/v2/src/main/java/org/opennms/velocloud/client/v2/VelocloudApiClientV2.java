@@ -99,7 +99,7 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
     }
 
     @Override
-    public List<User> getEnterpriseProxyConnections(Integer enterpriseProxyId, Integer id) {
+    public List<User> getEnterpriseProxyConnections() {
         throw new UnsupportedOperationException();
     }
 }

@@ -4,6 +4,8 @@ import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Enterprise;
+import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.connections.ConnectionValidationError;
 import org.opennms.velocloud.rest.api.AbstractVelocloudRestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,17 +17,17 @@ public class VelocloudRestServiceV1Impl extends AbstractVelocloudRestService imp
 
     private static final Logger LOG = LoggerFactory.getLogger(VelocloudRestServiceV1Impl.class);
 
-    public VelocloudRestServiceV1Impl(VelocloudApiClientProvider clientProvider, SecureCredentialsVault secureCredentialsVault) {
-        super(clientProvider, secureCredentialsVault);
+    public VelocloudRestServiceV1Impl(VelocloudApiClientProvider clientProvider, ConnectionManager connectionManager) {
+        super(clientProvider, connectionManager);
     }
 
     @Override
     public Response getMspPartnerConnections(final String alias) {
         try {
-            getClientFor(alias).getEnterpriseProxyConnections(0,0);
+            getClientFor(alias).getEnterpriseProxyConnections();
             return Response.ok().build();
-        } catch (VelocloudApiException e) {
-            LOG.error("An error occured trying to retrieve MSP Partner connections" , e.getCause());
+        } catch (VelocloudApiException | ConnectionValidationError e) {
+            LOG.error("An error occurred trying to retrieve MSP Partner connections" , e.getCause());
             return Response.serverError().build();
         }
     }
@@ -35,8 +37,8 @@ public class VelocloudRestServiceV1Impl extends AbstractVelocloudRestService imp
         try {
             List<Enterprise> enterprises = getClientFor(alias).getEnterpriseProxies();
             return Response.ok().entity(enterprises).build();
-        } catch (VelocloudApiException e) {
-            LOG.error("An error occured trying to retrieve customers for MSP Partner" , e.getCause());
+        } catch (VelocloudApiException | ConnectionValidationError e) {
+            LOG.error("An error occurred trying to retrieve customers for MSP Partner" , e.getCause());
             return Response.serverError().build();
         }
 

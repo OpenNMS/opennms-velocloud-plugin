@@ -25,25 +25,12 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.client.api;
 
-import java.util.List;
-import java.util.UUID;
+package org.opennms.velocloud.connections;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.Enterprise;
-import org.opennms.velocloud.client.api.model.Gateway;
-import org.opennms.velocloud.client.api.model.User;
+public class ConnectionValidationError extends Exception {
 
-public interface VelocloudApiClient {
-
-    List<Edge> getEdges(final UUID enterpriseId) throws VelocloudApiException;
-
-    List<Gateway> getGateways(final UUID enterpriseId) throws VelocloudApiException;
-
-    List<Enterprise> getEnterpriseProxies() throws VelocloudApiException;
-
-    List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException;
-
-    List<User> getEnterpriseProxyConnections() throws VelocloudApiException;
+    public ConnectionValidationError(final String alias, final String message) {
+        super(String.format("Invalid connection in scv: %s: %s", alias, message));
+    }
 }

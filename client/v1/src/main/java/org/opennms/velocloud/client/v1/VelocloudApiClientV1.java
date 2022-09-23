@@ -221,7 +221,7 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                                     .withEnterpriseId(UUID.fromString(e.getLogicalId()))
                                     .withId(e.getId())
                                     .withAccountNumber(e.getAccountNumber())
-                                    .withAlertsEnabled(e.getAlertsEnabled().getValue() == 1 ? true : false)
+                                    .withAlertsEnabled(e.getAlertsEnabled().getValue() == 1)
                                     .withBastionState(e.getBastionState().getValue())
                                     .withDescription(e.getDescription())
                                     .withDomain(e.getDomain())
@@ -233,7 +233,7 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                                     .withNetworkId(e.getNetworkId())
                                     .withTimezone(e.getTimezone())
                                     .withAddress(e.getStreetAddress())
-                                    .withOperatorAlertsEnabled(e.getOperatorAlertsEnabled().getValue() == 1 ? true : false)
+                                    .withOperatorAlertsEnabled(e.getOperatorAlertsEnabled().getValue() == 1)
                                     .withCity(e.getCity())
                                     .withCountry(e.getCountry())
                                     .withState(e.getState())
@@ -276,11 +276,10 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
     }
 
     @Override
-    public List<User> getEnterpriseProxyConnections(Integer enterpriseProxyId, Integer id) throws VelocloudApiException {
+    public List<User> getEnterpriseProxyConnections() throws VelocloudApiException {
         try {
-            final List<EnterpriseProxyGetEnterpriseProxyUsersResultItem> partnerConnections = userMaintenanceApi.enterpriseProxyGetEnterpriseProxyUsers(new EnterpriseProxyGetEnterpriseProxyUsers()
-                    .enterpriseProxyId(0)
-                    .id(0));
+            final List<EnterpriseProxyGetEnterpriseProxyUsersResultItem> partnerConnections =
+                    userMaintenanceApi.enterpriseProxyGetEnterpriseProxyUsers(new EnterpriseProxyGetEnterpriseProxyUsers());
             return partnerConnections.stream().map(user -> User.builder()
                     .setId(user.getId())
                     .setUserType(user.getUserType())
