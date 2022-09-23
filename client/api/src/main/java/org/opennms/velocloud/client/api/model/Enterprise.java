@@ -37,8 +37,8 @@ public class Enterprise {
     public final Integer networkId;
     public final Integer gatewayPoolId;
     public final String bastionState;
-    public final Boolean alertsEnabled;
-    public final Boolean operatorAlertsEnabled;
+    public final boolean alertsEnabled;
+    public final boolean operatorAlertsEnabled;
     public final String name;
     public final String domain;
     public final String accountNumber;

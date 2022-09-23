@@ -36,13 +36,13 @@ import java.util.UUID;
 
 public class Gateway {
 
-    public final UUID enterpriseId;//enterpriseProxyId
-    public final String gatewayId; //logicalId
-    public final Integer id; //id
-    public final String gatewayName; //name
+    public final UUID enterpriseId;
+    public final String gatewayId;
+    public final Integer id;
+    public final String gatewayName;
     public final String description;
     public final InetAddress ipAddress;
-    public final Boolean isLoadBalanced;
+    public final boolean isLoadBalanced;
     public final String gatewayState;
     public final String serviceState;
     public final String bastionState;
