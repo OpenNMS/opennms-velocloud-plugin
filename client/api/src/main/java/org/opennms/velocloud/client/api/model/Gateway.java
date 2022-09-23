@@ -36,19 +36,19 @@ import java.util.UUID;
 
 public class Gateway {
 
-    public final UUID enterpriseId;//enterpriseProxyId
-    public final String gatewayId; //logicalId
-    public final Integer id; //id
-    public final String gatewayName; //name
+    public final UUID enterpriseId;
+    public final String gatewayId;
+    public final int id;
+    public final String gatewayName;
     public final String description;
     public final InetAddress ipAddress;
-    public final Boolean isLoadBalanced;
+    public final boolean isLoadBalanced;
     public final String gatewayState;
     public final String serviceState;
     public final String bastionState;
     public final String deviceId;
     public final String dnsName;
-    public final Integer siteId;
+    public final int siteId;
     public final String siteName;
     public final String address;
     public final String address2;
@@ -56,11 +56,11 @@ public class Gateway {
     public final String city;
     public final String state;
     public final String country;
-    public final Double latitude;
-    public final Double longitude;
+    public final double latitude;
+    public final double longitude;
     public final String softwareVersion;
     public final String buildNumber;
-    public final Integer networkId;
+    public final int networkId;
     public final InetAddress privateIpAddress;
     public final List<String> roles;
 

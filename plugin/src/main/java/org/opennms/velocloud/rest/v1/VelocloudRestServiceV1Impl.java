@@ -1,5 +1,7 @@
 package org.opennms.velocloud.rest.v1;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
@@ -35,10 +37,15 @@ public class VelocloudRestServiceV1Impl extends AbstractVelocloudRestService imp
     @Override
     public Response getCustomersForMspPartner(final String alias) {
         try {
+            ObjectMapper mapper = new ObjectMapper();
             List<Enterprise> enterprises = getClientFor(alias).getEnterpriseProxies();
-            return Response.ok().entity(enterprises).build();
+            String json = mapper.writeValueAsString(enterprises);
+            return Response.ok().entity(json).build();
         } catch (VelocloudApiException | ConnectionValidationError e) {
             LOG.error("An error occurred trying to retrieve customers for MSP Partner" , e.getCause());
+            return Response.serverError().build();
+        } catch (JsonProcessingException e) {
+            LOG.error("An error occurred trying to parse json" , e.getCause());
             return Response.serverError().build();
         }
 

@@ -33,12 +33,12 @@ import java.util.UUID;
 
 public class Enterprise {
     public final UUID enterpriseId;
-    public final Integer id;
-    public final Integer networkId;
-    public final Integer gatewayPoolId;
+    public final int id;
+    public final int networkId;
+    public final int gatewayPoolId;
     public final String bastionState;
-    public final Boolean alertsEnabled;
-    public final Boolean operatorAlertsEnabled;
+    public final boolean alertsEnabled;
+    public final boolean operatorAlertsEnabled;
     public final String name;
     public final String domain;
     public final String accountNumber;
@@ -48,8 +48,8 @@ public class Enterprise {
     public final String state;
     public final String zip;
     public final String country;
-    public final Double latitude;
-    public final Double longitude;
+    public final double latitude;
+    public final double longitude;
     public final String timezone;
     public final String locale;
 

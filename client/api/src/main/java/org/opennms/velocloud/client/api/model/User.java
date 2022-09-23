@@ -33,17 +33,17 @@ import java.util.StringJoiner;
 
 
 public class User {
-    public final Integer id;
+    public final int id;
     public final String userType;
     public final String domain;
     public final String username;
     public final String firstName;
     public final String lastName;
     public final String email;
-    public final Boolean isNative;
-    public final Boolean isActive;
-    public final Boolean isLocked;
-    public final Integer roleId;
+    public final boolean isNative;
+    public final boolean isActive;
+    public final boolean isLocked;
+    public final int roleId;
     public final String roleName;
     public final String accessLevel;
     public final String sshUsername;
