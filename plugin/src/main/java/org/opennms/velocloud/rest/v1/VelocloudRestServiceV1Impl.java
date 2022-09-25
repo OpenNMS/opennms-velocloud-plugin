@@ -33,6 +33,7 @@ import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Enterprise;
+import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.connections.ConnectionValidationError;
 import org.opennms.velocloud.rest.api.AbstractVelocloudRestService;
@@ -53,10 +54,15 @@ public class VelocloudRestServiceV1Impl extends AbstractVelocloudRestService imp
     @Override
     public Response getMspPartnerConnections(final String alias) {
         try {
-            getClientFor(alias).getEnterpriseProxyConnections();
-            return Response.ok().build();
+            ObjectMapper mapper = new ObjectMapper();
+            List<User> partnerConnections = getClientFor(alias).getEnterpriseProxyConnections();
+            String json = mapper.writeValueAsString(partnerConnections);
+            return Response.ok().entity(json).build();
         } catch (VelocloudApiException | ConnectionValidationError e) {
-            LOG.error("An error occurred trying to retrieve MSP Partner connections" , e.getCause());
+            LOG.error("An error occurred trying to retrieve MSP Partner connections", e.getCause());
+            return Response.serverError().build();
+        } catch (JsonProcessingException e) {
+            LOG.error("An error occurred trying to parse json", e.getCause());
             return Response.serverError().build();
         }
     }
@@ -69,10 +75,10 @@ public class VelocloudRestServiceV1Impl extends AbstractVelocloudRestService imp
             String json = mapper.writeValueAsString(enterprises);
             return Response.ok().entity(json).build();
         } catch (VelocloudApiException | ConnectionValidationError e) {
-            LOG.error("An error occurred trying to retrieve customers for MSP Partner" , e.getCause());
+            LOG.error("An error occurred trying to retrieve customers for MSP Partner", e.getCause());
             return Response.serverError().build();
         } catch (JsonProcessingException e) {
-            LOG.error("An error occurred trying to parse json" , e.getCause());
+            LOG.error("An error occurred trying to parse json", e.getCause());
             return Response.serverError().build();
         }
 
