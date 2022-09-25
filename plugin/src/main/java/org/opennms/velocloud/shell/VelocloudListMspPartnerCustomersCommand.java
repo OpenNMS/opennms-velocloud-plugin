@@ -43,9 +43,6 @@ import org.opennms.velocloud.connections.ConnectionManager;
 
 import java.util.Optional;
 
-import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_TOKEN;
-import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_URL;
-
 @Command(scope = "opennms-velocloud", name = "list-msp-partner-customers", description = "List MSP Customers", detailedDescription = "List Enterprises for MSP")
 @Service
 public class VelocloudListMspPartnerCustomersCommand implements Action {

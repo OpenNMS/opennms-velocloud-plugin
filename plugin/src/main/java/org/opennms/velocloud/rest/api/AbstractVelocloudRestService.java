@@ -28,8 +28,6 @@
 package org.opennms.velocloud.rest.api;
 
 import com.google.common.base.Strings;
-import org.opennms.integration.api.v1.scv.Credentials;
-import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
@@ -44,9 +42,6 @@ import javax.ws.rs.core.Response;
 
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_TOKEN;
-import static org.opennms.velocloud.common.VelocloudCommon.VELOCLOUD_URL;
 
 public class AbstractVelocloudRestService implements VelocloudRestService {
 
