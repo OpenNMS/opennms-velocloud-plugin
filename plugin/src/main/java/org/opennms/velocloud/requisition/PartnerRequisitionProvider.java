@@ -47,7 +47,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
     private static final Logger LOG = LoggerFactory.getLogger(PartnerRequisitionProvider.class);
 
-    public final static String TYPE = "VelocloudPartnerRequisition";
+    public final static String TYPE = "velocloud:partner";
 
     public PartnerRequisitionProvider(final VelocloudApiClientProvider clientProvider) {
         super(clientProvider);

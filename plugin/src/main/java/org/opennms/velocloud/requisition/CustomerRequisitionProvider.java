@@ -38,7 +38,7 @@ import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
 
-    public final static String TYPE = "VelocloudCustomerRequisition";
+    public final static String TYPE = "velocloud:customer";
 
     public CustomerRequisitionProvider(final VelocloudApiClientProvider clientProvider) {
         super(clientProvider);
