@@ -28,6 +28,7 @@
 
 package org.opennms.velocloud.requisition;
 
+import java.util.stream.Collectors;
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionInterface;
@@ -38,15 +39,16 @@ import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.connections.Connection;
+import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.stream.Collectors;
 
 public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PartnerRequisitionProvider.class);
 
-    public final static String TYPE = "VelocloudPartnerRequisition";
+    public final static String TYPE = "velocloud:partner";
 
     public PartnerRequisitionProvider(final VelocloudApiClientProvider clientProvider,
                                       final ConnectionManager connectionManager) {

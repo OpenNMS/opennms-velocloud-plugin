@@ -39,7 +39,7 @@ import org.opennms.velocloud.connections.ConnectionManager;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
 
-    public final static String TYPE = "VelocloudCustomerRequisition";
+    public final static String TYPE = "velocloud:customer";
 
     public CustomerRequisitionProvider(final VelocloudApiClientProvider clientProvider,
                                        final ConnectionManager connectionManager) {
@@ -66,8 +66,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
 
     public static class Request extends AbstractRequisitionProvider.Request {
 
-        public Request() {
-        }
+        public Request() {}
 
         public Request(final Connection connection) {
             super("velocloud-customer", connection);

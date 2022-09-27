@@ -76,19 +76,48 @@ public class ConnectionManager {
         return Optional.of(new ConnectionImpl(alias, credentials));
     }
 
-    public void addConnection(final String alias, final String url, final String apiKey, final String enterpriseId) throws ConnectionValidationError {
+
+    /**
+     * Creates and saves a connection under the given alias.
+     * If a connection with the same alias already exists, it will be overwritten.
+     *
+     * @param alias the alias of the connection to add
+     * @param orchestratorUrl the URL of the orchestrator
+     * @param apiKey the API key used to authenticate the connection
+     * @param enterpriseId the optional enterprise ID of a client connection
+     *
+     * @throws ConnectionValidationError
+     */
+    public Connection addConnection(final String alias, final String orchestratorUrl, final String apiKey, final String enterpriseId) throws ConnectionValidationError {
+        final Connection connection;
+
         if (Strings.isNullOrEmpty(enterpriseId)) {
-            new ConnectionImpl(alias, new ImmutableCredentials(url, apiKey)).save();
+            connection = new ConnectionImpl(alias, orchestratorUrl, apiKey);
         } else {
-            new ConnectionImpl(alias, new ImmutableCredentials(url, apiKey, Map.of(ATTR_ENTERPRISE_ID, enterpriseId))).save();
+            connection = new ConnectionImpl(alias, orchestratorUrl, apiKey, UUID.fromString(enterpriseId));
         }
+
+        connection.save();
+
+        return connection;
     }
 
     private class ConnectionImpl implements Connection {
         private final String alias;
-        private String apiKey;
         private String orchestratorUrl;
+        private String apiKey;
         private UUID enterpriseId;
+
+        private ConnectionImpl(final String alias, final String orchestratorUrl, final String apiKey) {
+            this(alias, orchestratorUrl, apiKey, null);
+        }
+
+        private ConnectionImpl(final String alias, final String orchestratorUrl, final String apiKey, final UUID enterpriseId) {
+            this.alias = Objects.requireNonNull(alias);
+            this.orchestratorUrl = Objects.requireNonNull(orchestratorUrl);
+            this.apiKey = Objects.requireNonNull(apiKey);
+            this.enterpriseId = enterpriseId;
+        }
 
         private ConnectionImpl(final String alias, final Credentials credentials) throws ConnectionValidationError {
             this.alias = Objects.requireNonNull(alias);
