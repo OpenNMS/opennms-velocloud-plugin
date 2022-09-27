@@ -8,6 +8,7 @@
             <reference interface="org.opennms.integration.api.v1.scv.SecureCredentialsVault" availability="optional"/>
         </argument>
     </bean>
+    <service ref="connectionManager" interface="org.opennms.velocloud.connections.ConnectionManager"/>
 
     <bean id="partnerRequisitionProvider" class="org.opennms.velocloud.requisition.PartnerRequisitionProvider">
         <argument ref="clientProvider"/>
