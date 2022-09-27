@@ -46,4 +46,5 @@ public interface VelocloudApiClient {
     List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException;
 
     List<User> getEnterpriseProxyConnections() throws VelocloudApiException;
+
 }
