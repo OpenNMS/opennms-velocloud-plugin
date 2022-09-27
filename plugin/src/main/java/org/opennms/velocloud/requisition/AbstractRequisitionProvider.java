@@ -46,6 +46,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitionProvider.Request> implements RequisitionProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
 
+    public static final String VELOCLOUD_METADATA_CONTEXT = "velocloud";
+
     private final VelocloudApiClientProvider clientProvider;
 
     protected AbstractRequisitionProvider(final VelocloudApiClientProvider clientProvider) {
@@ -72,7 +74,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
         try {
             final var client = this.clientProvider.connect(request.getOrchestratorUrl(),
-                                                           request.getApiKey());
+                    request.getApiKey());
 
             return this.handleRequest(request, client);
 
@@ -104,7 +106,8 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
     protected static abstract class Request implements RequisitionRequest {
 
-        public Request() {}
+        public Request() {
+        }
 
         private String foreignSource;
 

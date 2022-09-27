@@ -25,23 +25,18 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.client.api;
+package org.opennms.velocloud.client.api.internal;
 
-import java.util.List;
-import java.util.UUID;
+import com.google.common.net.InetAddresses;
+import java.net.InetAddress;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.Enterprise;
-import org.opennms.velocloud.client.api.model.Gateway;
-import org.opennms.velocloud.client.api.model.User;
-
-public interface VelocloudApiClient {
-
-    List<Edge> getEdges(final UUID enterpriseId) throws VelocloudApiException;
-
-    List<Gateway> getGateways(final UUID enterpriseId) throws VelocloudApiException;
-
-    List<Enterprise> getEnterpriseProxies() throws VelocloudApiException;
-
-    List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException;
+public class Utils {
+    public static InetAddress getValidInetAddress(final String ip) {
+        try {
+            final InetAddress address = InetAddresses.forString(ip);
+            return address;
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
 }
