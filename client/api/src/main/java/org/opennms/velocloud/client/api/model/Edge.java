@@ -29,12 +29,11 @@
 package org.opennms.velocloud.client.api.model;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import com.google.common.base.MoreObjects;
 
 public class Edge {
-    public final UUID enterpriseId;
+    public final String enterpriseId;
     public final String operator;
     public final String site;
     public final boolean hub;
@@ -57,7 +56,7 @@ public class Edge {
     }
 
     public static class Builder {
-        private UUID enterpriseId;
+        private String enterpriseId;
         private String operator;
         private String site;
         private boolean hub;
@@ -65,7 +64,7 @@ public class Edge {
         private Builder() {
         }
 
-        public Builder withEnterpriseId(final UUID enterpriseId) {
+        public Builder withEnterpriseId(final String enterpriseId) {
             this.enterpriseId = enterpriseId;
             return this;
         }
