@@ -70,8 +70,8 @@ import org.opennms.velocloud.client.v1.api.VcoInventoryApi;
 import org.opennms.velocloud.client.v1.api.VpnApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
@@ -86,10 +86,7 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEn
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGatewaysResultItem;
-import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyUsers;
-import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyUsersResultItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.common.net.InetAddresses;
 
 public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClient {
 
@@ -99,9 +96,6 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
      * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
-
-    private static final Logger LOG = LoggerFactory.getLogger(VelocloudApiClientV1.class);
-
 
     public final AllApi allApi = new AllApi(this);
     public final ApiTokenApi apiTokenApi = new ApiTokenApi(this);
@@ -148,9 +142,9 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
     }
 
     @Override
-    public List<Edge> getEdges(final UUID enterpriseId) throws VelocloudApiException {
+    public List<Edge> getEdges(final String enterpriseId) throws VelocloudApiException {
         try {
-            final List<EnterpriseGetEnterpriseEdgesResultItem> edges = this.enterpriseApi.enterpriseGetEnterpriseEdges(new EnterpriseGetEnterpriseEdges());
+            final var edges = this.enterpriseApi.enterpriseGetEnterpriseEdges(new EnterpriseGetEnterpriseEdges());
             return edges.stream()
                     .map(e -> Edge.builder()
                             .withEnterpriseId(enterpriseId)
@@ -165,15 +159,13 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
     }
 
     @Override
-    public List<Gateway> getGateways(final UUID enterpriseId) throws VelocloudApiException {
-
+    public List<Gateway> getGateways() throws VelocloudApiException {
         try {
-            List<EnterpriseProxyGetEnterpriseProxyGatewaysResultItem> enterpriseGateways = this.allApi.enterpriseProxyGetEnterpriseProxyGateways(
+            final var enterpriseGateways = this.allApi.enterpriseProxyGetEnterpriseProxyGateways(
                     new EnterpriseProxyGetEnterpriseProxyGateways()
                             .addWithItem(EnterpriseProxyGetEnterpriseProxyGateways.WithEnum.SITE));
             return enterpriseGateways.stream()
                     .map(g -> Gateway.builder()
-                            .withEnterpriseId(enterpriseId)
                             .withDeviceId(g.getDeviceId())
                             .withDescription(g.getDescription())
                             .withDnsName(g.getDnsName())
@@ -181,7 +173,9 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
                             .withId(g.getId())
                             .withIpAddress(Utils.getValidInetAddress(g.getIpAddress()))
                             .withIsLoadBalanceed(g.isIsLoadBalanced())
-                            .withRoles(g.getRoles().stream().map(r -> r.getGatewayRole().getValue()).collect(Collectors.toList()))
+                            .withRoles(g.getRoles() == null
+                                       ? Collections.emptyList()
+                                       : g.getRoles().stream().map(r -> r.getGatewayRole().getValue()).collect(Collectors.toList()))
                             .withName(g.getName())
                             .withSiteId(g.getSiteId())
                             .withSiteName(g.getSite().getName())
@@ -211,13 +205,13 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
     @Override
     public List<Enterprise> getEnterpriseProxies() throws VelocloudApiException {
         try {
-            List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem> enterprises = this.allApi.enterpriseProxyGetEnterpriseProxyEnterprises(
+            final var enterprises = this.allApi.enterpriseProxyGetEnterpriseProxyEnterprises(
                     new EnterpriseProxyGetEnterpriseProxyEnterprises()
                             .addWithItem(EnterpriseProxyGetEnterpriseProxyEnterprises.WithEnum.EDGES)
             );
             return enterprises.stream().map(e ->
                             Enterprise.builder()
-                                    .withEnterpriseId(UUID.fromString(e.getLogicalId()))
+                                    .withEnterpriseId(e.getLogicalId())
                                     .withId(e.getId())
                                     .withAccountNumber(e.getAccountNumber())
                                     .withAlertsEnabled(e.getAlertsEnabled().getValue() == 1)
@@ -246,9 +240,8 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
 
     @Override
     public List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException {
-        final List<EnterpriseGetEnterpriseUsersResultItem> users;
         try {
-            users = this.userMaintenanceApi.enterpriseGetEnterpriseUsers(
+            final var users = this.userMaintenanceApi.enterpriseGetEnterpriseUsers(
                     new EnterpriseGetEnterpriseUsers()
                             .enterpriseId(enterpriseId));
             return users.stream().map(user ->
@@ -277,7 +270,7 @@ public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClien
     @Override
     public List<User> getEnterpriseProxyConnections() throws VelocloudApiException {
         try {
-            final List<EnterpriseProxyGetEnterpriseProxyUsersResultItem> partnerConnections =
+            final var partnerConnections =
                     userMaintenanceApi.enterpriseProxyGetEnterpriseProxyUsers(new EnterpriseProxyGetEnterpriseProxyUsers());
             return partnerConnections.stream().map(user -> User.builder()
                     .setId(user.getId())

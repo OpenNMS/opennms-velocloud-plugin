@@ -118,20 +118,27 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
     protected static abstract class Request implements RequisitionRequest {
 
-        public Request() {
-        }
-
-        public Request(final String type, final Connection connection) {
-            this.foreignSource = String.format("%s-%s", type, connection.getAlias());
-            this.orchestratorUrl = Objects.requireNonNull(connection.getOrchestratorUrl());
-            this.apiKey = Objects.requireNonNull(connection.getApiKey());
-        }
+        private String alias;
 
         private String foreignSource;
 
         private String orchestratorUrl;
 
         private String apiKey;
+
+        public Request() {
+        }
+
+        public Request(final String type, final Connection connection) {
+            this.alias = Objects.requireNonNull(connection.getAlias());
+            this.foreignSource = String.format("%s-%s", type, connection.getAlias());
+            this.orchestratorUrl = Objects.requireNonNull(connection.getOrchestratorUrl());
+            this.apiKey = Objects.requireNonNull(connection.getApiKey());
+        }
+
+        public String getAlias() {
+            return this.alias;
+        }
 
         public String getForeignSource() {
             return this.foreignSource;

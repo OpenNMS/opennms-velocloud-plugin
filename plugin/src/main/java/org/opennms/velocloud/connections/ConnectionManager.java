@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.scv.Credentials;
 import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
@@ -42,6 +43,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 public class ConnectionManager {
+
+    private static final String PREFIX = "velocloud_connection_";
 
     private static final String ATTR_ENTERPRISE_ID = "enterpriseId";
 
@@ -57,7 +60,10 @@ public class ConnectionManager {
      * @return the list of aliases
      */
     public Set<String> getAliases() {
-        return this.vault.getAliases();
+        return this.vault.getAliases().stream()
+                .filter(alias -> alias.startsWith(PREFIX))
+                .map(alias -> alias.substring(PREFIX.length()))
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -68,7 +74,7 @@ public class ConnectionManager {
      * @throws ConnectionValidationError if the connection config is invalid
      */
     public Optional<Connection> getConnection(final String alias) throws ConnectionValidationError {
-        final var credentials = this.vault.getCredentials(alias);
+        final var credentials = this.vault.getCredentials(PREFIX + alias);
         if (credentials == null) {
             return Optional.empty();
         }
@@ -178,7 +184,7 @@ public class ConnectionManager {
 
         @Override
         public void save() {
-            ConnectionManager.this.vault.setCredentials(this.alias, this.asCredentials());
+            ConnectionManager.this.vault.setCredentials(PREFIX + this.alias, this.asCredentials());
         }
 
         private Credentials asCredentials() {
