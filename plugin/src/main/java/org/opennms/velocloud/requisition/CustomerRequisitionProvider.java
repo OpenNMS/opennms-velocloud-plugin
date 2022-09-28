@@ -28,7 +28,6 @@
 
 package org.opennms.velocloud.requisition;
 
-import java.net.InetAddress;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -38,11 +37,14 @@ import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableReq
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.internal.Utils;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
 
@@ -84,7 +86,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
         try {
             client.getEdges().stream().forEach(edge -> {
                 requisition.addNode(ImmutableRequisitionNode.newBuilder()
-                        .setForeignId(context.getRequest().getForeignSource())
+                        .setForeignId(edge.logicalId)
                         .setNodeLabel(edge.name)
                         .setLocation(edge.site)
                         .addMetaData(ImmutableRequisitionMetaData.newBuilder()
@@ -100,7 +102,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                         .addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                 .setContext(VELOCLOUD_METADATA_CONTEXT)
                                 .setKey("alertsEnabled")
-                                .setValue(edge.alertsEnabled.toString())
+                                .setValue(String.valueOf(edge.alertsEnabled))
                                 .build())
                         .addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                 .setContext(VELOCLOUD_METADATA_CONTEXT)
@@ -137,78 +139,88 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                 .setKey("logicalId")
                                 .setValue(edge.logicalId)
                                 .build())
-                        .setInterfaces(edge.links.stream().map(link ->
-                                ImmutableRequisitionInterface.newBuilder()
-                                        .setIpAddress(getInetAddress(link.ipAddress))
-                                        .setDescription(link.displayName)
-                                        .addMonitoredService(VELOCLOUD_LINK_SERVICE_NAME)
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("edgeId")
-                                                .setValue(link.edgeId.toString())
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("logicalId")
-                                                .setValue(link.logicalId)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("internalId")
-                                                .setValue(link.internalId)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("interface")
-                                                .setValue(link._interface)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("macAddress")
-                                                .setValue(link.macAddress)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("ipv6Address")
-                                                .setValue(link.ipv6Address)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("netmask")
-                                                .setValue(link.netmask)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("networkSide")
-                                                .setValue(link.networkSide)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("networkType")
-                                                .setValue(link.networkType)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("isp")
-                                                .setValue(link.isp)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("org")
-                                                .setValue(link.org)
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("lat")
-                                                .setValue(link.lat.toString())
-                                                .build())
-                                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                                .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                .setKey("lon")
-                                                .setValue(link.lon.toString())
-                                                .build())
-                                        .build()
-                                    ).collect(Collectors.toList()))
+                        .setInterfaces(edge.links.stream().map(link -> {
+                            final var intf =ImmutableRequisitionInterface.newBuilder()
+                                    .setIpAddress(Utils.getValidInetAddress(link.ipAddress))
+                                    .setDescription(link.displayName)
+                                    .addMonitoredService(VELOCLOUD_LINK_SERVICE_NAME)
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("edgeId")
+                                            .setValue(String.valueOf(link.edgeId))
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("logicalId")
+                                            .setValue(link.logicalId)
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("internalId")
+                                            .setValue(link.internalId)
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("interface")
+                                            .setValue(link._interface)
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("macAddress")
+                                            .setValue(link.macAddress)
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("netmask")
+                                            .setValue(link.netmask)
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("networkSide")
+                                            .setValue(link.networkSide)
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("networkType")
+                                            .setValue(link.networkType)
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("isp")
+                                            .setValue(link.isp)
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("org")
+                                            .setValue(link.org)
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("lat")
+                                            .setValue(String.valueOf(link.lat))
+                                            .build())
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("lon")
+                                            .setValue(String.valueOf(link.lon))
+                                            .build());
+                            if (!Strings.isNullOrEmpty(link.ipv6Address)) {
+                                intf.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("ipv6Address")
+                                    .setValue(link.ipv6Address)
+                                    .build());
+
+                            }
+                            if (!Strings.isNullOrEmpty(link.linkMode)) {
+                                intf.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                        .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                        .setKey("linkMode")
+                                        .setValue(link.linkMode)
+                                        .build());
+                            }
+                            return intf.build();
+                        }).collect(Collectors.toList()))
                         .build());
             });
         }
@@ -237,9 +249,5 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
         public void setEnterpriseId(final Integer enterpriseId) {
             this.enterpriseId = enterpriseId;
         }
-    }
-
-    private InetAddress getInetAddress(String ip) {
-        return null;
     }
 }

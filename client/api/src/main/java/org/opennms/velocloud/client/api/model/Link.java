@@ -32,12 +32,11 @@ import com.google.common.base.MoreObjects;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 public class Link {
-    public final Integer id;
+    public final int id;
     public final OffsetDateTime created;
-    public final Integer edgeId;
+    public final int edgeId;
     public final String logicalId;
     public final String internalId;
     public final String _interface;
@@ -50,11 +49,11 @@ public class Link {
     public final String displayName;
     public final String isp;
     public final String org;
-    public final Double lat;
-    public final Double lon;
+    public final double lat;
+    public final double lon;
     public final String linkMode;
-    public final Boolean alertsEnabled;
-    public final Boolean operatorAlertsEnabled;
+    public final boolean alertsEnabled;
+    public final boolean operatorAlertsEnabled;
     public final String serviceGroups;
 
     private Link(final Builder builder) {
@@ -127,8 +126,8 @@ public class Link {
         private Double lat;
         private Double lon;
         private String linkMode;
-        private Boolean alertsEnabled;
-        private Boolean operatorAlertsEnabled;
+        private boolean alertsEnabled;
+        private boolean operatorAlertsEnabled;
         private String serviceGroups;
 
         private Builder() {
