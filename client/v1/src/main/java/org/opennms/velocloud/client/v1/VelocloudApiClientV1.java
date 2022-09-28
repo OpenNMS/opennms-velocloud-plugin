@@ -87,9 +87,13 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEn
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGatewaysResultItem;
 import com.google.common.net.InetAddresses;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyUsers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VelocloudApiClientV1 extends ApiClient implements VelocloudApiClient {
 
+    private static final Logger LOG = LoggerFactory.getLogger(VelocloudApiClientV1.class);
     /**
      * Authentication parameter for ApiKeyAuth used in header parameter value
      *
