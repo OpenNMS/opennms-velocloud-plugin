@@ -32,11 +32,11 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-import java.util.UUID;
+
+import com.google.common.base.Strings;
 
 public class Gateway {
 
-    public final UUID enterpriseId;
     public final String gatewayId;
     public final int id;
     public final String gatewayName;
@@ -56,8 +56,8 @@ public class Gateway {
     public final String city;
     public final String state;
     public final String country;
-    public final double latitude;
-    public final double longitude;
+    public final Double latitude;
+    public final Double longitude;
     public final String softwareVersion;
     public final String buildNumber;
     public final int networkId;
@@ -65,38 +65,36 @@ public class Gateway {
     public final List<String> roles;
 
     private Gateway(final Builder builder) {
-        this.enterpriseId = Objects.requireNonNull(builder.enterpriseId);
         this.gatewayId = Objects.requireNonNull(builder.gatewayId);
         this.id = Objects.requireNonNull(builder.id);
         this.gatewayName = Objects.requireNonNull(builder.gatewayName);
-        this.description = Objects.requireNonNullElse(builder.description, "");
+        this.description = Strings.nullToEmpty(builder.description);
         this.ipAddress = Objects.requireNonNull(builder.ipAddress);
         this.isLoadBalanced = Objects.requireNonNull(builder.isLoadBalanced);
         this.gatewayState = Objects.requireNonNull(builder.gatewayState);
         this.serviceState = Objects.requireNonNull(builder.serviceState);
-        this.bastionState = Objects.requireNonNullElse(builder.bastionState, "");
+        this.bastionState = Strings.nullToEmpty(builder.bastionState);
         this.deviceId = Objects.requireNonNull(builder.deviceId);
-        this.dnsName = Objects.requireNonNull(builder.dnsName);
+        this.dnsName = Strings.emptyToNull(builder.dnsName);
         this.siteId = Objects.requireNonNull(builder.siteId);
-        this.siteName = Objects.requireNonNull(builder.siteName);
-        this.address = Objects.requireNonNull(builder.address);
-        this.address2 = Objects.requireNonNull(builder.address2);
-        this.zip = Objects.requireNonNull(builder.zip);
-        this.city = Objects.requireNonNull(builder.city);
-        this.state = Objects.requireNonNull(builder.state);
-        this.country = Objects.requireNonNull(builder.country);
-        this.latitude = Objects.requireNonNull(builder.latitude);
-        this.longitude = Objects.requireNonNull(builder.longitude);
+        this.siteName = Strings.nullToEmpty(builder.siteName);
+        this.address = Strings.emptyToNull(builder.address);
+        this.address2 = Strings.emptyToNull(builder.address2);
+        this.zip = Strings.emptyToNull(builder.zip);
+        this.city = Strings.emptyToNull(builder.city);
+        this.state = Strings.emptyToNull(builder.state);
+        this.country = Strings.emptyToNull(builder.country);
+        this.latitude = builder.latitude;
+        this.longitude = builder.longitude;
         this.softwareVersion = Objects.requireNonNull(builder.softwareVersion);
         this.buildNumber = Objects.requireNonNull(builder.buildNumber);
         this.networkId = Objects.requireNonNull(builder.networkId);
-        this.privateIpAddress = Objects.requireNonNull(builder.privateIpAddress);
+        this.privateIpAddress = builder.privateIpAddress;
         this.roles = Objects.requireNonNull(builder.roles);
     }
 
     public static class Builder {
 
-        private UUID enterpriseId;
         private String gatewayId;
         private Integer id;
         private String gatewayName;
@@ -124,13 +122,7 @@ public class Gateway {
         private InetAddress privateIpAddress;
         private List<String> roles;
 
-
         private Builder() {
-        }
-
-        public Gateway.Builder withEnterpriseId(final UUID enterpriseId) {
-            this.enterpriseId = enterpriseId;
-            return this;
         }
 
         public Gateway.Builder withGatewayId(final String gatewayId) {
@@ -275,7 +267,6 @@ public class Gateway {
 
     public String toString() {
         return new StringJoiner(", ")
-                .add("enterpriseId:" + this.enterpriseId)
                 .add("gatewayId:" + this.gatewayId)
                 .add("id:" + this.id)
                 .add("gatewayName:" + this.gatewayName)

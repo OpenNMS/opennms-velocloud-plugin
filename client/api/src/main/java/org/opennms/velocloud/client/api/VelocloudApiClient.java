@@ -28,7 +28,6 @@
 package org.opennms.velocloud.client.api;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.Enterprise;
@@ -37,9 +36,9 @@ import org.opennms.velocloud.client.api.model.User;
 
 public interface VelocloudApiClient {
 
-    List<Edge> getEdges(final UUID enterpriseId) throws VelocloudApiException;
+    List<Edge> getEdges(final String enterpriseId) throws VelocloudApiException;
 
-    List<Gateway> getGateways(final UUID enterpriseId) throws VelocloudApiException;
+    List<Gateway> getGateways() throws VelocloudApiException;
 
     List<Enterprise> getEnterpriseProxies() throws VelocloudApiException;
 
