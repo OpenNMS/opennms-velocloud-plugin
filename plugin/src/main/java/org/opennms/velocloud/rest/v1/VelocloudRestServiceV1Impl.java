@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Objects;
 
 public class VelocloudRestServiceV1Impl extends AbstractVelocloudRestService implements VelocloudRestServiceV1 {
 
@@ -82,6 +83,41 @@ public class VelocloudRestServiceV1Impl extends AbstractVelocloudRestService imp
             return Response.serverError().build();
         }
 
+    }
+
+    @Override
+    public Response validateConnection(String alias) {
+        try {
+            final var connection = Objects.requireNonNull(connectionManager.getConnection(alias),
+                    "No credentials found with given alias");
+            clientProvider.connect(connection.get().getOrchestratorUrl(), connection.get().getApiKey());
+        }
+        catch (Exception e) {
+            return Response.status(Response.Status.PRECONDITION_FAILED).entity(e.getMessage()).build();
+        }
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response editConnection(String alias, String url, String apiKey) {
+        try {
+            final var connection = Objects.requireNonNull(connectionManager.getConnection(alias),
+                    "No credentials found with given alias");
+            clientProvider.connect(connection.get().getOrchestratorUrl(), connection.get().getApiKey());
+            connection.get().setApiKey(apiKey);
+            connection.get().setOrchestratorUrl(url);
+            connection.get().save();
+        }
+        catch (Exception e) {
+            return Response.status(Response.Status.PRECONDITION_FAILED).entity(e.getMessage()).build();
+        }
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response deleteConnection(String alias) {
+        // TODO - check if connection is active, if not remove from SCV
+        return Response.serverError().build();
     }
 
     @Override

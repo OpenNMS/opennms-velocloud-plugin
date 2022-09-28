@@ -45,9 +45,9 @@ import java.util.UUID;
 
 public class AbstractVelocloudRestService implements VelocloudRestService {
 
-    private final VelocloudApiClientProvider clientProvider;
+    protected final VelocloudApiClientProvider clientProvider;
 
-    private final ConnectionManager connectionManager;
+    protected final ConnectionManager connectionManager;
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractVelocloudRestService.class);
 
@@ -68,6 +68,21 @@ public class AbstractVelocloudRestService implements VelocloudRestService {
 
     @Override
     public Response getStatus() {
+        throw new NotSupportedException();
+    }
+
+    @Override
+    public Response validateConnection(String alias) {
+        throw new NotSupportedException();
+    }
+
+    @Override
+    public Response editConnection(String alias, String url, String apiKey) {
+        throw new NotSupportedException();
+    }
+
+    @Override
+    public Response deleteConnection(String alias) {
         throw new NotSupportedException();
     }
 

@@ -30,6 +30,8 @@ package org.opennms.velocloud.rest.api;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -53,4 +55,21 @@ public interface VelocloudRestService {
     @Path("/status")
     @Produces(value = {MediaType.APPLICATION_JSON})
     Response getStatus();
+
+    @GET
+    @Path("/validate-connection")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    Response validateConnection(@QueryParam("alias") String alias) throws VelocloudApiException;
+
+    @POST
+    @Path("/edit-connection")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    Response editConnection(@QueryParam("alias") String alias,
+                            @QueryParam("url") String url,
+                            @QueryParam("apiKey") String apiKey) throws VelocloudApiException;
+
+    @DELETE
+    @Path("/delete-connection")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    Response deleteConnection(@QueryParam("alias") String alias) throws VelocloudApiException;
 }
