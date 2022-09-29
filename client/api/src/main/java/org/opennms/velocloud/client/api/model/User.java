@@ -52,10 +52,10 @@ public class User {
 
         this.id = Objects.requireNonNull(builder.id);
         this.userType = Objects.requireNonNull(builder.userType);
-        this.domain = Objects.requireNonNull(builder.domain);
+        this.domain = builder.domain;
         this.username = Objects.requireNonNull(builder.username);
-        this.firstName = Objects.requireNonNull(builder.firstName);
-        this.lastName = Objects.requireNonNull(builder.lastName);
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
         this.email = Objects.requireNonNull(builder.email);
         this.isActive = Objects.requireNonNull(builder.isActive);
         this.isLocked = Objects.requireNonNull(builder.isLocked);

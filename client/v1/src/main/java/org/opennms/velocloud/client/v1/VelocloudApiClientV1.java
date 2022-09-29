@@ -86,7 +86,6 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEn
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGatewaysResultItem;
-
 import com.google.common.net.InetAddresses;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyUsers;
 import org.slf4j.Logger;

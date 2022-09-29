@@ -28,9 +28,8 @@
 
 package org.opennms.velocloud.requisition;
 
-import java.util.Objects;
-
 import java.util.stream.Collectors;
+import java.util.Objects;
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.SnmpPrimaryType;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
