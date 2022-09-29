@@ -70,7 +70,9 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         final var alias = Objects.requireNonNull(parameters.get("alias"), "Missing requisition parameter: alias");
         try {
             final var connection = this.connectionManager.getConnection(alias)
+
                                                          .orElseThrow(() -> new NullPointerException("Connection not found for alias: " + alias));
+
 
             return Objects.requireNonNull(this.createRequest(connection));
 

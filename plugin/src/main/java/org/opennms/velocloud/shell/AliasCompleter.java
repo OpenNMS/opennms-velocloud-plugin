@@ -25,24 +25,34 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.client.api;
+package org.opennms.velocloud.shell;
+
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.karaf.shell.api.console.CommandLine;
+import org.apache.karaf.shell.api.console.Completer;
+import org.apache.karaf.shell.api.console.Session;
+import org.apache.karaf.shell.support.completers.StringsCompleter;
+import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 
 import java.util.List;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.Enterprise;
-import org.opennms.velocloud.client.api.model.Gateway;
-import org.opennms.velocloud.client.api.model.User;
 
-public interface VelocloudApiClient {
+@Service
+public class AliasCompleter implements Completer {
 
-    List<Edge> getEdges(final String enterpriseId) throws VelocloudApiException;
+    @Reference
+    public SecureCredentialsVault secureCredentialsVault;
 
-    List<Gateway> getGateways() throws VelocloudApiException;
+    @Override
+    public int complete(Session session, CommandLine commandLine, List<String> candidates) {
+        StringsCompleter delegate = new StringsCompleter();
 
-    List<Enterprise> getEnterpriseProxies() throws VelocloudApiException;
+        for (String alias : secureCredentialsVault.getAliases()) {
+            delegate.getStrings().add(String.valueOf(alias));
+        }
+        return delegate.complete(session, commandLine, candidates);
+    }
 
-    List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException;
 
-    List<User> getEnterpriseProxyConnections() throws VelocloudApiException;
 }
