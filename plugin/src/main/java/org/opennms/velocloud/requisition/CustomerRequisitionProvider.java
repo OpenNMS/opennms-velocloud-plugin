@@ -59,7 +59,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
     @Override
     protected Requisition handleRequest(final Request request, final VelocloudApiClient client) {
         final var requisition = ImmutableRequisition.newBuilder()
-                                                    .setForeignSource(request.getForeignSource());
+                .setForeignSource(request.getForeignSource());
 
         return requisition.build();
     }

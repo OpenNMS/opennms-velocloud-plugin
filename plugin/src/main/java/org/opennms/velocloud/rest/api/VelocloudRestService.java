@@ -25,25 +25,32 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.client.api;
+package org.opennms.velocloud.rest.api;
 
-import java.util.List;
+import org.opennms.velocloud.client.api.VelocloudApiException;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.Enterprise;
-import org.opennms.velocloud.client.api.model.Gateway;
-import org.opennms.velocloud.client.api.model.User;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-public interface VelocloudApiClient {
+@Path("/velocloud/api")
+public interface VelocloudRestService {
 
-    List<Edge> getEdges(final String enterpriseId) throws VelocloudApiException;
+    @GET
+    @Path("/partner/connections")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    Response getMspPartnerConnections(@QueryParam("alias") String alias) throws VelocloudApiException;
 
-    List<Gateway> getGateways() throws VelocloudApiException;
+    @GET
+    @Path("/partner/customers")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    Response getCustomersForMspPartner(@QueryParam("alias") String alias) throws VelocloudApiException;
 
-    List<Enterprise> getEnterpriseProxies() throws VelocloudApiException;
-
-    List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException;
-
-    List<User> getEnterpriseProxyConnections() throws VelocloudApiException;
-
+    @GET
+    @Path("/status")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    Response getStatus();
 }

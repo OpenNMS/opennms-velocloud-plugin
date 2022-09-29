@@ -25,25 +25,13 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.client.api;
+package org.opennms.velocloud.rest.v1;
 
-import java.util.List;
+import org.opennms.velocloud.rest.api.VelocloudRestService;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.Enterprise;
-import org.opennms.velocloud.client.api.model.Gateway;
-import org.opennms.velocloud.client.api.model.User;
+import javax.ws.rs.Path;
 
-public interface VelocloudApiClient {
-
-    List<Edge> getEdges(final String enterpriseId) throws VelocloudApiException;
-
-    List<Gateway> getGateways() throws VelocloudApiException;
-
-    List<Enterprise> getEnterpriseProxies() throws VelocloudApiException;
-
-    List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException;
-
-    List<User> getEnterpriseProxyConnections() throws VelocloudApiException;
+@Path("/velocloud/api/v1")
+public interface VelocloudRestServiceV1 extends VelocloudRestService {
 
 }
