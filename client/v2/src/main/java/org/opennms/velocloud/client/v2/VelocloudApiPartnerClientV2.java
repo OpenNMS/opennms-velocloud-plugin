@@ -93,5 +93,9 @@ public class VelocloudApiPartnerClientV2 extends ApiClient implements VelocloudA
     }
 
 
+    @Override
+    public List<User> getEnterpriseProxyConnections() {
+        throw new UnsupportedOperationException();
+    }
 }
 

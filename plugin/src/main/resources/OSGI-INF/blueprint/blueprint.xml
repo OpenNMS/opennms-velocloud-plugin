@@ -17,6 +17,7 @@
         <argument ref="clientManager" />
     </bean>
 
+    <!--    Requisition-->
     <bean id="partnerRequisitionProvider" class="org.opennms.velocloud.requisition.PartnerRequisitionProvider">
         <argument ref="clientManager"/>
         <argument ref="connectionManager"/>
@@ -29,4 +30,14 @@
     </bean>
     <service ref="customerRequisitionProvider" interface="org.opennms.integration.api.v1.requisition.RequisitionProvider"/>
 
+    <!--    Rest-->
+    <bean id="velocloudRestServiceV1" class="org.opennms.velocloud.rest.v1.VelocloudRestServiceV1Impl">
+        <argument ref="clientProvider"/>
+        <argument ref="connectionManager"/>
+    </bean>
+    <service interface="org.opennms.velocloud.rest.v1.VelocloudRestServiceV1" ref="velocloudRestServiceV1">
+        <service-properties>
+            <entry key="application-path" value="/rest/plugin"/>
+        </service-properties>
+    </service>
 </blueprint>
