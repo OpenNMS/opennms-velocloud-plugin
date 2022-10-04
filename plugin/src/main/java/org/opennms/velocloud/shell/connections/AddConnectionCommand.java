@@ -25,7 +25,7 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.shell;
+package org.opennms.velocloud.shell.connections;
 
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
@@ -34,9 +34,9 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.velocloud.connections.ConnectionManager;
 
-@Command(scope = "opennms-velocloud", name = "set-credentials", description = "Set Enterprise Credentials", detailedDescription = "Set Enterprise User Credentials")
+@Command(scope = "opennms-velocloud", name = "connection-add", description = "Add a connection", detailedDescription = "Add a connection to a velocloud orchestrator")
 @Service
-public class VelocloudSetCredentialsCommand implements Action {
+public class AddConnectionCommand implements Action {
 
     @Reference
     private ConnectionManager connectionManager;
@@ -50,12 +50,14 @@ public class VelocloudSetCredentialsCommand implements Action {
     @Argument(index = 2, name = "apiKey", description = "Orchestrator API Key", required = true, multiValued = false)
     public String apiKey = null;
 
-    @Argument(index = 3, name = "enterprise id", description = "Enterprise ID", required = false, multiValued = false)
-    public String enterpriseId = null;
-
     @Override
     public Object execute() throws Exception {
-        connectionManager.addConnection(alias, url, apiKey, enterpriseId);
+        if (this.connectionManager.getAliases().contains(this.alias)) {
+            System.err.println("Connection with alias already exists: " + this.alias);
+            return null;
+        }
+
+        this.connectionManager.addConnection(this.alias, this.url, this.apiKey);
         return null;
     }
 }

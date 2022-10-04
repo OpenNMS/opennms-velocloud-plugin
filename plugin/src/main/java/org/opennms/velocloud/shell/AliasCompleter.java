@@ -34,6 +34,7 @@ import org.apache.karaf.shell.api.console.Completer;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.support.completers.StringsCompleter;
 import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
+import org.opennms.velocloud.connections.ConnectionManager;
 
 import java.util.List;
 
@@ -42,15 +43,11 @@ import java.util.List;
 public class AliasCompleter implements Completer {
 
     @Reference
-    public SecureCredentialsVault secureCredentialsVault;
+    public ConnectionManager connectionManager;
 
     @Override
     public int complete(Session session, CommandLine commandLine, List<String> candidates) {
-        StringsCompleter delegate = new StringsCompleter();
-
-        for (String alias : secureCredentialsVault.getAliases()) {
-            delegate.getStrings().add(String.valueOf(alias));
-        }
+        final var delegate = new StringsCompleter(connectionManager.getAliases(), true);
         return delegate.complete(session, commandLine, candidates);
     }
 

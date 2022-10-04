@@ -27,47 +27,37 @@
  *******************************************************************************/
 package org.opennms.velocloud.shell;
 
-import com.google.common.base.Strings;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.opennms.integration.api.v1.scv.Credentials;
-import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
-import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
-import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 
-import java.util.Optional;
-
-@Command(scope = "opennms-velocloud", name = "list-msp-partner-customers", description = "List MSP Customers", detailedDescription = "List Enterprises for MSP")
+@Command(scope = "opennms-velocloud", name = "list-customers", description = "List Customers", detailedDescription = "List all customers")
 @Service
-public class VelocloudListMspPartnerCustomersCommand implements Action {
+public class ListCustomersCommand implements Action {
 
     @Reference
     public ConnectionManager connectionManager;
 
-    @Reference
-    private VelocloudApiClientProvider clientProvider;
-
-    @Argument(index = 0, name = "alias", description = "Velocloud URL", required = true, multiValued = false)
+    @Argument(index = 0, name = "alias", description = "Connection alias", required = true, multiValued = false)
     @Completion(AliasCompleter.class)
     public String alias = null;
 
     @Override
     public Object execute() throws Exception {
-
-        final Optional<Connection> connection = connectionManager.getConnection(alias);
-
-        final String url = connection.get().getOrchestratorUrl();
-        final String apiKey = connection.get().getApiKey();
-        if (Strings.isNullOrEmpty(apiKey) || Strings.isNullOrEmpty(url)) {
-            throw new VelocloudApiException("Unable to retrieve velocloud token");
+        final var client = this.connectionManager.getPartnerClient(alias);
+        if (client.isEmpty()) {
+            System.err.println("No connection with alias " + this.alias);
+            return null;
         }
-        clientProvider.connect(url, apiKey).getEnterpriseProxies().forEach(e -> System.out.println(e.toString()));
+
+        for (final var customer : client.get().getCustomers()) {
+            System.out.println(customer);
+        }
+
         return null;
     }
 }

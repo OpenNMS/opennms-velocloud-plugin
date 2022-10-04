@@ -27,6 +27,8 @@
  *******************************************************************************/
 package org.opennms.velocloud.client.api.model;
 
+import com.google.common.base.Strings;
+
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -58,22 +60,22 @@ public class Customer {
         this.id = Objects.requireNonNull(builder.id);
         this.networkId = Objects.requireNonNull(builder.networkId);
         this.gatewayPoolId = Objects.requireNonNull(builder.gatewayPoolId);
-        this.bastionState = Objects.requireNonNull(builder.bastionState);
+        this.bastionState = Strings.nullToEmpty(builder.bastionState);
         this.alertsEnabled = Objects.requireNonNull(builder.alertsEnabled);
         this.operatorAlertsEnabled = Objects.requireNonNull(builder.operatorAlertsEnabled);
-        this.name = Objects.requireNonNull(builder.name);
-        this.domain = Objects.requireNonNull(builder.domain);
-        this.accountNumber = Objects.requireNonNull(builder.accountNumber);
-        this.description = Objects.requireNonNullElse(builder.description, "Default");
-        this.address = Objects.requireNonNullElse(builder.address, "Default");
-        this.city = Objects.requireNonNullElse(builder.city,"Default");
-        this.state = Objects.requireNonNullElse(builder.state, "Default");
-        this.zip = Objects.requireNonNullElse(builder.zip, "Default");
-        this.country = Objects.requireNonNullElse(builder.country, "Default");
+        this.name = Strings.nullToEmpty(builder.name);
+        this.domain = Strings.nullToEmpty(builder.domain);
+        this.accountNumber = Strings.nullToEmpty(builder.accountNumber);
+        this.description = Strings.nullToEmpty(builder.description);
+        this.address = Strings.nullToEmpty(builder.address);
+        this.city = Strings.nullToEmpty(builder.city);
+        this.state = Strings.nullToEmpty(builder.state);
+        this.zip = Strings.nullToEmpty(builder.zip);
+        this.country = Strings.nullToEmpty(builder.country);
         this.latitude = Objects.requireNonNull(builder.latitude);
         this.longitude = Objects.requireNonNull(builder.longitude);
-        this.timezone = Objects.requireNonNull(builder.timezone);
-        this.locale = Objects.requireNonNull(builder.locale);
+        this.timezone = Strings.nullToEmpty(builder.timezone);
+        this.locale = Strings.nullToEmpty(builder.locale);
     }
 
     public static class Builder {
