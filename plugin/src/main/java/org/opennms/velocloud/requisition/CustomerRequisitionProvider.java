@@ -48,10 +48,13 @@ import com.google.common.base.Strings;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CustomerRequisitionProvider.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CustomerRequisitionProvider.class);
 
     public final static String TYPE = "velocloud-customer";
+    
     public static final String PARAMETER_ENTERPRISE_ID = "enterpriseId";
+
+    public static final String VELOCLOUD_LINK_SERVICE_NAME = "VelocloudLink";
 
     public CustomerRequisitionProvider(final ClientManager clientManager,
                                        final ConnectionManager connectionManager) {
@@ -84,8 +87,8 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                     .setForeignSource(context.getForeignSource());
 
         try {
-            client.getEdges().stream().forEach(edge -> {
-                requisition.addNode(ImmutableRequisitionNode.newBuilder()
+            for (var edge : client.getEdges()) {
+                final var node = ImmutableRequisitionNode.newBuilder()
                         .setForeignId(edge.logicalId)
                         .setNodeLabel(edge.name)
                         .setLocation(edge.site)
@@ -210,7 +213,6 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                     .setKey("ipv6Address")
                                     .setValue(link.ipv6Address)
                                     .build());
-
                             }
                             if (!Strings.isNullOrEmpty(link.linkMode)) {
                                 intf.addMetaData(ImmutableRequisitionMetaData.newBuilder()
@@ -221,8 +223,9 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                             }
                             return intf.build();
                         }).collect(Collectors.toList()))
-                        .build());
-            });
+                        .build();
+                requisition.addNode(node);
+            }
         }
         catch (VelocloudApiException vae) {
             LOG.error("Unable to build requisition", vae);

@@ -53,8 +53,6 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
     public static final String VELOCLOUD_METADATA_CONTEXT = "velocloud";
 
-    public static final String VELOCLOUD_LINK_SERVICE_NAME = "VelocloudLink";
-
     private final ClientManager clientManager;
 
     private final ConnectionManager connectionManager;
