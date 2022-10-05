@@ -76,4 +76,15 @@
         <bundle>mvn:org.opennms.plugins.velocloud/velocloud-client-api/${project.version}</bundle>
         <bundle>mvn:org.opennms.plugins.velocloud/velocloud-client-v2/${project.version}</bundle>
     </feature>
+
+    <feature name="opennms-plugins-velocloud-client-shell" description="Velocloud API client shell command" version="${project.version}">
+        <feature dependency="true">aries-blueprint</feature>
+        <feature dependency="true">shell</feature>
+
+        <feature version="${jackson.version}" dependency="true">jackson</feature>
+        <feature version="${guava.version}" dependency="true">guava</feature>
+
+        <bundle>mvn:org.opennms.plugins.velocloud/velocloud-client-api/${project.version}</bundle>
+        <bundle>mvn:org.opennms.plugins.velocloud/velocloud-client-shell/${project.version}</bundle>
+    </feature>
 </features>

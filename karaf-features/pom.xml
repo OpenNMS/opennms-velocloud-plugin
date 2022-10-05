@@ -86,6 +86,7 @@
                                 <feature>opennms-plugins-velocloud</feature>
                                 <feature>opennms-plugins-velocloud-client-v1</feature>
                                 <feature>opennms-plugins-velocloud-client-v2</feature>
+                                <feature>opennms-plugins-velocloud-client-shell</feature>
                                 <feature>guava</feature>
                                 <feature>jackson</feature>
                             </features>

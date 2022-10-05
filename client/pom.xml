@@ -17,6 +17,7 @@
         <module>api</module>
         <module>v1</module>
         <module>v2</module>
+        <module>shell</module>
     </modules>
 
 </project>
