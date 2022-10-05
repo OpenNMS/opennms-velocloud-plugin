@@ -79,12 +79,21 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
             for (final var gateway : client.getGateways()) {
                 final var node = ImmutableRequisitionNode.newBuilder()
                                                          .setForeignId(gateway.gatewayId)
-                                                         .setNodeLabel(gateway.gatewayName)
-                                                         .setLocation(gateway.siteName);
+                                                         .setNodeLabel(gateway.gatewayName);
                 node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                              .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                              .setKey("alias")
                                                              .setValue(context.getAlias())
+                                                             .build());
+                node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                                             .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                                             .setKey("siteName")
+                                                             .setValue(gateway.siteName)
+                                                             .build());
+                node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                                             .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                                             .setKey("siteId")
+                                                             .setValue(Integer.toString(gateway.siteId))
                                                              .build());
                 node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                              .setContext(VELOCLOUD_METADATA_CONTEXT)
@@ -150,8 +159,8 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                                                                   .build());
                 }
 
-                final var service = ImmutableRequisitionMonitoredService.newBuilder()
-                                                                        .setName("VelocloudGateway");
+                iface.addMonitoredService("VelocloudGatewayConnection");
+                iface.addMonitoredService("VelocloudGatewayService");
 
                 node.addInterface(iface.build());
 
