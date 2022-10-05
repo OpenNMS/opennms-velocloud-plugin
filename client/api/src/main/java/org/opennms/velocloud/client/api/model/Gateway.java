@@ -63,6 +63,7 @@ public class Gateway {
     public final int networkId;
     public final InetAddress privateIpAddress;
     public final List<String> roles;
+    public final int connectedEdges;
 
     private Gateway(final Builder builder) {
         this.gatewayId = Objects.requireNonNull(builder.gatewayId);
@@ -91,6 +92,7 @@ public class Gateway {
         this.networkId = Objects.requireNonNull(builder.networkId);
         this.privateIpAddress = builder.privateIpAddress;
         this.roles = Objects.requireNonNull(builder.roles);
+        this.connectedEdges = Objects.requireNonNull(builder.connectedEdges);
     }
 
     public static class Builder {
@@ -121,6 +123,7 @@ public class Gateway {
         private Integer networkId;
         private InetAddress privateIpAddress;
         private List<String> roles;
+        private Integer connectedEdges;
 
         private Builder() {
         }
@@ -252,6 +255,11 @@ public class Gateway {
 
         public Builder withRoles(List<String> roles) {
             this.roles = roles;
+            return this;
+        }
+
+        public Builder withConnectedEdges(Integer connectedEdges) {
+            this.connectedEdges = connectedEdges;
             return this;
         }
 
