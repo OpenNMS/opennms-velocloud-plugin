@@ -55,6 +55,8 @@ public class Link {
     public final String linkMode;
     public final boolean alertsEnabled;
     public final boolean operatorAlertsEnabled;
+    public final String linkState;
+    public final String serviceState;
 
     private Link(final Builder builder) {
         this.id = Objects.requireNonNull(builder.id);
@@ -77,6 +79,8 @@ public class Link {
         this.linkMode = builder.linkMode;
         this.alertsEnabled = builder.alertsEnabled;
         this.operatorAlertsEnabled = builder.operatorAlertsEnabled;
+        this.linkState = Objects.requireNonNull(builder.linkState);
+        this.serviceState = Objects.requireNonNull(builder.serviceState);
     }
 
     @Override
@@ -102,6 +106,8 @@ public class Link {
                 .add("linkMode", this.linkMode)
                 .add("alertsEnabled", this.alertsEnabled)
                 .add("operatorAlertsEnabled", this.operatorAlertsEnabled)
+                .add("linkState", this.linkState)
+                .add("serviceStatus", this.serviceState)
                 .toString();
     }
 
@@ -126,6 +132,8 @@ public class Link {
         private String linkMode;
         private boolean alertsEnabled;
         private boolean operatorAlertsEnabled;
+        private String linkState;
+        private String serviceState;
 
         private Builder() {
         }
@@ -227,6 +235,16 @@ public class Link {
 
         public Builder withOperatorAlertsEnabled(Boolean operatorAlertsEnabled) {
             this.operatorAlertsEnabled = operatorAlertsEnabled;
+            return this;
+        }
+
+        public Builder withLinkState(final String linkState) {
+            this.linkState = linkState;
+            return this;
+        }
+
+        public Builder withServiceState(final String serviceState) {
+            this.serviceState = serviceState;
             return this;
         }
 

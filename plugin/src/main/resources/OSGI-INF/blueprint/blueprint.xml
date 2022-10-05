@@ -56,4 +56,32 @@
             <argument ref="connectionManager"/>
         </bean>
     </service>
+
+    <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
+        <bean class="org.opennms.velocloud.pollers.gateway.EdgeConnectionStatusPollerFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+        </bean>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
+        <bean class="org.opennms.velocloud.pollers.gateway.EdgeServiceStatusPollerFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+        </bean>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
+        <bean class="org.opennms.velocloud.pollers.gateway.LinkConnectionStatusPollerFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+        </bean>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
+        <bean class="org.opennms.velocloud.pollers.gateway.LinkServiceStatusPollerFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+        </bean>
+    </service>
 </blueprint>

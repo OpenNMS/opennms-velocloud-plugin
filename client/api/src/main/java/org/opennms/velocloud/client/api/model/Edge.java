@@ -55,6 +55,8 @@ public class Edge {
     public final String selfMacAddress;
     public final int siteId;
     public final String softwareVersion;
+    public final String edgeState;
+    public final String serviceState;
 
     private Edge(final Builder builder) {
         this.operator = Objects.requireNonNull(builder.operator);
@@ -76,7 +78,8 @@ public class Edge {
         this.selfMacAddress = Objects.requireNonNull(builder.selfMacAddress);
         this.siteId = builder.siteId;
         this.softwareVersion = Objects.requireNonNull(builder.softwareVersion);
-
+        this.edgeState = Objects.requireNonNull(builder.edgeState);
+        this.serviceState = Objects.requireNonNull(builder.serviceState);
     }
 
     @Override
@@ -101,6 +104,8 @@ public class Edge {
                           .add("selfMacAddress", this.selfMacAddress)
                           .add("siteId", this.siteId)
                           .add("softwareVersion", this.softwareVersion)
+                          .add("edgeStatus", this.edgeState)
+                          .add("serviceStatus", this.serviceState)
                           .toString();
     }
 
@@ -124,6 +129,8 @@ public class Edge {
         private String selfMacAddress;
         private int siteId;
         private String softwareVersion;
+        private String edgeState;
+        private String serviceState;
 
         private Builder() {
         }
@@ -220,6 +227,16 @@ public class Edge {
 
         public Builder withSoftwareVersion(String softwareVersion) {
             this.softwareVersion = softwareVersion;
+            return this;
+        }
+
+        public Builder withEdgeState(final String edgeState) {
+            this.edgeState = edgeState;
+            return this;
+        }
+
+        public Builder withServiceState(final String serviceState) {
+            this.serviceState = serviceState;
             return this;
         }
 

@@ -31,6 +31,7 @@ package org.opennms.velocloud.client.api;
 import java.util.List;
 
 import org.opennms.velocloud.client.api.model.Edge;
+import org.opennms.velocloud.client.api.model.Link;
 import org.opennms.velocloud.client.api.model.User;
 
 /**
