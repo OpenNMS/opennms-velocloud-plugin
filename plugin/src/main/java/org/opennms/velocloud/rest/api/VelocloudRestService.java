@@ -28,6 +28,8 @@
 package org.opennms.velocloud.rest.api;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.rest.dto.EnterpriseDTO;
+import org.opennms.velocloud.rest.dto.UserDTO;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -35,6 +37,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/velocloud/api")
 public interface VelocloudRestService {
@@ -42,5 +45,5 @@ public interface VelocloudRestService {
     @GET
     @Path("/partner/{alias}/customers")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    Response getCustomersForMspPartner(@PathParam("alias") String alias) throws VelocloudApiException;
+    List<EnterpriseDTO> getCustomersForMspPartner(@PathParam("alias") String alias) throws VelocloudApiException;
 }

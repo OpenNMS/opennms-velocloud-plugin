@@ -25,25 +25,16 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.rest.v1;
 
-package org.opennms.velocloud.client.api;
-
-import java.util.List;
-
-import org.opennms.velocloud.client.api.model.Edge;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.opennms.velocloud.client.api.model.User;
+import org.opennms.velocloud.rest.dto.UserDTO;
 
-/**
- * A client for the velocloud API authenticated as a customer.
- */
-public interface VelocloudApiCustomerClient {
+@Mapper
+public interface UserMapper {
+    UserMapper USER_INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    /**
-     * Get the edges of the customer.
-     * @return a list of {@link Edge}s
-     * @throws VelocloudApiException
-     */
-    List<Edge> getEdges() throws VelocloudApiException;
-
-    List<User> getUsers() throws VelocloudApiException;
+    UserDTO sourceToTarget(User source);
 }

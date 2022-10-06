@@ -27,23 +27,16 @@
  *******************************************************************************/
 package org.opennms.velocloud.rest.v1;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.connections.ConnectionManager;
-import org.opennms.velocloud.connections.ConnectionValidationError;
 import org.opennms.velocloud.rest.api.VelocloudRestService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class VelocloudRestServiceV1Impl implements VelocloudRestService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(VelocloudRestServiceV1Impl.class);
 
     private final ConnectionManager connectionManager;
 
@@ -52,23 +45,11 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
     }
 
     @Override
-    public Response getCustomersForMspPartner(final String alias) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            final var client = this.connectionManager.getPartnerClient(alias)
-                                  .orElseThrow(null);
-            List<Customer> enterprises = client.getCustomers();
-            String json = mapper.writeValueAsString(enterprises);
-            return Response.ok().entity(json).build();
-        } catch (VelocloudApiException | ConnectionValidationError e) {
-            LOG.error("An error occurred trying to retrieve customers for MSP Partner" , e.getCause());
-            return Response.serverError().build();
-        } catch (JsonProcessingException e) {
-            LOG.error("An error occurred trying to parse json" , e.getCause());
-            return Response.serverError().build();
-        }
-
+    public List<EnterpriseDTO> getCustomersForMspPartner(final String alias) throws VelocloudApiException {
+        final var client = this.connectionManager.getPartnerClient(alias)
+                                                 .orElseThrow(null);
+        return client.getCustomers().stream()
+                     .map(customer -> EnterpriseMapper.ENTERPRISE_INSTANCE.sourceToTarget(customer))
+                     .collect(Collectors.toList());
     }
-
-
 }
