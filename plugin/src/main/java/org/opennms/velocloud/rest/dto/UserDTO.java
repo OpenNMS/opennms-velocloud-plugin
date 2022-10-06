@@ -27,8 +27,9 @@
  *******************************************************************************/
 package org.opennms.velocloud.rest.dto;
 
-import java.util.StringJoiner;
+import lombok.Data;
 
+@Data
 public class UserDTO {
 
     private int id;
@@ -46,134 +47,4 @@ public class UserDTO {
     private String accessLevel;
     private String sshUsername;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public String getDomain() {
-        return domain;
-    }
-
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public boolean isNative() {
-        return isNative;
-    }
-
-    public void setNative(boolean aNative) {
-        isNative = aNative;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public boolean isLocked() {
-        return isLocked;
-    }
-
-    public void setLocked(boolean locked) {
-        isLocked = locked;
-    }
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public String getAccessLevel() {
-        return accessLevel;
-    }
-
-    public void setAccessLevel(String accessLevel) {
-        this.accessLevel = accessLevel;
-    }
-
-    public String getSshUsername() {
-        return sshUsername;
-    }
-
-    public void setSshUsername(String sshUsername) {
-        this.sshUsername = sshUsername;
-    }
-
-    public String toString() {
-        return new StringJoiner(", ")
-                .add("id:" + this.id)
-                .add("userType:" + this.userType)
-                .add("domain:" + this.domain)
-                .add("username:" + this.username)
-                .add("firstName:" + this.firstName)
-                .add("lastName:" + this.lastName)
-                .add("email:" + this.email)
-                .add("isNative:" + this.isNative)
-                .add("isActive:" + this.isActive)
-                .add("isLocked:" + this.isLocked)
-                .add("roleId:" + this.roleId)
-                .add("roleName:" + this.roleName)
-                .add("accessLevel:" + this.accessLevel)
-                .add("sshUsername:" + this.sshUsername)
-                .toString();
-    }
 }
