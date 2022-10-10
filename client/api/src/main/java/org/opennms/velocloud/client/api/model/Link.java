@@ -29,6 +29,7 @@
 package org.opennms.velocloud.client.api.model;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -54,7 +55,6 @@ public class Link {
     public final String linkMode;
     public final boolean alertsEnabled;
     public final boolean operatorAlertsEnabled;
-    public final String serviceGroups;
 
     private Link(final Builder builder) {
         this.id = Objects.requireNonNull(builder.id);
@@ -63,21 +63,20 @@ public class Link {
         this.logicalId = Objects.requireNonNull(builder.logicalId);
         this.internalId = Objects.requireNonNull(builder.internalId);
         this._interface = Objects.requireNonNull(builder._interface);
-        this.macAddress = Objects.requireNonNull(builder.macAddress);
-        this.ipAddress = Objects.requireNonNull(builder.ipAddress);
-        this.ipv6Address = builder.ipv6Address;
-        this.netmask = Objects.requireNonNull(builder.netmask);
+        this.macAddress = Strings.emptyToNull(builder.macAddress);
+        this.ipAddress = Strings.emptyToNull(builder.ipAddress);
+        this.ipv6Address = Strings.emptyToNull(builder.ipv6Address);
+        this.netmask = Strings.emptyToNull(builder.netmask);
         this.networkSide = Objects.requireNonNull(builder.networkSide);
         this.networkType = Objects.requireNonNull(builder.networkType);
         this.displayName = Objects.requireNonNull(builder.displayName);
-        this.isp = Objects.requireNonNull(builder.isp);
-        this.org = Objects.requireNonNull(builder.org);
+        this.isp = Strings.emptyToNull(builder.isp);
+        this.org = Strings.emptyToNull(builder.org);
         this.lat = Objects.requireNonNull(builder.lat);
         this.lon = Objects.requireNonNull(builder.lon);
         this.linkMode = builder.linkMode;
-        this.alertsEnabled = Objects.requireNonNull(builder.alertsEnabled);
-        this.operatorAlertsEnabled = Objects.requireNonNull(builder.operatorAlertsEnabled);
-        this.serviceGroups = builder.serviceGroups;
+        this.alertsEnabled = builder.alertsEnabled;
+        this.operatorAlertsEnabled = builder.operatorAlertsEnabled;
     }
 
     @Override
@@ -103,7 +102,6 @@ public class Link {
                 .add("linkMode", this.linkMode)
                 .add("alertsEnabled", this.alertsEnabled)
                 .add("operatorAlertsEnabled", this.operatorAlertsEnabled)
-                .add("serviceGroups", this.serviceGroups)
                 .toString();
     }
 
@@ -128,7 +126,6 @@ public class Link {
         private String linkMode;
         private boolean alertsEnabled;
         private boolean operatorAlertsEnabled;
-        private String serviceGroups;
 
         private Builder() {
         }
@@ -230,11 +227,6 @@ public class Link {
 
         public Builder withOperatorAlertsEnabled(Boolean operatorAlertsEnabled) {
             this.operatorAlertsEnabled = operatorAlertsEnabled;
-            return this;
-        }
-
-        public Builder withServiceGroups(String serviceGroups) {
-            this.serviceGroups = serviceGroups;
             return this;
         }
 

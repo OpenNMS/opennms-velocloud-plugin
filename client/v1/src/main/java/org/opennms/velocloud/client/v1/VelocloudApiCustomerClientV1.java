@@ -56,10 +56,13 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<Edge> getEdges() throws VelocloudApiException {
-        final var edges = ApiCall.call(this.api, "edged",
+        final var edges = ApiCall.call(this.api, "edges",
                                        AllApi::enterpriseGetEnterpriseEdges,
                                        new EnterpriseGetEnterpriseEdges()
-                                               .enterpriseId(this.enterpriseId));
+                                               .enterpriseId(this.enterpriseId)
+                                               .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.SITE)
+                                               .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.CONFIGURATION)
+                                               .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.LINKS));
 
         return edges.stream()
                     .map(e -> Edge.builder()
@@ -103,7 +106,6 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                                                             .withLinkMode(l.getLinkMode().toString())
                                                             .withAlertsEnabled(l.getAlertsEnabled().getValue() == 1)
                                                             .withOperatorAlertsEnabled(l.getOperatorAlertsEnabled().getValue() == 1)
-                                                            .withServiceGroups(l.getServiceGroups().toString())
                                                             .build())
                                               .collect(Collectors.toList()))
                                   .build())
