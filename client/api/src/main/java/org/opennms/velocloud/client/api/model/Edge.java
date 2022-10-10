@@ -33,13 +33,11 @@ import java.util.Objects;
 import com.google.common.base.MoreObjects;
 
 public class Edge {
-    public final String enterpriseId;
     public final String operator;
     public final String site;
     public final boolean hub;
 
     private Edge(final Builder builder) {
-        this.enterpriseId = Objects.requireNonNull(builder.enterpriseId);
         this.operator = Objects.requireNonNull(builder.operator);
         this.site = Objects.requireNonNull(builder.site);
         this.hub = builder.hub;
@@ -48,7 +46,6 @@ public class Edge {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("enterpriseId", this.enterpriseId)
                           .add("operator", this.operator)
                           .add("site", this.site)
                           .add("hub", this.hub)
@@ -56,17 +53,11 @@ public class Edge {
     }
 
     public static class Builder {
-        private String enterpriseId;
         private String operator;
         private String site;
         private boolean hub;
 
         private Builder() {
-        }
-
-        public Builder withEnterpriseId(final String enterpriseId) {
-            this.enterpriseId = enterpriseId;
-            return this;
         }
 
         public Builder withOperator(final String operator) {

@@ -29,12 +29,11 @@ package org.opennms.velocloud.client.v2;
 
 import java.util.List;
 
-import org.opennms.velocloud.client.api.VelocloudApiClient;
+import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
+import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.Enterprise;
+import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Gateway;
-import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v2.api.AlertsApi;
 import org.opennms.velocloud.client.v2.api.ApplicationMapsApi;
 import org.opennms.velocloud.client.v2.api.ClientsApi;
@@ -49,7 +48,7 @@ import org.opennms.velocloud.client.v2.api.NetworkServicesApi;
 import org.opennms.velocloud.client.v2.handler.ApiClient;
 
 
-public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClient {
+public class VelocloudApiPartnerClientV2 extends ApiClient implements VelocloudApiPartnerClient {
 
     /**
      * Authentication parameter for ApiKeyAuth used in header parameter value
@@ -70,15 +69,16 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
     private final MonitorApi monitor = new MonitorApi(this);
     private final NetworkServicesApi networkServices = new NetworkServicesApi(this);
 
-    public VelocloudApiClientV2(final String url, final String apiKey) {
+    public VelocloudApiPartnerClientV2(final String url, final String apiKey) {
         super();
         setBasePath(url);
         setApiKeyPrefix(AUTH_HEADER_PREFIX);
         setApiKey(apiKey);
     }
 
+
     @Override
-    public List<Edge> getEdges(final String enterpriseId) throws VelocloudApiException {
+    public VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId) {
         throw new UnsupportedOperationException();
     }
 
@@ -88,14 +88,10 @@ public class VelocloudApiClientV2 extends ApiClient implements VelocloudApiClien
     }
 
     @Override
-    public List<Enterprise> getEnterpriseProxies() throws VelocloudApiException {
+    public List<Customer> getCustomers() throws VelocloudApiException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException {
-        throw new UnsupportedOperationException();
-    }
 
 }
 
