@@ -3,21 +3,28 @@
 
     <reference id="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>
 
+    <bean id="clientManager" class="org.opennms.velocloud.clients.ClientManager">
+        <argument ref="clientProvider" />
+    </bean>
+
     <bean id="connectionManager" class="org.opennms.velocloud.connections.ConnectionManager">
+        <argument>
+            <reference interface="org.opennms.integration.api.v1.runtime.RuntimeInfo" availability="optional"/>
+        </argument>
         <argument>
             <reference interface="org.opennms.integration.api.v1.scv.SecureCredentialsVault" availability="optional"/>
         </argument>
+        <argument ref="clientManager" />
     </bean>
-    <service ref="connectionManager" interface="org.opennms.velocloud.connections.ConnectionManager"/>
 
     <bean id="partnerRequisitionProvider" class="org.opennms.velocloud.requisition.PartnerRequisitionProvider">
-        <argument ref="clientProvider"/>
+        <argument ref="clientManager"/>
         <argument ref="connectionManager"/>
     </bean>
     <service ref="partnerRequisitionProvider" interface="org.opennms.integration.api.v1.requisition.RequisitionProvider"/>
 
     <bean id="customerRequisitionProvider" class="org.opennms.velocloud.requisition.CustomerRequisitionProvider">
-        <argument ref="clientProvider"/>
+        <argument ref="clientManager"/>
         <argument ref="connectionManager"/>
     </bean>
     <service ref="customerRequisitionProvider" interface="org.opennms.integration.api.v1.requisition.RequisitionProvider"/>

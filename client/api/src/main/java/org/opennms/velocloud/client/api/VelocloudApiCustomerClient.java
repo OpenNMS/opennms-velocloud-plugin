@@ -28,26 +28,23 @@
 
 package org.opennms.velocloud.client.api;
 
+import java.util.List;
+
+import org.opennms.velocloud.client.api.model.Edge;
+import org.opennms.velocloud.client.api.model.User;
+
 /**
- * Provider for velocloud API clients.
+ * A client for the velocloud API authenticated as a customer.
  */
-public interface VelocloudApiClientProvider {
+public interface VelocloudApiCustomerClient {
 
     /**
-     * Create a client for a velocloud partner account.
-     *
-     * @param credentials the credentials to use for the client.
-     * @return a partner client
+     * Get the edges of the customer.
+     * @return a list of {@link Edge}s
      * @throws VelocloudApiException
      */
-    VelocloudApiPartnerClient partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
+    List<Edge> getEdges() throws VelocloudApiException;
 
-    /**
-     * Create a client for a velocloud customer account.
-     *
-     * @param credentials the credentials to use for the client.
-     * @return a customer client
-     * @throws VelocloudApiException
-     */
-    VelocloudApiCustomerClient customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
+
+    List<User> getUsers() throws VelocloudApiException;
 }

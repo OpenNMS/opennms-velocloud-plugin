@@ -30,7 +30,7 @@ package org.opennms.velocloud.client.api.model;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public class Enterprise {
+public class Customer {
     public final String enterpriseId;
     public final int id;
     public final int networkId;
@@ -53,7 +53,7 @@ public class Enterprise {
     public final String locale;
 
 
-    private Enterprise(final Builder builder) {
+    private Customer(final Builder builder) {
         this.enterpriseId = Objects.requireNonNull(builder.enterpriseId);
         this.id = Objects.requireNonNull(builder.id);
         this.networkId = Objects.requireNonNull(builder.networkId);
@@ -192,23 +192,23 @@ public class Enterprise {
             return this;
         }
 
-        public Enterprise.Builder withEnterpriseId(final String enterpriseId) {
+        public Customer.Builder withEnterpriseId(final String enterpriseId) {
             this.enterpriseId = enterpriseId;
             return this;
         }
 
-        public Enterprise.Builder withId(final Integer id) {
+        public Customer.Builder withId(final Integer id) {
             this.id = id;
             return this;
         }
 
-        public Enterprise build() {
-            return new Enterprise(this);
+        public Customer build() {
+            return new Customer(this);
         }
     }
 
     public static Builder builder() {
-        return new Enterprise.Builder();
+        return new Customer.Builder();
     }
 
     public String toString() {

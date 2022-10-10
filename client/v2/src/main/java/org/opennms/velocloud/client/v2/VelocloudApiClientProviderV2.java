@@ -30,12 +30,21 @@ package org.opennms.velocloud.client.v2;
 
 import java.net.URI;
 
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 
 public class VelocloudApiClientProviderV2 implements VelocloudApiClientProvider {
 
     @Override
-    public VelocloudApiClientV2 connect(final String orchestratorUrl, final String apiKey) {
-        return new VelocloudApiClientV2(URI.create(orchestratorUrl).resolve("api/sdwan/v2").toString(), apiKey);
+    public VelocloudApiPartnerClientV2 partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
+        return new VelocloudApiPartnerClientV2(URI.create(credentials.orchestratorUrl).resolve("api/sdwan/v2").toString(), credentials.apiKey);
+    }
+
+    @Override
+    public VelocloudApiCustomerClient customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
+        throw new UnsupportedOperationException();
     }
 }
