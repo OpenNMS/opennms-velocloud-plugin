@@ -29,18 +29,35 @@ package org.opennms.velocloud.client.api;
 
 import java.util.List;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.Enterprise;
+import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Gateway;
-import org.opennms.velocloud.client.api.model.User;
 
-public interface VelocloudApiClient {
+/**
+ * A client for the velocloud API authenticated as a partner.
+ */
+public interface VelocloudApiPartnerClient {
 
-    List<Edge> getEdges(final String enterpriseId) throws VelocloudApiException;
+    /** Derive a customer connection from this partner connection.
+     *
+     * The created connection uses the same credential as this connection. The specified enterprise ID will be used for
+     * every request done by the created customer connection.
+     *
+     * @param enterpriseId the enterprise ID of the customer
+     * @return the customer connection
+     */
+    VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId);
 
+    /**
+     * Get all gateways of the partner.
+     * @return list of {@link Gateway}s
+     * @throws VelocloudApiException
+     */
     List<Gateway> getGateways() throws VelocloudApiException;
 
-    List<Enterprise> getEnterpriseProxies() throws VelocloudApiException;
-
-    List<User> getUsers(final Integer enterpriseId) throws VelocloudApiException;
+    /**
+     * Get all customers of the partner.
+     * @return list of {@link Customer}s
+     * @throws VelocloudApiException
+     */
+    List<Customer> getCustomers() throws VelocloudApiException;
 }

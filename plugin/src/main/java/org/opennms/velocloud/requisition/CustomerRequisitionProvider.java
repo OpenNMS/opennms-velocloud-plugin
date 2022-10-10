@@ -28,12 +28,11 @@
 
 package org.opennms.velocloud.requisition;
 
-import java.util.UUID;
-
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
-import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 
@@ -41,9 +40,9 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
 
     public final static String TYPE = "velocloud-customer";
 
-    public CustomerRequisitionProvider(final VelocloudApiClientProvider clientProvider,
+    public CustomerRequisitionProvider(final ClientManager clientManager,
                                        final ConnectionManager connectionManager) {
-        super(clientProvider, connectionManager);
+        super(clientManager, connectionManager);
     }
 
     @Override
@@ -57,29 +56,33 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
     }
 
     @Override
-    protected Requisition handleRequest(final Request request, final VelocloudApiClient client) {
+    protected Requisition handleRequest(final RequestContext context) throws VelocloudApiException {
+        final var client = (context.getRequest().enterpriseId != null)
+                           ? context.getPartnerClient().getCustomerClient(context.getRequest().enterpriseId)
+                           : context.getCustomerClient();
+
         final var requisition = ImmutableRequisition.newBuilder()
-                                                    .setForeignSource(request.getForeignSource());
+                                                    .setForeignSource(context.getForeignSource());
 
         return requisition.build();
     }
 
     public static class Request extends AbstractRequisitionProvider.Request {
 
-        public Request() {}
+        private Integer enterpriseId;
+
+        public Request() {
+        }
 
         public Request(final Connection connection) {
             super("velocloud-customer", connection);
-            this.enterpriseId = connection.getEnterpriseId().orElse(null);
         }
 
-        private UUID enterpriseId;
-
-        public UUID getEnterpriseId() {
+        public Integer getEnterpriseId() {
             return this.enterpriseId;
         }
 
-        public void setEnterpriseId(final UUID enterpriseId) {
+        public void setEnterpriseId(final Integer enterpriseId) {
             this.enterpriseId = enterpriseId;
         }
     }

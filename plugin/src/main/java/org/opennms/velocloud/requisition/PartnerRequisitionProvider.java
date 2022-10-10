@@ -37,9 +37,9 @@ import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableReq
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMonitoredService;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
-import org.opennms.velocloud.client.api.VelocloudApiClient;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
@@ -53,9 +53,9 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
     public final static String TYPE = "velocloud-partner";
 
-    public PartnerRequisitionProvider(final VelocloudApiClientProvider clientProvider,
+    public PartnerRequisitionProvider(final ClientManager clientManager,
                                       final ConnectionManager connectionManager) {
-        super(clientProvider, connectionManager);
+        super(clientManager, connectionManager);
     }
 
     @Override
@@ -69,9 +69,11 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
     }
 
     @Override
-    protected Requisition handleRequest(final Request request, final VelocloudApiClient client) {
+    protected Requisition handleRequest(final RequestContext context) throws VelocloudApiException {
+        final var client = context.getPartnerClient();
+
         final var requisition = ImmutableRequisition.newBuilder()
-                                                    .setForeignSource(request.getForeignSource());
+                                                    .setForeignSource(context.getForeignSource());
 
         try {
             for (final var gateway : client.getGateways()) {
@@ -82,7 +84,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                 node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                              .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                              .setKey("alias")
-                                                             .setValue(request.getAlias())
+                                                             .setValue(context.getAlias())
                                                              .build());
                 node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                              .setContext(VELOCLOUD_METADATA_CONTEXT)

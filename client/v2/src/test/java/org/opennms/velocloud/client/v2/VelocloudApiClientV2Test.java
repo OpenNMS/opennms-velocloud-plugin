@@ -29,6 +29,7 @@ package org.opennms.velocloud.client.v2;
 
 
 import org.junit.Test;
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.v2.handler.auth.ApiKeyAuth;
 
 import java.util.ArrayList;
@@ -45,7 +46,10 @@ public class VelocloudApiClientV2Test {
     @Test
     public void testBaseUrl() throws Exception {
         final var client = new VelocloudApiClientProviderV2()
-                .connect("https://localhost:9999/", "");
+                .partnerClient(VelocloudApiClientCredentials.builder()
+                                                            .withOrchestratorUrl("https://localhost:9999/")
+                                                            .withApiKey("")
+                                                            .build());
 
         assertEquals(client.getBasePath(), "https://localhost:9999/api/sdwan/v2");
     }
@@ -55,9 +59,12 @@ public class VelocloudApiClientV2Test {
         final var key = "kjsncdkjdnsckdjsfncfs";
 
         final var client = new VelocloudApiClientProviderV2()
-                .connect("https://localhost:9999/", key);
+                .partnerClient(VelocloudApiClientCredentials.builder()
+                                                            .withOrchestratorUrl("https://localhost:9999/")
+                                                            .withApiKey(key)
+                                                            .build());
 
-        var auth = (ApiKeyAuth)client.getAuthentication("ApiKeyAuth");
+        var auth = (ApiKeyAuth) client.getAuthentication("ApiKeyAuth");
         assertEquals(auth.getApiKey(), key);
         assertEquals(auth.getLocation(), AUTH_HEADER_LOCATION);
         assertEquals(auth.getParamName(), AUTH_HEADER_NAME);

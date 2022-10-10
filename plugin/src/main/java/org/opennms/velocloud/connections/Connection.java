@@ -65,19 +65,6 @@ public interface Connection {
     void setApiKey(final String apiKey);
 
     /**
-     * Returns the enterprise ID assigned.
-     * If an enterprise ID is specified, this is a client connection.
-     * @return the enterprise ID if a tenant connection or {@code Optional#empty()} if a partner connection
-     */
-    Optional<UUID> getEnterpriseId();
-
-    /**
-     * Changes the enterprise ID assigned.
-     * @param enterpriseId the new enterprise ID, can be {@code null} for a partner connection.
-     */
-    void setEnterpriseId(final UUID enterpriseId);
-
-    /**
      * Save the altered connection config in the underlying store.
      */
     void save();

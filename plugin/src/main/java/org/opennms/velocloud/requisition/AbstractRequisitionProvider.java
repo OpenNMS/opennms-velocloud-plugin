@@ -35,9 +35,12 @@ import java.util.Objects;
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.requisition.RequisitionProvider;
 import org.opennms.integration.api.v1.requisition.RequisitionRequest;
-import org.opennms.velocloud.client.api.VelocloudApiClient;
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
+import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
+import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.connections.ConnectionValidationError;
@@ -51,19 +54,19 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
     public static final String VELOCLOUD_METADATA_CONTEXT = "velocloud";
 
-    private final VelocloudApiClientProvider clientProvider;
+    private final ClientManager clientManager;
 
     private final ConnectionManager connectionManager;
 
-    protected AbstractRequisitionProvider(final VelocloudApiClientProvider clientProvider,
+    protected AbstractRequisitionProvider(final ClientManager clientManager,
                                           final ConnectionManager connectionManager) {
-        this.clientProvider = Objects.requireNonNull(clientProvider);
+        this.clientManager = Objects.requireNonNull(clientManager);
         this.connectionManager = Objects.requireNonNull(connectionManager);
     }
 
     protected abstract Req createRequest(final Connection connection);
 
-    protected abstract Requisition handleRequest(final Req request, final VelocloudApiClient client);
+    protected abstract Requisition handleRequest(final RequestContext context) throws VelocloudApiException;
 
     @Override
     public final RequisitionRequest getRequest(final Map<String, String> parameters) {
@@ -84,10 +87,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         final var request = (Req) rawRequest;
 
         try {
-            final var client = this.clientProvider.connect(request.getOrchestratorUrl(),
-                    request.getApiKey());
-
-            return this.handleRequest(request, client);
+            return this.handleRequest(new RequestContext(request));
 
         } catch (VelocloudApiException e) {
             LOG.error("Velocloud Orchestrator communication failed", e);
@@ -117,9 +117,9 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
     protected static abstract class Request implements RequisitionRequest {
 
-        private String alias;
-
         private String foreignSource;
+
+        private String alias;
 
         private String orchestratorUrl;
 
@@ -129,14 +129,10 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         }
 
         public Request(final String type, final Connection connection) {
-            this.alias = Objects.requireNonNull(connection.getAlias());
             this.foreignSource = String.format("%s-%s", type, connection.getAlias());
+            this.alias = Objects.requireNonNull(connection.getAlias());
             this.orchestratorUrl = Objects.requireNonNull(connection.getOrchestratorUrl());
             this.apiKey = Objects.requireNonNull(connection.getApiKey());
-        }
-
-        public String getAlias() {
-            return this.alias;
         }
 
         public String getForeignSource() {
@@ -145,6 +141,14 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
         public void setForeignSource(final String foreignSource) {
             this.foreignSource = foreignSource;
+        }
+
+        public String getAlias() {
+            return this.alias;
+        }
+
+        public void setAlias(final String alias) {
+            this.alias = Objects.requireNonNull(alias);
         }
 
         public String getOrchestratorUrl() {
@@ -161,6 +165,40 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
         public void setApiKey(final String apiKey) {
             this.apiKey = apiKey;
+        }
+    }
+
+    public class RequestContext {
+        private final Req request;
+
+        public RequestContext(final Req request) {
+            this.request = Objects.requireNonNull(request);
+        }
+
+        public VelocloudApiPartnerClient getPartnerClient() throws VelocloudApiException {
+            return AbstractRequisitionProvider.this.clientManager.getPartnerClient(VelocloudApiClientCredentials.builder()
+                                                                                                                .withOrchestratorUrl(this.request.getOrchestratorUrl())
+                                                                                                                .withApiKey(this.request.getApiKey())
+                                                                                                                .build());
+        }
+
+        public VelocloudApiCustomerClient getCustomerClient() throws VelocloudApiException {
+            return AbstractRequisitionProvider.this.clientManager.getCustomerClient(VelocloudApiClientCredentials.builder()
+                                                                                                                 .withOrchestratorUrl(this.request.getOrchestratorUrl())
+                                                                                                                 .withApiKey(this.request.getApiKey())
+                                                                                                                 .build());
+        }
+
+        public Req getRequest() {
+            return this.request;
+        }
+
+        public String getForeignSource() {
+            return this.request.getForeignSource();
+        }
+
+        public String getAlias() {
+            return this.request.getAlias();
         }
     }
 }
