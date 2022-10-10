@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 
 public class Edge {
     public final String operator;
@@ -57,23 +58,23 @@ public class Edge {
 
     private Edge(final Builder builder) {
         this.operator = Objects.requireNonNull(builder.operator);
-        this.site = Objects.requireNonNull(builder.site);
+        this.site = builder.site;
         this.hub = builder.hub;
         this.links = Objects.requireNonNull(builder.links);
         this.alertsEnabled = Objects.requireNonNull(builder.alertsEnabled);
         this.buildNumber = Objects.requireNonNull(builder.buildNumber);
-        this.customInfo = Objects.requireNonNull(builder.customInfo);
-        this.description = Objects.requireNonNull(builder.description);
-        this.deviceFamily = Objects.requireNonNull(builder.deviceFamily);
+        this.customInfo = Strings.nullToEmpty(builder.customInfo);
+        this.description = Strings.nullToEmpty(builder.description);
+        this.deviceFamily = Strings.emptyToNull(builder.deviceFamily);
         this.deviceId = Objects.requireNonNull(builder.deviceId);
-        this.dnsName = Objects.requireNonNull(builder.dnsName);
-        this.lteRegion = Objects.requireNonNull(builder.lteRegion);
+        this.dnsName = Strings.emptyToNull(builder.dnsName);
+        this.lteRegion = Strings.emptyToNull(builder.lteRegion);
         this.logicalId = Objects.requireNonNull(builder.logicalId);
-        this.modelNumber = Objects.requireNonNull(builder.modelNumber);
+        this.modelNumber = Strings.emptyToNull(builder.modelNumber);
         this.name = Objects.requireNonNull(builder.name);
-        this.operatorAlertsEnabled = Objects.requireNonNull(builder.operatorAlertsEnabled);
+        this.operatorAlertsEnabled = builder.operatorAlertsEnabled;
         this.selfMacAddress = Objects.requireNonNull(builder.selfMacAddress);
-        this.siteId = Objects.requireNonNull(builder.siteId);
+        this.siteId = builder.siteId;
         this.softwareVersion = Objects.requireNonNull(builder.softwareVersion);
 
     }
