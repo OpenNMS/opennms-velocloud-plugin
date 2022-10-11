@@ -43,14 +43,13 @@ import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsers;
 import org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.ApiCall;
 
 public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient {
-    final int enterpriseId;
 
-    public final AllApi api;
+    private final AllApi api;
+    private final int enterpriseId;
 
     public VelocloudApiCustomerClientV1(final AllApi api,
                                         final int enterpriseId) {
         this.api = Objects.requireNonNull(api);
-
         this.enterpriseId = enterpriseId;
     }
 

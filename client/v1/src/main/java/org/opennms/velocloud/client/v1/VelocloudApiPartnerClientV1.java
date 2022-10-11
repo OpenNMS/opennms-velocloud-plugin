@@ -45,10 +45,13 @@ import org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.ApiCall;
 
 public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
-    public final AllApi api;
+    private final AllApi api;
+    private final int enterpriseProxyId;
 
-    public VelocloudApiPartnerClientV1(final AllApi api) {
+    public VelocloudApiPartnerClientV1(final AllApi api,
+                                       final int enterpriseProxyId) {
         this.api = Objects.requireNonNull(api);
+        this.enterpriseProxyId = enterpriseProxyId;
     }
 
     @Override
@@ -61,6 +64,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
         final var enterpriseGateways = ApiCall.call(this.api, "gateways",
                                                     AllApi::enterpriseProxyGetEnterpriseProxyGateways,
                                                     new EnterpriseProxyGetEnterpriseProxyGateways()
+                                                            .enterpriseProxyId(this.enterpriseProxyId)
                                                             .addWithItem(EnterpriseProxyGetEnterpriseProxyGateways.WithEnum.SITE));
 
         return enterpriseGateways.stream()
@@ -103,6 +107,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
         final var enterprises = ApiCall.call(this.api, "customers",
                                              AllApi::enterpriseProxyGetEnterpriseProxyEnterprises,
                                              new EnterpriseProxyGetEnterpriseProxyEnterprises()
+                                                     .enterpriseProxyId(this.enterpriseProxyId)
                                                      .addWithItem(EnterpriseProxyGetEnterpriseProxyEnterprises.WithEnum.EDGES));
 
         return enterprises.stream()
