@@ -31,7 +31,6 @@ import lombok.Data;
 
 @Data
 public class EnterpriseDTO {
-
     private String enterpriseId;
     private int id;
     private int networkId;
@@ -52,5 +51,4 @@ public class EnterpriseDTO {
     private double longitude;
     private String timezone;
     private String locale;
-
 }

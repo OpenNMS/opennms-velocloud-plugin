@@ -49,7 +49,7 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
         final var client = this.connectionManager.getPartnerClient(alias)
                                                  .orElseThrow(null);
         return client.getCustomers().stream()
-                     .map(customer -> EnterpriseMapper.ENTERPRISE_INSTANCE.sourceToTarget(customer))
+                     .map(customer -> Mapper.ENTERPRISE_INSTANCE.sourceToTarget(customer))
                      .collect(Collectors.toList());
     }
 }

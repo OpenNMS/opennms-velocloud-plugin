@@ -31,7 +31,6 @@ import lombok.Data;
 
 @Data
 public class UserDTO {
-
     private int id;
     private String userType;
     private String domain;
@@ -46,5 +45,4 @@ public class UserDTO {
     private String roleName;
     private String accessLevel;
     private String sshUsername;
-
 }

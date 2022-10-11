@@ -33,6 +33,10 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.karaf.shell.api.console.Session;
+import org.apache.karaf.shell.api.console.Terminal;
+import org.apache.karaf.shell.support.table.Col;
+import org.apache.karaf.shell.support.table.ShellTable;
 import org.opennms.velocloud.connections.ConnectionManager;
 
 @Command(scope = "opennms-velocloud", name = "list-customers", description = "List Customers", detailedDescription = "List all customers")
@@ -40,11 +44,14 @@ import org.opennms.velocloud.connections.ConnectionManager;
 public class ListCustomersCommand implements Action {
 
     @Reference
-    public ConnectionManager connectionManager;
+    private ConnectionManager connectionManager;
+
+    @Reference
+    private Session session;
 
     @Argument(index = 0, name = "alias", description = "Connection alias", required = true, multiValued = false)
     @Completion(AliasCompleter.class)
-    public String alias = null;
+    private String alias = null;
 
     @Override
     public Object execute() throws Exception {
@@ -54,9 +61,22 @@ public class ListCustomersCommand implements Action {
             return null;
         }
 
+        final var table = new ShellTable()
+                .size(session.getTerminal().getWidth() - 1)
+                .column(new Col("ID").maxSize(12).bold(true))
+                .column(new Col("Name").maxSize(24))
+                .column(new Col("Domain").maxSize(24))
+                .column(new Col("Description"));
+
         for (final var customer : client.get().getCustomers()) {
-            System.out.println(customer);
+            final var row = table.addRow();
+            row.addContent(customer.id);
+            row.addContent(customer.name);
+            row.addContent(customer.domain);
+            row.addContent(customer.description);
         }
+
+        table.print(System.out, true);
 
         return null;
     }
