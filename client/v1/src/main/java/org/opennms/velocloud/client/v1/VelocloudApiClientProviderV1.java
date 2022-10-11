@@ -29,14 +29,75 @@
 package org.opennms.velocloud.client.v1;
 
 import java.net.URI;
+import java.util.Optional;
 
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.v1.api.AllApi;
+import org.opennms.velocloud.client.v1.handler.ApiClient;
+import org.opennms.velocloud.client.v1.handler.ApiException;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterprise;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyProperty;
+import org.opennms.velocloud.client.v1.model.EnterpriseUserGetEnterpriseUser;
 
 public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
 
+    /**
+     * Authentication parameter for ApiKeyAuth used in header parameter value
+     *
+     * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
+     */
+    public static final String AUTH_HEADER_PREFIX = "Token";
+
+    static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
+        final var client = new ApiClient();
+        client.setBasePath(URI.create(credentials.orchestratorUrl).resolve("portal/rest").toString());
+        client.setApiKeyPrefix(AUTH_HEADER_PREFIX);
+        client.setApiKey(credentials.apiKey);
+
+        return new AllApi(client);
+    }
+
     @Override
-    public VelocloudApiClientV1 connect(final String orchestratorUrl, final String apiKey) throws VelocloudApiException {
-        return new VelocloudApiClientV1(URI.create(orchestratorUrl).resolve("portal/rest").toString(), apiKey);
+    public VelocloudApiPartnerClientV1 partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
+        final var api = connectApi(credentials);
+
+        final var enterpriseProxyId = Optional.ofNullable(ApiCall.call(api, "get partner info",
+                                                                       AllApi::enterpriseProxyGetEnterpriseProxyProperty,
+                                                                       new EnterpriseProxyGetEnterpriseProxyProperty())
+                                                                 .getEnterpriseProxyId())
+                                              .orElseThrow(() -> new VelocloudApiException("Not a partner account"));
+
+        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId);
+    }
+
+    @Override
+    public VelocloudApiCustomerClientV1 customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
+        final var api = connectApi(credentials);
+
+        final var enterpriseId = Optional.ofNullable(ApiCall.call(api, "get user info",
+                                                                  AllApi::enterpriseGetEnterprise,
+                                                                  new EnterpriseGetEnterprise())
+                                                            .getId())
+                                         .orElseThrow(() -> new VelocloudApiException("Not a customer account"));
+
+        return new VelocloudApiCustomerClientV1(api, enterpriseId);
+    }
+
+    @FunctionalInterface
+    public interface ApiCall<B, R> {
+        R apply(final AllApi api, final B body) throws ApiException;
+
+        static <B, R> R call(final AllApi api,
+                             final String desc,
+                             final ApiCall<B, R> f,
+                             final B body) throws VelocloudApiException {
+            try {
+                return f.apply(api, body);
+            } catch (final ApiException e) {
+                throw new VelocloudApiException("Failed to execute API call: " + desc, e);
+            }
+        }
     }
 }

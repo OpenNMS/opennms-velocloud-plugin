@@ -28,45 +28,104 @@
 
 package org.opennms.velocloud.client.api.model;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 
 public class Edge {
-    public final String enterpriseId;
     public final String operator;
     public final String site;
     public final boolean hub;
+    public final List<Link> links;
+    public final boolean alertsEnabled;
+    public final String buildNumber;
+    public final String customInfo;
+    public final String description;
+    public final String deviceFamily;
+    public final String deviceId;
+    public final String dnsName;
+    public final String lteRegion;
+    public final String logicalId;
+    public final String modelNumber;
+    public final String name;
+    public final boolean operatorAlertsEnabled;
+    public final String selfMacAddress;
+    public final int siteId;
+    public final String softwareVersion;
 
     private Edge(final Builder builder) {
-        this.enterpriseId = Objects.requireNonNull(builder.enterpriseId);
         this.operator = Objects.requireNonNull(builder.operator);
-        this.site = Objects.requireNonNull(builder.site);
+        this.site = builder.site;
         this.hub = builder.hub;
+        this.links = Objects.requireNonNull(builder.links);
+        this.alertsEnabled = builder.alertsEnabled;
+        this.buildNumber = Objects.requireNonNull(builder.buildNumber);
+        this.customInfo = Strings.nullToEmpty(builder.customInfo);
+        this.description = Strings.nullToEmpty(builder.description);
+        this.deviceFamily = Strings.emptyToNull(builder.deviceFamily);
+        this.deviceId = Strings.nullToEmpty(builder.deviceId);
+        this.dnsName = Strings.emptyToNull(builder.dnsName);
+        this.lteRegion = Strings.emptyToNull(builder.lteRegion);
+        this.logicalId = Objects.requireNonNull(builder.logicalId);
+        this.modelNumber = Strings.emptyToNull(builder.modelNumber);
+        this.name = Objects.requireNonNull(builder.name);
+        this.operatorAlertsEnabled = builder.operatorAlertsEnabled;
+        this.selfMacAddress = Objects.requireNonNull(builder.selfMacAddress);
+        this.siteId = builder.siteId;
+        this.softwareVersion = Objects.requireNonNull(builder.softwareVersion);
+
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("enterpriseId", this.enterpriseId)
                           .add("operator", this.operator)
                           .add("site", this.site)
                           .add("hub", this.hub)
+                          .add("links", this.links)
+                          .add("alertsEnabled", this.alertsEnabled)
+                          .add("buildNumber", this.buildNumber)
+                          .add("customInfo", this.customInfo)
+                          .add("description", this.description)
+                          .add("deviceFamily", this.deviceFamily)
+                          .add("deviceId", this.deviceId)
+                          .add("dnsName", this.dnsName)
+                          .add("lteRegion", this.lteRegion)
+                          .add("logicalId", this.logicalId)
+                          .add("modelNumber", this.modelNumber)
+                          .add("name", this.name)
+                          .add("operatorAlertsEnabled", this.operatorAlertsEnabled)
+                          .add("selfMacAddress", this.selfMacAddress)
+                          .add("siteId", this.siteId)
+                          .add("softwareVersion", this.softwareVersion)
                           .toString();
     }
 
     public static class Builder {
-        private String enterpriseId;
         private String operator;
         private String site;
         private boolean hub;
+        private List<Link> links;
+        private boolean alertsEnabled;
+        private String buildNumber;
+        private String customInfo;
+        private String description;
+        private String deviceFamily;
+        private String deviceId;
+        private String dnsName;
+        private String lteRegion;
+        private String logicalId;
+        private String modelNumber;
+        private String name;
+        private boolean operatorAlertsEnabled;
+        private String selfMacAddress;
+        private int siteId;
+        private String softwareVersion;
 
         private Builder() {
-        }
-
-        public Builder withEnterpriseId(final String enterpriseId) {
-            this.enterpriseId = enterpriseId;
-            return this;
         }
 
         public Builder withOperator(final String operator) {
@@ -81,6 +140,86 @@ public class Edge {
 
         public Builder withHub(final boolean hub) {
             this.hub = hub;
+            return this;
+        }
+
+        public Builder withLinks(final List<Link> links) {
+            this.links = links;
+            return this;
+        }
+
+        public Builder withAlertsEnabled(Boolean alertsEnabled) {
+            this.alertsEnabled = alertsEnabled;
+            return this;
+        }
+
+        public Builder withBuildNumber(String buildNumber) {
+            this.buildNumber = buildNumber;
+            return this;
+        }
+
+        public Builder withCustomInfo(String customInfo) {
+            this.customInfo = customInfo;
+            return this;
+        }
+
+        public Builder withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder withDeviceFamily(String deviceFamily) {
+            this.deviceFamily = deviceFamily;
+            return this;
+        }
+
+        public Builder withDeviceId(String deviceId) {
+            this.deviceId = deviceId;
+            return this;
+        }
+
+        public Builder withDnsName(String dnsName) {
+            this.dnsName = dnsName;
+            return this;
+        }
+
+        public Builder withLteRegion(String lteRegion) {
+            this.lteRegion = lteRegion;
+            return this;
+        }
+
+        public Builder withLogicalId(String logicalId) {
+            this.logicalId = logicalId;
+            return this;
+        }
+
+        public Builder withModelNumber(String modelNumber) {
+            this.modelNumber = modelNumber;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder withOperatorAlertsEnabled(Boolean operatorAlertsEnabled) {
+            this.operatorAlertsEnabled = operatorAlertsEnabled;
+            return this;
+        }
+
+        public Builder withSelfMacAddress(String selfMacAddress) {
+            this.selfMacAddress = selfMacAddress;
+            return this;
+        }
+
+        public Builder withSiteId(Integer siteId) {
+            this.siteId = siteId;
+            return this;
+        }
+
+        public Builder withSoftwareVersion(String softwareVersion) {
+            this.softwareVersion = softwareVersion;
             return this;
         }
 

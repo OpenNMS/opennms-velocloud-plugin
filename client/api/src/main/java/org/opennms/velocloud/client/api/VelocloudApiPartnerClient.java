@@ -25,13 +25,39 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.client.api;
 
-package org.opennms.velocloud.connections;
+import java.util.List;
 
+import org.opennms.velocloud.client.api.model.Customer;
+import org.opennms.velocloud.client.api.model.Gateway;
 
-public class ConnectionValidationError extends RuntimeException {
+/**
+ * A client for the velocloud API authenticated as a partner.
+ */
+public interface VelocloudApiPartnerClient {
 
-    public ConnectionValidationError(final String alias, final String message) {
-        super(String.format("Invalid connection in SCV: %s: %s", alias, message));
-    }
+    /** Derive a customer connection from this partner connection.
+     *
+     * The created connection uses the same credential as this connection. The specified enterprise ID will be used for
+     * every request done by the created customer connection.
+     *
+     * @param enterpriseId the enterprise ID of the customer
+     * @return the customer connection
+     */
+    VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId);
+
+    /**
+     * Get all gateways of the partner.
+     * @return list of {@link Gateway}s
+     * @throws VelocloudApiException
+     */
+    List<Gateway> getGateways() throws VelocloudApiException;
+
+    /**
+     * Get all customers of the partner.
+     * @return list of {@link Customer}s
+     * @throws VelocloudApiException
+     */
+    List<Customer> getCustomers() throws VelocloudApiException;
 }

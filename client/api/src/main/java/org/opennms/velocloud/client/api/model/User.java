@@ -28,6 +28,8 @@
 
 package org.opennms.velocloud.client.api.model;
 
+import com.google.common.base.Strings;
+
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -52,18 +54,18 @@ public class User {
 
         this.id = Objects.requireNonNull(builder.id);
         this.userType = Objects.requireNonNull(builder.userType);
-        this.domain = builder.domain;
+        this.domain = Strings.nullToEmpty(builder.domain);
         this.username = Objects.requireNonNull(builder.username);
-        this.firstName = builder.firstName;
-        this.lastName = builder.lastName;
-        this.email = Objects.requireNonNull(builder.email);
+        this.firstName = Strings.nullToEmpty(builder.firstName);
+        this.lastName = Strings.nullToEmpty(builder.lastName);
+        this.email = Strings.nullToEmpty(builder.email);
         this.isActive = Objects.requireNonNull(builder.isActive);
         this.isLocked = Objects.requireNonNull(builder.isLocked);
         this.isNative = Objects.requireNonNull(builder.isNative);
         this.roleId = Objects.requireNonNull(builder.roleId);
         this.roleName = Objects.requireNonNull(builder.roleName);
-        this.accessLevel = Objects.requireNonNull(builder.accessLevel);
-        this.sshUsername = Objects.requireNonNull(builder.sshUsername);
+        this.accessLevel = Strings.nullToEmpty(builder.accessLevel);
+        this.sshUsername = Strings.nullToEmpty(builder.sshUsername);
     }
 
     public static class Builder {

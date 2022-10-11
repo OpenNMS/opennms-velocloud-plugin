@@ -28,8 +28,9 @@
 
 package org.opennms.velocloud.requisition;
 
-import java.util.stream.Collectors;
+import java.util.Map;
 import java.util.Objects;
+
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.SnmpPrimaryType;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
@@ -37,13 +38,10 @@ import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableReq
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMonitoredService;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
-import org.opennms.velocloud.client.api.VelocloudApiClient;
-import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.connections.Connection;
-import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.clients.ClientManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,9 +53,9 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
     public final static String TYPE = "velocloud-partner";
 
-    public PartnerRequisitionProvider(final VelocloudApiClientProvider clientProvider,
+    public PartnerRequisitionProvider(final ClientManager clientManager,
                                       final ConnectionManager connectionManager) {
-        super(clientProvider, connectionManager);
+        super(clientManager, connectionManager);
     }
 
     @Override
@@ -66,14 +64,16 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
     }
 
     @Override
-    protected Request createRequest(final Connection connection) {
+    protected Request createRequest(final Connection connection, final Map<String, String> parameters) {
         return new Request(connection);
     }
 
     @Override
-    protected Requisition handleRequest(final Request request, final VelocloudApiClient client) {
+    protected Requisition handleRequest(final RequestContext context) throws VelocloudApiException {
+        final var client = context.getPartnerClient();
+
         final var requisition = ImmutableRequisition.newBuilder()
-                                                    .setForeignSource(request.getForeignSource());
+                                                    .setForeignSource(context.getForeignSource());
 
         try {
             for (final var gateway : client.getGateways()) {
@@ -84,7 +84,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                 node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                              .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                              .setKey("alias")
-                                                             .setValue(request.getAlias())
+                                                             .setValue(context.getAlias())
                                                              .build());
                 node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                              .setContext(VELOCLOUD_METADATA_CONTEXT)

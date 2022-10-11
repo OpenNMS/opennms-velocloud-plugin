@@ -25,31 +25,39 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.shell;
+package org.opennms.velocloud.shell.connections;
 
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.karaf.shell.api.console.CommandLine;
-import org.apache.karaf.shell.api.console.Completer;
-import org.apache.karaf.shell.api.console.Session;
-import org.apache.karaf.shell.support.completers.StringsCompleter;
-import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.velocloud.connections.ConnectionManager;
 
-import java.util.List;
-
-
+@Command(scope = "opennms-velocloud", name = "connection-add", description = "Add a connection", detailedDescription = "Add a connection to a velocloud orchestrator")
 @Service
-public class AliasCompleter implements Completer {
+public class AddConnectionCommand implements Action {
 
     @Reference
-    public ConnectionManager connectionManager;
+    private ConnectionManager connectionManager;
+
+    @Argument(index = 0, name = "alias", description = "Alias", required = true, multiValued = false)
+    public String alias = null;
+
+    @Argument(index = 1, name = "url", description = "Orchestrator Url", required = true, multiValued = false)
+    public String url = null;
+
+    @Argument(index = 2, name = "apiKey", description = "Orchestrator API Key", required = true, multiValued = false)
+    public String apiKey = null;
 
     @Override
-    public int complete(Session session, CommandLine commandLine, List<String> candidates) {
-        final var delegate = new StringsCompleter(connectionManager.getAliases(), true);
-        return delegate.complete(session, commandLine, candidates);
+    public Object execute() throws Exception {
+        if (this.connectionManager.getAliases().contains(this.alias)) {
+            System.err.println("Connection with alias already exists: " + this.alias);
+            return null;
+        }
+
+        this.connectionManager.addConnection(this.alias, this.url, this.apiKey);
+        return null;
     }
-
-
 }

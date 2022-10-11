@@ -28,14 +28,15 @@
 package org.opennms.velocloud.client.v1;
 
 
-import org.junit.Test;
-import org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+import org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth;
 
 public class VelocloudApiClientV1Test {
     public static final String AUTH_HEADER_NAME = "Authorization";
@@ -44,20 +45,24 @@ public class VelocloudApiClientV1Test {
 
     @Test
     public void testBaseUrl() throws Exception {
-        final var client = new VelocloudApiClientProviderV1()
-                .connect("https://localhost:9999/", "");
+        final var api = VelocloudApiClientProviderV1.connectApi(VelocloudApiClientCredentials.builder()
+                                                                                             .withOrchestratorUrl("https://localhost:9999/")
+                                                                                             .withApiKey("")
+                                                                                             .build());
 
-        assertEquals(client.getBasePath(), "https://localhost:9999/portal/rest");
+        assertEquals(api.getApiClient().getBasePath(), "https://localhost:9999/portal/rest");
     }
 
     @Test
     public void testAuth() throws Exception {
         final var key = "kjsncdkjdnsckdjsfncfs";
 
-        final var client = new VelocloudApiClientProviderV1()
-                .connect("https://localhost:9999/", key);
+        final var api = VelocloudApiClientProviderV1.connectApi(VelocloudApiClientCredentials.builder()
+                                                                                             .withOrchestratorUrl("https://localhost:9999/")
+                                                                                             .withApiKey(key)
+                                                                                             .build());
 
-        var auth = (ApiKeyAuth)client.getAuthentication("ApiKeyAuth");
+        var auth = (ApiKeyAuth) api.getApiClient().getAuthentication("ApiKeyAuth");
         assertEquals(auth.getApiKey(), key);
         assertEquals(auth.getLocation(), AUTH_HEADER_LOCATION);
         assertEquals(auth.getParamName(), AUTH_HEADER_NAME);

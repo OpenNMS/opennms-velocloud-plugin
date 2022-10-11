@@ -25,13 +25,19 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.rest.v1;
 
-package org.opennms.velocloud.connections;
+import org.mapstruct.factory.Mappers;
+import org.opennms.velocloud.client.api.model.Customer;
+import org.opennms.velocloud.client.api.model.User;
+import org.opennms.velocloud.rest.dto.EnterpriseDTO;
+import org.opennms.velocloud.rest.dto.UserDTO;
 
+@org.mapstruct.Mapper
+public interface Mapper {
+    Mapper ENTERPRISE_INSTANCE = Mappers.getMapper(Mapper.class);
 
-public class ConnectionValidationError extends RuntimeException {
+    EnterpriseDTO sourceToTarget(Customer source);
 
-    public ConnectionValidationError(final String alias, final String message) {
-        super(String.format("Invalid connection in SCV: %s: %s", alias, message));
-    }
+    UserDTO sourceToTarget(User source);
 }

@@ -28,16 +28,21 @@
 
 package org.opennms.velocloud.connections;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.opennms.integration.api.v1.runtime.Container;
+import org.opennms.integration.api.v1.runtime.RuntimeInfo;
 import org.opennms.integration.api.v1.scv.Credentials;
 import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
 import org.opennms.integration.api.v1.scv.immutables.ImmutableCredentials;
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
+import org.opennms.velocloud.clients.ClientManager;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -46,12 +51,20 @@ public class ConnectionManager {
 
     private static final String PREFIX = "velocloud_connection_";
 
-    private static final String ATTR_ENTERPRISE_ID = "enterpriseId";
-
     private final SecureCredentialsVault vault;
 
-    public ConnectionManager(final SecureCredentialsVault vault) {
+    private final ClientManager clientManager;
+
+    public ConnectionManager(final RuntimeInfo runtimeInfo,
+                             final SecureCredentialsVault vault,
+                             final ClientManager clientManager) {
+
+        if (runtimeInfo.getContainer() != Container.OPENNMS) {
+            throw new IllegalStateException("Operation only allowed on OpenNMS instance");
+        }
+
         this.vault = Objects.requireNonNull(vault);
+        this.clientManager = Objects.requireNonNull(clientManager);
     }
 
     /**
@@ -61,9 +74,9 @@ public class ConnectionManager {
      */
     public Set<String> getAliases() {
         return this.vault.getAliases().stream()
-                .filter(alias -> alias.startsWith(PREFIX))
-                .map(alias -> alias.substring(PREFIX.length()))
-                .collect(Collectors.toSet());
+                         .filter(alias -> alias.startsWith(PREFIX))
+                         .map(alias -> alias.substring(PREFIX.length()))
+                         .collect(Collectors.toSet());
     }
 
     /**
@@ -87,42 +100,51 @@ public class ConnectionManager {
      * Creates and saves a connection under the given alias.
      * If a connection with the same alias already exists, it will be overwritten.
      *
-     * @param alias the alias of the connection to add
+     * @param alias           the alias of the connection to add
      * @param orchestratorUrl the URL of the orchestrator
-     * @param apiKey the API key used to authenticate the connection
-     * @param enterpriseId the optional enterprise ID of a client connection
-     *
+     * @param apiKey          the API key used to authenticate the connection
      * @throws ConnectionValidationError
      */
-    public Connection addConnection(final String alias, final String orchestratorUrl, final String apiKey, final String enterpriseId) throws ConnectionValidationError {
-        final Connection connection;
-
-        if (Strings.isNullOrEmpty(enterpriseId)) {
-            connection = new ConnectionImpl(alias, orchestratorUrl, apiKey);
-        } else {
-            connection = new ConnectionImpl(alias, orchestratorUrl, apiKey, UUID.fromString(enterpriseId));
-        }
-
+    public Connection addConnection(final String alias, final String orchestratorUrl, final String apiKey) throws ConnectionValidationError {
+        final Connection connection = new ConnectionImpl(alias, orchestratorUrl, apiKey);
         connection.save();
 
         return connection;
+    }
+
+    public Optional<VelocloudApiPartnerClient> getPartnerClient(final String alias) throws ConnectionValidationError, VelocloudApiException {
+        final var connection = this.getConnection(alias);
+        if (connection.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(this.clientManager.getPartnerClient(VelocloudApiClientCredentials.builder()
+                                                                                            .withOrchestratorUrl(connection.get().getOrchestratorUrl())
+                                                                                            .withApiKey(connection.get().getApiKey())
+                                                                                            .build()));
+    }
+
+    public Optional<VelocloudApiCustomerClient> getCustomerClient(final String alias) throws ConnectionValidationError, VelocloudApiException {
+        final var connection = this.getConnection(alias);
+        if (connection.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(this.clientManager.getCustomerClient(VelocloudApiClientCredentials.builder()
+                                                                                             .withOrchestratorUrl(connection.get().getOrchestratorUrl())
+                                                                                             .withApiKey(connection.get().getApiKey())
+                                                                                             .build()));
     }
 
     private class ConnectionImpl implements Connection {
         private final String alias;
         private String orchestratorUrl;
         private String apiKey;
-        private UUID enterpriseId;
 
         private ConnectionImpl(final String alias, final String orchestratorUrl, final String apiKey) {
-            this(alias, orchestratorUrl, apiKey, null);
-        }
-
-        private ConnectionImpl(final String alias, final String orchestratorUrl, final String apiKey, final UUID enterpriseId) {
             this.alias = Objects.requireNonNull(alias);
             this.orchestratorUrl = Objects.requireNonNull(orchestratorUrl);
             this.apiKey = Objects.requireNonNull(apiKey);
-            this.enterpriseId = enterpriseId;
         }
 
         private ConnectionImpl(final String alias, final Credentials credentials) throws ConnectionValidationError {
@@ -137,14 +159,6 @@ public class ConnectionManager {
                 throw new ConnectionValidationError(alias, "API key (password) is missing");
             }
             this.apiKey = credentials.getPassword();
-
-            if (!Strings.isNullOrEmpty(credentials.getAttribute(ATTR_ENTERPRISE_ID))) {
-                try {
-                    this.enterpriseId = UUID.fromString(credentials.getAttribute(ATTR_ENTERPRISE_ID));
-                } catch (final IllegalArgumentException e) {
-                    throw new ConnectionValidationError(alias, "Enterprise ID (" + ATTR_ENTERPRISE_ID + ") is invalid: " + e.getMessage());
-                }
-            }
         }
 
         @Override
@@ -173,26 +187,12 @@ public class ConnectionManager {
         }
 
         @Override
-        public Optional<UUID> getEnterpriseId() {
-            return Optional.ofNullable(this.enterpriseId);
-        }
-
-        @Override
-        public void setEnterpriseId(final UUID enterpriseId) {
-            this.enterpriseId = enterpriseId;
-        }
-
-        @Override
         public void save() {
             ConnectionManager.this.vault.setCredentials(PREFIX + this.alias, this.asCredentials());
         }
 
         private Credentials asCredentials() {
             final var attributes = ImmutableMap.<String, String>builder();
-
-            if (this.enterpriseId != null) {
-                attributes.put(ATTR_ENTERPRISE_ID, this.enterpriseId.toString());
-            }
 
             return new ImmutableCredentials(this.orchestratorUrl, this.apiKey, attributes.build());
         }

@@ -25,13 +25,30 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.rest.dto;
 
-package org.opennms.velocloud.connections;
+import lombok.Data;
 
-
-public class ConnectionValidationError extends RuntimeException {
-
-    public ConnectionValidationError(final String alias, final String message) {
-        super(String.format("Invalid connection in SCV: %s: %s", alias, message));
-    }
+@Data
+public class CustomerDTO {
+    private String enterpriseId;
+    private int id;
+    private int networkId;
+    private int gatewayPoolId;
+    private String bastionState;
+    private boolean alertsEnabled;
+    private boolean operatorAlertsEnabled;
+    private String name;
+    private String domain;
+    private String accountNumber;
+    private String description;
+    private String address;
+    private String city;
+    private String state;
+    private String zip;
+    private String country;
+    private double latitude;
+    private double longitude;
+    private String timezone;
+    private String locale;
 }

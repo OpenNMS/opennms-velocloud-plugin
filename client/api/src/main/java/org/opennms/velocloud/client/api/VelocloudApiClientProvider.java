@@ -28,15 +28,26 @@
 
 package org.opennms.velocloud.client.api;
 
+/**
+ * Provider for velocloud API clients.
+ */
 public interface VelocloudApiClientProvider {
+
     /**
-     * Create a API client.
-     * The client is connected to the given orchestrator and will use the given API key for authentication.
+     * Create a client for a velocloud partner account.
      *
-     * @param orchestratorUrl the orchestrator base URL
-     * @param apiKey          the users API key
-     * @return a connected client
+     * @param credentials the credentials to use for the client.
+     * @return a partner client
+     * @throws VelocloudApiException
      */
-    VelocloudApiClient connect(final String orchestratorUrl,
-                               final String apiKey) throws VelocloudApiException;
+    VelocloudApiPartnerClient partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
+
+    /**
+     * Create a client for a velocloud customer account.
+     *
+     * @param credentials the credentials to use for the client.
+     * @return a customer client
+     * @throws VelocloudApiException
+     */
+    VelocloudApiCustomerClient customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
 }
