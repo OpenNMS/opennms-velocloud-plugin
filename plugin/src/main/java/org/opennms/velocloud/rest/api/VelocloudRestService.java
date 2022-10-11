@@ -25,25 +25,25 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.rest.api;
 
-package org.opennms.velocloud.client.api;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.rest.dto.EnterpriseDTO;
+import org.opennms.velocloud.rest.dto.UserDTO;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.User;
+@Path("/velocloud")
+public interface VelocloudRestService {
 
-/**
- * A client for the velocloud API authenticated as a customer.
- */
-public interface VelocloudApiCustomerClient {
-
-    /**
-     * Get the edges of the customer.
-     * @return a list of {@link Edge}s
-     * @throws VelocloudApiException
-     */
-    List<Edge> getEdges() throws VelocloudApiException;
-
-    List<User> getUsers() throws VelocloudApiException;
+    @GET
+    @Path("/partner/{alias}/customers")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    List<EnterpriseDTO> getCustomersForMspPartner(@PathParam("alias") String alias) throws VelocloudApiException;
 }

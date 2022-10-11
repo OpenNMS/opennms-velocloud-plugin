@@ -33655,7 +33655,7 @@
         },
         "lastLogin": {
           "type": "string",
-          "format": "date-time"
+          "format": "^(\\d{4})-0?(\\d+)-0?(\\d+)[T ]0?(\\d+):0?(\\d+):0?(\\d+)$"
         },
         "modified": {
           "type": "string",
@@ -33666,7 +33666,7 @@
         },
         "passwordModified": {
           "type": "string",
-          "format": "date-time"
+          "format": "^(\\d{4})-0?(\\d+)-0?(\\d+)[T ]0?(\\d+):0?(\\d+):0?(\\d+)$"
         },
         "sshUsername": {
           "type": "string"
@@ -37829,7 +37829,7 @@
         },
         "lastLogin": {
           "type": "string",
-          "format": "date-time"
+          "format": "^(\\d{4})-0?(\\d+)-0?(\\d+)[T ]0?(\\d+):0?(\\d+):0?(\\d+)$"
         },
         "modified": {
           "type": "string",
@@ -37840,7 +37840,7 @@
         },
         "passwordModified": {
           "type": "string",
-          "format": "date-time"
+          "format": "^(\\d{4})-0?(\\d+)-0?(\\d+)[T ]0?(\\d+):0?(\\d+):0?(\\d+)$"
         },
         "bastionState": {
           "type": "string",

@@ -25,25 +25,31 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.shell;
 
-package org.opennms.velocloud.client.api;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.karaf.shell.api.console.CommandLine;
+import org.apache.karaf.shell.api.console.Completer;
+import org.apache.karaf.shell.api.console.Session;
+import org.apache.karaf.shell.support.completers.StringsCompleter;
+import org.opennms.integration.api.v1.scv.SecureCredentialsVault;
+import org.opennms.velocloud.connections.ConnectionManager;
 
 import java.util.List;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.User;
 
-/**
- * A client for the velocloud API authenticated as a customer.
- */
-public interface VelocloudApiCustomerClient {
+@Service
+public class AliasCompleter implements Completer {
 
-    /**
-     * Get the edges of the customer.
-     * @return a list of {@link Edge}s
-     * @throws VelocloudApiException
-     */
-    List<Edge> getEdges() throws VelocloudApiException;
+    @Reference
+    public ConnectionManager connectionManager;
 
-    List<User> getUsers() throws VelocloudApiException;
+    @Override
+    public int complete(Session session, CommandLine commandLine, List<String> candidates) {
+        final var delegate = new StringsCompleter(connectionManager.getAliases(), true);
+        return delegate.complete(session, commandLine, candidates);
+    }
+
+
 }

@@ -25,25 +25,31 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.rest.v1;
 
-package org.opennms.velocloud.client.api;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.rest.api.VelocloudRestService;
+import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.User;
+public class VelocloudRestServiceV1Impl implements VelocloudRestService {
 
-/**
- * A client for the velocloud API authenticated as a customer.
- */
-public interface VelocloudApiCustomerClient {
+    private final ConnectionManager connectionManager;
 
-    /**
-     * Get the edges of the customer.
-     * @return a list of {@link Edge}s
-     * @throws VelocloudApiException
-     */
-    List<Edge> getEdges() throws VelocloudApiException;
+    public VelocloudRestServiceV1Impl(final ConnectionManager connectionManager) {
+        this.connectionManager = Objects.requireNonNull(connectionManager);
+    }
 
-    List<User> getUsers() throws VelocloudApiException;
+    @Override
+    public List<EnterpriseDTO> getCustomersForMspPartner(final String alias) throws VelocloudApiException {
+        final var client = this.connectionManager.getPartnerClient(alias)
+                                                 .orElseThrow(null);
+        return client.getCustomers().stream()
+                     .map(customer -> Mapper.ENTERPRISE_INSTANCE.sourceToTarget(customer))
+                     .collect(Collectors.toList());
+    }
 }

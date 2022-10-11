@@ -25,25 +25,30 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.rest.dto;
 
-package org.opennms.velocloud.client.api;
+import lombok.Data;
 
-import java.util.List;
-
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.User;
-
-/**
- * A client for the velocloud API authenticated as a customer.
- */
-public interface VelocloudApiCustomerClient {
-
-    /**
-     * Get the edges of the customer.
-     * @return a list of {@link Edge}s
-     * @throws VelocloudApiException
-     */
-    List<Edge> getEdges() throws VelocloudApiException;
-
-    List<User> getUsers() throws VelocloudApiException;
+@Data
+public class EnterpriseDTO {
+    private String enterpriseId;
+    private int id;
+    private int networkId;
+    private int gatewayPoolId;
+    private String bastionState;
+    private boolean alertsEnabled;
+    private boolean operatorAlertsEnabled;
+    private String name;
+    private String domain;
+    private String accountNumber;
+    private String description;
+    private String address;
+    private String city;
+    private String state;
+    private String zip;
+    private String country;
+    private double latitude;
+    private double longitude;
+    private String timezone;
+    private String locale;
 }
