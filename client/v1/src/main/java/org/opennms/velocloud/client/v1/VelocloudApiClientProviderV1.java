@@ -38,6 +38,7 @@ import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
 import org.opennms.velocloud.client.v1.handler.ApiException;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterprise;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyProperty;
 import org.opennms.velocloud.client.v1.model.EnterpriseUserGetEnterpriseUser;
 
 public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
@@ -49,7 +50,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
 
-    private AllApi connectApi(final VelocloudApiClientCredentials credentials) {
+    static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
         final var client = new ApiClient();
         client.setBasePath(URI.create(credentials.orchestratorUrl).resolve("portal/rest").toString());
         client.setApiKeyPrefix(AUTH_HEADER_PREFIX);
@@ -60,8 +61,15 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
 
     @Override
     public VelocloudApiPartnerClientV1 partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        final var client = connectApi(credentials);
-        return new VelocloudApiPartnerClientV1(client);
+        final var api = connectApi(credentials);
+
+        final var enterpriseProxyId = Optional.ofNullable(ApiCall.call(api, "get partner info",
+                                                                       AllApi::enterpriseProxyGetEnterpriseProxyProperty,
+                                                                       new EnterpriseProxyGetEnterpriseProxyProperty())
+                                                                 .getEnterpriseProxyId())
+                                              .orElseThrow(() -> new VelocloudApiException("Not a partner account"));
+
+        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId);
     }
 
     @Override

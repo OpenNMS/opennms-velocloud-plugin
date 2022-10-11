@@ -91,7 +91,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
         } catch (VelocloudApiException e) {
             LOG.error("Velocloud Orchestrator communication failed", e);
-            return null;
+            throw new RuntimeException("Velocloud orchestrator communication failed", e);
         }
     }
 
