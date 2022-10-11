@@ -38,7 +38,6 @@ import org.opennms.integration.api.v1.requisition.RequisitionRequest;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
@@ -64,7 +63,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         this.connectionManager = Objects.requireNonNull(connectionManager);
     }
 
-    protected abstract Req createRequest(final Connection connection);
+    protected abstract Req createRequest(final Connection connection, final Map<String, String> parameters);
 
     protected abstract Requisition handleRequest(final RequestContext context) throws VelocloudApiException;
 
@@ -75,7 +74,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
             final var connection = this.connectionManager.getConnection(alias)
                                                          .orElseThrow(() -> new NullPointerException("Connection not found for alias: " + alias));
 
-            return Objects.requireNonNull(this.createRequest(connection));
+            return Objects.requireNonNull(this.createRequest(connection, parameters));
 
         } catch (final ConnectionValidationError e) {
             throw new RuntimeException(e);

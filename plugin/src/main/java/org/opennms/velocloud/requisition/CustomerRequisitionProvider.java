@@ -28,9 +28,10 @@
 
 package org.opennms.velocloud.requisition;
 
+import java.util.Map;
+
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
-import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
@@ -39,6 +40,7 @@ import org.opennms.velocloud.connections.ConnectionManager;
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
 
     public final static String TYPE = "velocloud-customer";
+    public static final String PARAMETER_ENTERPRISE_ID = "enterpriseId";
 
     public CustomerRequisitionProvider(final ClientManager clientManager,
                                        final ConnectionManager connectionManager) {
@@ -51,8 +53,14 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
     }
 
     @Override
-    protected Request createRequest(final Connection connection) {
-        return new Request(connection);
+    protected Request createRequest(final Connection connection, final Map<String, String> parameters) {
+        final var request = new Request(connection);
+
+        if (parameters.containsKey(PARAMETER_ENTERPRISE_ID)) {
+            request.setEnterpriseId(Integer.parseInt(parameters.get(PARAMETER_ENTERPRISE_ID)));
+        }
+
+        return request;
     }
 
     @Override
