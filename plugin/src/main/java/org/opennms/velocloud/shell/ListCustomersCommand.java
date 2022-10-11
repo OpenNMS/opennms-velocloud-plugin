@@ -48,7 +48,7 @@ public class ListCustomersCommand implements Action {
 
     @Override
     public Object execute() throws Exception {
-        final var client = this.connectionManager.getPartnerClient(alias);
+        final var client = this.connectionManager.getPartnerClient(this.alias);
         if (client.isEmpty()) {
             System.err.println("No connection with alias " + this.alias);
             return null;

@@ -55,7 +55,7 @@ public class ClientManager {
             final var entry = this.clients.get(credentials);
             if (entry != null) {
                 return entry.asPartnerClient()
-                            .orElseThrow(() -> new IllegalStateException("Not a partner client"));
+                            .orElseThrow(() -> new VelocloudApiException("Not a partner client"));
             }
 
             final var client = this.clientProvider.partnerClient(credentials);
@@ -70,7 +70,7 @@ public class ClientManager {
             final var entry = this.clients.get(credentials);
             if (entry != null) {
                 return entry.asCustomerClient()
-                            .orElseThrow(() -> new IllegalStateException("Not a customer client"));
+                            .orElseThrow(() -> new VelocloudApiException("Not a customer client"));
             }
 
             final var client = this.clientProvider.customerClient(credentials);
