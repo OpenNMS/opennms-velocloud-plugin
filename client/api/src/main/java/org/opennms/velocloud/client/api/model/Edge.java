@@ -61,12 +61,12 @@ public class Edge {
         this.site = builder.site;
         this.hub = builder.hub;
         this.links = Objects.requireNonNull(builder.links);
-        this.alertsEnabled = Objects.requireNonNull(builder.alertsEnabled);
+        this.alertsEnabled = builder.alertsEnabled;
         this.buildNumber = Objects.requireNonNull(builder.buildNumber);
         this.customInfo = Strings.nullToEmpty(builder.customInfo);
         this.description = Strings.nullToEmpty(builder.description);
         this.deviceFamily = Strings.emptyToNull(builder.deviceFamily);
-        this.deviceId = Objects.requireNonNull(builder.deviceId);
+        this.deviceId = Strings.nullToEmpty(builder.deviceId);
         this.dnsName = Strings.emptyToNull(builder.dnsName);
         this.lteRegion = Strings.emptyToNull(builder.lteRegion);
         this.logicalId = Objects.requireNonNull(builder.logicalId);
