@@ -97,6 +97,9 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
                                                   .withSoftwareVersion(g.getSoftwareVersion())
                                                   .withNetworkId(g.getNetworkId())
                                                   .withPrivateIpAddress(Utils.getValidInetAddress(g.getPrivateIpAddress()))
+                                                  .withConnectedEdges(g.getConnectedEdges() != null
+                                                                      ? g.getConnectedEdges()
+                                                                      : 0)
                                                   .build()
                                      )
                                  .collect(Collectors.toList());
