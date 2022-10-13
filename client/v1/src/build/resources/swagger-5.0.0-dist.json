@@ -13,10 +13,10 @@
   "schemes": [
     "https"
   ],
-  "produces": [
+  "consumes": [
     "application/json"
   ],
-  "consumes": [
+  "produces": [
     "application/json"
   ],
   "paths": {

@@ -40,5 +40,4 @@
             <entry key="application-path" value="/rest/plugin"/>
         </service-properties>
     </service>
-
 </blueprint>

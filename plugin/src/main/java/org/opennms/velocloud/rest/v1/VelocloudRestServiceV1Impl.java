@@ -46,7 +46,7 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
     }
 
     @Override
-    public List<UserDTO> getMspPartnerConnections(String alias) throws VelocloudApiException {
+    public List<UserDTO> getMspPartnerConnections(final String alias) throws VelocloudApiException {
         final var client = this.connectionManager.getPartnerClient(alias)
                 .orElseThrow(null);
         return client.getUsers().stream()

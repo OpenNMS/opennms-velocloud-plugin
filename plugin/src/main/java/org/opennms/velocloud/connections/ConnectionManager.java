@@ -95,7 +95,6 @@ public class ConnectionManager {
         return Optional.of(new ConnectionImpl(alias, credentials));
     }
 
-
     /**
      * Creates and saves a connection under the given alias.
      * If a connection with the same alias already exists, it will be overwritten.
