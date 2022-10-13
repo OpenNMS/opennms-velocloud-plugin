@@ -30,7 +30,8 @@ package org.opennms.velocloud.rest.v1;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.rest.api.VelocloudRestService;
-import org.opennms.velocloud.rest.dto.EnterpriseDTO;
+import org.opennms.velocloud.rest.dto.CustomerDTO;
+import org.opennms.velocloud.rest.dto.UserDTO;
 
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +46,16 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
     }
 
     @Override
-    public List<EnterpriseDTO> getCustomersForMspPartner(final String alias) throws VelocloudApiException {
+    public List<UserDTO> getMspPartnerConnections(String alias) throws VelocloudApiException {
+        final var client = this.connectionManager.getPartnerClient(alias)
+                .orElseThrow(null);
+        return client.getUsers().stream()
+                     .map(user -> Mapper.ENTERPRISE_INSTANCE.sourceToTarget(user))
+                     .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CustomerDTO> getCustomersForMspPartner(final String alias) throws VelocloudApiException {
         final var client = this.connectionManager.getPartnerClient(alias)
                                                  .orElseThrow(null);
         return client.getCustomers().stream()

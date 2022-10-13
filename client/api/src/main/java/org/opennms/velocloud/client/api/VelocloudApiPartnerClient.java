@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Gateway;
+import org.opennms.velocloud.client.api.model.User;
 
 /**
  * A client for the velocloud API authenticated as a partner.
@@ -60,4 +61,11 @@ public interface VelocloudApiPartnerClient {
      * @throws VelocloudApiException
      */
     List<Customer> getCustomers() throws VelocloudApiException;
+
+    /**
+     * Get all partner connections
+     * @return
+     * @throws VelocloudApiException
+     */
+    List<User> getUsers() throws VelocloudApiException;
 }

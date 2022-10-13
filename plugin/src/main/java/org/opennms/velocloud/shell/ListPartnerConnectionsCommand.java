@@ -34,6 +34,9 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.karaf.shell.api.console.Session;
+import org.apache.karaf.shell.support.table.Col;
+import org.apache.karaf.shell.support.table.ShellTable;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.connections.Connection;
@@ -43,13 +46,13 @@ import java.util.Optional;
 
 @Command(scope = "opennms-velocloud", name = "list-msp-partner-connections", description = "List MSP Connections", detailedDescription = "List Connections for MSP")
 @Service
-public class VelocloudListMspPartnerConnectionsCommand implements Action {
+public class ListPartnerConnectionsCommand implements Action {
 
     @Reference
     public ConnectionManager connectionManager;
 
     @Reference
-    private VelocloudApiClientProvider clientProvider;
+    private Session session;
 
     @Argument(index = 0, name = "alias", description = "Velocloud URL", required = true, multiValued = false)
     @Completion(AliasCompleter.class)
@@ -58,14 +61,32 @@ public class VelocloudListMspPartnerConnectionsCommand implements Action {
     @Override
     public Object execute() throws Exception {
 
-        final Optional<Connection> connection = connectionManager.getConnection(alias);
-
-        final String url = connection.get().getOrchestratorUrl();
-        final String apiKey = connection.get().getApiKey();
-        if (Strings.isNullOrEmpty(apiKey) || Strings.isNullOrEmpty(url)) {
-            throw new VelocloudApiException("Unable to retrieve velocloud token");
+        final var client = this.connectionManager.getPartnerClient(this.alias);
+        if (client.isEmpty()) {
+            System.err.println("No connection with alias " + this.alias);
+            return null;
         }
-        clientProvider.connect(url, apiKey).getEnterpriseProxyConnections().forEach(e -> System.out.println(e.toString()));
+
+        final var table = new ShellTable()
+                .size(session.getTerminal().getWidth() - 1)
+                .column(new Col("ID").maxSize(12).bold(true))
+                .column(new Col("Username").maxSize(24))
+                .column(new Col("Domain").maxSize(24))
+                .column(new Col("Email").maxSize(24))
+                .column(new Col("Role").maxSize(24))
+                .column(new Col("Active"));
+
+        for (final var user : client.get().getUsers()) {
+            final var row = table.addRow();
+            row.addContent(user.id);
+            row.addContent(user.username);
+            row.addContent(user.domain);
+            row.addContent(user.email);
+            row.addContent(user.roleName);
+            row.addContent(user.isActive);
+        }
+
+        table.print(System.out, true);
         return null;
     }
 }

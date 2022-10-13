@@ -38,10 +38,12 @@ import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.internal.Utils;
 import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Gateway;
+import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprises;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
 import org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.ApiCall;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyUsers;
 
 public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
@@ -134,5 +136,31 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
                                             .withZip(e.getPostalCode())
                                             .build())
                           .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> getUsers() throws VelocloudApiException {
+        final var users = ApiCall.call(this.api, "users",
+                AllApi::enterpriseProxyGetEnterpriseProxyUsers,
+                new EnterpriseProxyGetEnterpriseProxyUsers());
+
+        return users.stream()
+                .map(user -> User.builder()
+                        .setId(user.getId())
+                        .setUserType(user.getUserType())
+                        .setDomain(user.getDomain())
+                        .setUsername(user.getUsername())
+                        .setFirstName(user.getFirstName())
+                        .setLastName(user.getLastName())
+                        .setEmail(user.getEmail())
+                        .setRoleId(user.getRoleId())
+                        .setRoleName(user.getRoleName())
+                        .setAccessLevel(user.getAccessLevel().getValue())
+                        .setActive(user.getIsActive().getValue() == 1)
+                        .setLocked(user.getIsLocked().getValue() == 1)
+                        .setNative(user.getIsNative().getValue() == 1)
+                        .setSshUsername(user.getSshUsername())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

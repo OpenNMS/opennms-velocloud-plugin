@@ -32,4 +32,13 @@
     </bean>
     <service ref="customerRequisitionProvider" interface="org.opennms.integration.api.v1.requisition.RequisitionProvider"/>
 
+    <bean id="velocloudRestServiceV1" class="org.opennms.velocloud.rest.v1.VelocloudRestServiceV1Impl">
+        <argument ref="connectionManager"/>
+    </bean>
+    <service interface="org.opennms.velocloud.rest.api.VelocloudRestService" ref="velocloudRestServiceV1">
+        <service-properties>
+            <entry key="application-path" value="/rest/plugin"/>
+        </service-properties>
+    </service>
+
 </blueprint>

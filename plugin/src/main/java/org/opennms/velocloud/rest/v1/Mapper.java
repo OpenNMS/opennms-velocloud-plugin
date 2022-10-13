@@ -30,14 +30,14 @@ package org.opennms.velocloud.rest.v1;
 import org.mapstruct.factory.Mappers;
 import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.User;
-import org.opennms.velocloud.rest.dto.EnterpriseDTO;
+import org.opennms.velocloud.rest.dto.CustomerDTO;
 import org.opennms.velocloud.rest.dto.UserDTO;
 
 @org.mapstruct.Mapper
 public interface Mapper {
     Mapper ENTERPRISE_INSTANCE = Mappers.getMapper(Mapper.class);
 
-    EnterpriseDTO sourceToTarget(Customer source);
+    CustomerDTO sourceToTarget(Customer source);
 
     UserDTO sourceToTarget(User source);
 }
