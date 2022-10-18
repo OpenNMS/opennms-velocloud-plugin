@@ -119,4 +119,9 @@
             <argument ref="connectionManager"/>
         </bean>
     </service>
+
+    <!-- Configuration -->
+    <bean id="velocloudPollerConfig" class="org.opennms.velocloud.configuration.VelocloudPollerConfigurationExtension"/>
+    <service ref="velocloudPollerConfig"
+             interface="org.opennms.integration.api.v1.config.poller.PollerConfigurationExtension"/>
 </blueprint>
