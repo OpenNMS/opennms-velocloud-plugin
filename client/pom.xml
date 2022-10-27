@@ -15,6 +15,7 @@
 
     <modules>
         <module>api</module>
+        <module>cache</module>
         <module>v1</module>
         <module>v2</module>
     </modules>
