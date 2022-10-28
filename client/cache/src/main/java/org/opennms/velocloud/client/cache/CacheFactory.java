@@ -26,7 +26,7 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.cache;
+package org.opennms.velocloud.client.cache;
 
 import static java.util.Objects.requireNonNull;
 

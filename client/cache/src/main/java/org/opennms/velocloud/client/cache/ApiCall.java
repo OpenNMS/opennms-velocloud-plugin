@@ -26,16 +26,16 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.cache;
-
-import org.opennms.velocloud.client.api.VelocloudApiException;
+package org.opennms.velocloud.client.cache;
 
 /**
- * Functional interface that represents first part of a method call which can be cached (or not) independent of whole
- * method. That allows to reuse this part in different methods.
- * @param <C> Typ of the result of API call (that can be (C)cacheable)
+ * Represents a call of a function in object of type A with parameter P. This function can throw an Exception of type E
+ * @param <A> (A)API Class to call its method
+ * @param <P> type of (P)parameter for API method: A.method(P param)
+ * @param <C> Typ of the (C)cacheable result of API call
+ * @param <E> type of the (E)exception that can be thrown in A.apiCall(P)
  */
 @FunctionalInterface
-public interface ApiGetExecution<C> {
-    C doApiGet() throws VelocloudApiException;
+public interface ApiCall<A, P, C, E extends Exception> {
+    C doCall(final A api, final P parameter) throws E;
 }

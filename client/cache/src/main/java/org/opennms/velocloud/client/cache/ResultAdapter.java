@@ -26,27 +26,11 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.cache;
+package org.opennms.velocloud.client.cache;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
 
-/**
- * Extends an API call with a converter to the final result
- * @param <C> Typ of the (C)cacheable result of API call
- * @param <R> type of the final (R)result
- */
-public class SupplierSpecification<C, R> implements VelocloudSupplier<R> {
-    private final ApiGetExecution<C> apiGetExecution;
-    private final ResultAdapter<C, R> converter;
-
-    public SupplierSpecification(ApiGetExecution<C> apiGetExecution, ResultAdapter<C, R> converter) {
-        this.apiGetExecution = apiGetExecution;
-        this.converter = converter;
-    }
-
-    @Override
-    public R get() throws VelocloudApiException {
-        final C apiCallResult = apiGetExecution.doApiGet();
-        return converter.apply(apiCallResult);
-    }
+@FunctionalInterface
+public interface ResultAdapter<C, R> {
+    R apply(C c) throws VelocloudApiException;
 }

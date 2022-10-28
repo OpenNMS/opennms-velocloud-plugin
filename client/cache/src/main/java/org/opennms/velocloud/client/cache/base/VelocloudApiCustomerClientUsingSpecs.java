@@ -26,15 +26,33 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.cache;
+package org.opennms.velocloud.client.cache.base;
 
+import java.util.List;
+
+import org.opennms.velocloud.client.cache.VelocloudSupplier;
+import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.Edge;
+import org.opennms.velocloud.client.api.model.User;
 
-/**
- * Method specification that have no Parameter, returns a result and can throw a VelocloudApiException
- * @param <R> type of the final (R)result
- */
-@FunctionalInterface
-public interface VelocloudSupplier<R> {
-    R get() throws VelocloudApiException;
+public abstract class VelocloudApiCustomerClientUsingSpecs implements VelocloudApiCustomerClient {
+
+    private final VelocloudSupplier<List<Edge>> getEdgesSpecification;
+    private final VelocloudSupplier<List<User>> getUsersSpecification;
+
+    public VelocloudApiCustomerClientUsingSpecs(VelocloudSupplier<List<Edge>> getEdgesSpecification, VelocloudSupplier<List<User>> getUsersSpecification) {
+        this.getEdgesSpecification = getEdgesSpecification;
+        this.getUsersSpecification = getUsersSpecification;
+    }
+
+    @Override
+    public List<Edge> getEdges() throws VelocloudApiException {
+        return getEdgesSpecification.get();
+    }
+
+    @Override
+    public List<User> getUsers() throws VelocloudApiException {
+        return getUsersSpecification.get();
+    }
 }

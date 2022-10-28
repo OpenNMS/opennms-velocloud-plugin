@@ -26,22 +26,16 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.cache;
+package org.opennms.velocloud.client.cache;
 
-public class ParamsForApiCall<A, P> {
+import org.opennms.velocloud.client.api.VelocloudApiException;
 
-    //an object to call its function
-    public final A api;
-
-    //parameter for method of API e.g. api.someMethod(T apiCallParameter)
-    public final P apiCallParameter;
-
-    //a key that identifies same API call in cache
-    public final Object key;
-
-    public ParamsForApiCall(A api, P apiCallParameter, Object key) {
-        this.api = api;
-        this.apiCallParameter = apiCallParameter;
-        this.key = key;
-    }
+/**
+ * Functional interface that represents first part of a method call which can be cached (or not) independent of whole
+ * method. That allows to reuse this part in different methods.
+ * @param <C> Typ of the result of API call (that can be (C)cacheable)
+ */
+@FunctionalInterface
+public interface ApiGetExecution<C> {
+    C doApiGet() throws VelocloudApiException;
 }

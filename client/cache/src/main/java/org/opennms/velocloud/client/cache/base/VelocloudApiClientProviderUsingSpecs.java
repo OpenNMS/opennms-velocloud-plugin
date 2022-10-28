@@ -26,9 +26,9 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.cache.clieant;
+package org.opennms.velocloud.client.cache.base;
 
-import org.opennms.velocloud.cache.VelocloudFunction;
+import org.opennms.velocloud.client.cache.VelocloudFunction;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
