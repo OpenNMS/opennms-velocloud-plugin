@@ -26,33 +26,16 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.cache.clieant;
+package org.opennms.velocloud.cache;
 
-import java.util.List;
-
-import org.opennms.velocloud.cache.VelocloudSupplier;
-import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.User;
 
-public abstract class VelocloudApiCustomerClientUsingSpecs implements VelocloudApiCustomerClient {
-
-    private final VelocloudSupplier<List<Edge>> getEdgesSpecification;
-    private final VelocloudSupplier<List<User>> getUsersSpecification;
-
-    public VelocloudApiCustomerClientUsingSpecs(VelocloudSupplier<List<Edge>> getEdgesSpecification, VelocloudSupplier<List<User>> getUsersSpecification) {
-        this.getEdgesSpecification = getEdgesSpecification;
-        this.getUsersSpecification = getUsersSpecification;
-    }
-
-    @Override
-    public List<Edge> getEdges() throws VelocloudApiException {
-        return getEdgesSpecification.get();
-    }
-
-    @Override
-    public List<User> getUsers() throws VelocloudApiException {
-        return getUsersSpecification.get();
-    }
+/**
+ * Functional interface that represents first part of a method call which can be cached (or not) independent of whole
+ * method. That allows to reuse this part in different methods.
+ * @param <C> Typ of the result of API call (that can be (C)cacheable)
+ */
+@FunctionalInterface
+public interface ApiGetExecution<C> {
+    C doApiGet() throws VelocloudApiException;
 }

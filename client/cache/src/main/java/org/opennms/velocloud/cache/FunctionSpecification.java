@@ -31,16 +31,16 @@ package org.opennms.velocloud.cache;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 
 /**
- * Expanded an API call with a converter to the final result
+ * Extends an API call with a converter to the final result
  * @param <I> type of (I)initial parameter
  * @param <C> Typ of the (C)cacheable result of API call
  * @param <R> type of the final (R)result
  */
-public class MethodCallSpecification<I, C, R> implements VelocloudFunction<I, R> {
+public class FunctionSpecification<I, C, R> implements VelocloudFunction<I, R> {
     private final ApiCallExecution<I, C> apiCallExecution;
     private final ResultAdapter<C, R> converter;
 
-    public MethodCallSpecification(ApiCallExecution<I, C> apiCallExecution, ResultAdapter<C, R> converter) {
+    public FunctionSpecification(ApiCallExecution<I, C> apiCallExecution, ResultAdapter<C, R> converter) {
         this.apiCallExecution = apiCallExecution;
         this.converter = converter;
     }

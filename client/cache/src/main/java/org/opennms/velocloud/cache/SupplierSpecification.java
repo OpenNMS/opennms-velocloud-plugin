@@ -26,33 +26,27 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.cache.clieant;
+package org.opennms.velocloud.cache;
 
-import java.util.List;
-
-import org.opennms.velocloud.cache.VelocloudSupplier;
-import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.User;
 
-public abstract class VelocloudApiCustomerClientUsingSpecs implements VelocloudApiCustomerClient {
+/**
+ * Extends an API call with a converter to the final result
+ * @param <C> Typ of the (C)cacheable result of API call
+ * @param <R> type of the final (R)result
+ */
+public class SupplierSpecification<C, R> implements VelocloudSupplier<R> {
+    private final ApiGetExecution<C> apiGetExecution;
+    private final ResultAdapter<C, R> converter;
 
-    private final VelocloudSupplier<List<Edge>> getEdgesSpecification;
-    private final VelocloudSupplier<List<User>> getUsersSpecification;
-
-    public VelocloudApiCustomerClientUsingSpecs(VelocloudSupplier<List<Edge>> getEdgesSpecification, VelocloudSupplier<List<User>> getUsersSpecification) {
-        this.getEdgesSpecification = getEdgesSpecification;
-        this.getUsersSpecification = getUsersSpecification;
+    public SupplierSpecification(ApiGetExecution<C> apiGetExecution, ResultAdapter<C, R> converter) {
+        this.apiGetExecution = apiGetExecution;
+        this.converter = converter;
     }
 
     @Override
-    public List<Edge> getEdges() throws VelocloudApiException {
-        return getEdgesSpecification.get();
-    }
-
-    @Override
-    public List<User> getUsers() throws VelocloudApiException {
-        return getUsersSpecification.get();
+    public R get() throws VelocloudApiException {
+        final C apiCallResult = apiGetExecution.doApiGet();
+        return converter.apply(apiCallResult);
     }
 }

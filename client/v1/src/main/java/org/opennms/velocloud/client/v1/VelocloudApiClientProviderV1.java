@@ -28,12 +28,13 @@
 
 package org.opennms.velocloud.client.v1;
 
-import static org.opennms.velocloud.cache.ExtendedResult.extend;
+import static org.opennms.velocloud.client.v1.FunctionRefsHolder.EXTENDED_ENTERPRISE_GET_ENTERPRISE;
+import static org.opennms.velocloud.client.v1.FunctionRefsHolder.EXTENDED_ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY;
 
 import java.net.URI;
 import java.util.Optional;
 
-import org.opennms.velocloud.cache.MethodCallSpecificationWithCache;
+import org.opennms.velocloud.cache.FunctionSpecificationWithCache;
 import org.opennms.velocloud.cache.ParamsForApiCall;
 import org.opennms.velocloud.cache.clieant.VelocloudApiClientProviderUsingSpecs;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
@@ -62,14 +63,14 @@ public class VelocloudApiClientProviderV1 extends VelocloudApiClientProviderUsin
 
     public VelocloudApiClientProviderV1() {
         super(
-                new MethodCallSpecificationWithCache<>(
+                new FunctionSpecificationWithCache<>(
                         credentials ->
                             new ParamsForApiCall<>(
                                     connectApi(credentials),
                                     new EnterpriseProxyGetEnterpriseProxyProperty(),
                                     credentials
                             ),
-                        extend(AllApi::enterpriseProxyGetEnterpriseProxyProperty),
+                        EXTENDED_ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY,
                         "get partner info",
                         (extended) -> {
                             final Integer enterpriseProxyId = Optional.ofNullable(extended.getC().getEnterpriseProxyId())
@@ -77,14 +78,14 @@ public class VelocloudApiClientProviderV1 extends VelocloudApiClientProviderUsin
                             return new VelocloudApiPartnerClientV1(extended.getApi(), enterpriseProxyId);
                         }
                 ),
-                new MethodCallSpecificationWithCache<>(
+                new FunctionSpecificationWithCache<>(
                         credentials ->
                                 new ParamsForApiCall<>(
                                         connectApi(credentials),
                                         new EnterpriseGetEnterprise(),
                                         credentials
                                 ),
-                        extend(AllApi::enterpriseGetEnterprise),
+                        EXTENDED_ENTERPRISE_GET_ENTERPRISE,
                         "get user info",
                         (extended) -> {
                             final Integer enterpriseId = Optional.ofNullable(extended.getC().getId())

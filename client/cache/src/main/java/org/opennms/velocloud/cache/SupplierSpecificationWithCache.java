@@ -28,28 +28,22 @@
 
 package org.opennms.velocloud.cache;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
- * MethodCallSpecificationWithCache adds a final result adapter to ApiCallSpecification what allows to use same cache for same
- * API calls, but calculate different results.
- *
- * @param <I> type of (I)initial parameter
- * @param <A> (A)API Class to call its method
- * @param <P> type of (P)parameter for API method: A.method(P param)
- * @param <C> typ of the (C)cacheable result of API call
+ * Extends an API call with a converter to the final result
+ * @param <C> Typ of the (C)cacheable result of API call
  * @param <R> type of the final (R)result
- * @param <E> type of the (E)exception that can be thrown in A.apiCall(P)
  */
-public class MethodCallSpecificationWithCache<I, A, P, C, R, E extends Exception>
-        extends MethodCallSpecification<I, C, R> {
+public class SupplierSpecificationWithCache<A, P, C, R, E extends Exception>
+        extends SupplierSpecification<C, R> {
 
-    public MethodCallSpecificationWithCache(
-            final Function<I, ParamsForApiCall<A, P>> prepare,
+    public SupplierSpecificationWithCache(
+            final Supplier<ParamsForApiCall<A, P>> prepare,
             final ApiCall<A, P, C, E> apiCall,
             String desc,
             final ResultAdapter<C, R> adapter
     ) {
-        super(new ApiCallSpecificationWithCache<>(prepare, apiCall, desc), adapter);
+        super(new ApiGetSpecificationWithCache<>(prepare, apiCall, desc), adapter);
     }
 }
