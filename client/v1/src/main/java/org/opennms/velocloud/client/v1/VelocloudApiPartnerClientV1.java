@@ -27,6 +27,9 @@
  *******************************************************************************/
 package org.opennms.velocloud.client.v1;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -37,11 +40,16 @@ import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.internal.Utils;
 import org.opennms.velocloud.client.api.model.Customer;
+import org.opennms.velocloud.client.api.model.EnterpriseEvent;
 import org.opennms.velocloud.client.api.model.Gateway;
+import org.opennms.velocloud.client.api.model.ProxyEvent;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprises;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
 import org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.ApiCall;
+import org.opennms.velocloud.client.v1.model.EventGetProxyEvents;
+import org.opennms.velocloud.client.v1.model.EventGetProxyEventsResult;
+import org.opennms.velocloud.client.v1.model.Interval;
 
 public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
@@ -134,5 +142,32 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
                                             .withZip(e.getPostalCode())
                                             .build())
                           .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProxyEvent> getProxyEvents(final Instant start, final Instant end) throws VelocloudApiException {
+        final Interval interval = new Interval()
+                .start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
+                .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()));
+
+        final EventGetProxyEventsResult events = ApiCall.call(this.api, "events",
+                AllApi::eventGetProxyEvents,
+                new EventGetProxyEvents().interval(interval));
+
+        return events.getData().stream().map(
+                        e -> ProxyEvent.builder()
+                                .withDetail(e.getDetail())
+                                .withCategory(e.getCategory().getValue())
+                                .withEvent(e.getEvent())
+                                .withId(e.getId())
+                                .withEventTime(e.getEventTime())
+                                .withEnterpriseName(e.getEnterpriseName())
+                                .withProxyUsername(e.getProxyUsername())
+                                .withGatewayName(e.getGatewayName())
+                                .withNetworkName(e.getNetworkName())
+                                .withMessage(e.getMessage())
+                                .withSeverity(e.getSeverity().getValue())
+                                .build())
+                .collect(Collectors.toList());
     }
 }

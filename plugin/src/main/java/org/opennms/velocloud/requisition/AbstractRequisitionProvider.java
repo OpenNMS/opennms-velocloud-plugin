@@ -52,6 +52,8 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
 
     public static final String VELOCLOUD_METADATA_CONTEXT = "velocloud";
+    public static final String VELOCLOUD_CUSTOMER_IDENTIFIER = "velocloud-customer";
+    public static final String VELOCLOUD_PARNTER_IDENTIFIER = "velocloud-partner";
 
     private final ClientManager clientManager;
 

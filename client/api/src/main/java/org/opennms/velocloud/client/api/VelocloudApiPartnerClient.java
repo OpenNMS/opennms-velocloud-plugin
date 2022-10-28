@@ -27,10 +27,13 @@
  *******************************************************************************/
 package org.opennms.velocloud.client.api;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.opennms.velocloud.client.api.model.Customer;
+import org.opennms.velocloud.client.api.model.EnterpriseEvent;
 import org.opennms.velocloud.client.api.model.Gateway;
+import org.opennms.velocloud.client.api.model.ProxyEvent;
 
 /**
  * A client for the velocloud API authenticated as a partner.
@@ -60,4 +63,6 @@ public interface VelocloudApiPartnerClient {
      * @throws VelocloudApiException
      */
     List<Customer> getCustomers() throws VelocloudApiException;
+
+    List<ProxyEvent> getProxyEvents(Instant start, Instant end) throws VelocloudApiException;
 }

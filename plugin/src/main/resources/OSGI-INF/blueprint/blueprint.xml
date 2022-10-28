@@ -1,7 +1,22 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0
+		http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
 
-    <reference id="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>
+		http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0
+		http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd">
+
+
+<reference id="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>
+    <reference id="nodeDao" interface="org.opennms.integration.api.v1.dao.NodeDao" />
+    <reference id="eventForwarder" interface="org.opennms.integration.api.v1.events.EventForwarder" />
+
+    <cm:property-placeholder id="velocloudProperties" persistent-id="org.opennms.velocloud" update-strategy="reload">
+        <cm:default-properties>
+            <cm:property name="events.delay" value="300000" />
+        </cm:default-properties>
+    </cm:property-placeholder>
+
 
     <bean id="clientManager" class="org.opennms.velocloud.clients.ClientManager">
         <argument ref="clientProvider" />
@@ -31,6 +46,20 @@
         <argument ref="connectionManager"/>
     </bean>
     <service ref="customerRequisitionProvider" interface="org.opennms.integration.api.v1.requisition.RequisitionProvider"/>
+
+    <bean id="velocloudEventService" class="org.opennms.velocloud.events.VelocloudEventIngestor" destroy-method="destroy">
+        <argument ref="clientManager"/>
+        <argument ref="connectionManager"/>
+        <argument ref="nodeDao"/>
+        <argument ref="eventForwarder"/>
+        <property name="delay" value="${events.delay}"/>
+    </bean>
+
+    <service interface="org.opennms.integration.api.v1.health.HealthCheck" ref="velocloudEventService"/>
+
+    <service interface="org.opennms.integration.api.v1.config.events.EventConfExtension">
+        <bean class="org.opennms.velocloud.events.VelocloudEventConfExtension"/>
+    </service>
 
     <!--    Rest-->
     <bean id="velocloudRestService" class="org.opennms.velocloud.rest.v1.VelocloudRestServiceV1Impl">
