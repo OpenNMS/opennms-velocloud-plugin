@@ -28,92 +28,95 @@
 
 package org.opennms.velocloud.cache;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.annotation.Nonnull;
-
-import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
-import org.opennms.velocloud.client.api.VelocloudApiException;
-
 /**
- * Class to retrieve results of a function and cache it for defined time
- * @param <T> the type of the input to the function that should be cached
- * @param <C> the type of the result of the function that should be cached
+ * Class for caching results of a particular function with particular parameters for specified time, or retrieve those
+ * if nor existing or expired and to (re)cache
+ * @param <A> (A)PI Class to call its method
+ * @param <P> type of (P)arameter for API method: A.method(P param)
+ * @param <C> Typ of the (C)acheable result of API call
  */
-public class Cache<T, C> {
-    private static class Element<R> {
+public class Cache<A, P, C, E extends Exception> {
+    private static class Element<C> {
         long timestamp;
-        Optional<R> result;
-        public Element(long timestamp, Optional<R> result) {
+        C result;
+        Exception exception;
+        public Element(long timestamp, C result, Exception exception) {
             this.timestamp = timestamp;
             this.result = result;
-        }
-    }
-
-    private static class Key<T> {
-        VelocloudApiClientCredentials credentials;
-        T parameter;
-        public Key(VelocloudApiClientCredentials credentials, T parameter) {
-            this.credentials = requireNonNull(credentials);
-            this.parameter = requireNonNull(parameter);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Key<?> key = (Key<?>) o;
-            return credentials.equals(key.credentials) && parameter.equals(key.parameter);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(credentials, parameter);
+            this.exception = exception;
         }
     }
 
     // time to cache in milliseconds
     private long maxTimeInMillsToCache;
 
-    private HashMap<Key<T>, Element<C>> cacheMap = new HashMap<>();
+    private final HashMap<Object, Element<C>> cacheMap = new HashMap<>();
 
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private final CacheableFunction<T, C> function;
+    private final ApiCall<A, P, C, E> apiCall;
 
-    public Cache(CacheableFunction<T, C> function, int maxTimeInSecondsToCache) {
-        Objects.requireNonNull(function);
-        this.function = function;
-        this.maxTimeInMillsToCache = maxTimeInSecondsToCache * 1000;
+    public Cache(ApiCall<A, P, C, E> apiCall, int maxTimeInSecondsToCache) {
+        Objects.requireNonNull(apiCall);
+        this.apiCall = apiCall;
+        this.maxTimeInMillsToCache = maxTimeInSecondsToCache * 1000L;
     }
 
-    public C doCall(VelocloudApiClientCredentials credentials, T parameter) throws VelocloudApiException {
-        Objects.requireNonNull(credentials);
+    /**
+     * Checks if there is a non expired call result in cache. If so, the cached result is returned.
+     * Otherwise, the call is performed, its result is cached and returned
+     *
+     * @param api object to perform a call on it
+     * @param parameter parameter for the call
+     * @param key the key that identifies cacheable call
+     * @return cached result if there is a non expired one or call result otherwise
+     * @throws E rethrows the exception if there was an exception while performing call or if there was a non expired
+     *         API-Call, and there was also an exception thrown
+     */
+    public C doCall(A api, P parameter, Object key) throws E {
+        Objects.requireNonNull(api);
         Objects.requireNonNull(parameter);
+        Objects.requireNonNull(key);
+
         final long time = System.currentTimeMillis();
         final long oldestOk = time - maxTimeInMillsToCache;
         lock.readLock().lock();
         boolean writeLocked = false;
         try {
-            final Element<C> element = cacheMap.get(parameter);
+            final Element<C> element = cacheMap.get(key);
             if (element != null) {
+                if (element.exception != null) {
+                    if (element.exception instanceof RuntimeException) {
+                        throw (RuntimeException) element.exception;
+                    }
+                    throw (E) element.exception;
+                }
                 if (element.timestamp > oldestOk) {
-                    return element.result.orElse(null);
+                    return element.result;
                 }
             }
             lock.readLock().unlock();
             lock.writeLock().lock();
             writeLocked = true;
-            C result = function.apply(credentials, parameter);
-            cacheMap.put(new Key<>(credentials, parameter), new Element<>(time, Optional.ofNullable(result)));
+            C result = null;
+            Exception e = null;
+            try {
+                result = apiCall.doCall(api, parameter);
+            } catch (Exception ex) {
+                e = ex;
+            }
+            cacheMap.put(key, new Element<>(time, result, e));
+            if (e != null) {
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                }
+                throw (E) e;
+            }
             return result;
         } finally {
             if (writeLocked) {
@@ -134,7 +137,7 @@ public class Cache<T, C> {
     }
 
     public void setTime(int maxTimeInSecondsToCache) {
-        this.maxTimeInMillsToCache = maxTimeInSecondsToCache * 1000;
+        this.maxTimeInMillsToCache = maxTimeInSecondsToCache * 1000L;
         removeExpired();
     }
 
@@ -142,13 +145,7 @@ public class Cache<T, C> {
         lock.writeLock().lock();
         final long oldestOk = System.currentTimeMillis() - maxTimeInMillsToCache;
         try {
-            final Iterator<Map.Entry<Key<T>, Element<C>>> iterator = cacheMap.entrySet().iterator();
-            while (iterator.hasNext()) {
-                final Map.Entry<Key<T>, Element<C>> next = iterator.next();
-                if (next.getValue().timestamp < oldestOk) {
-                    iterator.remove();
-                }
-            }
+            cacheMap.entrySet().removeIf(entry -> entry.getValue().timestamp < oldestOk);
         } finally {
             lock.writeLock().unlock();
         }

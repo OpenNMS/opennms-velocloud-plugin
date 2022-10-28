@@ -28,9 +28,20 @@
 
 package org.opennms.velocloud.cache;
 
-import org.opennms.velocloud.client.api.VelocloudApiException;
+public class ParamsForApiCall<A, P> {
 
-@FunctionalInterface
-public interface ResultAdapter<C, R> {
-    R apply(C c) throws VelocloudApiException;
+    //an object to call its function
+    public final A api;
+
+    //parameter for method of API e.g. api.someMethod(T apiCallParameter)
+    public final P apiCallParameter;
+
+    //a key that identifies same API call in cache
+    public final Object key;
+
+    public ParamsForApiCall(A api, P apiCallParameter, Object key) {
+        this.api = api;
+        this.apiCallParameter = apiCallParameter;
+        this.key = key;
+    }
 }

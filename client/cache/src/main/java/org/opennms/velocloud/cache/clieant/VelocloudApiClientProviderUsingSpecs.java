@@ -28,31 +28,33 @@
 
 package org.opennms.velocloud.cache.clieant;
 
-import java.util.List;
-
-import org.opennms.velocloud.cache.MethodCallSpecification;
+import org.opennms.velocloud.cache.VelocloudFunction;
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.User;
+import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 
-public class CachedVelocloudApiCustomerClient implements VelocloudApiCustomerClient {
+public class VelocloudApiClientProviderUsingSpecs implements VelocloudApiClientProvider {
 
-    final MethodCallSpecification<?, ?, ?, List<Edge> , ?> getEdgesSpecification;
-    final MethodCallSpecification<?, ?, ?, List<User>, ?> getUsersSpecification;
+    private final VelocloudFunction<VelocloudApiClientCredentials, VelocloudApiPartnerClient> partnerClientSpecification;
+    private final VelocloudFunction<VelocloudApiClientCredentials, VelocloudApiCustomerClient> customerClientSpecification;
 
-    public CachedVelocloudApiCustomerClient(MethodCallSpecification<?, ?, ?, List<Edge> , ?> getEdgesSpecification, MethodCallSpecification<?, ?, ?, List<User>, ?> getUsersSpecification) {
-        this.getEdgesSpecification = getEdgesSpecification;
-        this.getUsersSpecification = getUsersSpecification;
+    public VelocloudApiClientProviderUsingSpecs(
+            VelocloudFunction<VelocloudApiClientCredentials, VelocloudApiPartnerClient> partnerClientSpecification,
+            VelocloudFunction<VelocloudApiClientCredentials, VelocloudApiCustomerClient> customerClientSpecification
+    ) {
+        this.partnerClientSpecification = partnerClientSpecification;
+        this.customerClientSpecification = customerClientSpecification;
     }
 
     @Override
-    public List<Edge> getEdges() throws VelocloudApiException {
-        return getEdgesSpecification.doCall();
+    public VelocloudApiPartnerClient partnerClient(VelocloudApiClientCredentials credentials) throws VelocloudApiException {
+        return partnerClientSpecification.apply(credentials);
     }
 
     @Override
-    public List<User> getUsers() throws VelocloudApiException {
-        return getUsersSpecification.doCall();
+    public VelocloudApiCustomerClient customerClient(VelocloudApiClientCredentials credentials) throws VelocloudApiException {
+        return customerClientSpecification.apply(credentials);
     }
 }

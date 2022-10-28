@@ -50,20 +50,20 @@ public class CacheFactory {
         CacheFactory.defaultTimeInSeconds = defaultTimeInSeconds;
     }
 
-    private static ReentrantLock lock = new ReentrantLock();
+    private static final ReentrantLock lock = new ReentrantLock();
 
-    private static final Map<CacheableFunction<?, ?>,  Cache<?, ?>> caches = new HashMap<>();
+    private static final Map<ApiCall<?, ?, ?, ?>,  Cache<?, ?, ?, ?>> caches = new HashMap<>();
 
     @Nonnull
-    public static <API, T, C, E extends Exception> Cache<T, C> getCache(final CacheableFunction<T, C> function) {
+    public static <A, P, C, E extends Exception> Cache<A, P, C, E> getCache(final ApiCall<A, P, C, E> function) {
         requireNonNull(function);
         lock.lock();
         try {
-            Cache<?, ?> cache = caches.get(function);
+            Cache<?, ?, ?, ?> cache = caches.get(function);
             if (cache != null) {
-                return (Cache<T, C>) cache;
+                return (Cache<A, P, C, E>) cache;
             }
-            Cache<T, C> newCache = new Cache<>(function, defaultTimeInSeconds);
+            Cache<A, P, C, E> newCache = new Cache<>(function, defaultTimeInSeconds);
             caches.put(function, newCache);
             return newCache;
         } finally {
@@ -71,7 +71,7 @@ public class CacheFactory {
         }
     }
 
-    public static void forEachCache(final Consumer<Cache<?, ?>> action) {
+    public static void forEachCache(final Consumer<Cache<?, ?, ?, ?>> action) {
         lock.lock();
         try {
             caches.forEach((key, value) -> action.accept(value));
@@ -87,9 +87,9 @@ public class CacheFactory {
     public static void clear() {
         lock.lock();
         try {
-            final Iterator<Map.Entry<CacheableFunction<?, ?>, Cache<?, ?>>> iterator = caches.entrySet().iterator();
+            final Iterator<Map.Entry<ApiCall<?, ?, ?, ?>, Cache<?, ?, ?, ?>>> iterator = caches.entrySet().iterator();
             while (iterator.hasNext()) {
-                final Map.Entry<?, Cache<?, ?>> entry = iterator.next();
+                final Map.Entry<?, Cache<?, ?, ?, ?>> entry = iterator.next();
                 entry.getValue().clear();
                 iterator.remove();
             }

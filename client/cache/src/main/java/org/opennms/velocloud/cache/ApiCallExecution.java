@@ -28,11 +28,15 @@
 
 package org.opennms.velocloud.cache;
 
-import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.v1.handler.ApiException;
 
+/**
+ * Functional interface that represents first part of a method call which can be cached (or not) independent of whole
+ * method. That allows to reuse this part in different methods.
+ * @param <I> type of (I)initial parameter
+ * @param <C> Typ of the result of API call (that can be (C)cacheable)
+ */
 @FunctionalInterface
-public interface CacheableFunction<T, C> {
-    C apply(VelocloudApiClientCredentials credentials, T t) throws VelocloudApiException;
+public interface ApiCallExecution<I, C> {
+    C doApiCall(I initialParameter) throws VelocloudApiException;
 }

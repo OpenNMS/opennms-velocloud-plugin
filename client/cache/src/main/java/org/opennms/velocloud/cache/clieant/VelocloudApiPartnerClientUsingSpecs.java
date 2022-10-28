@@ -28,24 +28,25 @@
 package org.opennms.velocloud.cache.clieant;
 
 import java.util.List;
+import java.util.function.Function;
 
-import org.opennms.velocloud.cache.MethodCallSpecification;
+import org.opennms.velocloud.cache.VelocloudSupplier;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Gateway;
 
-public class CachedVelocloudApiPartnerClient implements VelocloudApiPartnerClient {
+public class VelocloudApiPartnerClientUsingSpecs implements VelocloudApiPartnerClient {
 
-    final MethodCallSpecification<?, ?, ?, VelocloudApiCustomerClient , ?> getCustomerClientSpecification;
-    final MethodCallSpecification<?, ?, ?, List<Gateway>, ?> getGatewaysSpecification;
-    final MethodCallSpecification<?, ?, ?, List<Customer> , ?> getCustomersSpecification;
+    private final Function<Integer, VelocloudApiCustomerClient> getCustomerClientSpecification;
+    private final VelocloudSupplier<List<Gateway>> getGatewaysSpecification;
+    private final VelocloudSupplier<List<Customer>> getCustomersSpecification;
 
-    public CachedVelocloudApiPartnerClient(
-            MethodCallSpecification<?, ?, ?, VelocloudApiCustomerClient, ?> getCustomerClientSpecification,
-            MethodCallSpecification<?, ?, ?, List<Gateway>, ?> getGatewaysSpecification,
-            MethodCallSpecification<?, ?, ?, List<Customer>, ?> getCustomersSpecification
+    public VelocloudApiPartnerClientUsingSpecs(
+            Function<Integer, VelocloudApiCustomerClient> getCustomerClientSpecification,
+            VelocloudSupplier<List<Gateway>> getGatewaysSpecification,
+            VelocloudSupplier<List<Customer>> getCustomersSpecification
     ) {
         this.getCustomerClientSpecification = getCustomerClientSpecification;
         this.getGatewaysSpecification = getGatewaysSpecification;
@@ -54,17 +55,16 @@ public class CachedVelocloudApiPartnerClient implements VelocloudApiPartnerClien
 
     @Override
     public VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId) {
-        //TODO: add Specification without cache
-        return getCustomerClientSpecification.doCall();
+        return getCustomerClientSpecification.apply(enterpriseId);
     }
 
     @Override
     public List<Gateway> getGateways() throws VelocloudApiException {
-        return getGatewaysSpecification.doCall();
+        return getGatewaysSpecification.get();
     }
 
     @Override
     public List<Customer> getCustomers() throws VelocloudApiException {
-        return getCustomersSpecification.doCall();
+        return getCustomersSpecification.get();
     }
 }

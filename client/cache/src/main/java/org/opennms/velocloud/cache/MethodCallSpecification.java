@@ -28,53 +28,26 @@
 
 package org.opennms.velocloud.cache;
 
-import java.util.function.Function;
-
-import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 
 /**
- * MethodCallSpecification adds a final result adapter to ApiCallSpecification what allows to use same cache for same
- * API calls, but calculate different results.
- *
- * @param <T> Parameter type that is required for API call
- * @param <API> API Class
- * @param <C> Typ of the result of API call
- * @param <R> Final result type
+ * Expanded an API call with a converter to the final result
+ * @param <I> type of (I)initial parameter
+ * @param <C> Typ of the (C)cacheable result of API call
+ * @param <R> type of the final (R)result
  */
-public class MethodCallSpecification<API, T, C, R, E extends Exception> extends ApiCallSpecification <API, T, C, E> {
+public class MethodCallSpecification<I, C, R> implements VelocloudFunction<I, R> {
+    private final ApiCallExecution<I, C> apiCallExecution;
+    private final ResultAdapter<C, R> converter;
 
-    private final ParameterSupplier<T> parameterProvider;
-    private final ResultAdapter<C, R> adapter;
-
-    public MethodCallSpecification(
-            final ParameterSupplier<T> parameterProvider,
-            final Function<VelocloudApiClientCredentials, API> apiProvider,
-            final ApiCall<API, T, C, E> apiCall,
-            final ResultAdapter<C, R> adapter,
-            final String desc
-    ) {
-        super(apiProvider, apiCall, desc);
-        this.parameterProvider = parameterProvider;
-        this.adapter = adapter;
+    public MethodCallSpecification(ApiCallExecution<I, C> apiCallExecution, ResultAdapter<C, R> converter) {
+        this.apiCallExecution = apiCallExecution;
+        this.converter = converter;
     }
 
-    public ParameterSupplier<T> getParameterProvider() {
-        return parameterProvider;
-    }
-
-    public ResultAdapter<C, R> getAdapter() {
-        return adapter;
-    }
-
-    public R doCall(VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        final T parameter = parameterProvider.get();
-        final C apiCallResult = getCache().doCall(credentials, parameter);
-        return adapter.convert(apiCallResult);
-    }
-
-    public R doCall() {
-        //TODO
-        return null;
+    @Override
+    public R apply(I initialParameter) throws VelocloudApiException {
+        final C apiCallResult = apiCallExecution.doApiCall(initialParameter);
+        return converter.apply(apiCallResult);
     }
 }

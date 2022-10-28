@@ -26,11 +26,33 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.cache;
+package org.opennms.velocloud.cache.clieant;
 
+import java.util.List;
+
+import org.opennms.velocloud.cache.VelocloudSupplier;
+import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.Edge;
+import org.opennms.velocloud.client.api.model.User;
 
-@FunctionalInterface
-public interface ResultAdapter<C, R> {
-    R apply(C c) throws VelocloudApiException;
+public class VelocloudApiCustomerClientUsingSpecs implements VelocloudApiCustomerClient {
+
+    private final VelocloudSupplier<List<Edge>> getEdgesSpecification;
+    private final VelocloudSupplier<List<User>> getUsersSpecification;
+
+    public VelocloudApiCustomerClientUsingSpecs(VelocloudSupplier<List<Edge>> getEdgesSpecification, VelocloudSupplier<List<User>> getUsersSpecification) {
+        this.getEdgesSpecification = getEdgesSpecification;
+        this.getUsersSpecification = getUsersSpecification;
+    }
+
+    @Override
+    public List<Edge> getEdges() throws VelocloudApiException {
+        return getEdgesSpecification.get();
+    }
+
+    @Override
+    public List<User> getUsers() throws VelocloudApiException {
+        return getUsersSpecification.get();
+    }
 }

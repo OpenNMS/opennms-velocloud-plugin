@@ -28,8 +28,13 @@
 
 package org.opennms.velocloud.cache;
 
-import java.util.function.Supplier;
+import org.opennms.velocloud.client.api.VelocloudApiException;
 
+/**
+ * Method specification that have no Parameter, returns a result and can throw a VelocloudApiException
+ * @param <R> type of the final (R)result
+ */
 @FunctionalInterface
-public interface ParameterSupplier<T> extends Supplier<T> {
+public interface VelocloudSupplier<R> {
+    R get() throws VelocloudApiException;
 }

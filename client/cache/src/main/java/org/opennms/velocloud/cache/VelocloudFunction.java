@@ -30,7 +30,12 @@ package org.opennms.velocloud.cache;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
 
+/**
+ * Method specification that have one Parameter, returns a result and can throw a VelocloudApiException
+ * @param <I> type of (I)initial parameter
+ * @param <R> type of the final (R)result
+ */
 @FunctionalInterface
-public interface ResultAdapter<C, R> {
-    R apply(C c) throws VelocloudApiException;
+public interface VelocloudFunction<I, R> {
+    R apply(I initialParameter) throws VelocloudApiException;
 }

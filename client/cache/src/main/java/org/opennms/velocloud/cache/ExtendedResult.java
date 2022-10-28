@@ -53,6 +53,18 @@ public class ExtendedResult<API, C> {
         return c;
     }
 
+    /**
+     * This method is used to pass API additionally to function result.
+     * @param apiCall function which return value should be replaced with pair: <ul>
+     *                <li>api(first parameter of the consumed function)</li>
+     *                <li>result of this extended function</li>
+     * </ul>
+     * @return extended result consisting of API and C
+     * @param <API> type of the first param of consumed function
+     * @param <T> type of the second param of consumed function
+     * @param <C> type of the result of consumed function
+     * @param <E> type of exception that can be thrown by consumed function
+     */
     public static <API, T, C, E extends Exception> ApiCall<API, T, ExtendedResult<API,C>, E> extend(final ApiCall<API, T, C, E> apiCall) {
         return (api, parameter) -> new ExtendedResult<>(api, apiCall.doCall(api, parameter));
     }
