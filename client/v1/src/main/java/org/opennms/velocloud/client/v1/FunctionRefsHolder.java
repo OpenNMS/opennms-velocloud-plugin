@@ -51,7 +51,7 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyPr
 
 /**
  * Used to store all functions that are used in caches
- * Only by providing the same object into the CacheFactory the came cache can be reused
+ * Only by providing the same object into the CacheFactory the same cache can be reused
  */
 public class FunctionRefsHolder {
     public final static ApiCall<AllApi, EnterpriseProxyGetEnterpriseProxyProperty, ExtendedResult<AllApi, EnterpriseProxyGetEnterpriseProxyPropertyResult>, ApiException>
