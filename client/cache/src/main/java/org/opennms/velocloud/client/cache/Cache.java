@@ -36,15 +36,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Class for caching results of a particular function with particular parameters for specified time, or retrieve those
  * if nor existing or expired and to (re)cache
- * @param <A> (A)PI Class to call its method
- * @param <P> type of (P)arameter for API method: A.method(P param)
- * @param <C> Typ of the (C)acheable result of API call
+ * @param <A> (A)API Class to call its method
+ * @param <P> type of (P)parameter for API method: A.method(P param)
+ * @param <C> Typ of the (C)cacheable result of API call
  */
 public class Cache<A, P, C, E extends Exception> {
     private static class Element<C> {
-        long timestamp;
-        C result;
-        Exception exception;
+        final long timestamp;
+        final C result;
+        final Exception exception;
         public Element(long timestamp, C result, Exception exception) {
             this.timestamp = timestamp;
             this.result = result;

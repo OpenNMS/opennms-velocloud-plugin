@@ -37,8 +37,8 @@ import static java.util.Objects.requireNonNull;
  * @param <C> type of second value
  */
 public class ExtendedResult<API, C> {
-    final API api;
-    final C c;
+    private final API api;
+    private final C c;
 
     public ExtendedResult(API api, C c) {
         this.api = requireNonNull(api);
