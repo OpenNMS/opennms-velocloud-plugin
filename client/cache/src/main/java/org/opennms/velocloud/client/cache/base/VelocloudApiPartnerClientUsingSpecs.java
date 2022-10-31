@@ -30,12 +30,12 @@ package org.opennms.velocloud.client.cache.base;
 import java.util.List;
 import java.util.function.Function;
 
-import org.opennms.velocloud.client.cache.VelocloudSupplier;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Gateway;
+import org.opennms.velocloud.client.cache.VelocloudSupplier;
 
 public class VelocloudApiPartnerClientUsingSpecs implements VelocloudApiPartnerClient {
 

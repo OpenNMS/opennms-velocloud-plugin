@@ -34,11 +34,11 @@ import static org.opennms.velocloud.client.v1.FunctionRefsHolder.EXTENDED_ENTERP
 import java.net.URI;
 import java.util.Optional;
 
-import org.opennms.velocloud.cache.FunctionSpecificationWithCache;
-import org.opennms.velocloud.cache.ParamsForApiCall;
-import org.opennms.velocloud.cache.clieant.VelocloudApiClientProviderUsingSpecs;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.cache.FunctionSpecificationWithCache;
+import org.opennms.velocloud.client.cache.ParamsForApiCall;
+import org.opennms.velocloud.client.cache.base.VelocloudApiClientProviderUsingSpecs;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterprise;

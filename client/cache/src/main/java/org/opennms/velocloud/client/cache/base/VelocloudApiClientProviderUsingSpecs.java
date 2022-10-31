@@ -28,12 +28,12 @@
 
 package org.opennms.velocloud.client.cache.base;
 
-import org.opennms.velocloud.client.cache.VelocloudFunction;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
+import org.opennms.velocloud.client.cache.VelocloudFunction;
 
 public class VelocloudApiClientProviderUsingSpecs implements VelocloudApiClientProvider {
 

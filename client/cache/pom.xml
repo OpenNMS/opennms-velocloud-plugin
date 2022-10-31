@@ -20,7 +20,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.opennms.velocloud.cache.*</Export-Package>
+                        <Export-Package>org.opennms.velocloud.client.cache.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -28,6 +28,11 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>${javax.annotation.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.opennms.plugins.velocloud</groupId>
             <artifactId>velocloud-client-api</artifactId>

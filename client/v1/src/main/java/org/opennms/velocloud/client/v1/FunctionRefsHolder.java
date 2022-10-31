@@ -28,12 +28,12 @@
 
 package org.opennms.velocloud.client.v1;
 
-import static org.opennms.velocloud.cache.ExtendedResult.extend;
+import static org.opennms.velocloud.client.cache.ExtendedResult.extend;
 
 import java.util.List;
 
-import org.opennms.velocloud.cache.ApiCall;
-import org.opennms.velocloud.cache.ExtendedResult;
+import org.opennms.velocloud.client.cache.ApiCall;
+import org.opennms.velocloud.client.cache.ExtendedResult;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.handler.ApiException;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterprise;

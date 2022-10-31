@@ -30,11 +30,11 @@ package org.opennms.velocloud.client.cache.base;
 
 import java.util.List;
 
-import org.opennms.velocloud.client.cache.VelocloudSupplier;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.User;
+import org.opennms.velocloud.client.cache.VelocloudSupplier;
 
 public abstract class VelocloudApiCustomerClientUsingSpecs implements VelocloudApiCustomerClient {
 
