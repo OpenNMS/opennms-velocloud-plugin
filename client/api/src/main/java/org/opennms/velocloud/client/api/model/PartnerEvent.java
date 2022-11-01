@@ -32,23 +32,23 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import org.json.JSONObject;
+import com.google.common.base.MoreObjects;
 
-public class ProxyEvent {
-    private String detail;
-    private String category;
-    private String event;
-    private Integer id;
-    private OffsetDateTime eventTime;
-    private String proxyUsername;
-    private String networkName;
-    private String enterpriseName;
-    private String gatewayName;
-    private String message;
-    private String severity;
+public class PartnerEvent {
+    private final String detail;
+    private final String category;
+    private final String event;
+    private final Integer id;
+    private final OffsetDateTime eventTime;
+    private final String proxyUsername;
+    private final String networkName;
+    private final String enterpriseName;
+    private final String gatewayName;
+    private final String message;
+    private final String severity;
 
-    private ProxyEvent(final ProxyEvent.Builder builder) {
-        this.detail = Objects.requireNonNull(builder.detail);
+    private PartnerEvent(final PartnerEvent.Builder builder) {
+        this.detail = builder.detail;
         this.category = Objects.requireNonNull(builder.category);
         this.event = Objects.requireNonNull(builder.event);
         this.id = Objects.requireNonNull(builder.id);
@@ -119,84 +119,84 @@ public class ProxyEvent {
         private String message;
         private String severity;
 
-        public ProxyEvent.Builder withProxyUsername(final String proxyUsername) {
+        public PartnerEvent.Builder withProxyUsername(final String proxyUsername) {
             this.proxyUsername = proxyUsername;
             return this;
         }
 
-        public ProxyEvent.Builder withNetworkName(final String networkName) {
+        public PartnerEvent.Builder withNetworkName(final String networkName) {
             this.networkName = networkName;
             return this;
         }
 
-        public ProxyEvent.Builder withEnterpriseName(final String enterpriseName) {
+        public PartnerEvent.Builder withEnterpriseName(final String enterpriseName) {
             this.enterpriseName = enterpriseName;
             return this;
         }
 
-        public ProxyEvent.Builder withGatewayName(final String gatewayName) {
+        public PartnerEvent.Builder withGatewayName(final String gatewayName) {
             this.gatewayName = gatewayName;
             return this;
         }
 
-        public ProxyEvent.Builder withDetail(final String detail) {
+        public PartnerEvent.Builder withDetail(final String detail) {
             this.detail = detail;
             return this;
         }
 
-        public ProxyEvent.Builder withCategory(final String category) {
+        public PartnerEvent.Builder withCategory(final String category) {
             this.category = category;
             return this;
         }
 
-        public ProxyEvent.Builder withEvent(final String event) {
+        public PartnerEvent.Builder withEvent(final String event) {
             this.event = event;
             return this;
         }
 
-        public ProxyEvent.Builder withId(final Integer id) {
+        public PartnerEvent.Builder withId(final Integer id) {
             this.id = id;
             return this;
         }
 
-        public ProxyEvent.Builder withEventTime(final OffsetDateTime eventTime) {
+        public PartnerEvent.Builder withEventTime(final OffsetDateTime eventTime) {
             this.eventTime = eventTime;
             return this;
         }
 
-        public ProxyEvent.Builder withMessage(final String message) {
+        public PartnerEvent.Builder withMessage(final String message) {
             this.message = message;
             return this;
         }
 
-        public ProxyEvent.Builder withSeverity(final String severity) {
+        public PartnerEvent.Builder withSeverity(final String severity) {
             this.severity = severity;
             return this;
         }
 
-        public ProxyEvent build() {
-            return new ProxyEvent(this);
+        public PartnerEvent build() {
+            return new PartnerEvent(this);
         }
     }
 
-    public static ProxyEvent.Builder builder() {
-        return new ProxyEvent.Builder();
+    public static PartnerEvent.Builder builder() {
+        return new PartnerEvent.Builder();
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ")
-                .add("detail:" + this.detail)
-                .add("category:" + this.category)
-                .add("event:" + this.event)
-                .add("id:" + this.id)
-                .add("eventTime:" + this.eventTime)
-                .add("message:" + this.message)
-                .add("severity:" + this.severity)
-                .add("proxyUsername:" + this.proxyUsername)
-                .add("networkName:" + this.networkName)
-                .add("enterpriseName:" + this.enterpriseName)
-                .add("gatewayName:" + this.gatewayName)
+        return MoreObjects.toStringHelper(this)
+                .add("detail", detail)
+                .add("category", category)
+                .add("event", event)
+                .add("id", id)
+                .add("eventTime", eventTime)
+                .add("proxyUsername", proxyUsername)
+                .add("networkName", networkName)
+                .add("enterpriseName", enterpriseName)
+                .add("gatewayName", gatewayName)
+                .add("message", message)
+                .add("severity", severity)
                 .toString();
     }
 }

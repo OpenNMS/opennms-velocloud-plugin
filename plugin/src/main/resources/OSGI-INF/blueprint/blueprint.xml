@@ -7,9 +7,9 @@
 		http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd">
 
 
-<reference id="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>
-    <reference id="nodeDao" interface="org.opennms.integration.api.v1.dao.NodeDao" />
-    <reference id="eventForwarder" interface="org.opennms.integration.api.v1.events.EventForwarder" />
+    <reference id="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>
+    <reference id="nodeDao" interface="org.opennms.integration.api.v1.dao.NodeDao" availability="optional"/>
+    <reference id="eventForwarder" interface="org.opennms.integration.api.v1.events.EventForwarder" availability="optional"/>
 
     <cm:property-placeholder id="velocloudProperties" persistent-id="org.opennms.velocloud" update-strategy="reload">
         <cm:default-properties>
@@ -52,7 +52,7 @@
         <argument ref="connectionManager"/>
         <argument ref="nodeDao"/>
         <argument ref="eventForwarder"/>
-        <property name="delay" value="${events.delay}"/>
+        <argument value="${events.delay}"/>
     </bean>
 
     <service interface="org.opennms.integration.api.v1.health.HealthCheck" ref="velocloudEventService"/>

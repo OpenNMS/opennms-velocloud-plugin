@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.EnterpriseEvent;
+import org.opennms.velocloud.client.api.model.CustomerEvent;
 import org.opennms.velocloud.client.api.model.Link;
 import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
@@ -147,7 +147,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     }
 
     @Override
-    public List<EnterpriseEvent> getEnterpriseEvents(final Instant start, final Instant end) throws VelocloudApiException {
+    public List<CustomerEvent> getEvents(final Instant start, final Instant end) throws VelocloudApiException {
         final Interval interval = new Interval()
                 .start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
                 .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()));
@@ -157,7 +157,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                 new EventGetEnterpriseEvents().interval(interval).enterpriseId(this.enterpriseId));
 
         return events.getData().stream().map(
-                        e -> EnterpriseEvent.builder()
+                        e -> CustomerEvent.builder()
                                 .withDetail(e.getDetail())
                                 .withCategory(e.getCategory().getValue())
                                 .withEvent(e.getEvent())

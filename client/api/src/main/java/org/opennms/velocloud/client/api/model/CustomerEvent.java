@@ -32,22 +32,21 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.common.base.MoreObjects;
 
-public class EnterpriseEvent {
-    private String detail;
-    private String category;
-    private String event;
-    private Integer id;
-    private OffsetDateTime eventTime;
-    private String edgeName;
-    private String enterpriseUsername;
-    private String message;
-    private String severity;
+public class CustomerEvent {
+    private final String detail;
+    private final String category;
+    private final String event;
+    private final Integer id;
+    private final OffsetDateTime eventTime;
+    private final String edgeName;
+    private final String enterpriseUsername;
+    private final String message;
+    private final String severity;
 
-    private EnterpriseEvent(final Builder builder) {
-        this.detail = Objects.requireNonNull(builder.detail);
+    private CustomerEvent(final Builder builder) {
+        this.detail = builder.detail;
         this.category = Objects.requireNonNull(builder.category);
         this.event = Objects.requireNonNull(builder.event);
         this.id = Objects.requireNonNull(builder.id);
@@ -151,27 +150,27 @@ public class EnterpriseEvent {
             return this;
         }
 
-        public EnterpriseEvent build() {
-            return new EnterpriseEvent(this);
+        public CustomerEvent build() {
+            return new CustomerEvent(this);
         }
     }
 
-    public static EnterpriseEvent.Builder builder() {
-        return new EnterpriseEvent.Builder();
+    public static CustomerEvent.Builder builder() {
+        return new CustomerEvent.Builder();
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ")
-                .add("detail:" + this.detail)
-                .add("category:" + this.category)
-                .add("event:" + this.event)
-                .add("id:" + this.id)
-                .add("eventTime:" + this.eventTime)
-                .add("edgeName:" + this.edgeName)
-                .add("enterpriseUsername:" + this.enterpriseUsername)
-                .add("message:" + this.message)
-                .add("severity:" + this.severity)
+        return MoreObjects.toStringHelper(this)
+                .add("detail", detail)
+                .add("category", category)
+                .add("event", event)
+                .add("id", id)
+                .add("eventTime", eventTime)
+                .add("edgeName", edgeName)
+                .add("enterpriseUsername", enterpriseUsername)
+                .add("message", message)
+                .add("severity", severity)
                 .toString();
     }
 }

@@ -116,6 +116,10 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         }
     }
 
+    public static String createForeignSource(final String type, final String alias) {
+        return String.format("%s-%s", type, alias);
+    }
+
     protected static abstract class Request implements RequisitionRequest {
 
         private String foreignSource;
@@ -130,7 +134,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         }
 
         public Request(final String type, final Connection connection) {
-            this.foreignSource = String.format("%s-%s", type, connection.getAlias());
+            this.foreignSource = createForeignSource(type, connection.getAlias());
             this.alias = Objects.requireNonNull(connection.getAlias());
             this.orchestratorUrl = Objects.requireNonNull(connection.getOrchestratorUrl());
             this.apiKey = Objects.requireNonNull(connection.getApiKey());

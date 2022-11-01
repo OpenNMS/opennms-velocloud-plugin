@@ -35,16 +35,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.integration.api.v1.events.EventForwarder;
 import org.opennms.integration.api.v1.health.Context;
@@ -57,59 +54,68 @@ import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.model.Severity;
 import org.opennms.integration.api.v1.model.immutables.ImmutableEventParameter;
 import org.opennms.integration.api.v1.model.immutables.ImmutableInMemoryEvent;
-import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
-import org.opennms.velocloud.client.api.model.EnterpriseEvent;
-import org.opennms.velocloud.client.api.model.ProxyEvent;
+import org.opennms.velocloud.client.api.model.CustomerEvent;
+import org.opennms.velocloud.client.api.model.PartnerEvent;
 import org.opennms.velocloud.clients.ClientManager;
-import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.requisition.AbstractRequisitionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 
 public class VelocloudEventIngestor implements Runnable, HealthCheck {
     private static final Logger LOG = LoggerFactory.getLogger(VelocloudEventIngestor.class);
+
     public static final String LOGICAL_ID = "logicalId";
+
     public static final String ENTERPRISE_EVENTS_UEI = "uei.opennms.org/vendor/vmware/velocloud/enterpriseEvents";
+
     public static final String PROXY_EVENTS_UEI = "uei.opennms.org/vendor/vmware/velocloud/proxyEvents";
+
+    private final static Map<String, Severity> SEVERITY_MAP = ImmutableMap.<String, Severity>builder()
+            .put("EMERGENCY", Severity.CRITICAL)
+            .put("ALERT", Severity.CRITICAL)
+            .put("CRITICAL", Severity.MAJOR)
+            .put("ERROR", Severity.MINOR)
+            .put("WARNING", Severity.WARNING)
+            .put("NOTICE", Severity.NORMAL)
+            .put("INFO", Severity.NORMAL)
+            .put("DEBUG", Severity.NORMAL)
+            .build();
+
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-    private ScheduledFuture<?> scheduledFuture;
-    private long delay = 0L;
+
     private final ClientManager clientManager;
+
     private final ConnectionManager connectionManager;
+
     private final NodeDao nodeDao;
+
     private final EventForwarder eventForwarder;
-    private final static Map<String, Severity> SEVERITY_MAP = new TreeMap<>();
 
     private Instant lastPoll = null;
 
-    static {
-        SEVERITY_MAP.put("EMERGENCY", Severity.CRITICAL);
-        SEVERITY_MAP.put("ALERT", Severity.CRITICAL);
-        SEVERITY_MAP.put("CRITICAL", Severity.MAJOR);
-        SEVERITY_MAP.put("ERROR", Severity.MINOR);
-        SEVERITY_MAP.put("WARNING", Severity.WARNING);
-        SEVERITY_MAP.put("NOTICE", Severity.NORMAL);
-        SEVERITY_MAP.put("INFO", Severity.NORMAL);
-        SEVERITY_MAP.put("DEBUG", Severity.NORMAL);
-    }
+    private ScheduledFuture<?> scheduledFuture;
+
+    private long delay = 0L;
 
     public VelocloudEventIngestor(final ClientManager clientManager,
                                   final ConnectionManager connectionManager,
                                   final NodeDao nodeDao,
-                                  final EventForwarder eventForwarder) {
-        this.clientManager = clientManager;
-        this.connectionManager = connectionManager;
-        this.nodeDao = nodeDao;
-        this.eventForwarder = eventForwarder;
-    }
+                                  final EventForwarder eventForwarder,
+                                  final long delay) {
+        this.clientManager = Objects.requireNonNull(clientManager);
+        this.connectionManager = Objects.requireNonNull(connectionManager);
+        this.nodeDao = Objects.requireNonNull(nodeDao);
+        this.eventForwarder = Objects.requireNonNull(eventForwarder);
+        this.delay = delay;
 
-    public void init() {
         LOG.debug("Velocloud Event Ingestor is initializing (delay = {}ms).", delay);
         scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(this, delay, delay, TimeUnit.MILLISECONDS);
     }
@@ -131,58 +137,50 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
         }
 
         for (final String alias : connectionManager.getAliases()) {
-            final Optional<Connection> connection = connectionManager.getConnection(alias);
 
-            if (connection.isPresent()) {
-                VelocloudApiPartnerClient velocloudApiPartnerClient = null;
+            Optional<VelocloudApiPartnerClient> velocloudApiPartnerClient = Optional.empty();
+            try {
+                velocloudApiPartnerClient = connectionManager.getPartnerClient(alias);
+            } catch (Exception e) {
+                // ignoring, maybe it is a customer connection
+            }
+
+            if (velocloudApiPartnerClient.isPresent()) {
                 try {
-                    velocloudApiPartnerClient = clientManager.getPartnerClient(VelocloudApiClientCredentials.builder()
-                            .withOrchestratorUrl(connection.get().getOrchestratorUrl())
-                            .withApiKey(connection.get().getApiKey())
-                            .build());
+                    final String foreignSource = AbstractRequisitionProvider.createForeignSource(AbstractRequisitionProvider.VELOCLOUD_PARNTER_IDENTIFIER, alias);
+                    processPartnerEvents(lastPoll, now, foreignSource, velocloudApiPartnerClient.get());
                 } catch (Exception e) {
-                    LOG.debug("Cannot create partner connection for the given credentials.");
+                    LOG.error("Error processing partner events.", e);
                 }
+                continue;
+            }
 
-                if (velocloudApiPartnerClient != null) {
-                    try {
-                        final String foreignSource = String.format("%s-%s", AbstractRequisitionProvider.VELOCLOUD_PARNTER_IDENTIFIER, connection.get().getAlias());
-                        processPartnerEvents(lastPoll, now, foreignSource, velocloudApiPartnerClient);
-                    } catch (Exception e) {
-                        LOG.error("Error processing partner events.", e);
-                    }
-                    continue;
-                }
+            Optional<VelocloudApiCustomerClient> velocloudApiCustomerClient = Optional.empty();
+            try {
+                velocloudApiCustomerClient = connectionManager.getCustomerClient(alias);
+            } catch (Exception e) {
+                LOG.debug("Cannot create partner or customer connection for the given credentials: {}" + alias);
+            }
 
-                VelocloudApiCustomerClient velocloudApiCustomerClient = null;
+            if (velocloudApiCustomerClient.isPresent()) {
                 try {
-                    velocloudApiCustomerClient = clientManager.getCustomerClient(VelocloudApiClientCredentials.builder()
-                            .withOrchestratorUrl(connection.get().getOrchestratorUrl())
-                            .withApiKey(connection.get().getApiKey())
-                            .build());
+                    final String foreignSource = AbstractRequisitionProvider.createForeignSource(AbstractRequisitionProvider.VELOCLOUD_CUSTOMER_IDENTIFIER, alias);
+                    processCustomerEvents(lastPoll, now, foreignSource, velocloudApiCustomerClient.get());
                 } catch (Exception e) {
-                    LOG.debug("Cannot create customer connection for the given credentials.");
-                }
-
-                if (velocloudApiCustomerClient != null) {
-                    try {
-                        final String foreignSource = String.format("%s-%s", AbstractRequisitionProvider.VELOCLOUD_CUSTOMER_IDENTIFIER, connection.get().getAlias());
-                        processCustomerEvents(lastPoll, now, foreignSource, velocloudApiCustomerClient);
-                    } catch (Exception e) {
-                        LOG.error("Error processing customer events.", e);
-                    }
+                    LOG.error("Error processing customer events.", e);
                 }
             }
         }
 
+        // interval start and end is inclusive
         lastPoll = now.plus(1, ChronoUnit.MILLIS);
     }
 
-    private void processEvent(final String foreignSource, final String foreignId, final ProxyEvent proxyEvent) {
+    private void processEvent(final String foreignSource, final String foreignId, final PartnerEvent partnerEvent) {
         final Node node = nodeDao.getNodeByCriteria(foreignSource + ":" + foreignId);
 
         if (node == null) {
-            LOG.warn("Ignoring proxy event #{} since node {} cannot be found.", proxyEvent.getId(), foreignSource + ":" + foreignId);
+            LOG.warn("Ignoring proxy event #{} since node {} cannot be found.", partnerEvent.getId(), foreignSource + ":" + foreignId);
             return;
         }
 
@@ -191,23 +189,23 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
                 .setUei(PROXY_EVENTS_UEI)
                 .setSource(VelocloudEventIngestor.class.getCanonicalName())
                 .setNodeId(node.getId())
-                .setSeverity(SEVERITY_MAP.get(proxyEvent.getSeverity()))
+                .setSeverity(SEVERITY_MAP.get(partnerEvent.getSeverity()))
                 .setInterface(inetAddress.orElse(null));
 
-        builder.addParameter(ImmutableEventParameter.newInstance("gatewayName", proxyEvent.getGatewayName()));
-        builder.addParameter(ImmutableEventParameter.newInstance("event", proxyEvent.getEvent()));
-        builder.addParameter(ImmutableEventParameter.newInstance("message", proxyEvent.getMessage()));
-        builder.addParameter(ImmutableEventParameter.newInstance("severity", proxyEvent.getSeverity()));
-        builder.addParameter(ImmutableEventParameter.newInstance("category", proxyEvent.getCategory()));
-        builder.addParameter(ImmutableEventParameter.newInstance("proxyUsername", proxyEvent.getProxyUsername()));
-        builder.addParameter(ImmutableEventParameter.newInstance("detail", proxyEvent.getDetail()));
-        builder.addParameter(ImmutableEventParameter.newInstance("enterpriseName", proxyEvent.getEnterpriseName()));
-        builder.addParameter(ImmutableEventParameter.newInstance("networkName", proxyEvent.getNetworkName()));
-        builder.addParameter(ImmutableEventParameter.newInstance("id", String.valueOf(proxyEvent.getId())));
+        builder.addParameter(ImmutableEventParameter.newInstance("gatewayName", partnerEvent.getGatewayName()));
+        builder.addParameter(ImmutableEventParameter.newInstance("event", partnerEvent.getEvent()));
+        builder.addParameter(ImmutableEventParameter.newInstance("message", partnerEvent.getMessage()));
+        builder.addParameter(ImmutableEventParameter.newInstance("severity", partnerEvent.getSeverity()));
+        builder.addParameter(ImmutableEventParameter.newInstance("category", partnerEvent.getCategory()));
+        builder.addParameter(ImmutableEventParameter.newInstance("proxyUsername", partnerEvent.getProxyUsername()));
+        builder.addParameter(ImmutableEventParameter.newInstance("detail", partnerEvent.getDetail()));
+        builder.addParameter(ImmutableEventParameter.newInstance("enterpriseName", partnerEvent.getEnterpriseName()));
+        builder.addParameter(ImmutableEventParameter.newInstance("networkName", partnerEvent.getNetworkName()));
+        builder.addParameter(ImmutableEventParameter.newInstance("id", String.valueOf(partnerEvent.getId())));
 
-        if (proxyEvent.getEventTime() != null) {
-            builder.setTime(Date.from(proxyEvent.getEventTime().toInstant()));
-            builder.addParameter(ImmutableEventParameter.newInstance("eventTime", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(proxyEvent.getEventTime())));
+        if (partnerEvent.getEventTime() != null) {
+            builder.setTime(Date.from(partnerEvent.getEventTime().toInstant()));
+            builder.addParameter(ImmutableEventParameter.newInstance("eventTime", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(partnerEvent.getEventTime())));
         } else {
             builder.addParameter(ImmutableEventParameter.newInstance("eventTime", null));
         }
@@ -215,15 +213,15 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
         eventForwarder.sendSync(builder.build());
     }
 
-    private void processEvent(final String foreignSource, final String foreignId, final EnterpriseEvent enterpriseEvent) {
+    private void processEvent(final String foreignSource, final String foreignId, final CustomerEvent customerEvent) {
         final Node node = nodeDao.getNodeByCriteria(foreignSource + ":" + foreignId);
 
         if (node == null) {
-            LOG.warn("Ignoring enterprise event #{} since node {} cannot be found.", enterpriseEvent.getId(), foreignSource + ":" + foreignId);
+            LOG.warn("Ignoring enterprise event #{} since node {} cannot be found.", customerEvent.getId(), foreignSource + ":" + foreignId);
             return;
         }
 
-        final String logicalId = parseJson(enterpriseEvent.getDetail(), LOGICAL_ID);
+        final String logicalId = parseYaml(customerEvent.getDetail(), LOGICAL_ID);
 
         final Optional<InetAddress> inetAddress;
 
@@ -239,21 +237,21 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
                 .setUei(ENTERPRISE_EVENTS_UEI)
                 .setSource(VelocloudEventIngestor.class.getCanonicalName())
                 .setNodeId(node.getId())
-                .setSeverity(SEVERITY_MAP.get(enterpriseEvent.getSeverity()))
+                .setSeverity(SEVERITY_MAP.get(customerEvent.getSeverity()))
                 .setInterface(inetAddress.orElse(null));
 
-        builder.addParameter(ImmutableEventParameter.newInstance("edgeName", enterpriseEvent.getEdgeName()));
-        builder.addParameter(ImmutableEventParameter.newInstance("event", enterpriseEvent.getEvent()));
-        builder.addParameter(ImmutableEventParameter.newInstance("message", enterpriseEvent.getMessage()));
-        builder.addParameter(ImmutableEventParameter.newInstance("severity", enterpriseEvent.getSeverity()));
-        builder.addParameter(ImmutableEventParameter.newInstance("category", enterpriseEvent.getCategory()));
-        builder.addParameter(ImmutableEventParameter.newInstance("enterpriseUsername", enterpriseEvent.getEnterpriseUsername()));
-        builder.addParameter(ImmutableEventParameter.newInstance("detail", enterpriseEvent.getDetail()));
-        builder.addParameter(ImmutableEventParameter.newInstance("id", String.valueOf(enterpriseEvent.getId())));
+        builder.addParameter(ImmutableEventParameter.newInstance("edgeName", customerEvent.getEdgeName()));
+        builder.addParameter(ImmutableEventParameter.newInstance("event", customerEvent.getEvent()));
+        builder.addParameter(ImmutableEventParameter.newInstance("message", customerEvent.getMessage()));
+        builder.addParameter(ImmutableEventParameter.newInstance("severity", customerEvent.getSeverity()));
+        builder.addParameter(ImmutableEventParameter.newInstance("category", customerEvent.getCategory()));
+        builder.addParameter(ImmutableEventParameter.newInstance("enterpriseUsername", customerEvent.getEnterpriseUsername()));
+        builder.addParameter(ImmutableEventParameter.newInstance("detail", customerEvent.getDetail()));
+        builder.addParameter(ImmutableEventParameter.newInstance("id", String.valueOf(customerEvent.getId())));
 
-        if (enterpriseEvent.getEventTime() != null) {
-            builder.setTime(Date.from(enterpriseEvent.getEventTime().toInstant()));
-            builder.addParameter(ImmutableEventParameter.newInstance("eventTime", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(enterpriseEvent.getEventTime())));
+        if (customerEvent.getEventTime() != null) {
+            builder.setTime(Date.from(customerEvent.getEventTime().toInstant()));
+            builder.addParameter(ImmutableEventParameter.newInstance("eventTime", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(customerEvent.getEventTime())));
         } else {
             builder.addParameter(ImmutableEventParameter.newInstance("eventTime", null));
         }
@@ -262,26 +260,26 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
     }
 
     private void processCustomerEvents(final Instant start, final Instant end, final String foreignSource, final VelocloudApiCustomerClient velocloudApiCustomerClient) throws VelocloudApiException {
-        final List<EnterpriseEvent> enterpriseEventList = velocloudApiCustomerClient.getEnterpriseEvents(start, end);
-        LOG.debug(enterpriseEventList.size() + " enterprise events found.");
+        final List<CustomerEvent> customerEventList = velocloudApiCustomerClient.getEvents(start, end);
+        LOG.debug("{} enterprise events found.", customerEventList.size());
 
-        for (final EnterpriseEvent enterpriseEvent : enterpriseEventList) {
-            if (!Strings.isNullOrEmpty(enterpriseEvent.getEdgeName())) {
-                processEvent(foreignSource, enterpriseEvent.getEdgeName(), enterpriseEvent);
+        for (final CustomerEvent customerEvent : customerEventList) {
+            if (!Strings.isNullOrEmpty(customerEvent.getEdgeName())) {
+                processEvent(foreignSource, customerEvent.getEdgeName(), customerEvent);
             } else {
-                LOG.debug("ignoring enterprise event #" + enterpriseEvent.getId() + " due to missing edgeName.");
+                LOG.debug("ignoring enterprise event #{} due to missing edgeName.", customerEvent.getId());
             }
         }
     }
 
     private void processPartnerEvents(final Instant start, final Instant end, final String foreignSource, final VelocloudApiPartnerClient velocloudApiPartnerClient) throws VelocloudApiException {
-        final List<ProxyEvent> enterpriseEventList = velocloudApiPartnerClient.getProxyEvents(start, end);
-        LOG.debug(enterpriseEventList.size() + " proxy events found.");
-        for (final ProxyEvent proxyEvent : enterpriseEventList) {
-            if (!Strings.isNullOrEmpty(proxyEvent.getGatewayName())) {
-                processEvent(foreignSource, proxyEvent.getGatewayName(), proxyEvent);
+        final List<PartnerEvent> enterpriseEventList = velocloudApiPartnerClient.getEvents(start, end);
+        LOG.debug("{} proxy events found.", enterpriseEventList.size());
+        for (final PartnerEvent partnerEvent : enterpriseEventList) {
+            if (!Strings.isNullOrEmpty(partnerEvent.getGatewayName())) {
+                processEvent(foreignSource, partnerEvent.getGatewayName(), partnerEvent);
             } else {
-                LOG.debug("ignoring proxy event #" + proxyEvent.getId() + " due to missing gatewayName.");
+                LOG.debug("ignoring proxy event #{} due to missing gatewayName.", partnerEvent.getId());
             }
         }
     }
@@ -295,24 +293,29 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
         return null;
     }
 
-    private String parseJson(String detail, String key) {
-        if (detail != null) {
-            try {
-                final JSONObject jsonObject = new JSONObject(detail);
-                if (jsonObject.has(key)) {
-                    return jsonObject.getString(key);
-                }
-            } catch (JSONException e1) {
-                try {
-                    final JSONArray array = new JSONArray(detail);
-                    for (int i = 0; i < array.length(); i++) {
-                        final JSONObject jsonObject = new JSONObject(array.getJSONObject(i));
-                        if (jsonObject.has(key)) {
-                            return jsonObject.getString("key");
-                        }
+    private String parseYaml(final String detail, final String key) {
+        final Yaml yaml = new Yaml();
+
+        if (!Strings.isNullOrEmpty(detail)) {
+            final Object object1 = yaml.load(detail);
+            return searchKey(object1, key);
+        }
+
+        return null;
+    }
+
+    private String searchKey(final Object o, final String key) {
+        if (o instanceof Map) {
+            final Map<String, String> map = (Map) o;
+            return map.get(key);
+        } else {
+            if (o instanceof List) {
+                final List list = (List) o;
+                for (final Object element : list) {
+                    final String value = searchKey(element, key);
+                    if (value != null) {
+                        return value;
                     }
-                } catch (JSONException e2) {
-                    LOG.debug("Cannot parse enterprise event JSON detail property: '{}'", detail);
                 }
             }
         }
@@ -330,19 +333,5 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
                 .setStatus(scheduledFuture.isDone() ? Status.Failure : Status.Success)
                 .setMessage(scheduledFuture.isDone() ? "Not running" : "Running")
                 .build();
-    }
-
-    public void setDelay(final long delay) {
-        if (scheduledFuture != null) {
-            destroy();
-        }
-
-        this.delay = delay;
-
-        if (delay == 0L) {
-            return;
-        }
-
-        init();
     }
 }

@@ -32,7 +32,7 @@ import java.time.Instant;
 import java.util.List;
 
 import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.EnterpriseEvent;
+import org.opennms.velocloud.client.api.model.CustomerEvent;
 import org.opennms.velocloud.client.api.model.User;
 
 /**
@@ -49,5 +49,5 @@ public interface VelocloudApiCustomerClient {
 
     List<User> getUsers() throws VelocloudApiException;
 
-    List<EnterpriseEvent> getEnterpriseEvents(Instant start, Instant end) throws VelocloudApiException;
+    List<CustomerEvent> getEvents(Instant start, Instant end) throws VelocloudApiException;
 }

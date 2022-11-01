@@ -40,9 +40,8 @@ import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.internal.Utils;
 import org.opennms.velocloud.client.api.model.Customer;
-import org.opennms.velocloud.client.api.model.EnterpriseEvent;
 import org.opennms.velocloud.client.api.model.Gateway;
-import org.opennms.velocloud.client.api.model.ProxyEvent;
+import org.opennms.velocloud.client.api.model.PartnerEvent;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprises;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
@@ -145,7 +144,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
     }
 
     @Override
-    public List<ProxyEvent> getProxyEvents(final Instant start, final Instant end) throws VelocloudApiException {
+    public List<PartnerEvent> getEvents(final Instant start, final Instant end) throws VelocloudApiException {
         final Interval interval = new Interval()
                 .start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
                 .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()));
@@ -155,7 +154,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
                 new EventGetProxyEvents().interval(interval));
 
         return events.getData().stream().map(
-                        e -> ProxyEvent.builder()
+                        e -> PartnerEvent.builder()
                                 .withDetail(e.getDetail())
                                 .withCategory(e.getCategory().getValue())
                                 .withEvent(e.getEvent())
