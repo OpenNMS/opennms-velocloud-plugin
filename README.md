@@ -7,7 +7,7 @@ Build and install the plugin into your local Maven repository using:
 mvn clean install
 ```
 
-To speed up development iterations, one can use `-Dcodegen.skip=true` to skip re-generating the client model classes.
+To speed up development iterations, one can use `-Dcodegen.skip=true` to skip the regeneration of the client model classes.
 
 
 From the OpenNMS Karaf shell:
