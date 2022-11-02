@@ -29,7 +29,11 @@
 package org.opennms.velocloud.client.v1;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
@@ -39,7 +43,10 @@ import org.opennms.velocloud.client.v1.handler.ApiClient;
 import org.opennms.velocloud.client.v1.handler.ApiException;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterprise;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyProperty;
-import org.opennms.velocloud.client.v1.model.EnterpriseUserGetEnterpriseUser;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
 
@@ -49,6 +56,12 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
      * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
+
+    private final Duration cacheDuration;
+
+    public VelocloudApiClientProviderV1(final long cacheDurationMs) {
+        this.cacheDuration = Duration.ofMillis(cacheDurationMs);
+    }
 
     static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
         final var client = new ApiClient();
@@ -69,7 +82,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                                                                  .getEnterpriseProxyId())
                                               .orElseThrow(() -> new VelocloudApiException("Not a partner account"));
 
-        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId);
+        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId, this.cacheDuration);
     }
 
     @Override
@@ -82,12 +95,16 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                                                             .getId())
                                          .orElseThrow(() -> new VelocloudApiException("Not a customer account"));
 
-        return new VelocloudApiCustomerClientV1(api, enterpriseId);
+        return new VelocloudApiCustomerClientV1(api, enterpriseId, this.cacheDuration);
     }
 
     @FunctionalInterface
     public interface ApiCall<B, R> {
         R apply(final AllApi api, final B body) throws ApiException;
+
+        interface Call<B, R> {
+            R call(final B body) throws VelocloudApiException;
+        }
 
         static <B, R> R call(final AllApi api,
                              final String desc,
@@ -98,6 +115,29 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
             } catch (final ApiException e) {
                 throw new VelocloudApiException("Failed to execute API call: " + desc, e);
             }
+        }
+
+        static <B, R> Call<B, R> api(final ExecutorService executor,
+                                     final AllApi api,
+                                     final String desc,
+                                     final ApiCall<B, R> f,
+                                     final Duration cacheDuration) {
+            final LoadingCache<B, Future<R>> cache = CacheBuilder.newBuilder()
+                               .expireAfterWrite(cacheDuration)
+                               .build(new CacheLoader<>() {
+                                   @Override
+                                   public Future<R> load(final B body) throws Exception {
+                                       return executor.submit(() -> f.apply(api, body));
+                                   }
+                               });
+
+            return body -> {
+                try {
+                    return cache.get(body).get();
+                } catch (final Exception e) {
+                    throw new VelocloudApiException("Failed to execute API call: " + desc, e);
+                }
+            };
         }
     }
 }

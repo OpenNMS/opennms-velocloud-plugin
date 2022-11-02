@@ -27,9 +27,11 @@
  *******************************************************************************/
 package org.opennms.velocloud.client.v1;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
@@ -40,32 +42,44 @@ import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Gateway;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprises;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
 import org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.ApiCall;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGatewaysResultItem;
 
 public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     private final AllApi api;
     private final int enterpriseProxyId;
 
+    private final Duration cacheDuration;
+
+    private final ApiCall.Call<EnterpriseProxyGetEnterpriseProxyGateways, List<EnterpriseProxyGetEnterpriseProxyGatewaysResultItem>> gateways;
+    private final ApiCall.Call<EnterpriseProxyGetEnterpriseProxyEnterprises, List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem>> customers;
+
     public VelocloudApiPartnerClientV1(final AllApi api,
-                                       final int enterpriseProxyId) {
+                                       final int enterpriseProxyId,
+                                       final Duration cacheDuration) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseProxyId = enterpriseProxyId;
+        this.cacheDuration = cacheDuration;
+
+        final var executor = Executors.newFixedThreadPool(5);
+
+        this.gateways = ApiCall.api(executor, this.api, "gateways", AllApi::enterpriseProxyGetEnterpriseProxyGateways, cacheDuration);
+        this.customers = ApiCall.api(executor, this.api, "customers", AllApi::enterpriseProxyGetEnterpriseProxyEnterprises, cacheDuration);
     }
 
     @Override
     public VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId) {
-        return new VelocloudApiCustomerClientV1(this.api, enterpriseId);
+        return new VelocloudApiCustomerClientV1(this.api, enterpriseId, this.cacheDuration);
     }
 
     @Override
     public List<Gateway> getGateways() throws VelocloudApiException {
-        final var enterpriseGateways = ApiCall.call(this.api, "gateways",
-                                                    AllApi::enterpriseProxyGetEnterpriseProxyGateways,
-                                                    new EnterpriseProxyGetEnterpriseProxyGateways()
-                                                            .enterpriseProxyId(this.enterpriseProxyId)
-                                                            .addWithItem(EnterpriseProxyGetEnterpriseProxyGateways.WithEnum.SITE));
+        final var enterpriseGateways = this.gateways.call(new EnterpriseProxyGetEnterpriseProxyGateways()
+                                                                  .enterpriseProxyId(this.enterpriseProxyId)
+                                                                  .addWithItem(EnterpriseProxyGetEnterpriseProxyGateways.WithEnum.SITE));
 
         return enterpriseGateways.stream()
                                  .map(g -> Gateway.builder()
@@ -104,11 +118,10 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     @Override
     public List<Customer> getCustomers() throws VelocloudApiException {
-        final var enterprises = ApiCall.call(this.api, "customers",
-                                             AllApi::enterpriseProxyGetEnterpriseProxyEnterprises,
-                                             new EnterpriseProxyGetEnterpriseProxyEnterprises()
-                                                     .enterpriseProxyId(this.enterpriseProxyId)
-                                                     .addWithItem(EnterpriseProxyGetEnterpriseProxyEnterprises.WithEnum.EDGES));
+        final var enterprises = this.customers.call(
+                new EnterpriseProxyGetEnterpriseProxyEnterprises()
+                        .enterpriseProxyId(this.enterpriseProxyId)
+                        .addWithItem(EnterpriseProxyGetEnterpriseProxyEnterprises.WithEnum.EDGES));
 
         return enterprises.stream()
                           .map(e -> Customer.builder()

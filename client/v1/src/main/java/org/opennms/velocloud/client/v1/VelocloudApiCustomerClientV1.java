@@ -28,6 +28,7 @@
 
 package org.opennms.velocloud.client.v1;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -49,7 +50,8 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     private final int enterpriseId;
 
     public VelocloudApiCustomerClientV1(final AllApi api,
-                                        final int enterpriseId) {
+                                        final int enterpriseId,
+                                        final Duration cacheDuration) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseId = enterpriseId;
     }
