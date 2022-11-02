@@ -87,6 +87,16 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                                                              .build());
                 node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                              .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                                             .setKey("siteName")
+                                                             .setValue(gateway.siteName)
+                                                             .build());
+                node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                                             .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                                             .setKey("siteId")
+                                                             .setValue(Integer.toString(gateway.siteId))
+                                                             .build());
+                node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                                             .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                              .setKey("roles")
                                                              .setValue(String.join("\n", gateway.roles))
                                                              .build());
@@ -149,8 +159,8 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                                                                   .build());
                 }
 
-                final var service = ImmutableRequisitionMonitoredService.newBuilder()
-                                                                        .setName("VelocloudGateway");
+                iface.addMonitoredService("VelocloudGatewayConnection");
+                iface.addMonitoredService("VelocloudGatewayService");
 
                 node.addInterface(iface.build());
 

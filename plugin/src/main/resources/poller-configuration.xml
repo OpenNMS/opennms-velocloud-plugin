@@ -1,0 +1,21 @@
+<poller-configuration xmlns="http://xmlns.opennms.org/xsd/config/poller/api">
+    <package name="velocloud">
+        <filter>IPADDR != '0.0.0.0'</filter>
+
+        <service name="VelocloudGatewayConnection" interval="300000">
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="gatewayId" value="${velocloud:gatewayId}"/>
+        </service>
+
+        <service name="VelocloudGatewayService" interval="300000">
+            <parameter key="ds-name" value="vcg-service"/>
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="gatewayId" value="${velocloud:gatewayId}"/>
+        </service>
+    </package>
+
+    <monitor service="VelocloudGatewayConnection"
+             class-name="org.opennms.velocloud.pollers.gateway.GatewayConnectionStatusPoller"/>
+    <monitor service="VelocloudGatewayService"
+             class-name="org.opennms.velocloud.pollers.gateway.GatewayServiceStatusPoller"/>
+</poller-configuration>
