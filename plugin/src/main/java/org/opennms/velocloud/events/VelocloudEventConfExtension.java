@@ -26,28 +26,22 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.client.api;
+package org.opennms.velocloud.events;
 
-import java.time.Instant;
 import java.util.List;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.CustomerEvent;
-import org.opennms.velocloud.client.api.model.User;
+import org.opennms.integration.api.v1.config.events.EventConfExtension;
+import org.opennms.integration.api.v1.config.events.EventDefinition;
+import org.opennms.integration.api.xml.ClasspathEventDefinitionLoader;
 
-/**
- * A client for the velocloud API authenticated as a customer.
- */
-public interface VelocloudApiCustomerClient {
+public class VelocloudEventConfExtension implements EventConfExtension {
 
-    /**
-     * Get the edges of the customer.
-     * @return a list of {@link Edge}s
-     * @throws VelocloudApiException
-     */
-    List<Edge> getEdges() throws VelocloudApiException;
+    private final ClasspathEventDefinitionLoader classpathEventDefinitionLoader = new ClasspathEventDefinitionLoader(
+            VelocloudEventConfExtension.class,
+            "velocloud.xml");
 
-    List<User> getUsers() throws VelocloudApiException;
-
-    List<CustomerEvent> getEvents(Instant start, Instant end) throws VelocloudApiException;
+    @Override
+    public List<EventDefinition> getEventDefinitions() {
+        return classpathEventDefinitionLoader.getEventDefinitions();
+    }
 }

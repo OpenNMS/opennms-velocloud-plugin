@@ -78,7 +78,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
         try {
             for (final var gateway : client.getGateways()) {
                 final var node = ImmutableRequisitionNode.newBuilder()
-                                                         .setForeignId(gateway.gatewayId)
+                                                         .setForeignId(gateway.gatewayName)
                                                          .setNodeLabel(gateway.gatewayName);
                 node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                              .setContext(VELOCLOUD_METADATA_CONTEXT)
@@ -177,7 +177,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
         }
 
         public Request(final Connection connection) {
-            super("velocloud-partner", connection);
+            super(VELOCLOUD_PARNTER_IDENTIFIER, connection);
         }
     }
 }

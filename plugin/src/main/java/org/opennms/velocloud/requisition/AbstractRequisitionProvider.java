@@ -52,6 +52,8 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
 
     public static final String VELOCLOUD_METADATA_CONTEXT = "velocloud";
+    public static final String VELOCLOUD_CUSTOMER_IDENTIFIER = "velocloud-customer";
+    public static final String VELOCLOUD_PARNTER_IDENTIFIER = "velocloud-partner";
 
     private final ClientManager clientManager;
 
@@ -114,6 +116,10 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         }
     }
 
+    public static String createForeignSource(final String type, final String alias) {
+        return String.format("%s-%s", type, alias);
+    }
+
     protected static abstract class Request implements RequisitionRequest {
 
         private String foreignSource;
@@ -128,7 +134,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         }
 
         public Request(final String type, final Connection connection) {
-            this.foreignSource = String.format("%s-%s", type, connection.getAlias());
+            this.foreignSource = createForeignSource(type, connection.getAlias());
             this.alias = Objects.requireNonNull(connection.getAlias());
             this.orchestratorUrl = Objects.requireNonNull(connection.getOrchestratorUrl());
             this.apiKey = Objects.requireNonNull(connection.getApiKey());

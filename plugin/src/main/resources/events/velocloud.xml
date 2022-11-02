@@ -1,0 +1,16 @@
+<events xmlns="http://xmlns.opennms.org/xsd/eventconf">
+    <event>
+        <uei>uei.opennms.org/vendor/vmware/velocloud/proxyEvents</uei>
+        <event-label>Velocloud Proxy Event</event-label>
+        <descr>A proxy event of type %parm[event]% was sent for gateway %nodelabel% (%nodeid%): '%parm[message]%'</descr>
+        <logmsg dest="logndisplay">A proxy event of type %parm[event]% was sent for gateway %nodelabel% (%nodeid%): '%parm[message]%'</logmsg>
+        <severity>Indeterminate</severity>
+    </event>
+    <event>
+        <uei>uei.opennms.org/vendor/vmware/velocloud/enterpriseEvents</uei>
+        <event-label>Velocloud Enterprise Event</event-label>
+        <descr>An enterprise event of type %parm[event]% was sent for edge %nodelabel% (%nodeid%): '%parm[message]%'</descr>
+        <logmsg dest="logndisplay">A enterprise event of type %parm[event]% was sent for edge %nodelabel% (%nodeid%): '%parm[message]%'</logmsg>
+        <severity>Indeterminate</severity>
+    </event>
+</events>
