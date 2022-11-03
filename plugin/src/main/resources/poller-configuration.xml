@@ -8,9 +8,28 @@
         </service>
 
         <service name="VelocloudGatewayService" interval="300000">
-            <parameter key="ds-name" value="vcg-service"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="gatewayId" value="${velocloud:gatewayId}"/>
+        </service>
+
+        <service name="VelocloudEdgeConnection" interval="300000">
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="edgeId" value="${velocloud:edgeId}"/>
+        </service>
+
+        <service name="VelocloudEdgeService" interval="300000">
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="edgeId" value="${velocloud:edgeId}"/>
+        </service>
+
+        <service name="VelocloudLinkConnection" interval="300000">
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="linkId" value="${velocloud:linkId}"/>
+        </service>
+
+        <service name="VelocloudLinkService" interval="300000">
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="linkId" value="${velocloud:linkId}"/>
         </service>
     </package>
 
@@ -18,4 +37,12 @@
              class-name="org.opennms.velocloud.pollers.gateway.GatewayConnectionStatusPoller"/>
     <monitor service="VelocloudGatewayService"
              class-name="org.opennms.velocloud.pollers.gateway.GatewayServiceStatusPoller"/>
+    <monitor service="VelocloudEdgeConnection"
+             class-name="org.opennms.velocloud.pollers.edge.EdgeConnectionStatusPoller"/>
+    <monitor service="VelocloudEdgeService"
+             class-name="org.opennms.velocloud.pollers.edge.EdgeServiceStatusPoller"/>
+    <monitor service="VelocloudLinkConnection"
+             class-name="org.opennms.velocloud.pollers.link.LinkConnectionStatusPoller"/>
+    <monitor service="VelocloudLinkService"
+             class-name="org.opennms.velocloud.pollers.link.LinkServiceStatusPoller"/>
 </poller-configuration>

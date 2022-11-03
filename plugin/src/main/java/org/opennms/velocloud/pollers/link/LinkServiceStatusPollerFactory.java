@@ -26,20 +26,22 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.pollers.gateway;
+package org.opennms.velocloud.pollers.link;
 
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller;
+import org.opennms.velocloud.pollers.link.LinkServiceStatusPoller;
 
-public class GatewayConnectionStatusPollerFactory extends AbstractGatewayStatusPoller.Factory<GatewayConnectionStatusPoller> {
+public class LinkServiceStatusPollerFactory extends AbstractLinkStatusPoller.Factory<org.opennms.velocloud.pollers.link.LinkServiceStatusPoller> {
 
-    public GatewayConnectionStatusPollerFactory(final ClientManager clientManager,
-                                                final ConnectionManager connectionManager) {
-        super(clientManager, connectionManager, GatewayConnectionStatusPoller.class);
+    public LinkServiceStatusPollerFactory(final ClientManager clientManager,
+                                             final ConnectionManager connectionManager) {
+        super(clientManager, connectionManager, org.opennms.velocloud.pollers.link.LinkServiceStatusPoller.class);
     }
 
     @Override
-    protected GatewayConnectionStatusPoller createPoller(final ClientManager clientManager) {
-        return new GatewayConnectionStatusPoller(clientManager);
+    protected org.opennms.velocloud.pollers.link.LinkServiceStatusPoller createPoller(final ClientManager clientManager) {
+        return new LinkServiceStatusPoller(clientManager);
     }
 }

@@ -28,7 +28,6 @@
 
 package org.opennms.velocloud.pollers.gateway;
 
-import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.ConnectionManager;
 

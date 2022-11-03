@@ -26,4 +26,4 @@ feature:install opennms-plugins-velocloud
 bundle:watch *
 ```
 
-You can also access the REST endpoint mounted by the plugin at `http://localhost:8980/opennms/rest/plugin/velocloud/`
+You can also access the REST endpoint mounted by the plugin at `http://localhost:8980/opennms/rest/velocloud/`

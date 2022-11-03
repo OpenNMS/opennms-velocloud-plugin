@@ -26,20 +26,33 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.pollers.gateway;
+package org.opennms.velocloud.pollers.edge;
 
+import java.util.Objects;
+
+import org.opennms.integration.api.v1.pollers.PollerResult;
+import org.opennms.integration.api.v1.pollers.Status;
+import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.clients.ClientManager;
-import org.opennms.velocloud.connections.ConnectionManager;
 
-public class GatewayConnectionStatusPollerFactory extends AbstractGatewayStatusPoller.Factory<GatewayConnectionStatusPoller> {
-
-    public GatewayConnectionStatusPollerFactory(final ClientManager clientManager,
-                                                final ConnectionManager connectionManager) {
-        super(clientManager, connectionManager, GatewayConnectionStatusPoller.class);
+public class EdgeServiceStatusPoller extends AbstractEdgeStatusPoller {
+    public EdgeServiceStatusPoller(final ClientManager clientManager) {
+        super(clientManager);
     }
 
-    @Override
-    protected GatewayConnectionStatusPoller createPoller(final ClientManager clientManager) {
-        return new GatewayConnectionStatusPoller(clientManager);
+    protected PollerResult poll(final Edge edge) throws VelocloudApiException {
+        if (!Objects.equals(edge.serviceState, "IN_SERVICE")) {
+            return ImmutablePollerResult.newBuilder()
+                                        .setStatus(Status.Down)
+                                        .setReason("Edge out of service")
+                                        .build();
+        }
+
+        return ImmutablePollerResult.newBuilder()
+                                    .setStatus(Status.Up)
+                                    .build();
     }
+
 }
