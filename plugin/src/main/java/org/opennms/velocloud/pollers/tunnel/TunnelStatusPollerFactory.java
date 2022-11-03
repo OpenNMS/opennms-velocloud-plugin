@@ -26,31 +26,21 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.client.api;
+package org.opennms.velocloud.pollers.tunnel;
 
-import java.time.Instant;
-import java.util.List;
+import org.opennms.velocloud.clients.ClientManager;
+import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.pollers.AbstractStatusPoller;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.CustomerEvent;
-import org.opennms.velocloud.client.api.model.Tunnel;
-import org.opennms.velocloud.client.api.model.User;
+public class TunnelStatusPollerFactory extends AbstractStatusPoller.Factory<TunnelStatusPoller> {
 
-/**
- * A client for the velocloud API authenticated as a customer.
- */
-public interface VelocloudApiCustomerClient {
+    public TunnelStatusPollerFactory(final ClientManager clientManager,
+                                     final ConnectionManager connectionManager) {
+        super(clientManager, connectionManager, TunnelStatusPoller.class);
+    }
 
-    /**
-     * Get the edges of the customer.
-     * @return a list of {@link Edge}s
-     * @throws VelocloudApiException
-     */
-    List<Edge> getEdges() throws VelocloudApiException;
-
-    List<User> getUsers() throws VelocloudApiException;
-
-    List<CustomerEvent> getEvents(Instant start, Instant end) throws VelocloudApiException;
-
-    List<Tunnel> getNvsTunnels() throws VelocloudApiException;
+    @Override
+    protected TunnelStatusPoller createPoller(final ClientManager clientManager) {
+        return new TunnelStatusPoller(clientManager);
+    }
 }

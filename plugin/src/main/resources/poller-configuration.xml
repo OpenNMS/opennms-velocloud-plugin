@@ -31,6 +31,11 @@
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="linkId" value="${velocloud:linkId}"/>
         </service>
+
+        <service name="VelocloudTunnel" interval="300000">
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="dataKey" value="${velocloud:dataKey}"/>
+        </service>
     </package>
 
     <monitor service="VelocloudGatewayConnection"
@@ -45,4 +50,6 @@
              class-name="org.opennms.velocloud.pollers.link.LinkConnectionStatusPoller"/>
     <monitor service="VelocloudLinkService"
              class-name="org.opennms.velocloud.pollers.link.LinkServiceStatusPoller"/>
+    <monitor service="VelocloudTunnel"
+             class-name="org.opennms.velocloud.pollers.tunnel.TunnelStatusPoller"/>
 </poller-configuration>
