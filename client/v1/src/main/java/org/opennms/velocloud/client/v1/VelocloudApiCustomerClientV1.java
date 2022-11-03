@@ -40,6 +40,7 @@ import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.CustomerEvent;
 import org.opennms.velocloud.client.api.model.Link;
+import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
@@ -49,6 +50,7 @@ import org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.ApiCall;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEvents;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEventsResult;
 import org.opennms.velocloud.client.v1.model.Interval;
+import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusBody;
 
 public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient {
 
@@ -173,5 +175,24 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                                 .withSeverity(e.getSeverity().getValue())
                                 .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Tunnel> getNvsTunnels() throws VelocloudApiException {
+        final var tunnels = ApiCall.call(this.api, "nvs tunnels",
+                                         AllApi::monitoringGetEnterpriseEdgeNvsTunnelStatus,
+                                         new MonitoringGetEnterpriseEdgeNvsTunnelStatusBody()
+                                                 .enterpriseId(this.enterpriseId));
+
+        return tunnels.stream()
+                      .map(tunnel -> Tunnel.builder()
+                                           .withId(tunnel.getId())
+                                           .withTag(tunnel.getTag())
+                                           .withDataKey(tunnel.getDataKey())
+                                           .withState(tunnel.getState().getValue())
+                                           .withLink(tunnel.getData().getLink())
+                                           .withName(tunnel.getData().getName())
+                                           .build())
+                      .collect(Collectors.toList());
     }
 }

@@ -86,28 +86,35 @@
     </service>
 
     <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
-        <bean class="org.opennms.velocloud.pollers.gateway.EdgeConnectionStatusPollerFactory">
+        <bean class="org.opennms.velocloud.pollers.edge.EdgeConnectionStatusPollerFactory">
             <argument ref="clientManager"/>
             <argument ref="connectionManager"/>
         </bean>
     </service>
 
     <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
-        <bean class="org.opennms.velocloud.pollers.gateway.EdgeServiceStatusPollerFactory">
+        <bean class="org.opennms.velocloud.pollers.edge.EdgeServiceStatusPollerFactory">
             <argument ref="clientManager"/>
             <argument ref="connectionManager"/>
         </bean>
     </service>
 
     <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
-        <bean class="org.opennms.velocloud.pollers.gateway.LinkConnectionStatusPollerFactory">
+        <bean class="org.opennms.velocloud.pollers.link.LinkConnectionStatusPollerFactory">
             <argument ref="clientManager"/>
             <argument ref="connectionManager"/>
         </bean>
     </service>
 
     <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
-        <bean class="org.opennms.velocloud.pollers.gateway.LinkServiceStatusPollerFactory">
+        <bean class="org.opennms.velocloud.pollers.link.LinkServiceStatusPollerFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+        </bean>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
+        <bean class="org.opennms.velocloud.pollers.tunnel.TunnelStatusPollerFactory">
             <argument ref="clientManager"/>
             <argument ref="connectionManager"/>
         </bean>
