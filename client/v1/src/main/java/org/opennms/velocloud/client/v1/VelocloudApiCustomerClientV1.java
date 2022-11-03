@@ -28,6 +28,9 @@
 
 package org.opennms.velocloud.client.v1;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -35,6 +38,7 @@ import java.util.stream.Collectors;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Edge;
+import org.opennms.velocloud.client.api.model.CustomerEvent;
 import org.opennms.velocloud.client.api.model.Link;
 import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
@@ -42,6 +46,9 @@ import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsers;
 
 import org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.ApiCall;
+import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEvents;
+import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEventsResult;
+import org.opennms.velocloud.client.v1.model.Interval;
 
 public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient {
 
@@ -141,5 +148,30 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                                      .setSshUsername(user.getSshUsername())
                                      .build())
                     .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CustomerEvent> getEvents(final Instant start, final Instant end) throws VelocloudApiException {
+        final Interval interval = new Interval()
+                .start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
+                .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()));
+
+        final EventGetEnterpriseEventsResult events = ApiCall.call(this.api, "events",
+                AllApi::eventGetEnterpriseEvents,
+                new EventGetEnterpriseEvents().interval(interval).enterpriseId(this.enterpriseId));
+
+        return events.getData().stream().map(
+                        e -> CustomerEvent.builder()
+                                .withDetail(e.getDetail())
+                                .withCategory(e.getCategory().getValue())
+                                .withEvent(e.getEvent())
+                                .withId(e.getId())
+                                .withEventTime(e.getEventTime())
+                                .withEdgeName(e.getEdgeName())
+                                .withEnterpriseUsername(e.getEnterpriseUsername())
+                                .withMessage(e.getMessage())
+                                .withSeverity(e.getSeverity().getValue())
+                                .build())
+                .collect(Collectors.toList());
     }
 }

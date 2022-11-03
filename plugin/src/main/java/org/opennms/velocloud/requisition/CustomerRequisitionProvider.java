@@ -82,13 +82,17 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
 
         for (var edge : client.getEdges()) {
             final var node = ImmutableRequisitionNode.newBuilder()
-                                                     .setForeignId(edge.logicalId)
-                                                     .setNodeLabel(edge.name)
-                                                     .setLocation(edge.site);
+                                                     .setForeignId(edge.name)
+                                                     .setNodeLabel(edge.name);
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                          .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                          .setKey("operator")
                                                          .setValue(edge.operator)
+                                                         .build());
+            node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                                         .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                                         .setKey("logicalId")
+                                                         .setValue(edge.logicalId)
                                                          .build());
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                          .setContext(VELOCLOUD_METADATA_CONTEXT)
@@ -232,7 +236,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
         }
 
         public Request(final Connection connection) {
-            super("velocloud-customer", connection);
+            super(VELOCLOUD_CUSTOMER_IDENTIFIER, connection);
         }
 
         public Integer getEnterpriseId() {
