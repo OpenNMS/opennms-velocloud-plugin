@@ -28,10 +28,14 @@
 package org.opennms.velocloud.rest.api;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.rest.dto.ConnectionDTO;
 import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 import org.opennms.velocloud.rest.dto.UserDTO;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -46,4 +50,24 @@ public interface VelocloudRestService {
     @Path("/partner/{alias}/customers")
     @Produces(value = {MediaType.APPLICATION_JSON})
     List<EnterpriseDTO> getCustomersForMspPartner(@PathParam("alias") String alias) throws VelocloudApiException;
+
+    @PUT
+    @Path("/connections/partner/{alias}/edit")
+    @Consumes({MediaType.APPLICATION_JSON})
+    Response editPartnerConnection(@PathParam("alias") String alias, ConnectionDTO connection) throws VelocloudApiException;
+
+    @PUT
+    @Path("/connections/customer/{alias}/edit")
+    @Consumes({MediaType.APPLICATION_JSON})
+    Response editCustomerConnection(@PathParam("alias") String alias, ConnectionDTO connection) throws VelocloudApiException;
+
+    @POST
+    @Path("/connections/partner/{alias}/validate")
+    @Consumes({MediaType.APPLICATION_JSON})
+    Response validatePartnerConnection(@PathParam("alias") String alias) throws VelocloudApiException;
+
+    @POST
+    @Path("/connections/customer/{alias}/validate")
+    @Consumes({MediaType.APPLICATION_JSON})
+    Response validateCustomerConnection(@PathParam("alias") String alias) throws VelocloudApiException;
 }

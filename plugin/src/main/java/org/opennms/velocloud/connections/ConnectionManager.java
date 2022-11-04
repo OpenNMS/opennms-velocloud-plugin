@@ -111,6 +111,34 @@ public class ConnectionManager {
         return connection;
     }
 
+    /**
+     * Attempts to connect a client with the given credentials to the given orchestrator
+     *
+     * @param orchestratorUrl           The URL of the orchestrator
+     * @param apiKey                    The API key used to authenticate the connection
+     * @throws VelocloudApiException    If the credentials are invalid
+     */
+    public void validatePartnerCredentials(String orchestratorUrl, String apiKey) throws VelocloudApiException {
+        final var client = this.clientManager.getPartnerClient(VelocloudApiClientCredentials.builder()
+                                                                                                                  .withApiKey(apiKey)
+                                                                                                                  .withOrchestratorUrl(orchestratorUrl)
+                                                                                                                  .build());
+    }
+
+    /**
+     * Attempts to connect a client with the given credentials to the given orchestrator
+     *
+     * @param orchestratorUrl           The URL of the orchestrator
+     * @param apiKey                    The API key used to authenticate the connection
+     * @throws VelocloudApiException    If the credentials are invalid
+     */
+    public void validateCustomerCredentials(String orchestratorUrl, String apiKey) throws VelocloudApiException {
+        final var client = this.clientManager.getCustomerClient(VelocloudApiClientCredentials.builder()
+                                                                                                                     .withApiKey(apiKey)
+                                                                                                                     .withOrchestratorUrl(orchestratorUrl)
+                                                                                                                     .build());
+    }
+
     public Optional<VelocloudApiPartnerClient> getPartnerClient(final String alias) throws ConnectionValidationError, VelocloudApiException {
         final var connection = this.getConnection(alias);
         if (connection.isEmpty()) {

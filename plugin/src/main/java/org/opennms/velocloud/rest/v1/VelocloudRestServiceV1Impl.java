@@ -28,10 +28,13 @@
 package org.opennms.velocloud.rest.v1;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.rest.api.VelocloudRestService;
+import org.opennms.velocloud.rest.dto.ConnectionDTO;
 import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -51,5 +54,44 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
         return client.getCustomers().stream()
                      .map(customer -> Mapper.ENTERPRISE_INSTANCE.sourceToTarget(customer))
                      .collect(Collectors.toList());
+    }
+
+    @Override
+    public Response editPartnerConnection(final String alias, final ConnectionDTO connectionDTO) throws VelocloudApiException {
+        connectionManager.validatePartnerCredentials(connectionDTO.getOrchestratorUrl(), connectionDTO.getApiKey());
+        updateConnection(alias, connectionDTO);
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response editCustomerConnection(final String alias, final ConnectionDTO connectionDTO) throws VelocloudApiException {
+        connectionManager.validateCustomerCredentials(connectionDTO.getOrchestratorUrl(), connectionDTO.getApiKey());
+        updateConnection(alias, connectionDTO);
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response validatePartnerConnection(final String alias) throws VelocloudApiException {
+        final var connection = connectionManager.getConnection(alias)
+                .orElseThrow(() -> new VelocloudApiException("connection does not exist"));
+        connectionManager.validatePartnerCredentials(connection.getOrchestratorUrl(), connection.getApiKey());
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response validateCustomerConnection(final String alias) throws VelocloudApiException {
+        final var connection = connectionManager.getConnection(alias)
+                .orElseThrow(() -> new VelocloudApiException("connection does not exist"));
+        connectionManager.validateCustomerCredentials(connection.getOrchestratorUrl(), connection.getApiKey());
+        return Response.ok().build();
+    }
+
+    private void updateConnection(String alias, ConnectionDTO connectionDTO) throws VelocloudApiException {
+        Connection connection = connectionManager.getConnection(alias)
+                .orElseThrow(() -> new VelocloudApiException("connection does not exist"));
+        connection.setOrchestratorUrl(connectionDTO.getOrchestratorUrl());
+        connection.setApiKey(connectionDTO.getOrchestratorUrl());
+        connection.save();
+
     }
 }
