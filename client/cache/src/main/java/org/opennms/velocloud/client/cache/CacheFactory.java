@@ -40,7 +40,7 @@ import javax.annotation.Nonnull;
 
 public class CacheFactory {
 
-    private static int defaultTimeInSeconds = 5;
+    private static int defaultTimeInSeconds = 5 * 60; //initial value is 5 minutes
 
     public static int getDefaultTimeInSeconds() {
         return defaultTimeInSeconds;

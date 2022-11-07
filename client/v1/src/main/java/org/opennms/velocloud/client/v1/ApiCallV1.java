@@ -26,28 +26,32 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.client.cache;
+package org.opennms.velocloud.client.v1;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.cache.ApiCall;
+import org.opennms.velocloud.client.cache.Cache;
+import org.opennms.velocloud.client.v1.api.AllApi;
+import org.opennms.velocloud.client.v1.handler.ApiException;
 
-/**
- * Extends an API call with a converter to the final result
- * @param <I> type of (I)initial parameter
- * @param <C> Typ of the (C)cacheable result of API call
- * @param <R> type of the final (R)result
- */
-public class FunctionSpecification<I, C, R> implements VelocloudFunction<I, R> {
-    private final ApiCallExecution<I, C> apiCallExecution;
-    private final ResultAdapter<C, R> converter;
+public interface ApiCallV1<P, C> extends ApiCall<AllApi, P, C, ApiException> {
 
-    public FunctionSpecification(ApiCallExecution<I, C> apiCallExecution, ResultAdapter<C, R> converter) {
-        this.apiCallExecution = apiCallExecution;
-        this.converter = converter;
+    static <P, C> C cachedCall(final Cache<AllApi, P, C, ApiException> cache,
+                               final AllApi api,
+                               final String desc,
+                               final P param) throws VelocloudApiException {
+        return cachedCall(cache, api, desc, param, param);
     }
 
-    @Override
-    public R apply(I initialParameter) throws VelocloudApiException {
-        final C apiCallResult = apiCallExecution.doApiCall(initialParameter);
-        return converter.apply(apiCallResult);
+    static <P, C> C cachedCall(final Cache<AllApi, P, C, ApiException> cache,
+                               final AllApi api,
+                               final String desc,
+                               final P param,
+                               final Object key) throws VelocloudApiException {
+        try {
+            return cache.doCall(api, param, key);
+        } catch (final ApiException e) {
+            throw new VelocloudApiException("Failed to execute API call: " + desc, e);
+        }
     }
 }

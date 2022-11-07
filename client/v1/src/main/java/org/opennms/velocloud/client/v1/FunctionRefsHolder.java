@@ -28,14 +28,9 @@
 
 package org.opennms.velocloud.client.v1;
 
-import static org.opennms.velocloud.client.cache.ExtendedResult.extend;
-
 import java.util.List;
 
-import org.opennms.velocloud.client.cache.ApiCall;
-import org.opennms.velocloud.client.cache.ExtendedResult;
 import org.opennms.velocloud.client.v1.api.AllApi;
-import org.opennms.velocloud.client.v1.handler.ApiException;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterprise;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdgesResultItem;
@@ -48,27 +43,42 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGa
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGatewaysResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyProperty;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyPropertyResult;
+import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEvents;
+import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEventsResult;
+import org.opennms.velocloud.client.v1.model.EventGetProxyEvents;
+import org.opennms.velocloud.client.v1.model.EventGetProxyEventsResult;
+import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusBody;
+import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem;
 
 /**
  * Used to store all functions that are used in caches
  * Only by providing the same object into the CacheFactory the same cache can be reused
  */
 public class FunctionRefsHolder {
-    public final static ApiCall<AllApi, EnterpriseProxyGetEnterpriseProxyProperty, ExtendedResult<AllApi, EnterpriseProxyGetEnterpriseProxyPropertyResult>, ApiException>
-            EXTENDED_ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY = extend(AllApi::enterpriseProxyGetEnterpriseProxyProperty);
+    public final static ApiCallV1<EnterpriseProxyGetEnterpriseProxyProperty, EnterpriseProxyGetEnterpriseProxyPropertyResult>
+            ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY = AllApi::enterpriseProxyGetEnterpriseProxyProperty;
 
-    public final static ApiCall<AllApi, EnterpriseGetEnterprise, ExtendedResult<AllApi, EnterpriseGetEnterpriseResult>, ApiException>
-            EXTENDED_ENTERPRISE_GET_ENTERPRISE = extend(AllApi::enterpriseGetEnterprise);
+    public final static ApiCallV1<EnterpriseGetEnterprise, EnterpriseGetEnterpriseResult>
+            ENTERPRISE_GET_ENTERPRISE = AllApi::enterpriseGetEnterprise;
 
-    public final static ApiCall<AllApi, EnterpriseGetEnterpriseEdges, List<EnterpriseGetEnterpriseEdgesResultItem>, ApiException>
+    public final static ApiCallV1<EnterpriseGetEnterpriseEdges, List<EnterpriseGetEnterpriseEdgesResultItem>>
             ENTERPRISE_GET_ENTERPRISE_EDGES = AllApi::enterpriseGetEnterpriseEdges;
 
-    public final static ApiCall<AllApi, EnterpriseGetEnterpriseUsers, List<EnterpriseGetEnterpriseUsersResultItem>, ApiException>
+    public final static ApiCallV1<EnterpriseGetEnterpriseUsers, List<EnterpriseGetEnterpriseUsersResultItem>>
             ENTERPRISE_GET_ENTERPRISE_USERS = AllApi::enterpriseGetEnterpriseUsers;
 
-    public final static ApiCall<AllApi, EnterpriseProxyGetEnterpriseProxyGateways, List<EnterpriseProxyGetEnterpriseProxyGatewaysResultItem>, ApiException>
+    public final static ApiCallV1<EventGetEnterpriseEvents, EventGetEnterpriseEventsResult>
+            EVENT_GET_ENTERPRISE_EVENTS  = AllApi::eventGetEnterpriseEvents;
+
+    public final static ApiCallV1<MonitoringGetEnterpriseEdgeNvsTunnelStatusBody, List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>>
+            MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS = AllApi::monitoringGetEnterpriseEdgeNvsTunnelStatus;
+
+    public final static ApiCallV1<EnterpriseProxyGetEnterpriseProxyGateways, List<EnterpriseProxyGetEnterpriseProxyGatewaysResultItem>>
             ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_GATEWAYS = AllApi::enterpriseProxyGetEnterpriseProxyGateways;
 
-    public final static ApiCall<AllApi, EnterpriseProxyGetEnterpriseProxyEnterprises, List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem>, ApiException>
+    public final static ApiCallV1<EnterpriseProxyGetEnterpriseProxyEnterprises, List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem>>
             ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_ENTERPRISES = AllApi::enterpriseProxyGetEnterpriseProxyEnterprises;
+
+    public final static ApiCallV1<EventGetProxyEvents, EventGetProxyEventsResult>
+            EVENT_GET_PROXY_EVENTS = AllApi::eventGetProxyEvents;
 }

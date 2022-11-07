@@ -28,50 +28,75 @@
 
 package org.opennms.velocloud.client.v1;
 
+import static org.opennms.velocloud.client.v1.ApiCallV1.cachedCall;
+import static org.opennms.velocloud.client.v1.FunctionRefsHolder.ENTERPRISE_GET_ENTERPRISE_EDGES;
+import static org.opennms.velocloud.client.v1.FunctionRefsHolder.ENTERPRISE_GET_ENTERPRISE_USERS;
+import static org.opennms.velocloud.client.v1.FunctionRefsHolder.EVENT_GET_ENTERPRISE_EVENTS;
+import static org.opennms.velocloud.client.v1.FunctionRefsHolder.MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS;
+
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.CustomerEvent;
+import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.Link;
 import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.client.api.model.User;
+import org.opennms.velocloud.client.cache.Cache;
+import org.opennms.velocloud.client.cache.CacheFactory;
 import org.opennms.velocloud.client.v1.api.AllApi;
+import org.opennms.velocloud.client.v1.handler.ApiException;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdgesResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsers;
-
-import org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.ApiCall;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsersResultItem;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEvents;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEventsResult;
 import org.opennms.velocloud.client.v1.model.Interval;
 import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusBody;
+import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem;
 
 public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient {
 
     private final AllApi api;
     private final int enterpriseId;
+    private final VelocloudApiClientCredentials credentials;
+
+    final Cache<AllApi, EnterpriseGetEnterpriseEdges, List<EnterpriseGetEnterpriseEdgesResultItem>, ApiException> cacheEdge;
+    final Cache<AllApi, EnterpriseGetEnterpriseUsers, List<EnterpriseGetEnterpriseUsersResultItem>, ApiException> cacheUsers;
+    final Cache<AllApi, EventGetEnterpriseEvents, EventGetEnterpriseEventsResult, ApiException> chacheEvents;
+    final Cache<AllApi, MonitoringGetEnterpriseEdgeNvsTunnelStatusBody, List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>, ApiException> cacheNvsTunnels;
 
     public VelocloudApiCustomerClientV1(final AllApi api,
-                                        final int enterpriseId) {
+                                        final int enterpriseId,
+                                        VelocloudApiClientCredentials credentials) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseId = enterpriseId;
+        this.credentials = credentials;
+
+        cacheEdge = CacheFactory.getCache(ENTERPRISE_GET_ENTERPRISE_EDGES);
+        cacheUsers = CacheFactory.getCache(ENTERPRISE_GET_ENTERPRISE_USERS);
+        chacheEvents = CacheFactory.getCache(EVENT_GET_ENTERPRISE_EVENTS);
+        cacheNvsTunnels = CacheFactory.getCache(MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS);
     }
 
     @Override
     public List<Edge> getEdges() throws VelocloudApiException {
-        final var edges = ApiCall.call(this.api, "edges",
-                                       AllApi::enterpriseGetEnterpriseEdges,
-                                       new EnterpriseGetEnterpriseEdges()
-                                               .enterpriseId(this.enterpriseId)
-                                               .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.SITE)
-                                               .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.CONFIGURATION)
-                                               .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.LINKS));
+        final EnterpriseGetEnterpriseEdges enterpriseGetEnterpriseEdges = new EnterpriseGetEnterpriseEdges()
+                .enterpriseId(this.enterpriseId)
+                .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.SITE)
+                .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.CONFIGURATION)
+                .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.LINKS);
+        final var edges = cachedCall(cacheEdge, this.api, "edges",
+                enterpriseGetEnterpriseEdges, Arrays.asList(enterpriseGetEnterpriseEdges, credentials));
 
         return edges.stream()
                     .map(e -> Edge.builder()
@@ -127,10 +152,9 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<User> getUsers() throws VelocloudApiException {
-        final var users = ApiCall.call(this.api, "users",
-                                       AllApi::enterpriseGetEnterpriseUsers,
-                                       new EnterpriseGetEnterpriseUsers()
-                                               .enterpriseId(this.enterpriseId));
+        final var users = cachedCall(cacheUsers,this.api, "users",
+                new EnterpriseGetEnterpriseUsers().enterpriseId(this.enterpriseId),
+                Arrays.asList(this.credentials, this.enterpriseId));
 
         return users.stream()
                     .map(user -> User.builder()
@@ -158,9 +182,9 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                 .start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
                 .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()));
 
-        final EventGetEnterpriseEventsResult events = ApiCall.call(this.api, "events",
-                AllApi::eventGetEnterpriseEvents,
-                new EventGetEnterpriseEvents().interval(interval).enterpriseId(this.enterpriseId));
+        final EventGetEnterpriseEventsResult events = cachedCall(this.chacheEvents, this.api, "events",
+                new EventGetEnterpriseEvents().interval(interval).enterpriseId(this.enterpriseId),
+                Arrays.asList(this.credentials, this.enterpriseId));
 
         return events.getData().stream().map(
                         e -> CustomerEvent.builder()
@@ -179,10 +203,9 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<Tunnel> getNvsTunnels() throws VelocloudApiException {
-        final var tunnels = ApiCall.call(this.api, "nvs tunnels",
-                                         AllApi::monitoringGetEnterpriseEdgeNvsTunnelStatus,
-                                         new MonitoringGetEnterpriseEdgeNvsTunnelStatusBody()
-                                                 .enterpriseId(this.enterpriseId));
+        final var tunnels = cachedCall(this.cacheNvsTunnels,
+                this.api, "nvs tunnels", new MonitoringGetEnterpriseEdgeNvsTunnelStatusBody().enterpriseId(this.enterpriseId),
+                Arrays.asList(this.enterpriseId, credentials));
 
         return tunnels.stream()
                       .map(tunnel -> Tunnel.builder()
