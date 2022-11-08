@@ -222,6 +222,23 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                 }
                 node.addInterface(iface.build());
             }
+
+            node.addAsset("description", Strings.nullToEmpty(edge.description));
+            node.addAsset("operatingSystem", Strings.isNullOrEmpty(edge.softwareVersion) ? "" : "VMware SD-WAN " + edge.softwareVersion);
+            node.addAsset("address1", Strings.nullToEmpty(edge.address));
+            node.addAsset("address2", Strings.nullToEmpty(edge.address2));
+            node.addAsset("city", Strings.nullToEmpty(edge.city));
+            node.addAsset("state", Strings.nullToEmpty(edge.state));
+            node.addAsset("zip", Strings.nullToEmpty(edge.zip));
+            node.addAsset("country", Strings.nullToEmpty(edge.country));
+
+            if (edge.longitude != null) {
+                node.addAsset("longitude", String.valueOf(edge.longitude));
+            }
+            if (edge.latitude != null) {
+                node.addAsset("latitude", String.valueOf(edge.latitude));
+            }
+
             requisition.addNode(node.build());
         }
 

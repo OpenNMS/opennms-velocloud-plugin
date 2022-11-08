@@ -36,12 +36,11 @@ import org.opennms.integration.api.v1.config.requisition.SnmpPrimaryType;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionInterface;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
-import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMonitoredService;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
-import org.opennms.velocloud.connections.Connection;
-import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.clients.ClientManager;
+import org.opennms.velocloud.connections.Connection;
+import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,6 +162,22 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                 iface.addMonitoredService("VelocloudGatewayService");
 
                 node.addInterface(iface.build());
+
+                node.addAsset("description", Strings.nullToEmpty(gateway.description));
+                node.addAsset("operatingSystem", Strings.isNullOrEmpty(gateway.softwareVersion) ? "" : "VMware SD-WAN " + gateway.softwareVersion);
+                node.addAsset("address1", Strings.nullToEmpty(gateway.address));
+                node.addAsset("address2", Strings.nullToEmpty(gateway.address2));
+                node.addAsset("city", Strings.nullToEmpty(gateway.city));
+                node.addAsset("state", Strings.nullToEmpty(gateway.state));
+                node.addAsset("zip", Strings.nullToEmpty(gateway.zip));
+                node.addAsset("country", Strings.nullToEmpty(gateway.country));
+
+                if (gateway.longitude != null) {
+                    node.addAsset("longitude", String.valueOf(gateway.longitude));
+                }
+                if (gateway.latitude != null) {
+                    node.addAsset("latitude", String.valueOf(gateway.latitude));
+                }
 
                 requisition.addNode(node.build());
             }

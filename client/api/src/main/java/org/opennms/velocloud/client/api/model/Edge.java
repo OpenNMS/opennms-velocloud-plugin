@@ -30,7 +30,6 @@ package org.opennms.velocloud.client.api.model;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -57,6 +56,15 @@ public class Edge {
     public final String softwareVersion;
     public final String edgeState;
     public final String serviceState;
+    public final String siteName;
+    public final String address;
+    public final String address2;
+    public final String zip;
+    public final String city;
+    public final String state;
+    public final String country;
+    public final Double latitude;
+    public final Double longitude;
 
     private Edge(final Builder builder) {
         this.operator = Objects.requireNonNull(builder.operator);
@@ -80,6 +88,15 @@ public class Edge {
         this.softwareVersion = Objects.requireNonNull(builder.softwareVersion);
         this.edgeState = Objects.requireNonNull(builder.edgeState);
         this.serviceState = Objects.requireNonNull(builder.serviceState);
+        this.siteName = Strings.nullToEmpty(builder.siteName);
+        this.address = Strings.emptyToNull(builder.address);
+        this.address2 = Strings.emptyToNull(builder.address2);
+        this.zip = Strings.emptyToNull(builder.zip);
+        this.city = Strings.emptyToNull(builder.city);
+        this.state = Strings.emptyToNull(builder.state);
+        this.country = Strings.emptyToNull(builder.country);
+        this.latitude = builder.latitude;
+        this.longitude = builder.longitude;
     }
 
     @Override
@@ -102,7 +119,18 @@ public class Edge {
                           .add("name", this.name)
                           .add("operatorAlertsEnabled", this.operatorAlertsEnabled)
                           .add("selfMacAddress", this.selfMacAddress)
+                          .add("edgeState", this.edgeState)
+                          .add("serviceState", this.serviceState)
                           .add("siteId", this.siteId)
+                          .add("siteName:", this.siteName)
+                          .add("address:", this.address)
+                          .add("address2:", this.address2)
+                          .add("zip:", this.zip)
+                          .add("city:", this.city)
+                          .add("state:", this.state)
+                          .add("country:", this.country)
+                          .add("latitude:", this.latitude)
+                          .add("longitude:", this.longitude)
                           .add("softwareVersion", this.softwareVersion)
                           .add("edgeStatus", this.edgeState)
                           .add("serviceStatus", this.serviceState)
@@ -131,6 +159,15 @@ public class Edge {
         private String softwareVersion;
         private String edgeState;
         private String serviceState;
+        private String siteName;
+        private String address;
+        private String address2;
+        private String zip;
+        private String city;
+        private String state;
+        private String country;
+        private Double latitude;
+        private Double longitude;
 
         private Builder() {
         }
@@ -237,6 +274,51 @@ public class Edge {
 
         public Builder withServiceState(final String serviceState) {
             this.serviceState = serviceState;
+            return this;
+        }
+
+        public Builder withSiteName(final String siteName) {
+            this.siteName = siteName;
+            return this;
+        }
+
+        public Builder withAddress(final String address) {
+            this.address = address;
+            return this;
+        }
+
+        public Builder withAddress2(final String address2) {
+            this.address2 = address2;
+            return this;
+        }
+
+        public Builder withZip(final String zip) {
+            this.zip = zip;
+            return this;
+        }
+
+        public Builder withCity(final String city) {
+            this.city = city;
+            return this;
+        }
+
+        public Builder withState(final String state) {
+            this.state = state;
+            return this;
+        }
+
+        public Builder withCountry(final String country) {
+            this.country = country;
+            return this;
+        }
+
+        public Builder withLatitude(final Double latitude) {
+            this.latitude = latitude;
+            return this;
+        }
+
+        public Builder withLongitude(final Double longitude) {
+            this.longitude = longitude;
             return this;
         }
 
