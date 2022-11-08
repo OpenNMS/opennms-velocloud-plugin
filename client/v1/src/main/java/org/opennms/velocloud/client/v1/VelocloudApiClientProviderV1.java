@@ -41,9 +41,9 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyPr
 
 public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
 
-    final ApiCache cache;
+    final ApiExecutor cache;
 
-    public VelocloudApiClientProviderV1(ApiCache cache) {
+    public VelocloudApiClientProviderV1(ApiExecutor cache) {
         this.cache = cache;
     }
 

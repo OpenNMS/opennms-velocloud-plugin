@@ -54,10 +54,10 @@ import org.opennms.velocloud.client.v1.model.Interval;
 
 public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
-    final ApiCache cache;
+    final ApiExecutor cache;
     private final int enterpriseProxyId;
     private final VelocloudApiClientCredentials credentials;
-    public VelocloudApiPartnerClientV1(ApiCache cache,
+    public VelocloudApiPartnerClientV1(ApiExecutor cache,
                                        final int enterpriseProxyId,
                                        VelocloudApiClientCredentials credentials) {
         this.cache = cache;

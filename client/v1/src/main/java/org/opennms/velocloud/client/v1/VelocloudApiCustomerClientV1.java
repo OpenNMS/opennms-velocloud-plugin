@@ -56,11 +56,11 @@ import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunne
 
 public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient {
 
-    final ApiCache cache;
+    final ApiExecutor cache;
     private final int enterpriseId;
     private final VelocloudApiClientCredentials credentials;
 
-    public VelocloudApiCustomerClientV1(final ApiCache cache,
+    public VelocloudApiCustomerClientV1(final ApiExecutor cache,
                                         final int enterpriseId,
                                         final VelocloudApiClientCredentials credentials) {
         this.cache = cache;

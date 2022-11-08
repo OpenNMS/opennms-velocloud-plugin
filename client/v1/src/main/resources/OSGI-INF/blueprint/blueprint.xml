@@ -8,7 +8,7 @@
         </cm:default-properties>
     </cm:property-placeholder>
 
-    <bean id="cache" class="org.opennms.velocloud.client.v1.ApiCache">
+    <bean id="cache" class="org.opennms.velocloud.client.v1.ApiExecutor">
         <argument value="{{ client.cache.duration }}"/>
     </bean>
 

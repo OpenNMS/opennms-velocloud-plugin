@@ -45,7 +45,7 @@ public class VelocloudApiClientV1Test {
 
     @Test
     public void testBaseUrl() throws Exception {
-        final var api = ApiCache.connectApi(VelocloudApiClientCredentials.builder()
+        final var api = ApiExecutor.connectApi(VelocloudApiClientCredentials.builder()
                                                                                              .withOrchestratorUrl("https://localhost:9999/")
                                                                                              .withApiKey("")
                                                                                              .build());
@@ -57,7 +57,7 @@ public class VelocloudApiClientV1Test {
     public void testAuth() throws Exception {
         final var key = "kjsncdkjdnsckdjsfncfs";
 
-        final var api = ApiCache.connectApi(VelocloudApiClientCredentials.builder()
+        final var api = ApiExecutor.connectApi(VelocloudApiClientCredentials.builder()
                                                                                              .withOrchestratorUrl("https://localhost:9999/")
                                                                                              .withApiKey(key)
                                                                                              .build());

@@ -41,7 +41,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 
-public class ApiCache {
+public class ApiExecutor {
 
     /**
      * Authentication parameter for ApiKeyAuth used in header parameter value
@@ -87,7 +87,7 @@ public class ApiCache {
 
     private final Cache<Object, Object> cache;
 
-    public ApiCache(long expiringAfterMilliseconds) {
+    public ApiExecutor(long expiringAfterMilliseconds) {
         cache = CacheBuilder.newBuilder()
                 .expireAfterWrite(expiringAfterMilliseconds, TimeUnit.MILLISECONDS)
                 .build();
