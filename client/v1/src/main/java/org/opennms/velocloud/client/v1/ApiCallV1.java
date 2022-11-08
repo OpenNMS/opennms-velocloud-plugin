@@ -28,30 +28,9 @@
 
 package org.opennms.velocloud.client.v1;
 
-import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.cache.ApiCall;
-import org.opennms.velocloud.client.cache.Cache;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.handler.ApiException;
 
-public interface ApiCallV1<P, C> extends ApiCall<AllApi, P, C, ApiException> {
-
-    static <P, C> C cachedCall(final Cache<AllApi, P, C, ApiException> cache,
-                               final AllApi api,
-                               final String desc,
-                               final P param) throws VelocloudApiException {
-        return cachedCall(cache, api, desc, param, param);
-    }
-
-    static <P, C> C cachedCall(final Cache<AllApi, P, C, ApiException> cache,
-                               final AllApi api,
-                               final String desc,
-                               final P param,
-                               final Object key) throws VelocloudApiException {
-        try {
-            return cache.doCall(api, param, key);
-        } catch (final ApiException e) {
-            throw new VelocloudApiException("Failed to execute API call: " + desc, e);
-        }
-    }
+public interface ApiCallV1<K, V> {
+    V doCall(final AllApi api, final K parameter) throws ApiException;
 }
