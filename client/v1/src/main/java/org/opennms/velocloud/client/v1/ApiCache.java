@@ -59,11 +59,11 @@ public class ApiCache {
     }
 
     private static class Key {
-        final ApiCallV1<?, ?> apiCall;
+        final ApiCall<?, ?> apiCall;
         final VelocloudApiClientCredentials credential;
         final Object parameter;
 
-        public Key(ApiCallV1<?, ?> apiCall, VelocloudApiClientCredentials credential, Object parameter) {
+        public Key(ApiCall<?, ?> apiCall, VelocloudApiClientCredentials credential, Object parameter) {
             this.apiCall = apiCall;
             this.credential = credential;
             this.parameter = parameter;
@@ -93,7 +93,7 @@ public class ApiCache {
                 .build();
     }
 
-    public <K, V> V get(final String desc, final ApiCallV1<K, V> apiCall, final VelocloudApiClientCredentials credential, final K parameter) throws VelocloudApiException {
+    public <K, V> V get(final String desc, final ApiCall<K, V> apiCall, final VelocloudApiClientCredentials credential, final K parameter) throws VelocloudApiException {
         try {
             return (V) cache.get(new Key(apiCall, credential, parameter), () -> {
                final AllApi api = (AllApi) cache.get(credential, () -> connectApi(credential));

@@ -31,6 +31,6 @@ package org.opennms.velocloud.client.v1;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.handler.ApiException;
 
-public interface ApiCallV1<K, V> {
+public interface ApiCall<K, V> {
     V doCall(final AllApi api, final K parameter) throws ApiException;
 }

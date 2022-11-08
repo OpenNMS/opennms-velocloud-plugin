@@ -55,30 +55,30 @@ import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunne
  * Only by providing the same object into the CacheFactory the same cache can be reused
  */
 public class FunctionRefsHolder {
-    public final static ApiCallV1<EnterpriseProxyGetEnterpriseProxyProperty, EnterpriseProxyGetEnterpriseProxyPropertyResult>
+    public final static ApiCall<EnterpriseProxyGetEnterpriseProxyProperty, EnterpriseProxyGetEnterpriseProxyPropertyResult>
             ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY = AllApi::enterpriseProxyGetEnterpriseProxyProperty;
 
-    public final static ApiCallV1<EnterpriseGetEnterprise, EnterpriseGetEnterpriseResult>
+    public final static ApiCall<EnterpriseGetEnterprise, EnterpriseGetEnterpriseResult>
             ENTERPRISE_GET_ENTERPRISE = AllApi::enterpriseGetEnterprise;
 
-    public final static ApiCallV1<EnterpriseGetEnterpriseEdges, List<EnterpriseGetEnterpriseEdgesResultItem>>
+    public final static ApiCall<EnterpriseGetEnterpriseEdges, List<EnterpriseGetEnterpriseEdgesResultItem>>
             ENTERPRISE_GET_ENTERPRISE_EDGES = AllApi::enterpriseGetEnterpriseEdges;
 
-    public final static ApiCallV1<EnterpriseGetEnterpriseUsers, List<EnterpriseGetEnterpriseUsersResultItem>>
+    public final static ApiCall<EnterpriseGetEnterpriseUsers, List<EnterpriseGetEnterpriseUsersResultItem>>
             ENTERPRISE_GET_ENTERPRISE_USERS = AllApi::enterpriseGetEnterpriseUsers;
 
-    public final static ApiCallV1<EventGetEnterpriseEvents, EventGetEnterpriseEventsResult>
+    public final static ApiCall<EventGetEnterpriseEvents, EventGetEnterpriseEventsResult>
             EVENT_GET_ENTERPRISE_EVENTS  = AllApi::eventGetEnterpriseEvents;
 
-    public final static ApiCallV1<MonitoringGetEnterpriseEdgeNvsTunnelStatusBody, List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>>
+    public final static ApiCall<MonitoringGetEnterpriseEdgeNvsTunnelStatusBody, List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>>
             MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS = AllApi::monitoringGetEnterpriseEdgeNvsTunnelStatus;
 
-    public final static ApiCallV1<EnterpriseProxyGetEnterpriseProxyGateways, List<EnterpriseProxyGetEnterpriseProxyGatewaysResultItem>>
+    public final static ApiCall<EnterpriseProxyGetEnterpriseProxyGateways, List<EnterpriseProxyGetEnterpriseProxyGatewaysResultItem>>
             ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_GATEWAYS = AllApi::enterpriseProxyGetEnterpriseProxyGateways;
 
-    public final static ApiCallV1<EnterpriseProxyGetEnterpriseProxyEnterprises, List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem>>
+    public final static ApiCall<EnterpriseProxyGetEnterpriseProxyEnterprises, List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem>>
             ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_ENTERPRISES = AllApi::enterpriseProxyGetEnterpriseProxyEnterprises;
 
-    public final static ApiCallV1<EventGetProxyEvents, EventGetProxyEventsResult>
+    public final static ApiCall<EventGetProxyEvents, EventGetProxyEventsResult>
             EVENT_GET_PROXY_EVENTS = AllApi::eventGetProxyEvents;
 }
