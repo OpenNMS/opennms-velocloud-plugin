@@ -33,7 +33,9 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 
@@ -46,9 +48,8 @@ public class EditConnectionCommand implements Action {
     @Reference
     private ConnectionManager connectionManager;
 
-    @Option (name = "-t", aliases = "--connection-type", required = true)
-    public String type;
-
+    @Reference
+    private ClientManager clientManager;
 
     @Argument(index = 0, name = "alias", description = "Alias", required = true, multiValued = false)
     public String alias = null;
@@ -65,25 +66,17 @@ public class EditConnectionCommand implements Action {
             System.err.println("No connection with the given alias exists: " + this.alias);
             return null;
         }
-
         try {
-            if (type.equals("p")) {
-                this.connectionManager.validatePartnerCredentials(url, apiKey);
-            }
-            else if (type.equals("c")) {
-                this.connectionManager.validateCustomerCredentials(url, apiKey);
-            }
-            else {
-                System.err.println("Invalid connection type");
-                return null;
-            }
+            clientManager.validate(VelocloudApiClientCredentials.builder()
+                                                                .withApiKey(apiKey)
+                                                                .withOrchestratorUrl(url)
+                                                                .build());
             this.connectionManager.addConnection(this.alias, this.url, this.apiKey);
-            System.out.println("Connection successfully updated!");
-            return null;
+            System.out.println("Connection updated");
         }
-        catch (VelocloudApiException | ProcessingException e) {
-            System.err.println("Invalid connection: " + e.getMessage());
-            return null;
+        catch (VelocloudApiException e) {
+            System.err.println("Invalid credentials");
         }
+        return null;
     }
 }

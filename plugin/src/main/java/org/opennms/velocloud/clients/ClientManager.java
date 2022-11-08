@@ -104,6 +104,14 @@ public class ClientManager implements ServiceListener {
         }
     }
 
+    public void validate(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
+        try {
+            this.clientProvider.validatePartnerCredentials(credentials);
+        } catch (VelocloudApiException e) {
+            this.clientProvider.validateCustomerCredentials(credentials);
+        }
+    }
+
     public static abstract class ClientEntry {
 
         protected ClientEntry() {

@@ -50,4 +50,8 @@ public interface VelocloudApiClientProvider {
      * @throws VelocloudApiException
      */
     VelocloudApiCustomerClient customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
+
+    void validatePartnerCredentials(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
+
+    void validateCustomerCredentials(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
 }

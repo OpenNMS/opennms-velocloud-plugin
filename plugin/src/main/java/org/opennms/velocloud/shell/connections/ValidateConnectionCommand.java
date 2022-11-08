@@ -46,37 +46,18 @@ public class ValidateConnectionCommand implements Action {
     @Reference
     private ConnectionManager connectionManager;
 
-    @Option (name = "-t", aliases = "--connection-type", required = true)
-    public String type;
-
-
     @Argument(index = 0, name = "alias", description = "Alias", required = true, multiValued = false)
     public String alias = null;
 
     @Override
     public Object execute() throws Exception {
-        if (!this.connectionManager.getAliases().contains(this.alias)) {
-            System.err.println("No connection with the given alias exists: " + this.alias);
-            return null;
-        }
-        Connection conn = this.connectionManager.getConnection(this.alias).orElseThrow();
-        try {
-            if (type.equals("p")) {
-                this.connectionManager.validatePartnerCredentials(conn.getOrchestratorUrl(), conn.getApiKey());
-            }
-            else if (type.equals("c")) {
-                this.connectionManager.validateCustomerCredentials(conn.getOrchestratorUrl(), conn.getApiKey());
-            }
-            else {
-                System.err.println("Invalid connection type");
-                return null;
-            }
-            System.out.println("Connection is valid!");
-            return null;
-        }
-        catch (VelocloudApiException | ProcessingException e) {
-            System.err.println("Invalid connection: " + e.getMessage());
-            return null;
-        }
+       try {
+           connectionManager.validateConnection(alias);
+           System.out.println("Connection is valid");
+       }
+       catch (VelocloudApiException e) {
+            System.err.println("Invalid credentials");
+       }
+       return null;
     }
 }

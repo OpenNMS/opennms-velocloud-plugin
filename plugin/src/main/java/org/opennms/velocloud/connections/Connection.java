@@ -28,6 +28,8 @@
 
 package org.opennms.velocloud.connections;
 
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -68,4 +70,15 @@ public interface Connection {
      * Save the altered connection config in the underlying store.
      */
     void save();
+
+    /**
+     * Utility for converting to a VelocloudApiClientCredentials object
+     * @return
+     */
+    default VelocloudApiClientCredentials asVelocloudCredentials() {
+        return VelocloudApiClientCredentials.builder()
+                .withOrchestratorUrl(this.getOrchestratorUrl())
+                .withApiKey(this.getApiKey())
+                .build();
+    }
 }

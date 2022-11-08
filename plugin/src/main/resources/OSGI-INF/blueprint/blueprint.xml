@@ -64,6 +64,7 @@
     <!--    Rest-->
     <bean id="velocloudRestService" class="org.opennms.velocloud.rest.v1.VelocloudRestServiceV1Impl">
         <argument ref="connectionManager"/>
+        <argument ref="clientManager"/>
     </bean>
     <service interface="org.opennms.velocloud.rest.api.VelocloudRestService" ref="velocloudRestService">
         <service-properties>

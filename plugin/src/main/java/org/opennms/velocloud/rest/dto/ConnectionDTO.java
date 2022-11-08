@@ -32,7 +32,9 @@ public class ConnectionDTO {
     private String orchestratorUrl;
     private String apiKey;
 
-    public ConnectionDTO(String alias, String orchestratorUrl, String apiKey) {
+    public ConnectionDTO() {}
+
+    public ConnectionDTO(String orchestratorUrl, String apiKey) {
         this.orchestratorUrl = orchestratorUrl;
         this.apiKey = apiKey;
     }
