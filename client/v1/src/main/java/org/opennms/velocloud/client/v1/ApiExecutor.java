@@ -37,8 +37,9 @@ import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
 
 import com.google.common.base.Objects;
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 
 public class ApiExecutor {
@@ -58,14 +59,14 @@ public class ApiExecutor {
         return new AllApi(client);
     }
 
-    private static class Key {
-        final ApiCall<?, ?> apiCall;
-        final VelocloudApiClientCredentials credential;
-        final Object parameter;
+    private static class Key<K, V> {
+        final ApiCall<K, V> apiCall;
+        final VelocloudApiClientCredentials credentials;
+        final K parameter;
 
-        public Key(ApiCall<?, ?> apiCall, VelocloudApiClientCredentials credential, Object parameter) {
+        public Key(ApiCall<K, V> apiCall, VelocloudApiClientCredentials credentials, K parameter) {
             this.apiCall = apiCall;
-            this.credential = credential;
+            this.credentials = credentials;
             this.parameter = parameter;
         }
 
@@ -73,32 +74,44 @@ public class ApiExecutor {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Key other = (Key) o;
+            Key<?, ?> other = (Key<?, ?>) o;
             return this.apiCall == other.apiCall
-                    && this.credential.equals(other.credential)
+                    && this.credentials.equals(other.credentials)
                     && Objects.equal(parameter, other.parameter);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(apiCall, credential, parameter);
+            return Objects.hashCode(apiCall, credentials, parameter);
         }
     }
 
-    private final Cache<Object, Object> cache;
+    final LoadingCache<Key<?, ?>, Object> cache;
+    final LoadingCache<VelocloudApiClientCredentials, AllApi> cacheApi;
 
     public ApiExecutor(long expiringAfterMilliseconds) {
+        cacheApi = CacheBuilder.newBuilder()
+                .expireAfterWrite(expiringAfterMilliseconds, TimeUnit.MILLISECONDS)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public AllApi load(VelocloudApiClientCredentials credentials) {
+                        return connectApi(credentials);
+                    }
+                });
         cache = CacheBuilder.newBuilder()
                 .expireAfterWrite(expiringAfterMilliseconds, TimeUnit.MILLISECONDS)
-                .build();
+                .build(new CacheLoader<>() {
+                    @Override
+                    public Object load(Key<?, ?> key) throws Exception {
+                        final AllApi api = cacheApi.get(key.credentials);
+                        return key.apiCall.adapterCall(api, key.parameter);
+                    }
+                });
     }
 
-    public <K, V> V get(final String desc, final ApiCall<K, V> apiCall, final VelocloudApiClientCredentials credential, final K parameter) throws VelocloudApiException {
+    public <K, V> V get(final String desc, final ApiCall<K, V> apiCall, final VelocloudApiClientCredentials credentials, final K parameter) throws VelocloudApiException {
         try {
-            return (V) cache.get(new Key(apiCall, credential, parameter), () -> {
-               final AllApi api = (AllApi) cache.get(credential, () -> connectApi(credential));
-               return apiCall.doCall(api, parameter);
-            });
+            return (V) cache.get(new Key<>(apiCall, credentials, parameter));
         } catch(Exception e) {
             throw new VelocloudApiException("Failed to execute API call: " + desc, e);
         }
