@@ -71,7 +71,11 @@ public class EditConnectionCommand implements Action {
                                                                 .withApiKey(apiKey)
                                                                 .withOrchestratorUrl(url)
                                                                 .build());
-            this.connectionManager.addConnection(this.alias, this.url, this.apiKey);
+            final var connection = this.connectionManager.getConnection(alias).get();
+            this.clientManager.invalidateClient(connection.asVelocloudCredentials());
+            connection.setApiKey(apiKey);
+            connection.setOrchestratorUrl(url);
+            connection.save();
             System.out.println("Connection updated");
         }
         catch (VelocloudApiException e) {

@@ -91,6 +91,7 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
     private void updateConnection(String alias, ConnectionDTO connectionDTO) throws VelocloudApiException {
         Connection connection = connectionManager.getConnection(alias)
                 .orElseThrow(() -> new VelocloudApiException("connection does not exist"));
+        clientManager.invalidateClient(connection.asVelocloudCredentials());
         connection.setOrchestratorUrl(connectionDTO.getOrchestratorUrl());
         connection.setApiKey(connectionDTO.getOrchestratorUrl());
         connection.save();

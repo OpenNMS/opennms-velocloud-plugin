@@ -112,6 +112,10 @@ public class ClientManager implements ServiceListener {
         }
     }
 
+    public void invalidateClient(VelocloudApiClientCredentials credentials) {
+        final var client = this.clients.remove(credentials);
+    }
+
     public static abstract class ClientEntry {
 
         protected ClientEntry() {
