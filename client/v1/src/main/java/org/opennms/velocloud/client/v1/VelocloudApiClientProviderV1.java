@@ -41,16 +41,16 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyPr
 
 public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
 
-    final ApiExecutor cache;
+    final ApiExecutor executor;
 
-    public VelocloudApiClientProviderV1(ApiExecutor cache) {
-        this.cache = cache;
+    public VelocloudApiClientProviderV1(ApiExecutor executor) {
+        this.executor = executor;
     }
 
     @Override
     public VelocloudApiPartnerClientV1 partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
         final var enterpriseProxyId = Optional.ofNullable(
-                cache.get(
+                executor.get(
                         "get partner info",
                         ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY,
                         credentials,
@@ -58,19 +58,19 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                 ).getEnterpriseProxyId()
         ).orElseThrow(() -> new VelocloudApiException("Not a partner account"));
 
-        return new VelocloudApiPartnerClientV1(cache, enterpriseProxyId, credentials);
+        return new VelocloudApiPartnerClientV1(executor, enterpriseProxyId, credentials);
     }
 
     @Override
     public VelocloudApiCustomerClientV1 customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
         final var enterpriseId = Optional.ofNullable(
-                cache.get(
+                executor.get(
                         "get user info",
                         ENTERPRISE_GET_ENTERPRISE,
                         credentials,
                         new EnterpriseGetEnterprise()
                 ).getId()
         ).orElseThrow(() -> new VelocloudApiException("Not a customer account"));
-        return new VelocloudApiCustomerClientV1(cache, enterpriseId, credentials);
+        return new VelocloudApiCustomerClientV1(executor, enterpriseId, credentials);
     }
 }

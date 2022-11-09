@@ -56,21 +56,21 @@ import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunne
 
 public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient {
 
-    final ApiExecutor cache;
+    final ApiExecutor executor;
     private final int enterpriseId;
     private final VelocloudApiClientCredentials credentials;
 
-    public VelocloudApiCustomerClientV1(final ApiExecutor cache,
+    public VelocloudApiCustomerClientV1(final ApiExecutor executor,
                                         final int enterpriseId,
                                         final VelocloudApiClientCredentials credentials) {
-        this.cache = cache;
+        this.executor = executor;
         this.enterpriseId = enterpriseId;
         this.credentials = credentials;
     }
 
     @Override
     public List<Edge> getEdges() throws VelocloudApiException {
-        final var edges = cache.get(
+        final var edges = executor.get(
                 "edges",
                 ENTERPRISE_GET_ENTERPRISE_EDGES,
                 credentials,
@@ -135,7 +135,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<User> getUsers() throws VelocloudApiException {
-        final var users = cache.get(
+        final var users = executor.get(
                 "users",
                 ENTERPRISE_GET_ENTERPRISE_USERS,
                 credentials,
@@ -164,7 +164,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<CustomerEvent> getEvents(final Instant start, final Instant end) throws VelocloudApiException {
-        final EventGetEnterpriseEventsResult events = cache.get(
+        final EventGetEnterpriseEventsResult events = executor.get(
                 "events",
                 EVENT_GET_ENTERPRISE_EVENTS,
                 credentials,
@@ -190,7 +190,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<Tunnel> getNvsTunnels() throws VelocloudApiException {
-        final var tunnels = cache.get(
+        final var tunnels = executor.get(
                 "nvs tunnels",
                 MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS,
                 credentials,

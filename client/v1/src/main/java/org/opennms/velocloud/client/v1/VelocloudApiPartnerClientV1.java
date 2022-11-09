@@ -54,25 +54,25 @@ import org.opennms.velocloud.client.v1.model.Interval;
 
 public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
-    final ApiExecutor cache;
+    final ApiExecutor executor;
     private final int enterpriseProxyId;
     private final VelocloudApiClientCredentials credentials;
-    public VelocloudApiPartnerClientV1(ApiExecutor cache,
+    public VelocloudApiPartnerClientV1(ApiExecutor executor,
                                        final int enterpriseProxyId,
                                        VelocloudApiClientCredentials credentials) {
-        this.cache = cache;
+        this.executor = executor;
         this.enterpriseProxyId = enterpriseProxyId;
         this.credentials = credentials;
     }
 
     @Override
     public VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId) {
-        return new VelocloudApiCustomerClientV1(cache, enterpriseId, credentials);
+        return new VelocloudApiCustomerClientV1(executor, enterpriseId, credentials);
     }
 
     @Override
     public List<Gateway> getGateways() throws VelocloudApiException {
-        final var enterpriseGateways = cache.get(
+        final var enterpriseGateways = executor.get(
                 "gateways",
                 ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_GATEWAYS,
                 credentials,
@@ -120,7 +120,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     @Override
     public List<Customer> getCustomers() throws VelocloudApiException {
-        final var enterprises = cache.get(
+        final var enterprises = executor.get(
                 "customers",
                 ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_ENTERPRISES,
                 credentials,
@@ -156,7 +156,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     @Override
     public List<PartnerEvent> getEvents(final Instant start, final Instant end) throws VelocloudApiException {
-        final EventGetProxyEventsResult events = cache.get(
+        final EventGetProxyEventsResult events = executor.get(
                 "events",
                 EVENT_GET_PROXY_EVENTS,
                 credentials,
