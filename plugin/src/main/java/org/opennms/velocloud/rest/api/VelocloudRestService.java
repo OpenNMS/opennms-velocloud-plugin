@@ -59,6 +59,7 @@ public interface VelocloudRestService {
 
     @POST
     @Path("/connections/{alias}/add")
+    @Consumes({MediaType.APPLICATION_JSON})
     Response addConnection(@PathParam("alias") String alias, @QueryParam("dryrun") boolean dryRun, ConnectionDTO connectionDTO) throws VelocloudApiException;
 
     @POST

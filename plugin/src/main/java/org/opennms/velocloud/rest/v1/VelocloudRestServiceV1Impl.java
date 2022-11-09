@@ -80,7 +80,7 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
     }
 
     @Override
-    public Response addConnection(@PathParam("alias") String alias, @QueryParam("dryrun") boolean dryRun, ConnectionDTO connectionDTO) throws VelocloudApiException {
+    public Response addConnection(String alias, boolean dryRun, ConnectionDTO connectionDTO) throws VelocloudApiException {
         if (this.connectionManager.getAliases().contains(alias)) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Connection already exists").build();
         }
