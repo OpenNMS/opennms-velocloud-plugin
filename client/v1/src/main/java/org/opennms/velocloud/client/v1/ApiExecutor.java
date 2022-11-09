@@ -50,10 +50,11 @@ public class ApiExecutor {
      * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
+    public static final String PATH = "portal/rest";
 
     public static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
         final var client = new ApiClient();
-        client.setBasePath(URI.create(credentials.orchestratorUrl).resolve("portal/rest").toString());
+        client.setBasePath(URI.create(credentials.orchestratorUrl).resolve(PATH).toString());
         client.setApiKeyPrefix(AUTH_HEADER_PREFIX);
         client.setApiKey(credentials.apiKey);
         return new AllApi(client);
