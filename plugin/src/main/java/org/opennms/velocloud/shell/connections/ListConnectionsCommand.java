@@ -28,18 +28,10 @@
 package org.opennms.velocloud.shell.connections;
 
 import org.apache.karaf.shell.api.action.Action;
-import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
-import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.clients.ClientManager;
-import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
-
-import javax.ws.rs.ProcessingException;
 
 @Command(scope = "opennms-velocloud", name = "connection-list", description = "List existing connections", detailedDescription = "List all existing connections to orchestrators")
 @Service

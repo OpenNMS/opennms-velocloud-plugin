@@ -51,7 +51,19 @@ public interface VelocloudApiClientProvider {
      */
     VelocloudApiCustomerClient customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
 
+    /**
+     * Attempts to connect to the given orchestrator and execute a basic query accessible to partners.
+     *
+     * @param credentials               Credentials of the connection to test
+     * @throws VelocloudApiException    If the credentials are invalid
+     */
     void validatePartnerCredentials(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
 
+    /**
+     * Attempts to connect to the given orchestrator and execute a basic query accessible to customers.
+     *
+     * @param credentials               Credentials of the connection to test
+     * @throws VelocloudApiException    If the credentials are invalid
+     */
     void validateCustomerCredentials(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
 }

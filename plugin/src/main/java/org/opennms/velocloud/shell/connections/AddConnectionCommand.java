@@ -57,7 +57,7 @@ public class AddConnectionCommand implements Action {
     @Argument(index = 1, name = "url", description = "Orchestrator Url", required = true, multiValued = false)
     public String url = null;
 
-    @Argument(index = 2, name = "apiKey", description = "Orchestrator API Key", required = true, multiValued = false)
+    @Argument(index = 2, name = "apiKey", description = "Orchestrator API Key", required = true, multiValued = false, censor = true)
     public String apiKey = null;
 
     @Override

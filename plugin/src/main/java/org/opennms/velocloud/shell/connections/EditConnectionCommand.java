@@ -30,13 +30,11 @@ package org.opennms.velocloud.shell.connections;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.clients.ClientManager;
-import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 
 import javax.ws.rs.ProcessingException;
@@ -57,7 +55,7 @@ public class EditConnectionCommand implements Action {
     @Argument(index = 1, name = "url", description = "Orchestrator Url", required = true, multiValued = false)
     public String url = null;
 
-    @Argument(index = 2, name = "apiKey", description = "Orchestrator API Key", required = true, multiValued = false)
+    @Argument(index = 2, name = "apiKey", description = "Orchestrator API Key", required = true, multiValued = false, censor = true)
     public String apiKey = null;
 
     @Override

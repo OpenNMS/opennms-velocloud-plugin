@@ -30,16 +30,12 @@ package org.opennms.velocloud.shell.connections;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 
-import javax.ws.rs.ProcessingException;
-
-@Command(scope = "opennms-velocloud", name = "connection-validate", description = "Edit a connection", detailedDescription = "Edit an existing connection to a velocloud orchestrator")
+@Command(scope = "opennms-velocloud", name = "connection-validate", description = "Validate a connection", detailedDescription = "Validate an existing connection to a velocloud orchestrator")
 @Service
 public class ValidateConnectionCommand implements Action {
 
@@ -51,6 +47,10 @@ public class ValidateConnectionCommand implements Action {
 
     @Override
     public Object execute() throws Exception {
+        if (!this.connectionManager.getAliases().contains(this.alias)) {
+            System.err.println("No connection with the given alias exists: " + this.alias);
+            return null;
+        }
        try {
            connectionManager.validateConnection(alias);
            System.out.println("Connection is valid");

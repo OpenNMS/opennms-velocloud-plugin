@@ -37,13 +37,9 @@ import org.opennms.velocloud.rest.dto.ConnectionDTO;
 import org.opennms.velocloud.rest.dto.ConnectionListElementDTO;
 import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class VelocloudRestServiceV1Impl implements VelocloudRestService {
@@ -120,9 +116,11 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
 
     @Override
     public Response validateConnection(final String alias) throws VelocloudApiException {
+        if (!this.connectionManager.getAliases().contains(alias)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("No such connection exists").build();
+        }
         try {
-            final var connection = connectionManager.getConnection(alias)
-                    .orElseThrow(() -> new VelocloudApiException("connection does not exist"));
+            final var connection = connectionManager.getConnection(alias).get();
             connectionManager.validateConnection(connection.getAlias());
         }
         catch (VelocloudApiException e) {
