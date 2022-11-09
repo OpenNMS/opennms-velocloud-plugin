@@ -62,7 +62,7 @@ public class ApiExecutorTest {
         Mockito.when((mockedApi.enterpriseProxyGetEnterpriseProxyProperty(proxyProperty1))).thenReturn(propertyResult1);
         Mockito.when((mockedApi.enterpriseProxyGetEnterpriseProxyProperty(proxyProperty2))).thenReturn(propertyResult2);
 
-        //Assert calls executed and proper values returned
+        //Assert that calls are executed and proper values are returned
         assertEquals(
                 propertyResult1,
                 instance.get("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty1)
@@ -84,7 +84,7 @@ public class ApiExecutorTest {
                 propertyResult2,
                 instance.get("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty2)
         );
-        //Api have still 2 calls, the other two calls were cached
+        //Api was called still 2 times, the last two calls were cached
         Mockito.verify(mockedApi, Mockito.times(2)).enterpriseProxyGetEnterpriseProxyProperty(Mockito.any(EnterpriseProxyGetEnterpriseProxyProperty.class));
 
     }
