@@ -30,8 +30,12 @@ package org.opennms.velocloud.shell.connections;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.ConnectionManager;
 
 @Command(scope = "opennms-velocloud", name = "connection-add", description = "Add a connection", detailedDescription = "Add a connection to a velocloud orchestrator")
@@ -40,6 +44,12 @@ public class AddConnectionCommand implements Action {
 
     @Reference
     private ConnectionManager connectionManager;
+
+    @Reference
+    private ClientManager clientManager;
+
+    @Option(name = "-t", aliases = "--test", description = "Dry run mode, test the credentials but do not save them")
+    boolean dryRun = false;
 
     @Argument(index = 0, name = "alias", description = "Alias", required = true, multiValued = false)
     public String alias = null;
@@ -57,7 +67,24 @@ public class AddConnectionCommand implements Action {
             return null;
         }
 
-        this.connectionManager.addConnection(this.alias, this.url, this.apiKey);
+        try {
+            clientManager.validate(VelocloudApiClientCredentials.builder()
+                                                                .withOrchestratorUrl(url)
+                                                                .withApiKey(apiKey)
+                                                                .build());
+            System.out.println("Credentials are valid");
+        }
+        catch (VelocloudApiException e) {
+            System.err.println("Invalid credentials");
+            return null;
+        }
+        if (!dryRun) {
+            this.connectionManager.addConnection(this.alias, this.url, this.apiKey);
+            System.out.println("Connection saved");
+        }
+        else {
+            System.out.println("In dry-run mode, connection not saved");
+        }
         return null;
     }
 }
