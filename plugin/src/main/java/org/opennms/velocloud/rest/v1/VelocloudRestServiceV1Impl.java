@@ -34,6 +34,7 @@ import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.rest.api.VelocloudRestService;
 import org.opennms.velocloud.rest.dto.ConnectionDTO;
+import org.opennms.velocloud.rest.dto.ConnectionListElementDTO;
 import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 
 import javax.ws.rs.PathParam;
@@ -65,8 +66,17 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
     }
 
     @Override
-    public Response getConnectionList() {
-        return Response.ok().entity(this.connectionManager.getAliases().stream().collect(Collectors.toList())).build();
+    public List<ConnectionListElementDTO> getConnectionList() {
+        return this.connectionManager.getAliases().stream()
+                .map(alias -> {
+                    var connection = connectionManager.getConnection(alias).orElseThrow();
+                    final var connectionDTO = new ConnectionListElementDTO();
+                    connectionDTO.setAlias(alias);
+                    connectionDTO.setOrchestratorUrl(connection.getOrchestratorUrl());
+                    connectionDTO.setApiKey("*******");
+                    return connectionDTO;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

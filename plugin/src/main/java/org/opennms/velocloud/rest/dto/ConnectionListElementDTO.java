@@ -30,8 +30,9 @@ package org.opennms.velocloud.rest.dto;
 import lombok.Data;
 
 @Data
-public class ConnectionDTO {
+public class ConnectionListElementDTO {
 
+    private String alias;
     private String orchestratorUrl;
     private String apiKey;
 

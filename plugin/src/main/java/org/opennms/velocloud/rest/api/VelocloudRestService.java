@@ -29,6 +29,7 @@ package org.opennms.velocloud.rest.api;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.rest.dto.ConnectionDTO;
+import org.opennms.velocloud.rest.dto.ConnectionListElementDTO;
 import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 
 import javax.ws.rs.Consumes;
@@ -53,7 +54,8 @@ public interface VelocloudRestService {
 
     @GET
     @Path("/connections/list")
-    Response getConnectionList() throws VelocloudApiException;
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    List<ConnectionListElementDTO> getConnectionList() throws VelocloudApiException;
 
     @POST
     @Path("/connections/{alias}/add")

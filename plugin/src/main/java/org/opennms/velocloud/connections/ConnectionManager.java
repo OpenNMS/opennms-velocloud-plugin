@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.base.MoreObjects;
 import org.opennms.integration.api.v1.runtime.Container;
 import org.opennms.integration.api.v1.runtime.RuntimeInfo;
 import org.opennms.integration.api.v1.scv.Credentials;
@@ -198,6 +199,15 @@ public class ConnectionManager {
             final var attributes = ImmutableMap.<String, String>builder();
 
             return new ImmutableCredentials(this.orchestratorUrl, this.apiKey, attributes.build());
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this)
+                    .add("alias", this.alias)
+                    .add("orchestratorUrl", this.orchestratorUrl)
+                    .add("apiKey", "******")
+                    .toString();
         }
     }
 }
