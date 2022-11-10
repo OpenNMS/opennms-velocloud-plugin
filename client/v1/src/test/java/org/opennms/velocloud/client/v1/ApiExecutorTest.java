@@ -1,7 +1,11 @@
 package org.opennms.velocloud.client.v1;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.opennms.velocloud.client.v1.FunctionRefsHolder.ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -42,7 +46,7 @@ public class ApiExecutorTest {
     }
 
     @Test
-    public void get() throws Exception {
+    public void getUsesCache() throws Exception {
         final ApiExecutor instance = new ApiExecutor(Long.MAX_VALUE);
 
         final AllApi mockedApi = Mockito.mock(AllApi.class);
@@ -88,4 +92,46 @@ public class ApiExecutorTest {
         Mockito.verify(mockedApi, Mockito.times(2)).enterpriseProxyGetEnterpriseProxyProperty(Mockito.any(EnterpriseProxyGetEnterpriseProxyProperty.class));
 
     }
+
+    @Test
+    public void getCorrectCachesApi() throws Exception {
+        final ApiExecutor instance = new ApiExecutor(Long.MAX_VALUE);
+        final AtomicInteger counter = new AtomicInteger(0);
+        final ApiCall<String, AllApi> func = (api, parameter) -> {
+            //count calls
+            counter.incrementAndGet();
+            //return api to check it
+            return api;
+        };
+
+        //counter is incremented to 1 and api is provided
+        AllApi first = instance.get("some description", func, CREDENTIALS, "foo");
+        assertEquals(1, counter.get());
+        assertEquals(
+                instance.connectApi(CREDENTIALS).getApiClient().getBasePath(),
+                first.getApiClient().getBasePath()
+        );
+
+        //same result and counter is still 1 after second call -> cache value used
+        AllApi second = instance.get("some description", func, CREDENTIALS, "foo");
+        assertSame(first, second);
+        assertEquals(1, counter.get());
+
+        //counter is incremented when a new parameter provided, but still same "api" used for call of func()
+        AllApi third = instance.get("some description", func, CREDENTIALS, "bar");
+        assertSame(first, third);
+        assertEquals(2, counter.get());
+
+        //counter is incremented when the same parameter but NEW credentials, and "api" is new
+        final var otherCredentials = new VelocloudApiClientCredentials(ORCHESTRATOR_URL, "some other key");
+        AllApi fourth = instance.get("some description", func, otherCredentials, "bar");
+        assertNotSame(first, fourth); //<--not same as first
+        assertEquals(3, counter.get());
+
+        //after using same parameter as at first time we get same result as at first time without calling func()
+        AllApi fifth = instance.get("some description", func, CREDENTIALS, "foo");
+        assertSame(first, fifth);
+        assertEquals(3, counter.get());
+    }
+
 }
