@@ -37,7 +37,7 @@ import org.opennms.integration.api.xml.ClasspathPollerConfigurationLoader;
 
 public class VelocloudPollerConfigurationExtension implements PollerConfigurationExtension {
         final PollerConfigurationExtension pollerConfiguration = new ClasspathPollerConfigurationLoader(VelocloudPollerConfigurationExtension.class, "",
-                "velocloud-poller-configuration.xml").getPollerConfiguration();
+                "poller-configuration.xml").getPollerConfiguration();
 
         @Override
         public List<Package> getPackages() {
