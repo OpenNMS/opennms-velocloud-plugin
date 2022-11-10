@@ -78,7 +78,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                         .enterpriseId(this.enterpriseId)
                         .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.SITE)
                         .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.CONFIGURATION)
-                        .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.LINKS)
+                        .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.RECENTLINKS)
         );
 
         return edges.stream()
@@ -103,7 +103,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                                   .withSoftwareVersion(e.getSoftwareVersion())
                                   .withEdgeState(e.getEdgeState().getValue())
                                   .withServiceState(e.getServiceState().getValue())
-                                  .withLinks(e.getLinks().stream()
+                                  .withLinks(e.getRecentLinks().stream()
                                               .map(l -> Link.builder()
                                                             .withId(l.getId())
                                                             .withCreated(l.getCreated())
