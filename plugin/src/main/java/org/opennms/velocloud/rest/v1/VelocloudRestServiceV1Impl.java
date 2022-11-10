@@ -87,7 +87,7 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
                     .build());
         }
         catch (VelocloudApiException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid credentials").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", e.getMessage())).build();
         }
         if (!dryRun) {
             connectionManager.addConnection(alias, connectionDTO.getOrchestratorUrl(), connectionDTO.getApiKey());
@@ -109,7 +109,7 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
             updateConnection(alias, connectionDTO);
         }
         catch (VelocloudApiException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid credentials").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", e.getMessage())).build();
         }
         return Response.ok().entity("Connection successfully updated").build();
     }
@@ -124,7 +124,7 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
             connectionManager.validateConnection(connection.getAlias());
         }
         catch (VelocloudApiException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid credentials").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", e.getMessage())).build();
         }
         return Response.ok().entity("Connection validated").build();
     }

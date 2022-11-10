@@ -42,8 +42,9 @@ public class ListConnectionsCommand implements Action {
 
     @Override
     public Object execute() throws Exception {
-        connectionManager.getAliases().stream().map(alias -> connectionManager.getConnection(alias))
-                .forEach(connection -> System.out.println(connection.get()));
+        connectionManager.getAliases().stream()
+                                      .map(alias -> connectionManager.getConnection(alias))
+                                      .forEach(connection -> System.out.println(connection.get()));
         return null;
     }
 }

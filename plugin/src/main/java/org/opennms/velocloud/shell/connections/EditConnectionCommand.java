@@ -77,7 +77,7 @@ public class EditConnectionCommand implements Action {
             System.out.println("Connection updated");
         }
         catch (VelocloudApiException e) {
-            System.err.println("Invalid credentials");
+            System.err.println(String.format("Invalid credentials: %s", e.getMessage()));
         }
         return null;
     }

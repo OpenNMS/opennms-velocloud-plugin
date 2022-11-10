@@ -56,7 +56,7 @@ public class ValidateConnectionCommand implements Action {
            System.out.println("Connection is valid");
        }
        catch (VelocloudApiException e) {
-            System.err.println("Invalid credentials");
+            System.err.println(String.format("Failed to validate credentials: %s", e.getMessage()));
        }
        return null;
     }

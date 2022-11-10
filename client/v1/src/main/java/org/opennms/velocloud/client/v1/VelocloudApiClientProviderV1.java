@@ -110,7 +110,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
     public void validateCustomerCredentials(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
         final var api = connectApi(credentials);
         try {
-            ApiCall.call(api, "get user info",
+            ApiCall.call(api, "get customer info",
                     AllApi::enterpriseGetEnterprise,
                     new EnterpriseGetEnterprise());
         }

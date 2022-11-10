@@ -75,7 +75,7 @@ public class AddConnectionCommand implements Action {
             System.out.println("Credentials are valid");
         }
         catch (VelocloudApiException e) {
-            System.err.println("Invalid credentials");
+            System.err.println(String.format("Failed to validate credentials: %s", e.getMessage()));
             return null;
         }
         if (!dryRun) {
