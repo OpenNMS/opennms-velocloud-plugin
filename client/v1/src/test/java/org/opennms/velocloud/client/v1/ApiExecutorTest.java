@@ -108,7 +108,7 @@ public class ApiExecutorTest {
         AllApi first = instance.get("some description", func, CREDENTIALS, "foo");
         assertEquals(1, counter.get());
         assertEquals(
-                instance.connectApi(CREDENTIALS).getApiClient().getBasePath(),
+                ApiExecutor.connectApi(CREDENTIALS).getApiClient().getBasePath(),
                 first.getApiClient().getBasePath()
         );
 
@@ -132,6 +132,22 @@ public class ApiExecutorTest {
         AllApi fifth = instance.get("some description", func, CREDENTIALS, "foo");
         assertSame(first, fifth);
         assertEquals(3, counter.get());
+    }
+
+    @Test
+    public void getTestWhenExpired() throws Exception {
+        long cacheTime = 100;
+        final ApiExecutor instance = new ApiExecutor(cacheTime);
+
+        final AtomicInteger counter = new AtomicInteger(0);
+        final ApiCall<String, Integer> func = (api, parameter) -> counter.incrementAndGet();
+
+        assertEquals(1, instance.get("some description", func, CREDENTIALS, "foo").longValue());
+        //no increment when cache is not expired
+        assertEquals(1, instance.get("some description", func, CREDENTIALS, "foo").longValue());
+        Thread.sleep(cacheTime * 2);
+        //no increment when cache is expired
+        assertEquals(2, instance.get("some description", func, CREDENTIALS, "foo").longValue());
     }
 
 }
