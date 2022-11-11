@@ -145,7 +145,7 @@ public class ApiExecutorTest {
         assertEquals(1, instance.get("some description", func, CREDENTIALS, "foo").longValue());
         //no increment when cache is not expired
         assertEquals(1, instance.get("some description", func, CREDENTIALS, "foo").longValue());
-        Thread.sleep(cacheTime * 2);
+        Thread.sleep(cacheTime + 1);
         //incremented when cache is expired
         assertEquals(2, instance.get("some description", func, CREDENTIALS, "foo").longValue());
     }
