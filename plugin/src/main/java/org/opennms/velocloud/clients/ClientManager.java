@@ -28,55 +28,79 @@
 
 package org.opennms.velocloud.clients;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Maps;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
-public class ClientManager {
+public class ClientManager implements ServiceListener {
+    private static final Logger LOG = LoggerFactory.getLogger(ClientManager.class);
+    private static final String VELOCLOUD_API_CLIENT_PROVIDER_SERVICE_FILTER = "(objectClass=org.opennms.velocloud.client.api.VelocloudApiClientProvider)";
 
     private final VelocloudApiClientProvider clientProvider;
 
-    private final ConcurrentMap<VelocloudApiClientCredentials, ClientEntry> clients = Maps.newConcurrentMap();
+    private final Cache<VelocloudApiClientCredentials, ClientEntry> clients;
 
-    public ClientManager(final VelocloudApiClientProvider clientProvider) {
+    public ClientManager(final VelocloudApiClientProvider clientProvider, final long cacheRetentionMs) {
         this.clientProvider = Objects.requireNonNull(clientProvider);
+        this.clients = CacheBuilder.newBuilder()
+                .expireAfterAccess(Duration.ofMillis(cacheRetentionMs))
+                .build();
+
+        final BundleContext bundleContext = FrameworkUtil.getBundle(ClientManager.class).getBundleContext();
+        try {
+            bundleContext.addServiceListener(this, VELOCLOUD_API_CLIENT_PROVIDER_SERVICE_FILTER);
+            LOG.debug("ClientManager: added service listener");
+        } catch (InvalidSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void serviceChanged(ServiceEvent event) {
+        this.clients.invalidateAll();
+        LOG.debug("ClientManager: Dependent service was changed, clearing cache");
+    }
+
+    public void destroy() {
+        final BundleContext bundleContext = FrameworkUtil.getBundle(ClientManager.class).getBundleContext();
+        bundleContext.removeServiceListener(this);
+        LOG.debug("ClientManager: removed service listener");
     }
 
     public VelocloudApiPartnerClient getPartnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        synchronized (this.clients) {
-            final var entry = this.clients.get(credentials);
-            if (entry != null) {
-                return entry.asPartnerClient()
-                            .orElseThrow(() -> new VelocloudApiException("Not a partner client"));
-            }
-
-            final var client = this.clientProvider.partnerClient(credentials);
-            this.clients.put(credentials, new PartnerClientEntry(client));
-
-            return client;
+        try {
+            return this.clients.get(credentials, () -> new PartnerClientEntry(this.clientProvider.partnerClient(credentials)))
+                    .asPartnerClient()
+                    .orElseThrow(() -> new VelocloudApiException("Not a partner client"));
+        } catch (ExecutionException e) {
+            throw new VelocloudApiException("Error creating partner client", e);
         }
     }
 
     public VelocloudApiCustomerClient getCustomerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        synchronized (this.clients) {
-            final var entry = this.clients.get(credentials);
-            if (entry != null) {
-                return entry.asCustomerClient()
-                            .orElseThrow(() -> new VelocloudApiException("Not a customer client"));
-            }
-
-            final var client = this.clientProvider.customerClient(credentials);
-            this.clients.put(credentials, new CustomerClientEntry(client));
-
-            return client;
+        try {
+            return this.clients.get(credentials, () -> new CustomerClientEntry(this.clientProvider.customerClient(credentials)))
+                    .asCustomerClient()
+                    .orElseThrow(() -> new VelocloudApiException("Not a customer client"));
+        } catch (ExecutionException e) {
+            throw new VelocloudApiException("Error creating customer client", e);
         }
     }
 
