@@ -2,6 +2,14 @@
     <package name="velocloud">
         <filter>IPADDR != '0.0.0.0'</filter>
 
+        <rrd step="300">
+            <rra>RRA:AVERAGE:0.5:1:2016</rra>
+            <rra>RRA:AVERAGE:0.5:12:1488</rra>
+            <rra>RRA:AVERAGE:0.5:288:366</rra>
+            <rra>RRA:MAX:0.5:288:366</rra>
+            <rra>RRA:MIN:0.5:288:366</rra>
+        </rrd>
+
         <service name="VelocloudGatewayConnection" interval="300000">
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="gatewayId" value="${velocloud:gatewayId}"/>
@@ -36,6 +44,11 @@
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="dataKey" value="${velocloud:dataKey}"/>
         </service>
+
+        <downtime begin="0" end="300000" interval="30000"/><!-- 30s, 0, 5m -->
+        <downtime begin="300000" end="43200000" interval="300000"/><!-- 5m, 5m, 12h -->
+        <downtime begin="43200000" end="432000000" interval="600000"/><!-- 10m, 12h, 5d -->
+        <downtime begin="432000000" interval="3600000"/><!-- 1h, 5d -->
     </package>
 
     <monitor service="VelocloudGatewayConnection"

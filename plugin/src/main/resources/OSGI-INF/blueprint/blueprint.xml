@@ -13,12 +13,13 @@
     <cm:property-placeholder id="velocloudProperties" persistent-id="org.opennms.velocloud" update-strategy="reload">
         <cm:default-properties>
             <cm:property name="events.delay" value="300000" />
+            <cm:property name="cache.retention" value="3600000" />
         </cm:default-properties>
     </cm:property-placeholder>
 
-
-    <bean id="clientManager" class="org.opennms.velocloud.clients.ClientManager">
+    <bean id="clientManager" class="org.opennms.velocloud.clients.ClientManager" destroy-method="destroy">
         <argument ref="clientProvider" />
+        <argument value="${cache.retention}"/>
     </bean>
     <service ref="clientManager" interface="org.opennms.velocloud.clients.ClientManager"/>
 
@@ -119,4 +120,9 @@
             <argument ref="connectionManager"/>
         </bean>
     </service>
+
+    <!-- Configuration -->
+    <bean id="velocloudPollerConfig" class="org.opennms.velocloud.configuration.VelocloudPollerConfigurationExtension"/>
+    <service ref="velocloudPollerConfig"
+             interface="org.opennms.integration.api.v1.config.poller.PollerConfigurationExtension"/>
 </blueprint>
