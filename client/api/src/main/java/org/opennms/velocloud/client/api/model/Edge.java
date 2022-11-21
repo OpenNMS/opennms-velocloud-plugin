@@ -88,7 +88,7 @@ public class Edge {
         this.softwareVersion = Objects.requireNonNull(builder.softwareVersion);
         this.edgeState = Objects.requireNonNull(builder.edgeState);
         this.serviceState = Objects.requireNonNull(builder.serviceState);
-        this.siteName = Strings.nullToEmpty(builder.siteName);
+        this.siteName = Strings.emptyToNull(builder.siteName);
         this.address = Strings.emptyToNull(builder.address);
         this.address2 = Strings.emptyToNull(builder.address2);
         this.zip = Strings.emptyToNull(builder.zip);

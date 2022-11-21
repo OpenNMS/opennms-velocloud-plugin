@@ -164,7 +164,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                 node.addInterface(iface.build());
 
                 node.addAsset("description", Strings.nullToEmpty(gateway.description));
-                node.addAsset("operatingSystem", Strings.isNullOrEmpty(gateway.softwareVersion) ? "" : "VMware SD-WAN " + gateway.softwareVersion);
+                node.addAsset("operatingSystem", Strings.isNullOrEmpty(gateway.softwareVersion) ? "" : String.format("VMware SD-WAN %s", gateway.softwareVersion));
                 node.addAsset("address1", Strings.nullToEmpty(gateway.address));
                 node.addAsset("address2", Strings.nullToEmpty(gateway.address2));
                 node.addAsset("city", Strings.nullToEmpty(gateway.city));

@@ -224,7 +224,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
             }
 
             node.addAsset("description", Strings.nullToEmpty(edge.description));
-            node.addAsset("operatingSystem", Strings.isNullOrEmpty(edge.softwareVersion) ? "" : "VMware SD-WAN " + edge.softwareVersion);
+            node.addAsset("operatingSystem", Strings.isNullOrEmpty(edge.softwareVersion) ? "" : String.format("VMware SD-WAN %s", edge.softwareVersion));
             node.addAsset("address1", Strings.nullToEmpty(edge.address));
             node.addAsset("address2", Strings.nullToEmpty(edge.address2));
             node.addAsset("city", Strings.nullToEmpty(edge.city));
