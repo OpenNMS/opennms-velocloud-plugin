@@ -9,7 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.opennms.plugins.velocloud</groupId>
     <artifactId>velocloud-client-api</artifactId>
     <name>OpenNMS :: Plugins :: Velocloud Intergration :: Client :: API</name>
     <packaging>bundle</packaging>

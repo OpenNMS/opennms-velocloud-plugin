@@ -72,7 +72,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     @Override
     public List<Gateway> getGateways() throws VelocloudApiException {
-        final var enterpriseGateways = executor.get(
+        final var enterpriseGateways = executor.call(
                 "gateways",
                 ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_GATEWAYS,
                 credentials,
@@ -120,7 +120,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     @Override
     public List<Customer> getCustomers() throws VelocloudApiException {
-        final var enterprises = executor.get(
+        final var enterprises = executor.call(
                 "customers",
                 ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_ENTERPRISES,
                 credentials,
@@ -156,7 +156,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     @Override
     public List<PartnerEvent> getEvents(final Instant start, final Instant end) throws VelocloudApiException {
-        final EventGetProxyEventsResult events = executor.get(
+        final EventGetProxyEventsResult events = executor.call(
                 "events",
                 EVENT_GET_PROXY_EVENTS,
                 credentials,

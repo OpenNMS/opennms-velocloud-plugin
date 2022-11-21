@@ -56,7 +56,6 @@
         <bundle dependency="true">mvn:javax.annotation/javax.annotation-api/1.3.2</bundle>
 
         <bundle>mvn:org.opennms.plugins.velocloud/velocloud-client-api/${project.version}</bundle>
-        <bundle>mvn:org.opennms.plugins.velocloud/velocloud-client-cache/${project.version}</bundle>
         <bundle>mvn:org.opennms.plugins.velocloud/velocloud-client-v1/${project.version}</bundle>
     </feature>
 

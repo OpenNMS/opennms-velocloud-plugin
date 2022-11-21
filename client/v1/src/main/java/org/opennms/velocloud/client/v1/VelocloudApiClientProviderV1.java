@@ -50,7 +50,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
     @Override
     public VelocloudApiPartnerClientV1 partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
         final var enterpriseProxyId = Optional.ofNullable(
-                executor.get(
+                executor.call(
                         "get partner info",
                         ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY,
                         credentials,
@@ -64,7 +64,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
     @Override
     public VelocloudApiCustomerClientV1 customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
         final var enterpriseId = Optional.ofNullable(
-                executor.get(
+                executor.call(
                         "get user info",
                         ENTERPRISE_GET_ENTERPRISE,
                         credentials,

@@ -69,11 +69,11 @@ public class ApiExecutorTest {
         //Assert that calls are executed and proper values are returned
         assertEquals(
                 propertyResult1,
-                instance.get("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty1)
+                instance.call("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty1)
         );
         assertEquals(
                 propertyResult2,
-                instance.get("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty2)
+                instance.call("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty2)
         );
         Mockito.verify(mockedApi, Mockito.times(1)).enterpriseProxyGetEnterpriseProxyProperty(proxyProperty1);
         Mockito.verify(mockedApi, Mockito.times(1)).enterpriseProxyGetEnterpriseProxyProperty(proxyProperty2);
@@ -82,11 +82,11 @@ public class ApiExecutorTest {
         //second time the same calls
         assertEquals(
                 propertyResult1,
-                instance.get("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty1)
+                instance.call("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty1)
         );
         assertEquals(
                 propertyResult2,
-                instance.get("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty2)
+                instance.call("some description", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY, CREDENTIALS, proxyProperty2)
         );
         //Api was called still 2 times, the last two calls were cached
         Mockito.verify(mockedApi, Mockito.times(2)).enterpriseProxyGetEnterpriseProxyProperty(Mockito.any(EnterpriseProxyGetEnterpriseProxyProperty.class));
@@ -105,7 +105,7 @@ public class ApiExecutorTest {
         };
 
         //counter is incremented to 1 and api is provided
-        AllApi first = instance.get("some description", func, CREDENTIALS, "foo");
+        AllApi first = instance.call("some description", func, CREDENTIALS, "foo");
         assertEquals(1, counter.get());
         assertEquals(
                 ApiExecutor.connectApi(CREDENTIALS).getApiClient().getBasePath(),
@@ -113,23 +113,23 @@ public class ApiExecutorTest {
         );
 
         //same result and counter is still 1 after second call -> cache value used
-        AllApi second = instance.get("some description", func, CREDENTIALS, "foo");
+        AllApi second = instance.call("some description", func, CREDENTIALS, "foo");
         assertSame(first, second);
         assertEquals(1, counter.get());
 
         //counter is incremented when a new parameter provided, but still same "api" used for call of func()
-        AllApi third = instance.get("some description", func, CREDENTIALS, "bar");
+        AllApi third = instance.call("some description", func, CREDENTIALS, "bar");
         assertSame(first, third);
         assertEquals(2, counter.get());
 
         //counter is incremented when the same parameter but NEW credentials, and "api" is new
         final var otherCredentials = new VelocloudApiClientCredentials(ORCHESTRATOR_URL, "some other key");
-        AllApi fourth = instance.get("some description", func, otherCredentials, "bar");
+        AllApi fourth = instance.call("some description", func, otherCredentials, "bar");
         assertNotSame(first, fourth); //<--not same as first
         assertEquals(3, counter.get());
 
         //after using same parameter as at first time we get same result as at first time without calling func()
-        AllApi fifth = instance.get("some description", func, CREDENTIALS, "foo");
+        AllApi fifth = instance.call("some description", func, CREDENTIALS, "foo");
         assertSame(first, fifth);
         assertEquals(3, counter.get());
     }
@@ -142,12 +142,12 @@ public class ApiExecutorTest {
         final AtomicInteger counter = new AtomicInteger(0);
         final ApiCall<String, Integer> func = (api, parameter) -> counter.incrementAndGet();
 
-        assertEquals(1, instance.get("some description", func, CREDENTIALS, "foo").longValue());
+        assertEquals(1, instance.call("some description", func, CREDENTIALS, "foo").longValue());
         //no increment when cache is not expired
-        assertEquals(1, instance.get("some description", func, CREDENTIALS, "foo").longValue());
+        assertEquals(1, instance.call("some description", func, CREDENTIALS, "foo").longValue());
         Thread.sleep(cacheTime + 1);
         //incremented when cache is expired
-        assertEquals(2, instance.get("some description", func, CREDENTIALS, "foo").longValue());
+        assertEquals(2, instance.call("some description", func, CREDENTIALS, "foo").longValue());
     }
 
 }

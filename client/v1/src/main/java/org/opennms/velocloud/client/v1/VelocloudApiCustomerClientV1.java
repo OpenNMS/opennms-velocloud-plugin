@@ -70,7 +70,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<Edge> getEdges() throws VelocloudApiException {
-        final var edges = executor.get(
+        final var edges = executor.call(
                 "edges",
                 ENTERPRISE_GET_ENTERPRISE_EDGES,
                 credentials,
@@ -135,7 +135,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<User> getUsers() throws VelocloudApiException {
-        final var users = executor.get(
+        final var users = executor.call(
                 "users",
                 ENTERPRISE_GET_ENTERPRISE_USERS,
                 credentials,
@@ -164,7 +164,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<CustomerEvent> getEvents(final Instant start, final Instant end) throws VelocloudApiException {
-        final EventGetEnterpriseEventsResult events = executor.get(
+        final EventGetEnterpriseEventsResult events = executor.call(
                 "events",
                 EVENT_GET_ENTERPRISE_EVENTS,
                 credentials,
@@ -190,7 +190,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<Tunnel> getNvsTunnels() throws VelocloudApiException {
-        final var tunnels = executor.get(
+        final var tunnels = executor.call(
                 "nvs tunnels",
                 MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS,
                 credentials,

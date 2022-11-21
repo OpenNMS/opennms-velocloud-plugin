@@ -37,6 +37,7 @@ import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
 
 import com.google.common.base.Objects;
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -87,7 +88,7 @@ public class ApiExecutor {
         }
     }
 
-    final LoadingCache<Key<?, ?>, Object> cache;
+    final Cache<Object, Object> cache;
     final LoadingCache<VelocloudApiClientCredentials, AllApi> cacheApi;
 
     public ApiExecutor(long expiringAfterMilliseconds) {
@@ -101,18 +102,17 @@ public class ApiExecutor {
                 });
         cache = CacheBuilder.newBuilder()
                 .expireAfterWrite(expiringAfterMilliseconds, TimeUnit.MILLISECONDS)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public Object load(Key<?, ?> key) throws Exception {
-                        final AllApi api = cacheApi.get(key.credentials);
-                        return key.apiCall.adapterCall(api, key.parameter);
-                    }
-                });
+                .build();
     }
 
-    public <K, V> V get(final String desc, final ApiCall<K, V> apiCall, final VelocloudApiClientCredentials credentials, final K parameter) throws VelocloudApiException {
+    @SuppressWarnings("unchecked")
+    public <K, V> V call(final String desc, final ApiCall<K, V> apiCall, final VelocloudApiClientCredentials credentials, final K parameter) throws VelocloudApiException {
         try {
-            return (V) cache.get(new Key<>(apiCall, credentials, parameter));
+            final Key<K, V> key = new Key<>(apiCall, credentials, parameter);
+            return (V) cache.get(key, () -> {
+                final AllApi api = cacheApi.get(key.credentials);
+                return key.apiCall.doCall(api, key.parameter);
+            });
         } catch(Exception e) {
             throw new VelocloudApiException("Failed to execute API call: " + desc, e);
         }
