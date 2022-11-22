@@ -44,18 +44,26 @@ import org.opennms.velocloud.client.api.model.Gateway;
 import org.opennms.velocloud.client.api.model.PartnerEvent;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprises;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
-import org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.ApiCall;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGatewaysResultItem;
 import org.opennms.velocloud.client.v1.model.EventGetProxyEvents;
 import org.opennms.velocloud.client.v1.model.EventGetProxyEventsResult;
 import org.opennms.velocloud.client.v1.model.Interval;
 
 public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
-    private final AllApi api;
+    public final static ApiCache.Endpoint<EnterpriseProxyGetEnterpriseProxyGateways, List<EnterpriseProxyGetEnterpriseProxyGatewaysResultItem>>
+            ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_GATEWAYS = AllApi::enterpriseProxyGetEnterpriseProxyGateways;
+    public final static ApiCache.Endpoint<EnterpriseProxyGetEnterpriseProxyEnterprises, List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem>>
+            ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_ENTERPRISES = AllApi::enterpriseProxyGetEnterpriseProxyEnterprises;
+    public final static ApiCache.Endpoint<EventGetProxyEvents, EventGetProxyEventsResult>
+            EVENT_GET_PROXY_EVENTS = AllApi::eventGetProxyEvents;
+
+    private final ApiCache.Api api;
     private final int enterpriseProxyId;
 
-    public VelocloudApiPartnerClientV1(final AllApi api,
+    public VelocloudApiPartnerClientV1(final ApiCache.Api api,
                                        final int enterpriseProxyId) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseProxyId = enterpriseProxyId;
@@ -68,11 +76,9 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     @Override
     public List<Gateway> getGateways() throws VelocloudApiException {
-        final var enterpriseGateways = ApiCall.call(this.api, "gateways",
-                                                    AllApi::enterpriseProxyGetEnterpriseProxyGateways,
-                                                    new EnterpriseProxyGetEnterpriseProxyGateways()
-                                                            .enterpriseProxyId(this.enterpriseProxyId)
-                                                            .addWithItem(EnterpriseProxyGetEnterpriseProxyGateways.WithEnum.SITE));
+        final var enterpriseGateways = this.api.call("gateways", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_GATEWAYS,
+                new EnterpriseProxyGetEnterpriseProxyGateways().enterpriseProxyId(this.enterpriseProxyId)
+                        .addWithItem(EnterpriseProxyGetEnterpriseProxyGateways.WithEnum.SITE));
 
         return enterpriseGateways.stream()
                                  .map(g -> Gateway.builder()
@@ -114,11 +120,9 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     @Override
     public List<Customer> getCustomers() throws VelocloudApiException {
-        final var enterprises = ApiCall.call(this.api, "customers",
-                                             AllApi::enterpriseProxyGetEnterpriseProxyEnterprises,
-                                             new EnterpriseProxyGetEnterpriseProxyEnterprises()
-                                                     .enterpriseProxyId(this.enterpriseProxyId)
-                                                     .addWithItem(EnterpriseProxyGetEnterpriseProxyEnterprises.WithEnum.EDGES));
+        final var enterprises = this.api.call("customers", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_ENTERPRISES,
+                new EnterpriseProxyGetEnterpriseProxyEnterprises().enterpriseProxyId(this.enterpriseProxyId)
+                        .addWithItem(EnterpriseProxyGetEnterpriseProxyEnterprises.WithEnum.EDGES));
 
         return enterprises.stream()
                           .map(e -> Customer.builder()
@@ -148,13 +152,10 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     @Override
     public List<PartnerEvent> getEvents(final Instant start, final Instant end) throws VelocloudApiException {
-        final Interval interval = new Interval()
-                .start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
-                .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()));
-
-        final EventGetProxyEventsResult events = ApiCall.call(this.api, "events",
-                AllApi::eventGetProxyEvents,
-                new EventGetProxyEvents().interval(interval));
+        final EventGetProxyEventsResult events = this.api.call("events", EVENT_GET_PROXY_EVENTS,
+                new EventGetProxyEvents().interval(new Interval()
+                        .start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
+                        .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))));
 
         return events.getData().stream().map(
                         e -> PartnerEvent.builder()

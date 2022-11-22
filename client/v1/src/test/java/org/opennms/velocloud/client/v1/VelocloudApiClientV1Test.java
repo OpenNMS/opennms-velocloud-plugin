@@ -44,17 +44,17 @@ public class VelocloudApiClientV1Test {
     public static final String AUTH_HEADER_LOCATION = "header";
 
     @Test
-    public void testBaseUrl() throws Exception {
+    public void testBaseUrl() {
         final var api = VelocloudApiClientProviderV1.connectApi(VelocloudApiClientCredentials.builder()
-                                                                                             .withOrchestratorUrl("https://localhost:9999/")
-                                                                                             .withApiKey("")
-                                                                                             .build());
+                .withOrchestratorUrl("https://localhost:9999/")
+                .withApiKey("")
+                .build());
 
         assertEquals(api.getApiClient().getBasePath(), "https://localhost:9999/portal/rest");
     }
 
     @Test
-    public void testAuth() throws Exception {
+    public void testAuth() {
         final var key = "kjsncdkjdnsckdjsfncfs";
 
         final var api = VelocloudApiClientProviderV1.connectApi(VelocloudApiClientCredentials.builder()
@@ -68,7 +68,7 @@ public class VelocloudApiClientV1Test {
         assertEquals(auth.getParamName(), AUTH_HEADER_NAME);
         assertEquals(auth.getApiKeyPrefix(), AUTH_HEADER_PREFIX);
 
-        final Map<String, String> mapResult = new HashMap<String, String>();
+        final Map<String, String> mapResult = new HashMap<>();
         auth.applyToParams(new ArrayList<>(), mapResult);
 
         assertEquals(mapResult.get(AUTH_HEADER_NAME), AUTH_HEADER_PREFIX + " " + key);

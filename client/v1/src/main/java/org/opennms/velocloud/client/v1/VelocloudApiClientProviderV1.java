@@ -36,12 +36,17 @@ import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
-import org.opennms.velocloud.client.v1.handler.ApiException;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterprise;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseResult;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyProperty;
-import org.opennms.velocloud.client.v1.model.EnterpriseUserGetEnterpriseUser;
+import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyPropertyResult;
 
 public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
+
+    public final static ApiCache.Endpoint<EnterpriseProxyGetEnterpriseProxyProperty, EnterpriseProxyGetEnterpriseProxyPropertyResult>
+            ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY = AllApi::enterpriseProxyGetEnterpriseProxyProperty;
+    public final static ApiCache.Endpoint<EnterpriseGetEnterprise, EnterpriseGetEnterpriseResult>
+            ENTERPRISE_GET_ENTERPRISE = AllApi::enterpriseGetEnterprise;
 
     /**
      * Authentication parameter for ApiKeyAuth used in header parameter value
@@ -49,24 +54,29 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
      * @see org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
+    public static final String PATH = "portal/rest";
 
-    static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
+    public static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
         final var client = new ApiClient();
-        client.setBasePath(URI.create(credentials.orchestratorUrl).resolve("portal/rest").toString());
+        client.setBasePath(URI.create(credentials.orchestratorUrl).resolve(PATH).toString());
         client.setApiKeyPrefix(AUTH_HEADER_PREFIX);
         client.setApiKey(credentials.apiKey);
-
         return new AllApi(client);
+    }
+
+    private final ApiCache executor;
+
+    public VelocloudApiClientProviderV1(ApiCache executor) {
+        this.executor = executor;
     }
 
     @Override
     public VelocloudApiPartnerClientV1 partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        final var api = connectApi(credentials);
+        final ApiCache.Api api = this.executor.createApi(connectApi(credentials), credentials);
 
-        final var enterpriseProxyId = Optional.ofNullable(ApiCall.call(api, "get partner info",
-                                                                       AllApi::enterpriseProxyGetEnterpriseProxyProperty,
-                                                                       new EnterpriseProxyGetEnterpriseProxyProperty())
-                                                                 .getEnterpriseProxyId())
+        final var enterpriseProxyId = Optional.ofNullable(api.call("get partner info", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY,
+                                                                   new EnterpriseProxyGetEnterpriseProxyProperty())
+                                                             .getEnterpriseProxyId())
                                               .orElseThrow(() -> new VelocloudApiException("Not a partner account"));
 
         return new VelocloudApiPartnerClientV1(api, enterpriseProxyId);
@@ -74,30 +84,12 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
 
     @Override
     public VelocloudApiCustomerClientV1 customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        final var api = connectApi(credentials);
+        final ApiCache.Api api = this.executor.createApi(connectApi(credentials), credentials);
 
-        final var enterpriseId = Optional.ofNullable(ApiCall.call(api, "get user info",
-                                                                  AllApi::enterpriseGetEnterprise,
-                                                                  new EnterpriseGetEnterprise())
-                                                            .getId())
+        final var enterpriseId = Optional.ofNullable(api.call("get user info", ENTERPRISE_GET_ENTERPRISE,
+                                                              new EnterpriseGetEnterprise())
+                                                        .getId())
                                          .orElseThrow(() -> new VelocloudApiException("Not a customer account"));
-
         return new VelocloudApiCustomerClientV1(api, enterpriseId);
-    }
-
-    @FunctionalInterface
-    public interface ApiCall<B, R> {
-        R apply(final AllApi api, final B body) throws ApiException;
-
-        static <B, R> R call(final AllApi api,
-                             final String desc,
-                             final ApiCall<B, R> f,
-                             final B body) throws VelocloudApiException {
-            try {
-                return f.apply(api, body);
-            } catch (final ApiException e) {
-                throw new VelocloudApiException("Failed to execute API call: " + desc, e);
-            }
-        }
     }
 }

@@ -1,7 +1,20 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-    <bean id="clientProvider" class="org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1"/>
+    <cm:property-placeholder id="velocloudProperties" persistent-id="org.opennms.velocloud" update-strategy="reload">
+        <cm:default-properties>
+            <cm:property name="client.cache.duration" value="300000"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
+
+    <bean id="cache" class="org.opennms.velocloud.client.v1.ApiCache">
+        <argument value="{{ client.cache.duration }}"/>
+    </bean>
+
+    <bean id="clientProvider" class="org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1">
+        <argument ref="cache"/>
+    </bean>
+
     <service ref="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>
-
 </blueprint>
