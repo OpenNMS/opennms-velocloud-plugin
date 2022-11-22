@@ -43,9 +43,9 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyPr
 
 public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
 
-    public final static ApiCall<EnterpriseProxyGetEnterpriseProxyProperty, EnterpriseProxyGetEnterpriseProxyPropertyResult>
+    public final static ApiCache.Endpoint<EnterpriseProxyGetEnterpriseProxyProperty, EnterpriseProxyGetEnterpriseProxyPropertyResult>
             ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY = AllApi::enterpriseProxyGetEnterpriseProxyProperty;
-    public final static ApiCall<EnterpriseGetEnterprise, EnterpriseGetEnterpriseResult>
+    public final static ApiCache.Endpoint<EnterpriseGetEnterprise, EnterpriseGetEnterpriseResult>
             ENTERPRISE_GET_ENTERPRISE = AllApi::enterpriseGetEnterprise;
 
     /**
@@ -64,35 +64,32 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
         return new AllApi(client);
     }
 
-    private final ApiExecutor executor;
+    private final ApiCache executor;
 
-    public VelocloudApiClientProviderV1(ApiExecutor executor) {
+    public VelocloudApiClientProviderV1(ApiCache executor) {
         this.executor = executor;
     }
 
     @Override
     public VelocloudApiPartnerClientV1 partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        final AllApi allApi = connectApi(credentials);
+        final ApiCache.Api api = this.executor.createApi(connectApi(credentials), credentials);
 
-        final var enterpriseProxyId = Optional.ofNullable(
-                executor.createApiCall("get partner info",
-                        ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY,
-                        credentials,allApi
-                ).call(new EnterpriseProxyGetEnterpriseProxyProperty()).getEnterpriseProxyId()
-        ).orElseThrow(() -> new VelocloudApiException("Not a partner account"));
+        final var enterpriseProxyId = Optional.ofNullable(api.call("get partner info", ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_PROPERTY,
+                                                                   new EnterpriseProxyGetEnterpriseProxyProperty())
+                                                             .getEnterpriseProxyId())
+                                              .orElseThrow(() -> new VelocloudApiException("Not a partner account"));
 
-        return new VelocloudApiPartnerClientV1(executor, enterpriseProxyId, credentials, allApi);
+        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId);
     }
 
     @Override
     public VelocloudApiCustomerClientV1 customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        final AllApi allApi = connectApi(credentials);
-        final var enterpriseId = Optional.ofNullable(
-                executor.createApiCall("get user info",
-                        ENTERPRISE_GET_ENTERPRISE,
-                        credentials,allApi
-                ).call(new EnterpriseGetEnterprise()).getId()
-        ).orElseThrow(() -> new VelocloudApiException("Not a customer account"));
-        return new VelocloudApiCustomerClientV1(executor, enterpriseId, credentials, allApi);
+        final ApiCache.Api api = this.executor.createApi(connectApi(credentials), credentials);
+
+        final var enterpriseId = Optional.ofNullable(api.call("get user info", ENTERPRISE_GET_ENTERPRISE,
+                                                              new EnterpriseGetEnterprise())
+                                                        .getId())
+                                         .orElseThrow(() -> new VelocloudApiException("Not a customer account"));
+        return new VelocloudApiCustomerClientV1(api, enterpriseId);
     }
 }

@@ -32,9 +32,9 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.CustomerEvent;
@@ -55,47 +55,33 @@ import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunne
 
 public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient {
 
-    public final static ApiCall<EnterpriseGetEnterpriseEdges, List<EnterpriseGetEnterpriseEdgesResultItem>>
+    public final static ApiCache.Endpoint<EnterpriseGetEnterpriseEdges, List<EnterpriseGetEnterpriseEdgesResultItem>>
             ENTERPRISE_GET_ENTERPRISE_EDGES = AllApi::enterpriseGetEnterpriseEdges;
-    public final static ApiCall<EnterpriseGetEnterpriseUsers, List<EnterpriseGetEnterpriseUsersResultItem>>
+    public final static ApiCache.Endpoint<EnterpriseGetEnterpriseUsers, List<EnterpriseGetEnterpriseUsersResultItem>>
             ENTERPRISE_GET_ENTERPRISE_USERS = AllApi::enterpriseGetEnterpriseUsers;
-    public final static ApiCall<EventGetEnterpriseEvents, EventGetEnterpriseEventsResult>
+    public final static ApiCache.Endpoint<EventGetEnterpriseEvents, EventGetEnterpriseEventsResult>
             EVENT_GET_ENTERPRISE_EVENTS  = AllApi::eventGetEnterpriseEvents;
-    public final static ApiCall<MonitoringGetEnterpriseEdgeNvsTunnelStatusBody, List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>>
+    public final static ApiCache.Endpoint<MonitoringGetEnterpriseEdgeNvsTunnelStatusBody, List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>>
             MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS = AllApi::monitoringGetEnterpriseEdgeNvsTunnelStatus;
+
+    private final ApiCache.Api api;
 
     private final int enterpriseId;
 
-    private final VelocloudCall<EnterpriseGetEnterpriseEdges, List<EnterpriseGetEnterpriseEdgesResultItem>> edgesCall;
-    private final VelocloudCall<EnterpriseGetEnterpriseUsers, List<EnterpriseGetEnterpriseUsersResultItem>> usersCall;
-    private final VelocloudCall<EventGetEnterpriseEvents, EventGetEnterpriseEventsResult> eventsCall;
-    private final VelocloudCall<MonitoringGetEnterpriseEdgeNvsTunnelStatusBody,
-            List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>> nvsTunnelsCall;
-
-    public VelocloudApiCustomerClientV1(final ApiExecutor executor,
-                                        final int enterpriseId,
-                                        final VelocloudApiClientCredentials credentials,
-                                        AllApi allApi) {
+    public VelocloudApiCustomerClientV1(final ApiCache.Api api,
+                                        final int enterpriseId) {
+        this.api = Objects.requireNonNull(api);
         this.enterpriseId = enterpriseId;
-
-        this.edgesCall = executor.createApiCall("edges", ENTERPRISE_GET_ENTERPRISE_EDGES, credentials, allApi);
-        this.usersCall = executor.createApiCall("users", ENTERPRISE_GET_ENTERPRISE_USERS, credentials, allApi);
-        this.eventsCall = executor.createApiCall("events", EVENT_GET_ENTERPRISE_EVENTS, credentials, allApi);
-        this.nvsTunnelsCall = executor.createApiCall(
-                "nvs tunnels",
-                MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS,
-                credentials, allApi);
     }
 
     @Override
     public List<Edge> getEdges() throws VelocloudApiException {
-        final var edges = edgesCall.call(
+        final var edges = this.api.call("edges", ENTERPRISE_GET_ENTERPRISE_EDGES,
                 new EnterpriseGetEnterpriseEdges()
                         .enterpriseId(this.enterpriseId)
                         .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.SITE)
                         .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.CONFIGURATION)
-                        .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.RECENTLINKS)
-        );
+                        .addWithItem(EnterpriseGetEnterpriseEdges.WithEnum.RECENTLINKS));
 
         return edges.stream()
                     .map(e -> Edge.builder()
@@ -151,9 +137,8 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<User> getUsers() throws VelocloudApiException {
-        final var users = usersCall.call(
-                new EnterpriseGetEnterpriseUsers().enterpriseId(this.enterpriseId)
-        );
+        final var users = this.api.call("users", ENTERPRISE_GET_ENTERPRISE_USERS,
+                new EnterpriseGetEnterpriseUsers().enterpriseId(this.enterpriseId));
 
         return users.stream()
                     .map(user -> User.builder()
@@ -177,11 +162,10 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<CustomerEvent> getEvents(final Instant start, final Instant end) throws VelocloudApiException {
-        final EventGetEnterpriseEventsResult events = eventsCall.call(
+        final EventGetEnterpriseEventsResult events = this.api.call("events", EVENT_GET_ENTERPRISE_EVENTS,
                 new EventGetEnterpriseEvents().enterpriseId(this.enterpriseId).interval(new Interval()
                         .start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
-                        .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault())))
-        );
+                        .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))));
 
         return events.getData().stream().map(
                         e -> CustomerEvent.builder()
@@ -200,9 +184,8 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     @Override
     public List<Tunnel> getNvsTunnels() throws VelocloudApiException {
-        final var tunnels = nvsTunnelsCall.call(
-                new MonitoringGetEnterpriseEdgeNvsTunnelStatusBody().enterpriseId(this.enterpriseId)
-        );
+        final var tunnels = this.api.call("nvs tunnels", MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS,
+                new MonitoringGetEnterpriseEdgeNvsTunnelStatusBody().enterpriseId(this.enterpriseId));
 
         return tunnels.stream()
                       .map(tunnel -> Tunnel.builder()
