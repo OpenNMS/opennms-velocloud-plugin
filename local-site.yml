@@ -1,0 +1,24 @@
+site:
+  title: OpenNMS Velocloud Plugin Documentation
+  url: https://github.com/OpenNMS/opennms-velocloud-plugin
+  start_page: velocloud::index.adoc
+content:
+  sources:
+    - url: .
+      branches: HEAD
+      tags:
+        - v*
+        - '!v2.0.0.alpha0'
+      start_path: docs
+ui:
+  bundle:
+    url: https://github.com/opennms-forge/antora-ui-opennms/releases/download/v3.0.1/ui-bundle.zip
+asciidoc:
+  attributes:
+    stem: latexmath
+output:
+  clean: true
+  dir: ./public
+  destinations:
+    - provider: fs
+    - provider: archive
