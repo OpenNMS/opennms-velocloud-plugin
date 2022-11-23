@@ -1,6 +1,6 @@
 <poller-configuration xmlns="http://xmlns.opennms.org/xsd/config/poller/api">
     <package name="velocloud">
-        <filter>IPADDR != '0.0.0.0'</filter>
+        <filter>IPADDR != '255.255.255.255'</filter>u
 
         <rrd step="300">
             <rra>RRA:AVERAGE:0.5:1:2016</rra>
@@ -32,11 +32,13 @@
 
         <service name="VelocloudLinkConnection" interval="300000">
             <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="edgeId" value="${velocloud:edgeId}"/>
             <parameter key="linkId" value="${velocloud:linkId}"/>
         </service>
 
         <service name="VelocloudLinkService" interval="300000">
             <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="edgeId" value="${velocloud:edgeId}"/>
             <parameter key="linkId" value="${velocloud:linkId}"/>
         </service>
 

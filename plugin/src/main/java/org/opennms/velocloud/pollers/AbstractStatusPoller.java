@@ -111,7 +111,8 @@ public abstract class AbstractStatusPoller implements ServicePoller {
         @Override
         public final Map<String, String> getRuntimeAttributes(final PollerRequest pollerRequest) {
             final var alias = Objects.requireNonNull(pollerRequest.getPollerAttributes().get(ATTR_ALIAS), "Missing property: " + ATTR_ALIAS);
-            final var connection = Objects.requireNonNull(this.connectionManager.getConnection(alias).orElse(null));
+            final var connection = this.connectionManager.getConnection(alias)
+                                                         .orElseThrow(() -> new NullPointerException("Connection not found for alias: " + alias));
 
             final var attrs = ImmutableMap.<String, String>builder();
             attrs.put(ATTR_ORCHESTRATOR_URL, connection.getOrchestratorUrl());
