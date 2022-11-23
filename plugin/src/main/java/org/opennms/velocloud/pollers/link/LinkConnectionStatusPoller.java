@@ -43,10 +43,10 @@ public class LinkConnectionStatusPoller extends AbstractLinkStatusPoller {
     }
 
     protected PollerResult poll(final Link link) throws VelocloudApiException {
-        if (!Objects.equals(link.linkState, "CONNECTED")) {
+        if (!Objects.equals(link.linkState, "STABLE")) {
             return ImmutablePollerResult.newBuilder()
                                         .setStatus(Status.Down)
-                                        .setReason("Link not connected")
+                                        .setReason("Link not stable")
                                         .build();
         }
 

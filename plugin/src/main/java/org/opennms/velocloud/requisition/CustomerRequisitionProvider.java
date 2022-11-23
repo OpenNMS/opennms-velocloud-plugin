@@ -48,8 +48,6 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
     
     public static final String PARAMETER_ENTERPRISE_ID = "enterpriseId";
 
-    public static final String VELOCLOUD_LINK_SERVICE_NAME = "VelocloudLink";
-
     public CustomerRequisitionProvider(final ClientManager clientManager,
                                        final ConnectionManager connectionManager) {
         super(clientManager, connectionManager);
@@ -86,12 +84,17 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                      .setNodeLabel(edge.name);
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                          .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                                         .setKey("alias")
+                                                         .setValue(context.getAlias())
+                                                         .build());
+            node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                                         .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                          .setKey("operator")
                                                          .setValue(edge.operator)
                                                          .build());
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                          .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                         .setKey("logicalId")
+                                                         .setKey("edgeId")
                                                          .setValue(edge.logicalId)
                                                          .build());
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
@@ -139,14 +142,23 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                              .build());
             }
 
+            {
+                final var iface = ImmutableRequisitionInterface.newBuilder()
+                                                               .setIpAddress(Utils.getValidInetAddress("0.0.0.0"))
+                                                               .setDescription("Edge Meta");
+                iface.addMonitoredService("VelocloudEdgeConnection");
+                iface.addMonitoredService("VelocloudEdgeService");
+
+                node.addInterface(iface.build());
+            }
+
             for (final var link : edge.links) {
                 final var iface = ImmutableRequisitionInterface.newBuilder()
                                                                .setIpAddress(Utils.getValidInetAddress(link.ipAddress))
-                                                               .setDescription(link.displayName)
-                                                               .addMonitoredService(VELOCLOUD_LINK_SERVICE_NAME);
+                                                               .setDescription(link.displayName);
                 iface.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                               .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                              .setKey("logicalId")
+                                                              .setKey("linkId")
                                                               .setValue(link.logicalId)
                                                               .build());
                 iface.addMetaData(ImmutableRequisitionMetaData.newBuilder()
@@ -220,6 +232,10 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                                   .setValue(link.linkMode)
                                                                   .build());
                 }
+
+                iface.addMonitoredService("VelocloudLinkConnection");
+                iface.addMonitoredService("VelocloudLinkService");
+
                 node.addInterface(iface.build());
             }
 
