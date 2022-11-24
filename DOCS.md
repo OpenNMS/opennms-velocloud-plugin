@@ -1,13 +1,9 @@
 ## Writing the plugin's documentation
 
-### Setup via npm
+We use *Antora* to develop and build the documentation. See https://docs.antora.org/antora/latest/install-and-run-quickstart/
+for a brief overview on how to install and use *Antora*.
 
-```
-npm i -g @antora/cli@2.0 @antora/site-generator-default@2.0
-npm i -g serve@6.5.8
-```
-
-### Usage
+### Building the documentation
 
 ```
 $ cd opennms-velocloud-plugin
