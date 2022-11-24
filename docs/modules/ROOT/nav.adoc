@@ -1,0 +1,6 @@
+.About
+* xref:about:introduction.adoc[Introduction]
+* xref:about:terminology.adoc[Terminology]
+
+.Installation
+* xref:install:requirements.adoc[Requirements]

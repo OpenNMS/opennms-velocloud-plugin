@@ -25,3 +25,7 @@ yarn-error.log
 
 # Ignore jenv local version files
 .java-version
+
+# Antora artifacts
+/build/
+/public/

@@ -1,0 +1,4 @@
+= Terminology
+:imagesdir: ../assets/images
+
+More to come...
