@@ -3,4 +3,19 @@
 * xref:about:terminology.adoc[Terminology]
 
 .Installation
-* xref:install:requirements.adoc[Requirements]
+* xref:installation:requirements.adoc[Requirements]
+* xref:installation:installation.adoc[Installation]
+
+.Configuration
+* xref:configuration:connections.adoc[Connections]
+* xref:configuration:requisitions.adoc[Requisitions]
+
+.Operation
+* xref:operation:api-caching.adoc[API Caching]
+* xref:operation:service-assurance.adoc[Service Assurance]
+* xref:operation:event-polling.adoc[Events]
+* xref:operation:data-collection.adoc[Data Collection]
+
+.Reference
+* xref:reference:endpoints.adoc[ReST Endpoints]
+* xref:reference:shell-commands.adoc[Useful Karaf Shell Commands]

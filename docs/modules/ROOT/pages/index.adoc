@@ -2,4 +2,7 @@
 :imagesdir: ../assets/images
 :!sectids:
 
-Welcome to...
+*VMware Velocloud* is a software-defined WAN solution for deploying Enterprise-wide access to applications over private or public networks.
+
+This plugin can be used to monitor the key entities of the *Velocloud* stack, including *Gateways*, *Edges* and *Links*.
+This includes the collection of events and performance metrics provided by the *Orchestrator*.

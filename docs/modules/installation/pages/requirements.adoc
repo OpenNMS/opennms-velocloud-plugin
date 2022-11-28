@@ -1,0 +1,4 @@
+= Requirements
+:imagesdir: ../assets/images
+
+This plugin relies on changes made to *OpenNMS* and the *OpenNMS Integration API*. Due to this fact, this plugin can only be used with *OpenNMS Horizon 31*/*OpenNMS Meridian 2023* or newer.

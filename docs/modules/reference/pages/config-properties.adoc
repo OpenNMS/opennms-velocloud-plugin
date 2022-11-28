@@ -1,0 +1,22 @@
+= Configuration Properties
+:imagesdir: ../assets/images
+
+Some configuration properties allow to fine-tune the plugin's behaviour:
+
+.Configuration protperties for `org.opennms.velocloud`
+[options="header, autowidth", cols="3,2,1"]
+|===
+
+| Name
+| Description
+| Default
+
+| events.delay
+| Event polling interval in milliseconds
+| 300000 ms
+
+| cache.retention
+| Retention cache for API calls in milliseconds
+| 3600000 ms
+
+|===
