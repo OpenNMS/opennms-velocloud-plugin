@@ -112,7 +112,7 @@ public class ClientManager implements ServiceListener {
         }
     }
 
-    public void invalidateClient(VelocloudApiClientCredentials credentials) {
+    public void purgeClient(VelocloudApiClientCredentials credentials) {
         this.clients.remove(credentials);
     }
 

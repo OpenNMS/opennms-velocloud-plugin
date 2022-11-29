@@ -53,22 +53,22 @@ public interface VelocloudRestService {
     List<EnterpriseDTO> getCustomersForMspPartner(@PathParam("alias") String alias) throws VelocloudApiException;
 
     @GET
-    @Path("/connections/list")
+    @Path("/connections")
     @Produces(value = {MediaType.APPLICATION_JSON})
     List<ConnectionListElementDTO> getConnectionList() throws VelocloudApiException;
 
     @POST
-    @Path("/connections/{alias}/add")
+    @Path("/connections")
     @Consumes({MediaType.APPLICATION_JSON})
     Response addConnection(@PathParam("alias") String alias, @QueryParam("dryrun") boolean dryRun, ConnectionDTO connectionDTO) throws VelocloudApiException;
 
-    @POST
-    @Path("/connections/{alias}/edit")
+    @PUT
+    @Path("/connections/{alias}")
     @Consumes({MediaType.APPLICATION_JSON})
     Response editConnection(@PathParam("alias") String alias, ConnectionDTO connection) throws VelocloudApiException;
 
-    @PUT
-    @Path("/connections/{alias}/validate")
+    @GET
+    @Path("/connections/{alias}")
     @Consumes({MediaType.APPLICATION_JSON})
     Response validateConnection(@PathParam("alias") String alias) throws VelocloudApiException;
 }

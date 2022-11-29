@@ -72,8 +72,8 @@ public interface Connection {
     void save();
 
     /**
-     * Utility for converting to a VelocloudApiClientCredentials object
-     * @return
+     * Build the {@link VelocloudApiClientCredentials} of this connection.
+     * @return the credentials used by the connection
      */
     default VelocloudApiClientCredentials asVelocloudCredentials() {
         return VelocloudApiClientCredentials.builder()
