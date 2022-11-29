@@ -37,6 +37,7 @@ import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.connections.ConnectionValidationError;
 
 @Command(scope = "opennms-velocloud", name = "connection-add", description = "Add a connection", detailedDescription = "Add a connection to a velocloud orchestrator")
 @Service
@@ -50,6 +51,9 @@ public class AddConnectionCommand implements Action {
 
     @Option(name = "-t", aliases = "--test", description = "Dry run mode, test the credentials but do not save them")
     boolean dryRun = false;
+
+    @Option(name="-f", aliases="--force", description="Skip validation and save the connection as-is")
+    public boolean skipValidation = false;
 
     @Argument(index = 0, name = "alias", description = "Alias", required = true, multiValued = false)
     public String alias = null;
@@ -67,16 +71,20 @@ public class AddConnectionCommand implements Action {
             return null;
         }
 
-        try {
-            clientManager.validate(VelocloudApiClientCredentials.builder()
-                                                                .withOrchestratorUrl(url)
-                                                                .withApiKey(apiKey)
-                                                                .build());
-            System.out.println("Credentials are valid");
+        if (!skipValidation) {
+            try {
+                clientManager.validate(VelocloudApiClientCredentials.builder()
+                        .withOrchestratorUrl(url)
+                        .withApiKey(apiKey)
+                        .build());
+                System.out.println("Credentials are valid");
+            } catch (ConnectionValidationError e) {
+                System.err.println(String.format("Failed to validate credentials: %s", e.getMessage()));
+                return null;
+            }
         }
-        catch (VelocloudApiException e) {
-            System.err.println(String.format("Failed to validate credentials: %s", e.getMessage()));
-            return null;
+        else {
+            System.out.println("Skipping validation");
         }
         if (!dryRun) {
             this.connectionManager.addConnection(this.alias, this.url, this.apiKey);

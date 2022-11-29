@@ -51,13 +51,14 @@ public class ValidateConnectionCommand implements Action {
             System.err.println("No connection with the given alias exists: " + this.alias);
             return null;
         }
-       try {
-           connectionManager.validateConnection(alias);
-           System.out.println("Connection is valid");
-       }
-       catch (VelocloudApiException e) {
-            System.err.println(String.format("Failed to validate credentials: %s", e.getMessage()));
-       }
-       return null;
+
+        final var error = connectionManager.validateConnection(alias);
+        if (error != null) {
+            System.err.println(error.getMessage());
+        }
+        else {
+            System.out.println("Connection is valid");
+        }
+        return null;
     }
 }

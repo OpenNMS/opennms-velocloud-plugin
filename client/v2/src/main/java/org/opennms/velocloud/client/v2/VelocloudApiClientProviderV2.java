@@ -47,14 +47,4 @@ public class VelocloudApiClientProviderV2 implements VelocloudApiClientProvider 
     public VelocloudApiCustomerClient customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public void validatePartnerCredentials(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void validateCustomerCredentials(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        throw new UnsupportedOperationException();
-    }
 }

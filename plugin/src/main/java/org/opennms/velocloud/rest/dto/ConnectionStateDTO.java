@@ -25,29 +25,14 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.rest.dto;
 
-package org.opennms.velocloud.client.api;
+import lombok.Data;
 
-/**
- * Provider for velocloud API clients.
- */
-public interface VelocloudApiClientProvider {
+@Data
+public class ConnectionStateDTO {
 
-    /**
-     * Create a client for a velocloud partner account.
-     *
-     * @param credentials the credentials to use for the client.
-     * @return a partner client
-     * @throws VelocloudApiException
-     */
-    VelocloudApiPartnerClient partnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
-
-    /**
-     * Create a client for a velocloud customer account.
-     *
-     * @param credentials the credentials to use for the client.
-     * @return a customer client
-     * @throws VelocloudApiException
-     */
-    VelocloudApiCustomerClient customerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException;
+    private String alias;
+    private String orchestratorUrl;
+    private String connectionState;
 }

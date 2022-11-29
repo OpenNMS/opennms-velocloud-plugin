@@ -31,10 +31,13 @@ import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
+import org.opennms.velocloud.connections.Connection.ConnectionState;
 import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.connections.ConnectionValidationError;
 import org.opennms.velocloud.rest.api.VelocloudRestService;
 import org.opennms.velocloud.rest.dto.ConnectionDTO;
 import org.opennms.velocloud.rest.dto.ConnectionListElementDTO;
+import org.opennms.velocloud.rest.dto.ConnectionStateDTO;
 import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 
 import javax.ws.rs.core.Response;
@@ -69,70 +72,75 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
                     final var connectionDTO = new ConnectionListElementDTO();
                     connectionDTO.setAlias(alias);
                     connectionDTO.setOrchestratorUrl(connection.getOrchestratorUrl());
-                    connectionDTO.setApiKey("*******");
                     return connectionDTO;
                 })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Response addConnection(String alias, boolean dryRun, ConnectionDTO connectionDTO) throws VelocloudApiException {
-        if (this.connectionManager.getAliases().contains(alias)) {
+    public Response addConnection(ConnectionDTO connectionDTO, boolean dryRun, boolean force) throws VelocloudApiException {
+        if (this.connectionManager.getAliases().contains(connectionDTO.getAlias())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Connection already exists").build();
         }
-        try {
-            clientManager.validate(VelocloudApiClientCredentials.builder()
-                    .withOrchestratorUrl(connectionDTO.getOrchestratorUrl())
-                    .withApiKey(connectionDTO.getApiKey())
-                    .build());
-        }
-        catch (VelocloudApiException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", e.getMessage())).build();
+        if (!force) {
+            try {
+                clientManager.validate(VelocloudApiClientCredentials.builder()
+                        .withOrchestratorUrl(connectionDTO.getOrchestratorUrl())
+                        .withApiKey(connectionDTO.getApiKey())
+                        .build());
+            } catch (ConnectionValidationError e) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", e.getMessage())).build();
+            }
         }
         if (!dryRun) {
-            connectionManager.addConnection(alias, connectionDTO.getOrchestratorUrl(), connectionDTO.getApiKey());
+            connectionManager.addConnection(connectionDTO.getAlias(), connectionDTO.getOrchestratorUrl(), connectionDTO.getApiKey());
             return Response.ok().entity("Connection successfully added").build();
         }
         return Response.ok().entity("Dry run successful").build();
     }
 
     @Override
-    public Response editConnection(final String alias, final ConnectionDTO connectionDTO) throws VelocloudApiException {
+    public Response editConnection(final String alias, final ConnectionDTO connectionDTO, boolean force) throws VelocloudApiException {
         if (!this.connectionManager.getAliases().contains(alias)) {
             return Response.status(Response.Status.BAD_REQUEST).entity("No such connection exists").build();
         }
-        try {
-            clientManager.validate(VelocloudApiClientCredentials.builder()
-                    .withOrchestratorUrl(connectionDTO.getOrchestratorUrl())
-                    .withApiKey(connectionDTO.getApiKey())
-                    .build());
-            updateConnection(alias, connectionDTO);
+        if (!force) {
+            try {
+                clientManager.validate(VelocloudApiClientCredentials.builder()
+                        .withOrchestratorUrl(connectionDTO.getOrchestratorUrl())
+                        .withApiKey(connectionDTO.getApiKey())
+                        .build());
+            } catch (ConnectionValidationError e) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", e.getMessage())).build();
+            }
         }
-        catch (VelocloudApiException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", e.getMessage())).build();
-        }
+        updateConnection(alias, connectionDTO);
         return Response.ok().entity("Connection successfully updated").build();
     }
 
     @Override
-    public Response validateConnection(final String alias) throws VelocloudApiException {
+    public ConnectionStateDTO validateConnection(final String alias) {
+        ConnectionStateDTO response = new ConnectionStateDTO();
+        response.setAlias(alias);
         if (!this.connectionManager.getAliases().contains(alias)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("No such connection exists").build();
+            response.setConnectionState(ConnectionState.NO_SUCH_CONNECTION.name());
+            return response;
         }
-        try {
-            final var connection = connectionManager.getConnection(alias).get();
-            connectionManager.validateConnection(connection.getAlias());
+        final var connection = connectionManager.getConnection(alias).get();
+        response.setOrchestratorUrl(connection.getOrchestratorUrl());
+        if (null == connectionManager.validateConnection(connection.getAlias())) {
+            response.setConnectionState(ConnectionState.VALID.name());
         }
-        catch (VelocloudApiException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", e.getMessage())).build();
+        else {
+            response.setConnectionState(ConnectionState.INVALID.name());
         }
-        return Response.ok().entity("Connection validated").build();
+        return response;
     }
 
     private void updateConnection(String alias, ConnectionDTO connectionDTO) throws VelocloudApiException {
         Connection connection = connectionManager.getConnection(alias)
                 .orElseThrow(() -> new VelocloudApiException("connection does not exist"));
-        clientManager.invalidateClient(connection.asVelocloudCredentials());
+        clientManager.purgeClient(connection.asVelocloudCredentials());
         connection.setOrchestratorUrl(connectionDTO.getOrchestratorUrl());
         connection.setApiKey(connectionDTO.getOrchestratorUrl());
         connection.save();

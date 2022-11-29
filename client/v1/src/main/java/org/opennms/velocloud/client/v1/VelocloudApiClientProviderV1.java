@@ -58,7 +58,8 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
 
     public static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
         final var client = new ApiClient();
-        client.setBasePath(URI.create(credentials.orchestratorUrl).resolve(PATH).toString());
+        String url = credentials.orchestratorUrl.endsWith("/") ? credentials.orchestratorUrl : credentials.orchestratorUrl + "/";
+        client.setBasePath(URI.create(url).resolve(PATH).toString());
         client.setApiKeyPrefix(AUTH_HEADER_PREFIX);
         client.setApiKey(credentials.apiKey);
         return new AllApi(client);
@@ -91,47 +92,5 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                                                         .getId())
                                          .orElseThrow(() -> new VelocloudApiException("Not a customer account"));
         return new VelocloudApiCustomerClientV1(api, enterpriseId);
-    }
-
-    @Override
-    public void validatePartnerCredentials(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        final var api = connectApi(credentials);
-        try {
-            ApiCall.call(api, "get partner info",
-                    AllApi::enterpriseProxyGetEnterpriseProxyProperty,
-                    new EnterpriseProxyGetEnterpriseProxyProperty());
-        }
-        catch (Exception e) {
-            throw new VelocloudApiException(e.getMessage());
-        }
-    }
-
-    @Override
-    public void validateCustomerCredentials(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        final var api = connectApi(credentials);
-        try {
-            ApiCall.call(api, "get customer info",
-                    AllApi::enterpriseGetEnterprise,
-                    new EnterpriseGetEnterprise());
-        }
-        catch (Exception e) {
-            throw new VelocloudApiException(e.getMessage());
-        }
-    }
-
-    @FunctionalInterface
-    public interface ApiCall<B, R> {
-        R apply(final AllApi api, final B body) throws ApiException;
-
-        static <B, R> R call(final AllApi api,
-                             final String desc,
-                             final ApiCall<B, R> f,
-                             final B body) throws VelocloudApiException {
-            try {
-                return f.apply(api, body);
-            } catch (final ApiException e) {
-                throw new VelocloudApiException("Failed to execute API call: " + desc, e);
-            }
-        }
     }
 }

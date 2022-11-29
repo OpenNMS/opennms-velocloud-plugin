@@ -33,4 +33,8 @@ public class ConnectionValidationError extends RuntimeException {
     public ConnectionValidationError(final String alias, final String message) {
         super(String.format("Invalid connection in SCV: %s: %s", alias, message));
     }
+
+    public ConnectionValidationError(final String message) {
+        super(String.format("Invalid connection: %s", message));
+    }
 }

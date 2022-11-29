@@ -115,11 +115,22 @@ public class ConnectionManager {
     /**
      * Attempts to connect a client with the given credentials to the given orchestrator
      *
-     * @throws VelocloudApiException    If the credentials are invalid
+     * @return    A ConnectionValidationError if an issue occurred, or null if the connection is valid.
      */
-    public void validateConnection(String alias) throws VelocloudApiException {
-        final Connection connection = getConnection(alias).orElseThrow(() -> new VelocloudApiException("Connection does not exist"));
-        this.clientManager.validate(connection.asVelocloudCredentials());
+    public ConnectionValidationError validateConnection(String alias) {
+        ConnectionValidationError e = null;
+        final var connection = getConnection(alias);
+        if (connection.isEmpty()) {
+            e = new ConnectionValidationError(alias, "No such connection exists");
+        }
+        else {
+            try {
+                this.clientManager.validate(connection.get().asVelocloudCredentials());
+            } catch (Exception ex) {
+                e = new ConnectionValidationError(alias, ex.getMessage());
+            }
+        }
+        return e;
     }
 
     public Optional<VelocloudApiPartnerClient> getPartnerClient(final String alias) throws ConnectionValidationError, VelocloudApiException {

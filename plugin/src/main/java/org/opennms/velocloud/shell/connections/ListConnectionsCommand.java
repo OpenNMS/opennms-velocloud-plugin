@@ -51,8 +51,7 @@ public class ListConnectionsCommand implements Action {
         final var table = new ShellTable()
                 .size(session.getTerminal().getWidth() - 1)
                 .column(new Col("alias").maxSize(36))
-                .column(new Col("orchestratorUrl").maxSize(72))
-                .column(new Col("apiKey").maxSize(12));
+                .column(new Col("orchestratorUrl").maxSize(72));
 
         connectionManager.getAliases().stream()
                                       .map(alias -> connectionManager.getConnection(alias).get())
@@ -60,7 +59,6 @@ public class ListConnectionsCommand implements Action {
                                           final var row = table.addRow();
                                           row.addContent(connection.getAlias());
                                           row.addContent(connection.getOrchestratorUrl());
-                                          row.addContent("********");
                                       });
         table.print(System.out, true);
         return null;

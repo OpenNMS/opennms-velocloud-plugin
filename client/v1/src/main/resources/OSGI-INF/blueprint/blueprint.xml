@@ -9,7 +9,7 @@
     </cm:property-placeholder>
 
     <bean id="cache" class="org.opennms.velocloud.client.v1.ApiCache">
-        <argument value="{{ client.cache.duration }}"/>
+        <argument value="${client.cache.duration}"/>
     </bean>
 
     <bean id="clientProvider" class="org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1">

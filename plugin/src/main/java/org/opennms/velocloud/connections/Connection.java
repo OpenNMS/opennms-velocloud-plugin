@@ -34,6 +34,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface Connection {
+
+    enum ConnectionState {
+        VALID,
+        INVALID,
+        NO_SUCH_CONNECTION
+    }
+
     /**
      * Returns the alias of the connection.
      * The alias is a unique identifier representing a connection configuration.

@@ -30,12 +30,14 @@ package org.opennms.velocloud.shell.connections;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.connections.ConnectionValidationError;
 
 import javax.ws.rs.ProcessingException;
 
@@ -49,6 +51,9 @@ public class EditConnectionCommand implements Action {
     @Reference
     private ClientManager clientManager;
 
+    @Option(name="-f", aliases="--force", description="Skip validation and save the connection as-is")
+    public boolean skipValidation = false;
+
     @Argument(index = 0, name = "alias", description = "Alias", required = true, multiValued = false)
     public String alias = null;
 
@@ -61,24 +66,27 @@ public class EditConnectionCommand implements Action {
     @Override
     public Object execute() throws Exception {
         if (!this.connectionManager.getAliases().contains(this.alias)) {
-            System.err.println("No connection with the given alias exists: " + this.alias);
+            System.err.println(String.format("No connection with the given alias exists: %s",  this.alias));
             return null;
         }
-        try {
-            clientManager.validate(VelocloudApiClientCredentials.builder()
-                                                                .withApiKey(apiKey)
-                                                                .withOrchestratorUrl(url)
-                                                                .build());
-            final var connection = this.connectionManager.getConnection(alias).get();
-            this.clientManager.invalidateClient(connection.asVelocloudCredentials());
-            connection.setApiKey(apiKey);
-            connection.setOrchestratorUrl(url);
-            connection.save();
-            System.out.println("Connection updated");
+        if (!skipValidation) {
+            try {
+                clientManager.validate(VelocloudApiClientCredentials.builder()
+                        .withApiKey(apiKey)
+                        .withOrchestratorUrl(url)
+                        .build());
+            }
+            catch (ConnectionValidationError e) {
+                System.err.println(String.format("Failed to validate credentials: %s", e.getMessage()));
+                return null;
+            }
         }
-        catch (VelocloudApiException e) {
-            System.err.println(String.format("Invalid credentials: %s", e.getMessage()));
-        }
+        final var connection = this.connectionManager.getConnection(alias).get();
+        this.clientManager.purgeClient(connection.asVelocloudCredentials());
+        connection.setApiKey(apiKey);
+        connection.setOrchestratorUrl(url);
+        connection.save();
+        System.out.println("Connection updated");
         return null;
     }
 }
