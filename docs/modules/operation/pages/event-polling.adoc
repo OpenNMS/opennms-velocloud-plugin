@@ -23,4 +23,4 @@ The following event definitions will be used:
 </events>
 ```
 
-NOTE: The default polling interval is set to five minutes and can be modified by using the configuration property `events.delay`.
+The default polling interval is set to five minutes and can be modified by using the configuration property `events.delay`.
