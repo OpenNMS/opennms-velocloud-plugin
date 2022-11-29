@@ -17,5 +17,6 @@
 * xref:operation:data-collection.adoc[Data Collection]
 
 .Reference
+* xref:reference:config-properties.adoc[Config Properties]
 * xref:reference:endpoints.adoc[ReST Endpoints]
 * xref:reference:shell-commands.adoc[Useful Karaf Shell Commands]
