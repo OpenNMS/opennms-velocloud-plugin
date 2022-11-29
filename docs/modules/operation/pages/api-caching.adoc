@@ -4,4 +4,4 @@
 The access to the *Velocloud Orchestrator* ReST APIs are rate-limited for its clients.
 In order to respect these rate-limits, we use caching on API calls.
 
-NOTE: The cache retention period can be altered by modifying the `cache.retention` configuration property.
+The cache retention period can be altered by modifying the `cache.retention` configuration property.
