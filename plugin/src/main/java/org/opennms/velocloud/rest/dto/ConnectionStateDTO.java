@@ -34,5 +34,5 @@ public class ConnectionStateDTO {
 
     private String alias;
     private String orchestratorUrl;
-    private String connectionState;
+    private boolean valid;
 }

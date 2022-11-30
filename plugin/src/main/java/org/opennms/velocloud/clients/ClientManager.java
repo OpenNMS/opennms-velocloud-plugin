@@ -86,26 +86,30 @@ public class ClientManager implements ServiceListener {
     }
 
     public VelocloudApiPartnerClient getPartnerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        try {
-            return this.clients.get(credentials, () -> new PartnerClientEntry(this.clientProvider.partnerClient(credentials)))
-                    .asPartnerClient()
-                    .orElseThrow(() -> new VelocloudApiException("Not a partner client"));
-        } catch (ExecutionException e) {
-            throw new VelocloudApiException("Error creating partner client", e);
+        synchronized(this.clients) {
+            try {
+                return this.clients.get(credentials, () -> new PartnerClientEntry(this.clientProvider.partnerClient(credentials)))
+                        .asPartnerClient()
+                        .orElseThrow(() -> new VelocloudApiException("Not a partner client"));
+            } catch (ExecutionException e) {
+                throw new VelocloudApiException("Error creating partner client", e);
+            }
         }
     }
 
     public VelocloudApiCustomerClient getCustomerClient(final VelocloudApiClientCredentials credentials) throws VelocloudApiException {
-        try {
-            return this.clients.get(credentials, () -> new CustomerClientEntry(this.clientProvider.customerClient(credentials)))
-                    .asCustomerClient()
-                    .orElseThrow(() -> new VelocloudApiException("Not a customer client"));
-        } catch (ExecutionException e) {
-            throw new VelocloudApiException("Error creating customer client", e);
+        synchronized(this.clients) {
+            try {
+                return this.clients.get(credentials, () -> new CustomerClientEntry(this.clientProvider.customerClient(credentials)))
+                        .asCustomerClient()
+                        .orElseThrow(() -> new VelocloudApiException("Not a customer client"));
+            } catch (ExecutionException e) {
+                throw new VelocloudApiException("Error creating customer client", e);
+            }
         }
     }
 
-    public void validate(final VelocloudApiClientCredentials credentials) throws ConnectionValidationError {
+    public ConnectionValidationError validate(final VelocloudApiClientCredentials credentials) {
         try {
             this.clientProvider.partnerClient(credentials);
         } catch (VelocloudApiException e) {
@@ -113,13 +117,16 @@ public class ClientManager implements ServiceListener {
                 this.clientProvider.customerClient(credentials);
             }
             catch (VelocloudApiException ex) {
-                throw new ConnectionValidationError("Credentials could not be validated");
+                return new ConnectionValidationError("Credentials could not be validated");
             }
         }
+        return null;
     }
 
     public void purgeClient(VelocloudApiClientCredentials credentials) {
-        this.clients.invalidate(credentials);
+        synchronized(this.clients) {
+            this.clients.invalidate(credentials);
+        }
     }
 
     public static abstract class ClientEntry {

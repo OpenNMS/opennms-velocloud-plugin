@@ -35,6 +35,8 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.connections.ConnectionManager;
 
+import java.util.Optional;
+
 @Command(scope = "opennms-velocloud", name = "connection-validate", description = "Validate a connection", detailedDescription = "Validate an existing connection to a velocloud orchestrator")
 @Service
 public class ValidateConnectionCommand implements Action {
@@ -47,14 +49,14 @@ public class ValidateConnectionCommand implements Action {
 
     @Override
     public Object execute() throws Exception {
-        if (!this.connectionManager.getAliases().contains(this.alias)) {
+        if (!this.connectionManager.contains(this.alias)) {
             System.err.println("No connection with the given alias exists: " + this.alias);
             return null;
         }
 
-        final var error = connectionManager.validateConnection(alias);
-        if (error != null) {
-            System.err.println(error.getMessage());
+        final var error = Optional.ofNullable(connectionManager.validateConnection(alias));
+        if (error.isPresent()) {
+            System.err.println(error.get().getMessage());
         }
         else {
             System.out.println("Connection is valid");

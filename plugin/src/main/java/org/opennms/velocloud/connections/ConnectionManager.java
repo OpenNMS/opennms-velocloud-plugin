@@ -81,6 +81,14 @@ public class ConnectionManager {
     }
 
     /**
+     *  Key store implementations may not be case-sensitive
+     */
+    public boolean contains(String alias) {
+        return this.getAliases().stream()
+                .anyMatch(str -> str.equalsIgnoreCase(alias));
+    }
+
+    /**
      * Returns a connection config for the given alias.
      *
      * @param alias the alias of the connection config to retrieve
@@ -88,12 +96,12 @@ public class ConnectionManager {
      * @throws ConnectionValidationError if the connection config is invalid
      */
     public Optional<Connection> getConnection(final String alias) throws ConnectionValidationError {
-        final var credentials = this.vault.getCredentials(PREFIX + alias);
+        final var credentials = this.vault.getCredentials(PREFIX + alias.toLowerCase());
         if (credentials == null) {
             return Optional.empty();
         }
 
-        return Optional.of(new ConnectionImpl(alias, credentials));
+        return Optional.of(new ConnectionImpl(alias.toLowerCase(), credentials));
     }
 
     /**
@@ -106,7 +114,7 @@ public class ConnectionManager {
      * @throws ConnectionValidationError
      */
     public Connection addConnection(final String alias, final String orchestratorUrl, final String apiKey) throws ConnectionValidationError {
-        final Connection connection = new ConnectionImpl(alias, orchestratorUrl, apiKey);
+        final Connection connection = new ConnectionImpl(alias.toLowerCase(), orchestratorUrl, apiKey);
         connection.save();
 
         return connection;
@@ -117,20 +125,29 @@ public class ConnectionManager {
      *
      * @return    A ConnectionValidationError if an issue occurred, or null if the connection is valid.
      */
-    public ConnectionValidationError validateConnection(String alias) {
-        ConnectionValidationError e = null;
+    public ConnectionValidationError validateConnection(final String alias) {
+        ConnectionValidationError e;
         final var connection = getConnection(alias);
         if (connection.isEmpty()) {
             e = new ConnectionValidationError(alias, "No such connection exists");
         }
         else {
-            try {
-                this.clientManager.validate(connection.get().asVelocloudCredentials());
-            } catch (Exception ex) {
-                e = new ConnectionValidationError(alias, ex.getMessage());
-            }
+            e = connection.get().validate();
         }
         return e;
+    }
+
+    /**
+     *  Validate a connection that is not currently saved in SCV
+     *
+     * @param orchestratorUrl       the URL of the orchestrator
+     * @param apiKey                The API key used to authenticate the connection
+     * @return  A ConnectionValidationError if an issue occurred, or null if the connection is valid
+     */
+    public ConnectionValidationError testConnection(final String orchestratorUrl, final String apiKey) {
+        String fixedUrl = orchestratorUrl.endsWith("/") ? orchestratorUrl : orchestratorUrl + "/";
+        final var connection = new ConnectionImpl("test", fixedUrl, apiKey);
+        return connection.validate();
     }
 
     public Optional<VelocloudApiPartnerClient> getPartnerClient(final String alias) throws ConnectionValidationError, VelocloudApiException {
@@ -139,7 +156,7 @@ public class ConnectionManager {
             return Optional.empty();
         }
 
-        return Optional.of(this.clientManager.getPartnerClient(connection.get().asVelocloudCredentials()));
+        return Optional.of(this.clientManager.getPartnerClient(asVelocloudCredentials(connection.get())));
     }
 
     public Optional<VelocloudApiCustomerClient> getCustomerClient(final String alias) throws ConnectionValidationError, VelocloudApiException {
@@ -148,7 +165,14 @@ public class ConnectionManager {
             return Optional.empty();
         }
 
-        return Optional.of(this.clientManager.getCustomerClient(connection.get().asVelocloudCredentials()));
+        return Optional.of(this.clientManager.getCustomerClient(asVelocloudCredentials(connection.get())));
+    }
+
+    private static VelocloudApiClientCredentials asVelocloudCredentials(Connection connection) {
+        return VelocloudApiClientCredentials.builder()
+                .withApiKey(connection.getApiKey())
+                .withOrchestratorUrl(connection.getOrchestratorUrl())
+                .build();
     }
 
     private class ConnectionImpl implements Connection {
@@ -206,10 +230,27 @@ public class ConnectionManager {
             ConnectionManager.this.vault.setCredentials(PREFIX + this.alias, this.asCredentials());
         }
 
+        public void update(String orchestratorUrl, String apiKey) {
+            final var old_creds = this.asVelocloudCredentials();
+            this.setOrchestratorUrl(orchestratorUrl);
+            this.setApiKey(apiKey);
+            this.save();
+            ConnectionManager.this.clientManager.purgeClient(old_creds);
+        }
+
+        @Override
+        public ConnectionValidationError validate() {
+            return ConnectionManager.this.clientManager.validate(asVelocloudCredentials());
+        }
+
         private Credentials asCredentials() {
             final var attributes = ImmutableMap.<String, String>builder();
 
             return new ImmutableCredentials(this.orchestratorUrl, this.apiKey, attributes.build());
+        }
+
+        private VelocloudApiClientCredentials asVelocloudCredentials() {
+            return ConnectionManager.asVelocloudCredentials(this);
         }
 
         @Override

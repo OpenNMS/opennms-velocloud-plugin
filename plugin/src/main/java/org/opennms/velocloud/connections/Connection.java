@@ -29,17 +29,12 @@
 package org.opennms.velocloud.connections;
 
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+import org.opennms.velocloud.client.api.VelocloudApiException;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface Connection {
-
-    enum ConnectionState {
-        VALID,
-        INVALID,
-        NO_SUCH_CONNECTION
-    }
 
     /**
      * Returns the alias of the connection.
@@ -79,13 +74,16 @@ public interface Connection {
     void save();
 
     /**
-     * Build the {@link VelocloudApiClientCredentials} of this connection.
-     * @return the credentials used by the connection
+     * Update the existing connection with new credentials
+     * @param orchestratorUrl   the new orchestrator URL
+     * @param apiKey            the new apiKey
      */
-    default VelocloudApiClientCredentials asVelocloudCredentials() {
-        return VelocloudApiClientCredentials.builder()
-                .withOrchestratorUrl(this.getOrchestratorUrl())
-                .withApiKey(this.getApiKey())
-                .build();
-    }
+    void update(String orchestratorUrl, String apiKey);
+
+    /**
+     *  Test the connection
+     * @return An exception if the connection is invalid, or null if otherwise.
+     */
+    ConnectionValidationError validate();
+
 }

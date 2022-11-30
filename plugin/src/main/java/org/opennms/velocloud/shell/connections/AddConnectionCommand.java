@@ -39,15 +39,14 @@ import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.connections.ConnectionValidationError;
 
+import java.util.Optional;
+
 @Command(scope = "opennms-velocloud", name = "connection-add", description = "Add a connection", detailedDescription = "Add a connection to a velocloud orchestrator")
 @Service
 public class AddConnectionCommand implements Action {
 
     @Reference
     private ConnectionManager connectionManager;
-
-    @Reference
-    private ClientManager clientManager;
 
     @Option(name = "-t", aliases = "--test", description = "Dry run mode, test the credentials but do not save them")
     boolean dryRun = false;
@@ -66,21 +65,19 @@ public class AddConnectionCommand implements Action {
 
     @Override
     public Object execute() throws Exception {
-        if (this.connectionManager.getAliases().contains(this.alias)) {
+        if (this.connectionManager.contains(this.alias)) {
             System.err.println("Connection with alias already exists: " + this.alias);
             return null;
         }
 
         if (!skipValidation) {
-            try {
-                clientManager.validate(VelocloudApiClientCredentials.builder()
-                        .withOrchestratorUrl(url)
-                        .withApiKey(apiKey)
-                        .build());
-                System.out.println("Credentials are valid");
-            } catch (ConnectionValidationError e) {
-                System.err.println(String.format("Failed to validate credentials: %s", e.getMessage()));
+            final var exception = Optional.ofNullable(connectionManager.testConnection(url, apiKey));
+            if (exception.isPresent()) {
+                System.err.println(String.format("Failed to validate credentials: %s", exception.get().getMessage()));
                 return null;
+            }
+            else {
+                System.out.println("Credentials are valid");
             }
         }
         else {
