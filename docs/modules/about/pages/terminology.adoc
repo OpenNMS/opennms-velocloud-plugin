@@ -1,7 +1,7 @@
 = Terminology
 :imagesdir: ../assets/images
 
-This section introduce some of the basic terms we use in this documentation.
+This section introduces some of the basic terms we use in this documentation.
 
 Partner:: A business entity that resells Velocloud as a solution.
 
