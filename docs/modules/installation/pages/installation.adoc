@@ -29,10 +29,11 @@ $ mvn clean install
 
 NOTE: To speed up development iterations, use `-Dcodegen.skip=true` to skip the regeneration of the client model classes.
 
-Now you can add the repository and install the feature in the OpenNMS Karaf shell:
+Now you can add the repository and install the feature in the OpenNMS Karaf shell.
+Replace `<VERSION>` with the version you built and want to deploy.
 
 ```
-admin@opennms()> feature:repo-add mvn:org.opennms.plugins.velocloud/karaf-features/0.1.0-SNAPSHOT/xml
+admin@opennms()> feature:repo-add mvn:org.opennms.plugins.velocloud/karaf-features/<VERSION>/xml
 admin@opennms()> feature:install opennms-plugins-velocloud
 ```
 
