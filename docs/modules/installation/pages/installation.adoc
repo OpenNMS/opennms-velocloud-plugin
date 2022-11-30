@@ -5,7 +5,7 @@
 
 The installation of the plugin is simple.
 Just copy the provided KAR file to your OpenNMS `deploy` directory.
-The following example copies the KAR-file `path/to/opennms-velocloud-plugin.kar` to the `deploy` directory assuming that OpenNMS is installed in `/opt/opennms`.
+The following example copies the KAR file `path/to/opennms-velocloud-plugin.kar` to the `deploy` directory assuming that OpenNMS is installed in `/opt/opennms`.
 
 ```
 $ cp path/to/opennms-velocloud-plugin.kar /opt/opennms/deploy/
