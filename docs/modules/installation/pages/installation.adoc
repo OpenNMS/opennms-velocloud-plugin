@@ -1,35 +1,35 @@
 = Installation
 :imagesdir: ../assets/images
 
-## Deployment via KAR-file
+## Deployment via KAR file
 
 The installation of the plugin is simple.
-Just copy the provided KAR-file to your *OpenNMS* `deploy` directory.
-The following example copies the KAR-file `path/to/opennms-velocloud-plugin.kar` to the `deploy` directory assuming that *OpenNMS* is installed in `/opt/opennms`.
+Just copy the provided KAR-file to your OpenNMS `deploy` directory.
+The following example copies the KAR-file `path/to/opennms-velocloud-plugin.kar` to the `deploy` directory assuming that OpenNMS is installed in `/opt/opennms`.
 
 ```
 $ cp path/to/opennms-velocloud-plugin.kar /opt/opennms/deploy/
 ```
 
-After this step you are able to install the plugin in the *OpenNMS* Karaf shell:
+After this step you can install the plugin in the OpenNMS Karaf shell:
 
 ```
 admin@opennms()> feature:install opennms-plugins-velocloud
 ```
 
-After installation *Velocloud*-specific Karaf commands are available to configure the plugin.
+After installation, Velocloud-specific Karaf commands are available to configure the plugin.
 
-## Deploying from source
+## Deploy from source
 
-After checking out the repository you can build and install the plugin into your local Maven repository using:
+After checking out the repository, you can build and install the plugin into your local Maven repository using:
 
 ```
 $ mvn clean install
 ```
 
-NOTE: To speed up development iterations, one can use `-Dcodegen.skip=true` to skip the regeneration of the client model classes.
+NOTE: To speed up development iterations, use `-Dcodegen.skip=true` to skip the regeneration of the client model classes.
 
-Now you can add the repository and install the feature in the *OpenNMS* Karaf shell:
+Now you can add the repository and install the feature in the OpenNMS Karaf shell:
 
 ```
 admin@opennms()> feature:repo-add mvn:org.opennms.plugins.velocloud/karaf-features/0.1.0-SNAPSHOT/xml

@@ -1,7 +1,7 @@
 = Configuration Properties
 :imagesdir: ../assets/images
 
-Some configuration properties allow to fine-tune the plugin's behaviour:
+Some configuration properties let you fine-tune the plugin's behavior:
 
 .Configuration protperties for `org.opennms.velocloud`
 [options="header, autowidth", cols="3,2,1"]

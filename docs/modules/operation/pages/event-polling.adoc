@@ -1,9 +1,8 @@
 = Events
 :imagesdir: ../assets/images
 
-After installing, the plugin starts to collect events for the configured connections.
-These will be associated with the corresponding entities in the OpenNMS system.
-The following event definitions will be used:
+After installation, the plugin starts to collect events for the configured connections.
+These events will be associated with the corresponding entities in the OpenNMS system, using the following event definitions:
 ```
 <events xmlns="http://xmlns.opennms.org/xsd/eventconf">
     <event>

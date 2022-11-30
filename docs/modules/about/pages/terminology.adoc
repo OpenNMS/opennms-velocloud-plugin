@@ -3,16 +3,19 @@
 
 This section introduce some of the basic terms we use in this documentation.
 
-Partner:: A *Partner* is a buisness entity that resells Velocloud as a solution.
+Partner:: A business entity that resells Velocloud as a solution.
 
-Customer:: A *Customer* is a customer of a *Partner*.
+Customer:: A client of a partner.
 
-Orchestrator:: The Velocloud's SD-WAN controller, that hosts REST APIs, including endpoints to retrieve inventory, events, fault data, and performance data. It is used to manage *Gateways*, *Edges* and *Links*.
+Orchestrator:: The Velocloud's SD-WAN controller, that hosts REST APIs, including endpoints to retrieve inventory, events, fault data, and performance data. 
+It is used to manage gateways, edges, and links.
 
-Gateway:: *Gateways* are the key components of the Velocloud multi-tenant, scalable and redundant network and are deployed in cloud data-centers around the world. These network devices periodically send heartbeat packets and performance metrics to the *Orchestrator*.
+Gateway:: The key components of the Velocloud multi-tenant, scalable, and redundant network that are deployed in cloud data-centers around the world. 
+These network devices periodically send heartbeat packets and performance metrics to the Orchestrator.
 
-Edge:: An *Edge* is a branded physical device that provide secure connectivity to private, public or hybrid applications for a branch site. *Edges* are connected by *Links* to the *Gateways*.
+Edge:: A branded physical device that provides secure connectivity to private, public, or hybrid applications for a branch site.
+Edges are connected by links to the gateways.
 
-Link:: *Links* are tunnels from an *Edge* device to a *Gateway* providing connectivity to the SD-WAN overlay network.
+Link:: Tunnels from an edge device to a gateway that provides connectivity to the SD-WAN overlay network.
 
-Hub:: A regional data center that is owned and maintained by a *Customer*.
+Hub:: A regional data center that is owned and maintained by a customer.

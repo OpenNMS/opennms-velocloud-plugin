@@ -1,13 +1,10 @@
 = Connections
 :imagesdir: ../assets/images
 
-First of all we have to define the connections the plugin uses to connect to the *Orchestrator*.
-The following example adds a connection with the alias `theAlias` and assumes, that the *Orchestrator* is reachable by the URL `https://my.velocloud.orchestrator.net` and the API-key is `tHiSiS.TheAP1Key`.
+First of all, we have to define the connections the plugin uses to connect to the Orchestrator.
+The following example adds a connection with the alias `theAlias` and assumes that the Orchestrator is reachable by the URL `https://my.velocloud.orchestrator.net` and the API-key is `tHiSiS.TheAP1Key`.
 ```
 admin@opennms()> opennms-velocloud:connection-add theAlias https://my.velocloud.orchestrator.net/ tHiSiS.TheAP1Key
 ```
 
-NOTE: In the case the connection represents a partner connection, you can list the associated customers by invoking `opennms-velocloud:list-customers aPartnerAlias`.
-
-
-
+NOTE: If the connection represents a partner connection, you can list the associated customers by invoking `opennms-velocloud:list-customers aPartnerAlias`.

@@ -1,9 +1,9 @@
-= Userful Karaf Shell Commands
+= Useful Karaf Shell Commands
 :imagesdir: ../assets/images
 
 == opennms-velocloud:connection-add
 
-Add a connection to a velocloud orchestrator
+Add a connection to a Velocloud Orchestrator.
 
 Syntax: `opennms-velocloud:connection-add alias url apiKey`
 
@@ -54,9 +54,9 @@ ID  │ Name    │ Domain   │ Description
 admin@opennms()>
 ```
 
-## opennms:import-requisition
+== opennms:import-requisition
 
-	Import the requisition from given url
+Import the requisition from a given URL.
 
 Syntax: `opennms:import-requisition [options] type [parameters]`
 
@@ -68,7 +68,8 @@ Syntax: `opennms:import-requisition [options] type [parameters]`
 | Description
 
 | type
-| Type of the requisition, use `velocloud-customer` for a customer connection and `velocloud-partner` for a partner connection.
+| Type of requisition.
+Use `velocloud-customer` for a customer connection and `velocloud-partner` for a partner connection.
 
 | parameters
 | Parameters in key=value form
@@ -83,6 +84,7 @@ Syntax: `opennms:import-requisition [options] type [parameters]`
 | Description
 
 | -r, --rescan
-| Specify rescanExisting value, valid values : 'true', 'false', 'dbonly'
+| Specify rescanExisting value.
+Valid values : 'true', 'false', 'dbonly'
 
 |===

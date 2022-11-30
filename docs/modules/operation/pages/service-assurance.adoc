@@ -1,7 +1,7 @@
 = Service Assurance
 :imagesdir: ../assets/images
 
-Various service monitors will be bound to the imported *Velocloud* entities in *OpenNMS*:
+Various service monitors will be bound to the imported Velocloud entities in OpenNMS:
 
 ## Edges
 * Edge Connection Status Poller

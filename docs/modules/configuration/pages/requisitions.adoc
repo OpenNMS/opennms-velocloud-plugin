@@ -1,19 +1,19 @@
 = Requisitions
 :imagesdir: ../assets/images
 
-In order to monitor the *Velocloud* Gateways, Edges and Links, these entities need to be imported into *OpenNMS*.
-You can achieve this by creating a requisition for a given connection alias.
+In order to monitor the Velocloud gateways, edges, and links, you need to import these entities into OpenNMS.
+To do so, create a requisition for a given connection alias.
 A connection alias can represent a customer connection or a partner connection.
 While a customer connection only allows to query for entities associated with the customer itself, a partner connection has access to top-level entities that are shared by customers.
 Furthermore, a partner connection allows also to be used as a customer connection when the `enterpriseId` for the customer is provided.
 
-By specifying the requisition type `velocloud-customer` you can import all entities of a customer connection:
+Specify the requisition type `velocloud-customer` to import all entities of a customer connection:
 
 ```
 opennms:import-requisition velocloud-customer alias=aCustomerAlias
 ```
 
-By specifying the requisition type `velocloud-partner` you can import all entities of a partner connection:
+Specify the requisition type `velocloud-partner` to import all entities of a partner connection:
 
 ```
 opennms:import-requisition velocloud-partner alias=aPartnerAlias

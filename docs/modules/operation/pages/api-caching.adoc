@@ -1,7 +1,7 @@
 = API Caching
 :imagesdir: ../assets/images
 
-The access to the *Velocloud Orchestrator* ReST APIs are rate-limited for its clients.
-In order to respect these rate-limits, we use caching on API calls.
+Access to the Velocloud Orchestrator ReST APIs is rate limited for its clients.
+In order to respect these rate limits, we use caching on API calls.
 
 The cache retention period can be altered by modifying the `cache.retention` configuration property.
