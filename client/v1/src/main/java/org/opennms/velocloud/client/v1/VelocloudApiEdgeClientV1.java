@@ -40,14 +40,17 @@ import java.util.stream.Collectors;
 import org.opennms.velocloud.client.api.VelocloudApiEdgeClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Aggregate;
-import org.opennms.velocloud.client.api.model.MetricsApp;
-import org.opennms.velocloud.client.api.model.MetricsEdgeSystem;
-import org.opennms.velocloud.client.api.model.MetricsEdgeQoe;
 import org.opennms.velocloud.client.api.model.MetricsEdgeLink;
+import org.opennms.velocloud.client.api.model.MetricsEdgeQoe;
+import org.opennms.velocloud.client.api.model.MetricsEdgeSystem;
+import org.opennms.velocloud.client.api.model.Traffic;
 import org.opennms.velocloud.client.v1.api.AllApi;
+import org.opennms.velocloud.client.v1.model.Application;
 import org.opennms.velocloud.client.v1.model.BasicMetric;
 import org.opennms.velocloud.client.v1.model.BasicMetricSummary;
 import org.opennms.velocloud.client.v1.model.BasicMetrics;
+import org.opennms.velocloud.client.v1.model.ConfigurationGetRoutableApplications;
+import org.opennms.velocloud.client.v1.model.ConfigurationGetRoutableApplicationsResult;
 import org.opennms.velocloud.client.v1.model.EdgeLinkMetric;
 import org.opennms.velocloud.client.v1.model.EdgeMetric;
 import org.opennms.velocloud.client.v1.model.EdgeMetrics;
@@ -71,11 +74,12 @@ public class VelocloudApiEdgeClientV1 implements VelocloudApiEdgeClient {
             GET_LINK_QUALITY_EVENTS = AllApi::linkQualityEventGetLinkQualityEvents;
     public final static ApiCache.Endpoint<MetricsGetEdgeStatusMetrics, EdgeStatusMetricsSummary>
             GET_EDGE_SYSTEM_METRICS = AllApi::metricsGetEdgeStatusMetrics;
-
+    public final static ApiCache.Endpoint<ConfigurationGetRoutableApplications, ConfigurationGetRoutableApplicationsResult>
+            GET_ROUTABLE_APPLICATIONS = AllApi::configurationGetRoutableApplications;
     private static final List<EdgeLinkMetric> EDGE_LINK_METRICS = Arrays.asList(
             EdgeLinkMetric.BPSOFBESTPATHRX,
-                                                    EdgeLinkMetric.BPSOFBESTPATHTX
-                                                    );
+            EdgeLinkMetric.BPSOFBESTPATHTX
+    );
 
     private static final List<BasicMetric> EDGE_TRAFFIC_METRIC_LIST = Arrays.asList(
             BasicMetric.BYTESRX,
@@ -122,34 +126,46 @@ public class VelocloudApiEdgeClientV1 implements VelocloudApiEdgeClient {
     }
 
     @Override
-    public List<MetricsApp> getEdgeAppMetrics(final Instant start, final Instant end) throws VelocloudApiException {
-
+    public Map<String, Traffic> getEdgeAppTrafficMetrics(final Instant start, final Instant end) throws VelocloudApiException {
 
         final List<MetricsGetEdgeAppMetricsResultItem> metrics = this.api.call("edge applications metrics", GET_EDGE_APP_METRICS,
                 new MetricsGetEdgeAppMetrics().edgeId(edgeId).enterpriseId(enterpriseId).metrics(EDGE_TRAFFIC_METRICS)
                         .interval(new Interval().start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
                                 .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))));
-        //TODO map result
+
+        final Map<Integer, Application> applications = getRoutableApplications().getApplications().stream()
+                .collect(Collectors.toMap(Application::getId, application -> application));
+
+        return metrics.stream().collect(Collectors.toMap(metric -> applications.get(metric.getApplication()).getDisplayName(),
+                metric -> Traffic.builder()
+                        .withBytesRx(metric.getBytesRx())
+                        .withBytesTx(metric.getBytesTx())
+                        .withPacketsRx(metric.getPacketsRx())
+                        .withPacketsTx(metric.getPacketsTx())
+                        .build()));
+    }
+
+    @Override
+    public Map<String, Traffic> getEdgeSourceTrafficMetrics(Instant start, Instant end) throws VelocloudApiException {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public Map<String, Traffic> getEdgeDestinationTrafficMetrics(Instant start, Instant end) throws VelocloudApiException {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public Map<String, Traffic> getEdgeBusinessTrafficMetrics(Instant start, Instant end) throws VelocloudApiException {
+        //TODO
         return null;
     }
 
     @Override
     public List<MetricsEdgeQoe> getEdgeQoeMetrics(final Instant start, final Instant end) throws VelocloudApiException {
-        this.api.call("edge QoE score metrics", GET_LINK_QUALITY_EVENTS,
-                new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId).links()
-                        .interval(new Interval().start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
-                                .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))));
-        //TODO map result
-        return null;
-    }
-
-    @Override
-    public List<MetricsEdgeQoe> getEdgeQoeComponentsMetrics(final Instant start, final Instant end) throws VelocloudApiException {
-        this.api.call("edge QoE component metrics", ,
-                new
-                        .interval(new Interval().start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
-                                .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))));
-        //TODO map result
+        //TODO
         return null;
     }
 
@@ -160,6 +176,11 @@ public class VelocloudApiEdgeClientV1 implements VelocloudApiEdgeClient {
                         .interval(new Interval().start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
                                 .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))));
         return map(metrics);
+    }
+
+    private ConfigurationGetRoutableApplicationsResult getRoutableApplications() throws VelocloudApiException {
+        return this.api.call("routable applications", GET_ROUTABLE_APPLICATIONS,
+                new ConfigurationGetRoutableApplications().edgeId(edgeId).enterpriseId(enterpriseId));
     }
 
     private static MetricsEdgeLink map(MetricsGetEdgeLinkMetricsResultItem item) {
