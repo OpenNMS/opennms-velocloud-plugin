@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 import org.opennms.velocloud.client.api.VelocloudApiEdgeClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Aggregate;
+import org.opennms.velocloud.client.api.model.ApplicationTraffic;
 import org.opennms.velocloud.client.api.model.MetricsEdgeLink;
 import org.opennms.velocloud.client.api.model.MetricsEdgeQoe;
 import org.opennms.velocloud.client.api.model.MetricsEdgeSystem;
@@ -122,27 +123,39 @@ public class VelocloudApiEdgeClientV1 implements VelocloudApiEdgeClient {
                         .interval(new Interval().start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
                                 .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault())))
                         .metrics(EDGE_LINK_METRICS));
-        return metrics.stream().collect(Collectors.toMap(MetricsGetEdgeLinkMetricsResultItem::getLinkId,VelocloudApiEdgeClientV1::map));
+        return metrics.stream().collect(Collectors.toMap(MetricsGetEdgeLinkMetricsResultItem::getLinkId, VelocloudApiEdgeClientV1::map));
     }
 
     @Override
-    public Map<String, Traffic> getEdgeAppTrafficMetrics(final Instant start, final Instant end) throws VelocloudApiException {
+    public List<ApplicationTraffic> getEdgeAppTrafficMetrics(final Instant start, final Instant end) throws VelocloudApiException {
 
         final List<MetricsGetEdgeAppMetricsResultItem> metrics = this.api.call("edge applications metrics", GET_EDGE_APP_METRICS,
                 new MetricsGetEdgeAppMetrics().edgeId(edgeId).enterpriseId(enterpriseId).metrics(EDGE_TRAFFIC_METRICS)
                         .interval(new Interval().start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
                                 .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))));
 
-        final Map<Integer, Application> applications = getRoutableApplications().getApplications().stream()
+        final ConfigurationGetRoutableApplicationsResult routableApplications = getRoutableApplications();
+        final Map<Integer, String> classes = routableApplications.getApplicationClasses().entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        final Map<Integer, Application> applications = routableApplications.getApplications().stream()
                 .collect(Collectors.toMap(Application::getId, application -> application));
 
-        return metrics.stream().collect(Collectors.toMap(metric -> applications.get(metric.getApplication()).getDisplayName(),
-                metric -> Traffic.builder()
-                        .withBytesRx(metric.getBytesRx())
-                        .withBytesTx(metric.getBytesTx())
-                        .withPacketsRx(metric.getPacketsRx())
-                        .withPacketsTx(metric.getPacketsTx())
-                        .build()));
+        return metrics.stream().map(metric -> {
+            Application application = applications.get(metric.getApplication());
+            return ApplicationTraffic.builder()
+                    .withDescription(application.getDescription())
+                    .withName(application.getName())
+                    .withDisplayName(application.getDisplayName())
+                    .withPropertyClass(classes.get(application.getPropertyClass()))
+                    .withTraffic(Traffic.builder()
+                            .withBytesRx(metric.getBytesRx())
+                            .withBytesTx(metric.getBytesTx())
+                            .withPacketsRx(metric.getPacketsRx())
+                            .withPacketsTx(metric.getPacketsTx())
+                            .build())
+                    .build();
+        }).collect(Collectors.toList());
     }
 
     @Override

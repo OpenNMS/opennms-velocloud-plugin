@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import org.opennms.velocloud.client.api.model.ApplicationTraffic;
 import org.opennms.velocloud.client.api.model.MetricsEdgeLink;
 import org.opennms.velocloud.client.api.model.MetricsEdgeQoe;
 import org.opennms.velocloud.client.api.model.MetricsEdgeSystem;
@@ -13,7 +14,7 @@ public interface VelocloudApiEdgeClient {
 
     Map<Integer, MetricsEdgeLink> getEdgeLinkMetrics(Instant start, Instant end) throws VelocloudApiException;
 
-    public Map<String, Traffic> getEdgeAppTrafficMetrics(Instant start, Instant end) throws VelocloudApiException;
+    public List<ApplicationTraffic> getEdgeAppTrafficMetrics(Instant start, Instant end) throws VelocloudApiException;
 
     public Map<String, Traffic> getEdgeSourceTrafficMetrics(Instant start, Instant end) throws VelocloudApiException;
 
