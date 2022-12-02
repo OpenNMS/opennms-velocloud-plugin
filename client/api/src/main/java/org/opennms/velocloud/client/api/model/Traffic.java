@@ -44,7 +44,7 @@ public class Traffic {
         this.packetsTx = builder.packetsTx;
     }
 
-    private Traffic(final Traffic traffic) {
+    private Traffic(final Collector traffic) {
         this.bytesRx = traffic.bytesRx;
         this.bytesTx = traffic.bytesTx;
         this.packetsRx = traffic.packetsRx;
@@ -82,8 +82,32 @@ public class Traffic {
         }
     }
 
+    public static class Collector {
+        private long bytesRx = 0;
+        private long bytesTx = 0;
+        private long packetsRx = 0;
+        private long packetsTx = 0;
+
+        private Collector() {}
+
+        public void add(long bytesRx, long bytesTx, long packetsRx, long packetsTx) {
+            this.bytesRx += bytesRx;
+            this.bytesTx += bytesTx;
+            this.packetsRx += packetsRx;
+            this.packetsTx = packetsTx;
+        }
+
+        public Traffic toTraffic() {
+            return new Traffic(this);
+        }
+    }
+
     public static Builder builder() {
         return new Builder();
+    }
+
+    public static Collector collector() {
+        return new Collector();
     }
 
     public long getBytesRx() {

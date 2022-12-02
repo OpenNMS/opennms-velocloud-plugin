@@ -42,6 +42,7 @@ import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Aggregate;
 import org.opennms.velocloud.client.api.model.ApplicationTraffic;
 import org.opennms.velocloud.client.api.model.DestinationTraffic;
+import org.opennms.velocloud.client.api.model.MetricsEdge;
 import org.opennms.velocloud.client.api.model.MetricsEdgeLink;
 import org.opennms.velocloud.client.api.model.MetricsEdgeQoe;
 import org.opennms.velocloud.client.api.model.MetricsEdgeSystem;
@@ -89,11 +90,21 @@ public class VelocloudApiEdgeClientV1 implements VelocloudApiEdgeClient {
     public final static ApiCache.Endpoint<MetricsGetEdgeDestMetrics, List<MetricsGetEdgeDestMetricsResultItem>>
             GET_EDGE_DEST_METRICS = AllApi::metricsGetEdgeDestMetrics;
 
-
-
     private static final List<EdgeLinkMetric> EDGE_LINK_METRICS = Arrays.asList(
             EdgeLinkMetric.BPSOFBESTPATHRX,
-            EdgeLinkMetric.BPSOFBESTPATHTX
+            EdgeLinkMetric.BPSOFBESTPATHTX,
+            EdgeLinkMetric.P1BYTESRX,
+            EdgeLinkMetric.P1BYTESTX,
+            EdgeLinkMetric.P1PACKETSRX,
+            EdgeLinkMetric.P1PACKETSTX,
+            EdgeLinkMetric.P2BYTESRX,
+            EdgeLinkMetric.P2BYTESTX,
+            EdgeLinkMetric.P2PACKETSRX,
+            EdgeLinkMetric.P2PACKETSTX,
+            EdgeLinkMetric.P3BYTESRX,
+            EdgeLinkMetric.P3BYTESTX,
+            EdgeLinkMetric.P3PACKETSRX,
+            EdgeLinkMetric.P3PACKETSTX
     );
 
     private static final List<BasicMetric> EDGE_TRAFFIC_METRIC_LIST = Arrays.asList(
@@ -128,7 +139,7 @@ public class VelocloudApiEdgeClientV1 implements VelocloudApiEdgeClient {
     }
 
     @Override
-    public Map<Integer, MetricsEdgeLink> getEdgeLinkMetrics(final Instant start, final Instant end) throws VelocloudApiException {
+    public MetricsEdge getEdgeMetrics(final Instant start, final Instant end) throws VelocloudApiException {
 
         final List<MetricsGetEdgeLinkMetricsResultItem> metrics = this.api.call("edge link metrics", GET_EDGE_LINK_METRICS,
                 new MetricsGetEdgeLinkMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
@@ -136,13 +147,33 @@ public class VelocloudApiEdgeClientV1 implements VelocloudApiEdgeClient {
                                 .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault())))
                         .metrics(EDGE_LINK_METRICS));
 
-        return metrics.stream().collect(Collectors.toMap(
-                MetricsGetEdgeLinkMetricsResultItem::getLinkId,
-                item -> MetricsEdgeLink.builder()
-                        .withLinkId(item.getLinkId())
-                        .withBpsOfBestPathRx(item.getBpsOfBestPathRx())
-                        .withBpsOfBestPathTx(item.getBpsOfBestPathTx())
-                        .build()));
+        final Traffic.Collector collectorPriority1 = Traffic.collector();
+        final Traffic.Collector collectorPriority2 = Traffic.collector();
+        final Traffic.Collector collectorPriority3 = Traffic.collector();
+        final Traffic.Collector collectorControl = Traffic.collector();
+
+        //collecting Edge traffic per business priority by summing corresponding traffic of all Edge Links
+        metrics.forEach( item -> {
+            collectorPriority1.add(item.getP1BytesRx(), item.getP1BytesTx(), item.getP1PacketsRx(), item.getP1PacketsTx());
+            collectorPriority2.add(item.getP2BytesRx(), item.getP1BytesTx(), item.getP1PacketsRx(), item.getP1PacketsTx());
+            collectorPriority3.add(item.getP3BytesRx(), item.getP1BytesTx(), item.getP1PacketsRx(), item.getP1PacketsTx());
+            collectorControl.add(item.getControlBytesRx(), item.getControlBytesTx(), item.getControlPacketsRx(), item.getControlPacketsTx());
+        });
+
+        return MetricsEdge.builder()
+                .withMetricsEdgeLinks( //collecting edge link data
+                        metrics.stream().collect(Collectors.toMap(
+                                MetricsGetEdgeLinkMetricsResultItem::getLinkId,
+                                item -> MetricsEdgeLink.builder()
+                                        .withLinkId(item.getLinkId())
+                                        .withBpsOfBestPathRx(item.getBpsOfBestPathRx())
+                                        .withBpsOfBestPathTx(item.getBpsOfBestPathTx())
+                                        .build())))
+                .withTrafficPriority1(collectorControl.toTraffic())
+                .withTrafficPriority2(collectorControl.toTraffic())
+                .withTrafficPriority3(collectorControl.toTraffic())
+                .withTrafficControl(collectorControl.toTraffic())
+                .build();
     }
 
     @Override
@@ -234,12 +265,6 @@ public class VelocloudApiEdgeClientV1 implements VelocloudApiEdgeClient {
                         .withTraffic(map(edgeTraffic))
                         .build()
         ).collect(Collectors.toList());
-    }
-
-    @Override
-    public Map<String, Traffic> getEdgeBusinessTrafficMetrics(Instant start, Instant end) throws VelocloudApiException {
-        //TODO
-        return null;
     }
 
     @Override
