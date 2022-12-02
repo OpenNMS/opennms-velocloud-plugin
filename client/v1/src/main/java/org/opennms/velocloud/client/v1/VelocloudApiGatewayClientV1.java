@@ -31,8 +31,6 @@ package org.opennms.velocloud.client.v1;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;

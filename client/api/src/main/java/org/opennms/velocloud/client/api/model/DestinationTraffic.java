@@ -32,64 +32,65 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class MetricsEdgeLink {
+public class DestinationTraffic {
 
-    private final Integer linkId;
-    private final Integer bpsOfBestPathRx;
-    private final Integer bpsOfBestPathTx;
-    private MetricsEdgeLink(final MetricsEdgeLink.Builder builder) {
-        this.linkId = Objects.requireNonNull(builder.linkId);
-        this.bpsOfBestPathRx = Objects.requireNonNull(builder.bpsOfBestPathRx);
-        this.bpsOfBestPathTx = Objects.requireNonNull(builder.bpsOfBestPathTx);
+    private final String destinationDomain;
+    private final String name;
+    private final Traffic traffic;
+
+    private DestinationTraffic(final DestinationTraffic.Builder builder) {
+        this.destinationDomain = Objects.requireNonNull(builder.destinationDomain);
+        this.name = Objects.requireNonNull(builder.name);
+        this.traffic = Objects.requireNonNull(builder.traffic);
     }
 
     public static class Builder {
-        public Integer linkId;
-        private Integer bpsOfBestPathRx = null;
-        private Integer bpsOfBestPathTx = null;
+        private String destinationDomain = null;
+        private String name = null;
+        private Traffic traffic = null;
 
-        public Builder withLinkId(Integer linkId) {
-            this.linkId = linkId;
+        public DestinationTraffic.Builder withDestinationDomain(String destinationDomain) {
+            this.destinationDomain = destinationDomain;
             return this;
         }
 
-        public Builder withBpsOfBestPathRx(Integer bpsOfBestPathRx) {
-            this.bpsOfBestPathRx = bpsOfBestPathRx;
+        public DestinationTraffic.Builder withName(String name) {
+            this.name = name;
             return this;
         }
 
-        public Builder withBpsOfBestPathTx(Integer bpsOfBestPathTx) {
-            this.bpsOfBestPathTx = bpsOfBestPathTx;
+        public DestinationTraffic.Builder withTraffic(Traffic traffic) {
+            this.traffic = traffic;
             return this;
         }
 
-        public MetricsEdgeLink build() {
-            return new MetricsEdgeLink(this);
+        public DestinationTraffic build() {
+            return new DestinationTraffic(this);
         }
     }
 
-    public static MetricsEdgeLink.Builder builder() {
-        return new MetricsEdgeLink.Builder();
+    public static DestinationTraffic.Builder builder() {
+        return new DestinationTraffic.Builder();
     }
 
-    public Integer getLinkId() {
-        return linkId;
+    public String getDestinationDomain() {
+        return destinationDomain;
     }
 
-    public Integer getBpsOfBestPathRx() {
-        return bpsOfBestPathRx;
+    public String getName() {
+        return name;
     }
 
-    public Integer getBpsOfBestPathTx() {
-        return bpsOfBestPathTx;
+    public Traffic getTraffic() {
+        return traffic;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("linkId", linkId)
-                .add("bpsOfBestPathRx", bpsOfBestPathRx)
-                .add("bpsOfBestPathTx", bpsOfBestPathTx)
+                .add("destinationDomain", destinationDomain)
+                .add("name", name)
+                .add("traffic", traffic)
                 .toString();
     }
 }

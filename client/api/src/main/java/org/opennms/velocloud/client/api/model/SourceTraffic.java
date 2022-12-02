@@ -32,72 +32,72 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class ApplicationTraffic {
+public class SourceTraffic {
 
-    private final String description;
-    private final String displayName;
+    private final String sourceMac;
+    private final String ipAddress;
     private final String name;
-    private final String applicationClass;
+    private final String hostName;
     private final Traffic traffic;
 
-    private ApplicationTraffic(final ApplicationTraffic.Builder builder) {
-        this.description = Objects.requireNonNull(builder.description);
-        this.displayName = Objects.requireNonNull(builder.displayName);
+    private SourceTraffic(final SourceTraffic.Builder builder) {
+        this.sourceMac = Objects.requireNonNull(builder.sourceMac);
+        this.ipAddress = Objects.requireNonNull(builder.ipAddress);
         this.name = Objects.requireNonNull(builder.name);
-        this.applicationClass = Objects.requireNonNull(builder.applicationClass);
+        this.hostName = Objects.requireNonNull(builder.hostName);
         this.traffic = Objects.requireNonNull(builder.traffic);
     }
 
     public static class Builder {
-        private String description = null;
-        private String displayName = null;
-        private String applicationClass = null;
+        private String sourceMac = null;
+        private String ipAddress = null;
+        private String hostName = null;
         private String name = null;
         private Traffic traffic = null;
 
-        public ApplicationTraffic.Builder withDescription(String description) {
-            this.description = description;
+        public SourceTraffic.Builder withSourceMac(String sourceMac) {
+            this.sourceMac = sourceMac;
             return this;
         }
 
-        public ApplicationTraffic.Builder withDisplayName(String displayName) {
-            this.displayName = displayName;
+        public SourceTraffic.Builder withIpAddress(String ipAddress) {
+            this.ipAddress = ipAddress;
             return this;
         }
 
-        public ApplicationTraffic.Builder withName(String name) {
+        public SourceTraffic.Builder withName(String name) {
             this.name = name;
             return this;
         }
-        public ApplicationTraffic.Builder withApplicationClass(String applicationClass) {
-            this.applicationClass = applicationClass;
+        public SourceTraffic.Builder withHostName(String hostName) {
+            this.hostName = hostName;
             return this;
         }
 
-        public ApplicationTraffic.Builder withTraffic(Traffic traffic) {
+        public SourceTraffic.Builder withTraffic(Traffic traffic) {
             this.traffic = traffic;
             return this;
         }
 
-        public ApplicationTraffic build() {
-            return new ApplicationTraffic(this);
+        public SourceTraffic build() {
+            return new SourceTraffic(this);
         }
     }
 
-    public static ApplicationTraffic.Builder builder() {
-        return new ApplicationTraffic.Builder();
+    public static SourceTraffic.Builder builder() {
+        return new SourceTraffic.Builder();
     }
 
-    public String getDescription() {
-        return description;
+    public String getSourceMac() {
+        return sourceMac;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getIpAddress() {
+        return ipAddress;
     }
 
-    public String getApplicationClass() {
-        return applicationClass;
+    public String getHostName() {
+        return hostName;
     }
 
     public String getName() {
@@ -111,10 +111,10 @@ public class ApplicationTraffic {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("description", description)
-                .add("displayName", displayName)
+                .add("sourceMac", sourceMac)
+                .add("ipAddress", ipAddress)
                 .add("name", name)
-                .add("applicationClass", applicationClass)
+                .add("hostName", hostName)
                 .add("traffic", traffic)
                 .toString();
     }

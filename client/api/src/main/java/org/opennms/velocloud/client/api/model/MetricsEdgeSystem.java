@@ -28,6 +28,8 @@
 
 package org.opennms.velocloud.client.api.model;
 
+import com.google.common.base.MoreObjects;
+
 public class MetricsEdgeSystem {
 
     private final Aggregate cpuPct;
@@ -96,5 +98,46 @@ public class MetricsEdgeSystem {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public Aggregate getCpuPct() {
+        return cpuPct;
+    }
+
+    public Aggregate getCpuCoreTemp() {
+        return cpuCoreTemp;
+    }
+
+    public Aggregate getMemoryPct() {
+        return memoryPct;
+    }
+
+    public Aggregate getFlowCount() {
+        return flowCount;
+    }
+
+    public Aggregate getHandoffQueueDrops() {
+        return handoffQueueDrops;
+    }
+
+    public Aggregate getTunnelCount() {
+        return tunnelCount;
+    }
+
+    public Aggregate getTunnelCountV6() {
+        return tunnelCountV6;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("cpuPct", cpuPct)
+                .add("cpuCoreTemp", cpuCoreTemp)
+                .add("memoryPct", memoryPct)
+                .add("flowCount", flowCount)
+                .add("handoffQueueDrops", handoffQueueDrops)
+                .add("tunnelCount", tunnelCount)
+                .add("tunnelCountV6", tunnelCountV6)
+                .toString();
     }
 }
