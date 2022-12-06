@@ -32,19 +32,27 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class SourceTraffic {
+public class TrafficSource {
 
     private final String sourceMac;
     private final String ipAddress;
     private final String name;
     private final String hostName;
+    private final String osName;
+    private final String osVersion;
+    private final String deviceType;
+    private final String deviceModel;
     private final Traffic traffic;
 
-    private SourceTraffic(final SourceTraffic.Builder builder) {
+    private TrafficSource(final TrafficSource.Builder builder) {
         this.sourceMac = Objects.requireNonNull(builder.sourceMac);
         this.ipAddress = Objects.requireNonNull(builder.ipAddress);
         this.name = Objects.requireNonNull(builder.name);
         this.hostName = Objects.requireNonNull(builder.hostName);
+        this.osName = builder.osName;
+        this.osVersion = builder.osVersion;
+        this.deviceType = builder.deviceType;
+        this.deviceModel = builder.deviceModel;
         this.traffic = Objects.requireNonNull(builder.traffic);
     }
 
@@ -53,39 +61,64 @@ public class SourceTraffic {
         private String ipAddress = null;
         private String hostName = null;
         private String name = null;
+        private String osName = null;
+        private String osVersion = null;
+        private String deviceType = null;
+        private String deviceModel = null;
         private Traffic traffic = null;
 
-        public SourceTraffic.Builder withSourceMac(String sourceMac) {
+        public TrafficSource.Builder withSourceMac(String sourceMac) {
             this.sourceMac = sourceMac;
             return this;
         }
 
-        public SourceTraffic.Builder withIpAddress(String ipAddress) {
+        public TrafficSource.Builder withIpAddress(String ipAddress) {
             this.ipAddress = ipAddress;
             return this;
         }
 
-        public SourceTraffic.Builder withName(String name) {
+        public TrafficSource.Builder withName(String name) {
             this.name = name;
             return this;
         }
-        public SourceTraffic.Builder withHostName(String hostName) {
+        public TrafficSource.Builder withHostName(String hostName) {
             this.hostName = hostName;
             return this;
         }
 
-        public SourceTraffic.Builder withTraffic(Traffic traffic) {
+        public TrafficSource.Builder withOsName(String osName) {
+            this.osName = osName;
+            return this;
+        }
+
+        public TrafficSource.Builder withOsVersion(String osVersion) {
+            this.osVersion = osVersion;
+            return this;
+        }
+
+
+        public TrafficSource.Builder withDeviceType(String deviceType) {
+            this.deviceType = deviceType;
+            return this;
+        }
+
+        public TrafficSource.Builder withDeviceModel(String deviceModel) {
+            this.deviceModel = deviceModel;
+            return this;
+        }
+
+        public TrafficSource.Builder withTraffic(Traffic traffic) {
             this.traffic = traffic;
             return this;
         }
 
-        public SourceTraffic build() {
-            return new SourceTraffic(this);
+        public TrafficSource build() {
+            return new TrafficSource(this);
         }
     }
 
-    public static SourceTraffic.Builder builder() {
-        return new SourceTraffic.Builder();
+    public static TrafficSource.Builder builder() {
+        return new TrafficSource.Builder();
     }
 
     public String getSourceMac() {
@@ -108,6 +141,22 @@ public class SourceTraffic {
         return traffic;
     }
 
+    public String getOsName() {
+        return osName;
+    }
+
+    public String getOsVersion() {
+        return osVersion;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public String getDeviceModel() {
+        return deviceModel;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -116,6 +165,10 @@ public class SourceTraffic {
                 .add("name", name)
                 .add("hostName", hostName)
                 .add("traffic", traffic)
+                .add("osName", osName)
+                .add("osVersion", osVersion)
+                .add("deviceType", deviceType)
+                .add("deviceModel", deviceModel)
                 .toString();
     }
 }

@@ -109,6 +109,9 @@ public abstract class AbstractStatusPoller implements ServicePoller {
             return this.clazz.getCanonicalName();
         }
 
+
+
+        //TODO get this to my factory
         @Override
         public final Map<String, String> getRuntimeAttributes(final PollerRequest pollerRequest) {
             final var alias = Objects.requireNonNull(pollerRequest.getPollerAttributes().get(ATTR_ALIAS), "Missing property: " + ATTR_ALIAS);

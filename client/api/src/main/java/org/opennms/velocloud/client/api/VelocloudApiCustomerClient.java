@@ -35,6 +35,8 @@ import java.util.Optional;
 import org.opennms.velocloud.client.api.model.Datacenter;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.CustomerEvent;
+import org.opennms.velocloud.client.api.model.MetricsEdge;
+import org.opennms.velocloud.client.api.model.MetricsLink;
 import org.opennms.velocloud.client.api.model.Path;
 import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.client.api.model.User;
@@ -62,4 +64,8 @@ public interface VelocloudApiCustomerClient {
     List<Datacenter> getDatacenters() throws VelocloudApiException;
 
     Optional<Integer> getSuperGateway(final int edgeId) throws VelocloudApiException;
+
+    MetricsEdge getEdgeMetrics(int edgeId) throws VelocloudApiException;
+
+    MetricsLink getLinkMetrics(int edgeId, String linkId) throws VelocloudApiException;
 }

@@ -4,7 +4,8 @@
 
     <cm:property-placeholder id="velocloudProperties" persistent-id="org.opennms.velocloud" update-strategy="reload">
         <cm:default-properties>
-            <cm:property name="client.cache.duration" value="300000"/>
+            <cm:property name="client.sampling.interval" value="300000"/>
+            <cm:property name="client.cache.duration" value="{{ client.sampling.interval > 1000 ? client.sampling.interval - 1000 : client.sampling.interval }}"/>  <!-- todo check whether it works? -->
         </cm:default-properties>
     </cm:property-placeholder>
 
@@ -14,6 +15,7 @@
 
     <bean id="clientProvider" class="org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1">
         <argument ref="cache"/>
+        <argument value="{{ client.sampling.interval }}"/>
     </bean>
 
     <service ref="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>

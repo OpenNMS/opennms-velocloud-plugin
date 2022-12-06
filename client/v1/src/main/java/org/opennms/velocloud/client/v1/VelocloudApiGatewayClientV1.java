@@ -28,9 +28,8 @@
 
 package org.opennms.velocloud.client.v1;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import static org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.getInterval;
+
 import java.util.Objects;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
@@ -42,7 +41,6 @@ import org.opennms.velocloud.client.v1.model.BasicMetricSummary;
 import org.opennms.velocloud.client.v1.model.GatewayMetric;
 import org.opennms.velocloud.client.v1.model.GatewayMetrics;
 import org.opennms.velocloud.client.v1.model.GatewayStatusMetricsSummary;
-import org.opennms.velocloud.client.v1.model.Interval;
 import org.opennms.velocloud.client.v1.model.MetricsGetGatewayStatusMetrics;
 
 public class VelocloudApiGatewayClientV1 implements VelocloudApiGatewayClient {
@@ -62,20 +60,21 @@ public class VelocloudApiGatewayClientV1 implements VelocloudApiGatewayClient {
 
     private final ApiCache.Api api;
     private final int gatewayId;
+    private final int intervalMillis;
 
-    public VelocloudApiGatewayClientV1(final ApiCache.Api api, final int gatewayId) {
+    public VelocloudApiGatewayClientV1(final ApiCache.Api api, final int gatewayId, int intervalMillis) {
         this.api = Objects.requireNonNull(api);
         this.gatewayId = gatewayId;
+        this.intervalMillis = intervalMillis;
     }
 
     @Override
-    public MetricsGateway getMetrics(final Instant start, final Instant end) throws VelocloudApiException {
+    public MetricsGateway getMetrics() throws VelocloudApiException {
 
         final GatewayStatusMetricsSummary metrics = this.api.call("edges", GET_GATEWAY_STATUS_METRIC,
                 new MetricsGetGatewayStatusMetrics()
                         .gatewayId(gatewayId)
-                        .interval(new Interval().start(OffsetDateTime.ofInstant(start, ZoneId.systemDefault()))
-                                .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault())))
+                        .interval(getInterval(intervalMillis))
                         .metrics(METRICS));
 
         return map(metrics);

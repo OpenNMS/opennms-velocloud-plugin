@@ -32,7 +32,7 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class ApplicationTraffic {
+public class TrafficApplication {
 
     private final String description;
     private final String displayName;
@@ -40,7 +40,7 @@ public class ApplicationTraffic {
     private final String applicationClass;
     private final Traffic traffic;
 
-    private ApplicationTraffic(final ApplicationTraffic.Builder builder) {
+    private TrafficApplication(final TrafficApplication.Builder builder) {
         this.description = Objects.requireNonNull(builder.description);
         this.displayName = Objects.requireNonNull(builder.displayName);
         this.name = Objects.requireNonNull(builder.name);
@@ -55,37 +55,37 @@ public class ApplicationTraffic {
         private String name = null;
         private Traffic traffic = null;
 
-        public ApplicationTraffic.Builder withDescription(String description) {
+        public TrafficApplication.Builder withDescription(String description) {
             this.description = description;
             return this;
         }
 
-        public ApplicationTraffic.Builder withDisplayName(String displayName) {
+        public TrafficApplication.Builder withDisplayName(String displayName) {
             this.displayName = displayName;
             return this;
         }
 
-        public ApplicationTraffic.Builder withName(String name) {
+        public TrafficApplication.Builder withName(String name) {
             this.name = name;
             return this;
         }
-        public ApplicationTraffic.Builder withApplicationClass(String applicationClass) {
+        public TrafficApplication.Builder withApplicationClass(String applicationClass) {
             this.applicationClass = applicationClass;
             return this;
         }
 
-        public ApplicationTraffic.Builder withTraffic(Traffic traffic) {
+        public TrafficApplication.Builder withTraffic(Traffic traffic) {
             this.traffic = traffic;
             return this;
         }
 
-        public ApplicationTraffic build() {
-            return new ApplicationTraffic(this);
+        public TrafficApplication build() {
+            return new TrafficApplication(this);
         }
     }
 
-    public static ApplicationTraffic.Builder builder() {
-        return new ApplicationTraffic.Builder();
+    public static TrafficApplication.Builder builder() {
+        return new TrafficApplication.Builder();
     }
 
     public String getDescription() {

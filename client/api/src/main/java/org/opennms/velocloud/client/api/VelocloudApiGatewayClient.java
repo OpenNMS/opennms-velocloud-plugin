@@ -41,5 +41,5 @@ public interface VelocloudApiGatewayClient {
      * @return
      * @throws VelocloudApiException
      */
-    MetricsGateway getMetrics(Instant start, Instant end) throws VelocloudApiException;
+    MetricsGateway getMetrics() throws VelocloudApiException;
 }

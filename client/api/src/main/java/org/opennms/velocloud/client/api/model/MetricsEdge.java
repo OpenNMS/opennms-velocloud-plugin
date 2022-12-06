@@ -28,100 +28,170 @@
 
 package org.opennms.velocloud.client.api.model;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.List;
 
 import com.google.common.base.MoreObjects;
 
 public class MetricsEdge {
 
-    private final Map<Integer, MetricsEdgeLink> metricsEdgeLinks;
+    private final Aggregate cpuPct;
+    private final Aggregate cpuCoreTemp;
+    private final Aggregate memoryPct;
+    private final Aggregate flowCount;
+    private final Aggregate handoffQueueDrops;
+    private final Aggregate tunnelCount;
+    private final Aggregate tunnelCountV6;
+    private final List<TrafficApplication> trafficApplications;
+    private final List<TrafficSource> trafficSources;
+    private final List<TrafficDestination> trafficDestinations;
+    private final Score scoreAfterOptimization;
 
-    private final Traffic trafficPriority1;
-    private final Traffic trafficPriority2;
-    private final Traffic trafficPriority3;
-    private final Traffic trafficControl;
 
-    private MetricsEdge(final MetricsEdge.Builder builder) {
-        this.metricsEdgeLinks = Objects.requireNonNull(builder.metricsEdgeLinks);
-        this.trafficPriority1 = Objects.requireNonNull(builder.trafficPriority1);
-        this.trafficPriority2 = Objects.requireNonNull(builder.trafficPriority2);
-        this.trafficPriority3 = Objects.requireNonNull(builder.trafficPriority3);
-        this.trafficControl = Objects.requireNonNull(builder.trafficControl);
+    private MetricsEdge(Builder builder) {
+        this.cpuPct = builder.cpuPct;
+        this.cpuCoreTemp = builder.cpuCoreTemp;
+        this.memoryPct = builder.memoryPct;
+        this.flowCount = builder.flowCount;
+        this.handoffQueueDrops = builder.handoffQueueDrops;
+        this.tunnelCount = builder.tunnelCount;
+        this.tunnelCountV6 = builder.tunnelCountV6;
+        this.trafficApplications = builder.trafficApplications;
+        this.trafficSources = builder.trafficSources;
+        this.trafficDestinations = builder.trafficDestinations;
+        this.scoreAfterOptimization = builder.scoreAfterOptimization;
     }
 
     public static class Builder {
-        private Map<Integer, MetricsEdgeLink> metricsEdgeLinks;
-
-        private Traffic trafficPriority1;
-        private Traffic trafficPriority2;
-        private Traffic trafficPriority3;
-        private Traffic trafficControl;
+        private Aggregate cpuPct;
+        private Aggregate cpuCoreTemp;
+        private Aggregate memoryPct;
+        private Aggregate flowCount;
+        private Aggregate handoffQueueDrops;
+        private Aggregate tunnelCount;
+        private Aggregate tunnelCountV6;
+        private List<TrafficApplication> trafficApplications;
+        private List<TrafficSource> trafficSources;
+        private List<TrafficDestination> trafficDestinations;
+        private Score scoreAfterOptimization;
 
         private Builder() {}
 
-        public MetricsEdge.Builder withTrafficPriority1(Traffic trafficPriority1) {
-            this.trafficPriority1 = trafficPriority1;
+        public Builder withCpuPct(Aggregate cpuPct) {
+            this.cpuPct = cpuPct;
+            return this;
+        }
+        public Builder withCpuCoreTemp(Aggregate cpuCoreTemp) {
+            this.cpuCoreTemp = cpuCoreTemp;
+            return this;
+        }
+        public Builder withMemoryPct(Aggregate memoryPct) {
+            this.memoryPct = memoryPct;
+            return this;
+        }
+        public Builder withFlowCount(Aggregate flowCount) {
+            this.flowCount = flowCount;
+            return this;
+        }
+        public Builder withHandoffQueueDrops(Aggregate handoffQueueDrops) {
+            this.handoffQueueDrops = handoffQueueDrops;
+            return this;
+        }
+        public Builder withTunnelCount(Aggregate tunnelCount) {
+            this.tunnelCount = tunnelCount;
+            return this;
+        }
+        public Builder withTunnelCountV6(Aggregate tunnelCountV6) {
+            this.tunnelCountV6 = tunnelCountV6;
             return this;
         }
 
-        public MetricsEdge.Builder withTrafficPriority2(Traffic trafficPriority2) {
-            this.trafficPriority1 = trafficPriority2;
+        public Builder withTrafficApplications(List<TrafficApplication> trafficApplications) {
+            this.trafficApplications = trafficApplications;
             return this;
         }
 
-        public MetricsEdge.Builder withTrafficPriority3(Traffic trafficPriority3) {
-            this.trafficPriority1 = trafficPriority3;
+        public Builder withTrafficSources(List<TrafficSource> trafficSources) {
+            this.trafficSources = trafficSources;
             return this;
         }
 
-        public MetricsEdge.Builder withTrafficControl(Traffic trafficControl) {
-            this.trafficPriority1 = trafficControl;
+        public Builder withTrafficDestinations(List<TrafficDestination> trafficDestinations) {
+            this.trafficDestinations = trafficDestinations;
             return this;
         }
 
-        public MetricsEdge.Builder withMetricsEdgeLinks(Map<Integer, MetricsEdgeLink> metricsEdgeLinks) {
-            this.metricsEdgeLinks = metricsEdgeLinks;
+        public Builder withScoreAfterOptimization(Score scoreAfterOptimization) {
+            this.scoreAfterOptimization = scoreAfterOptimization;
             return this;
         }
 
         public MetricsEdge build() {
             return new MetricsEdge(this);
         }
+
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public Map<Integer, MetricsEdgeLink> getMetricsEdgeLinks() {
-        return metricsEdgeLinks;
+    public Aggregate getCpuPct() {
+        return cpuPct;
     }
 
-    public Traffic getTrafficPriority1() {
-        return trafficPriority1;
+    public Aggregate getCpuCoreTemp() {
+        return cpuCoreTemp;
     }
 
-    public Traffic getTrafficPriority2() {
-        return trafficPriority2;
+    public Aggregate getMemoryPct() {
+        return memoryPct;
     }
 
-    public Traffic getTrafficPriority3() {
-        return trafficPriority3;
+    public Aggregate getFlowCount() {
+        return flowCount;
     }
 
-    public Traffic getTrafficControl() {
-        return trafficControl;
+    public Aggregate getHandoffQueueDrops() {
+        return handoffQueueDrops;
+    }
+
+    public Aggregate getTunnelCount() {
+        return tunnelCount;
+    }
+
+    public Aggregate getTunnelCountV6() {
+        return tunnelCountV6;
+    }
+
+    public List<TrafficApplication> getTrafficApplications() {
+        return trafficApplications;
+    }
+
+    public List<TrafficSource> getTrafficSources() {
+        return trafficSources;
+    }
+
+    public List<TrafficDestination> getTrafficDestinations() {
+        return trafficDestinations;
+    }
+
+    public Score getScoreAfterOptimization() {
+        return scoreAfterOptimization;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("metricsEdgeLinks", metricsEdgeLinks)
-                .add("trafficPriority1", trafficPriority1)
-                .add("trafficPriority2", trafficPriority2)
-                .add("trafficPriority3", trafficPriority3)
-                .add("trafficControl", trafficControl)
+                .add("cpuPct", cpuPct)
+                .add("cpuCoreTemp", cpuCoreTemp)
+                .add("memoryPct", memoryPct)
+                .add("flowCount", flowCount)
+                .add("handoffQueueDrops", handoffQueueDrops)
+                .add("tunnelCount", tunnelCount)
+                .add("tunnelCountV6", tunnelCountV6)
+                .add("trafficApplications", trafficApplications)
+                .add("trafficSources", trafficSources)
+                .add("scoreAfterOptimization", scoreAfterOptimization)
                 .toString();
     }
 }

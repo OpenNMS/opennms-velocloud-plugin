@@ -29,6 +29,9 @@
 package org.opennms.velocloud.client.v1;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
@@ -42,6 +45,8 @@ import com.google.common.cache.CacheBuilder;
 
 public class ApiCache {
 
+    //6 ist the max amount needed to be started parallel in one method
+    private final ExecutorService executor = Executors.newFixedThreadPool(6);
     private static class Key<B, R> {
         private final Endpoint<B, R> apiCall;
         private final VelocloudApiClientCredentials credentials;
@@ -109,8 +114,14 @@ public class ApiCache {
             } catch (final Exception e) {
                 throw new VelocloudApiException("Failed to execute API call: " + desc, e);
             }
-
         }
+
+        public <B, R> Future<R> asyncCall(final String desc,
+                                          final Endpoint<B, R> endpoint,
+                                          final B body) throws VelocloudApiException {
+            return executor.submit(() -> call(desc, endpoint, body));
+        }
+
     }
 
     public interface Endpoint<B, R> {

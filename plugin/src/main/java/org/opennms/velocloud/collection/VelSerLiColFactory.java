@@ -28,22 +28,45 @@
 
 package org.opennms.velocloud.collection;
 
+import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
-import org.opennms.integration.api.v1.collectors.CollectionSet;
-import org.opennms.velocloud.client.api.VelocloudServiceCollector;
+import org.opennms.integration.api.v1.collectors.ServiceCollectorFactory;
+import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 
-public class VelocloudServiceCollectorV1 implements VelocloudServiceCollector {
+public class VelSerLiColFactory implements ServiceCollectorFactory <VelocloudServiceLinkCollector>{
 
-    @Override
-    public void initialize() {
 
+    private final VelocloudApiCustomerClient client;
+
+    public VelSerLiColFactory(VelocloudApiCustomerClient client) {
+        this.client = client;
     }
 
     @Override
-    public CompletableFuture<CollectionSet> collect(CollectionRequest request, Map<String, Object> attributes) {
-        return null;
+    public VelocloudServiceLinkCollector createCollector() {
+        return new VelocloudServiceLinkCollector(this.client);
+    }
+
+    @Override
+    public String getCollectorClassName() {
+        return VelocloudServiceLinkCollector.class.getCanonicalName();
+    }
+
+    @Override
+    public Map<String, Object> getRuntimeAttributes(CollectionRequest collectionRequest, Map<String, Object> parameters) {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<String, String> marshalParameters(Map<String, Object> parameters) {
+        return parameters.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().toString()));
+    }
+
+    @Override
+    public Map<String, Object> unmarshalParameters(Map<String, String> parameters) {
+        return parameters.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

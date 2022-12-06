@@ -28,68 +28,68 @@
 
 package org.opennms.velocloud.client.api.model;
 
-import java.util.Objects;
+import java.math.BigDecimal;
 
 import com.google.common.base.MoreObjects;
 
-public class MetricsEdgeLink {
+public class Score {
+    private final BigDecimal audio;
+    private final BigDecimal video;
+    private final BigDecimal transactional;
 
-    private final Integer linkId;
-    private final Integer bpsOfBestPathRx;
-    private final Integer bpsOfBestPathTx;
-    private MetricsEdgeLink(final MetricsEdgeLink.Builder builder) {
-        this.linkId = Objects.requireNonNull(builder.linkId);
-        this.bpsOfBestPathRx = Objects.requireNonNull(builder.bpsOfBestPathRx);
-        this.bpsOfBestPathTx = Objects.requireNonNull(builder.bpsOfBestPathTx);
+    private Score(BigDecimal audio, BigDecimal video, BigDecimal transactional) {
+        this.audio = audio;
+        this.video = video;
+        this.transactional = transactional;
     }
 
     public static class Builder {
-        public Integer linkId;
-        private Integer bpsOfBestPathRx = null;
-        private Integer bpsOfBestPathTx = null;
+        BigDecimal audio = new BigDecimal(0);
+        BigDecimal video = new BigDecimal(0);
+        BigDecimal transactional = new BigDecimal(0);
 
-        public Builder withLinkId(Integer linkId) {
-            this.linkId = linkId;
+        public Score.Builder withAudio(BigDecimal audio) {
+            this.audio = audio;
             return this;
         }
 
-        public Builder withBpsOfBestPathRx(Integer bpsOfBestPathRx) {
-            this.bpsOfBestPathRx = bpsOfBestPathRx;
+        public Score.Builder withVideo(BigDecimal video) {
+            this.video = video;
             return this;
         }
 
-        public Builder withBpsOfBestPathTx(Integer bpsOfBestPathTx) {
-            this.bpsOfBestPathTx = bpsOfBestPathTx;
+        public Score.Builder withTransactional(BigDecimal transactional) {
+            this.transactional = transactional;
             return this;
         }
 
-        public MetricsEdgeLink build() {
-            return new MetricsEdgeLink(this);
+        public Score build() {
+            return new Score(audio, video, transactional);
         }
     }
 
-    public static MetricsEdgeLink.Builder builder() {
-        return new MetricsEdgeLink.Builder();
+    public BigDecimal getAudio() {
+        return audio;
     }
 
-    public Integer getLinkId() {
-        return linkId;
+    public BigDecimal getVideo() {
+        return video;
     }
 
-    public Integer getBpsOfBestPathRx() {
-        return bpsOfBestPathRx;
+    public BigDecimal getTransactional() {
+        return transactional;
     }
 
-    public Integer getBpsOfBestPathTx() {
-        return bpsOfBestPathTx;
+    public static Score.Builder builder() {
+        return new Score.Builder();
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("linkId", linkId)
-                .add("bpsOfBestPathRx", bpsOfBestPathRx)
-                .add("bpsOfBestPathTx", bpsOfBestPathTx)
+                .add("audio", audio)
+                .add("video", video)
+                .add("transactional", transactional)
                 .toString();
     }
 }

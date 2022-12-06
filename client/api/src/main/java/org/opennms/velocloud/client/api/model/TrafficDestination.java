@@ -32,13 +32,13 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
-public class DestinationTraffic {
+public class TrafficDestination {
 
     private final String destinationDomain;
     private final String name;
     private final Traffic traffic;
 
-    private DestinationTraffic(final DestinationTraffic.Builder builder) {
+    private TrafficDestination(final TrafficDestination.Builder builder) {
         this.destinationDomain = Objects.requireNonNull(builder.destinationDomain);
         this.name = Objects.requireNonNull(builder.name);
         this.traffic = Objects.requireNonNull(builder.traffic);
@@ -49,28 +49,28 @@ public class DestinationTraffic {
         private String name = null;
         private Traffic traffic = null;
 
-        public DestinationTraffic.Builder withDestinationDomain(String destinationDomain) {
+        public TrafficDestination.Builder withDestinationDomain(String destinationDomain) {
             this.destinationDomain = destinationDomain;
             return this;
         }
 
-        public DestinationTraffic.Builder withName(String name) {
+        public TrafficDestination.Builder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public DestinationTraffic.Builder withTraffic(Traffic traffic) {
+        public TrafficDestination.Builder withTraffic(Traffic traffic) {
             this.traffic = traffic;
             return this;
         }
 
-        public DestinationTraffic build() {
-            return new DestinationTraffic(this);
+        public TrafficDestination build() {
+            return new TrafficDestination(this);
         }
     }
 
-    public static DestinationTraffic.Builder builder() {
-        return new DestinationTraffic.Builder();
+    public static TrafficDestination.Builder builder() {
+        return new TrafficDestination.Builder();
     }
 
     public String getDestinationDomain() {

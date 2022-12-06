@@ -28,32 +28,59 @@
 
 package org.opennms.velocloud.client.v1;
 
+import static org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.getInterval;
+
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.Aggregate;
+import org.opennms.velocloud.client.api.model.Score;
+import org.opennms.velocloud.client.api.model.TrafficSource;
+import org.opennms.velocloud.client.api.model.TrafficApplication;
 import org.opennms.velocloud.client.api.model.CustomerEvent;
 import org.opennms.velocloud.client.api.model.Datacenter;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.Link;
+import org.opennms.velocloud.client.api.model.MetricsEdge;
+import org.opennms.velocloud.client.api.model.MetricsLink;
 import org.opennms.velocloud.client.api.model.Path;
+import org.opennms.velocloud.client.api.model.Traffic;
+import org.opennms.velocloud.client.api.model.TrafficDestination;
 import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
+import org.opennms.velocloud.client.v1.model.AllOfconfigurationGetRoutableApplicationsResultApplicationClasses;
+import org.opennms.velocloud.client.v1.model.Application;
+import org.opennms.velocloud.client.v1.model.BasicMetric;
+import org.opennms.velocloud.client.v1.model.BasicMetricSummary;
+import org.opennms.velocloud.client.v1.model.BasicMetrics;
+import org.opennms.velocloud.client.v1.model.ConfigurationGetRoutableApplications;
+import org.opennms.velocloud.client.v1.model.ConfigurationGetRoutableApplicationsResult;
 import org.opennms.velocloud.client.v1.model.EdgeGetEdgeGatewayAssignments;
 import org.opennms.velocloud.client.v1.model.EdgeGetEdgeGatewayAssignmentsResult;
 import org.opennms.velocloud.client.v1.model.EdgeGetEdgeSdwanPeers;
 import org.opennms.velocloud.client.v1.model.EdgeGetEdgeSdwanPeersResultItem;
+import org.opennms.velocloud.client.v1.model.EdgeLinkMetric;
+import org.opennms.velocloud.client.v1.model.EdgeMetric;
+import org.opennms.velocloud.client.v1.model.EdgeMetrics;
 import org.opennms.velocloud.client.v1.model.EdgeRecord;
+import org.opennms.velocloud.client.v1.model.EdgeStatusMetricsSummary;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseDataCenters;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseDataCentersResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
@@ -64,7 +91,20 @@ import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsers;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsersResultItem;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEvents;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEventsResult;
+import org.opennms.velocloud.client.v1.model.FlowMetricSummary;
 import org.opennms.velocloud.client.v1.model.Interval;
+import org.opennms.velocloud.client.v1.model.LinkQualityEventGetLinkQualityEvents;
+import org.opennms.velocloud.client.v1.model.LinkQualityEventGetLinkQualityEventsResult;
+import org.opennms.velocloud.client.v1.model.LinkQualityObject;
+import org.opennms.velocloud.client.v1.model.MetricsGetEdgeAppMetrics;
+import org.opennms.velocloud.client.v1.model.MetricsGetEdgeAppMetricsResultItem;
+import org.opennms.velocloud.client.v1.model.MetricsGetEdgeDestMetrics;
+import org.opennms.velocloud.client.v1.model.MetricsGetEdgeDestMetricsResultItem;
+import org.opennms.velocloud.client.v1.model.MetricsGetEdgeDeviceMetrics;
+import org.opennms.velocloud.client.v1.model.MetricsGetEdgeDeviceMetricsResultItem;
+import org.opennms.velocloud.client.v1.model.MetricsGetEdgeLinkMetrics;
+import org.opennms.velocloud.client.v1.model.MetricsGetEdgeLinkMetricsResultItem;
+import org.opennms.velocloud.client.v1.model.MetricsGetEdgeStatusMetrics;
 import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusBody;
 import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem;
 
@@ -82,6 +122,67 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
             EVENT_GET_ENTERPRISE_EVENTS  = AllApi::eventGetEnterpriseEvents;
     public final static ApiCache.Endpoint<MonitoringGetEnterpriseEdgeNvsTunnelStatusBody, List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>>
             MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS = AllApi::monitoringGetEnterpriseEdgeNvsTunnelStatus;
+    public final static ApiCache.Endpoint<MetricsGetEdgeLinkMetrics, List<MetricsGetEdgeLinkMetricsResultItem>>
+            GET_EDGE_LINK_METRICS = AllApi::metricsGetEdgeLinkMetrics;
+    public final static ApiCache.Endpoint<MetricsGetEdgeAppMetrics, List<MetricsGetEdgeAppMetricsResultItem>>
+            GET_EDGE_APP_METRICS = AllApi::metricsGetEdgeAppMetrics;
+    public final static ApiCache.Endpoint<LinkQualityEventGetLinkQualityEvents, LinkQualityEventGetLinkQualityEventsResult>
+            GET_LINK_QUALITY_EVENTS = AllApi::linkQualityEventGetLinkQualityEvents;
+    public final static ApiCache.Endpoint<MetricsGetEdgeStatusMetrics, EdgeStatusMetricsSummary>
+            GET_EDGE_SYSTEM_METRICS = AllApi::metricsGetEdgeStatusMetrics;
+    public final static ApiCache.Endpoint<ConfigurationGetRoutableApplications, ConfigurationGetRoutableApplicationsResult>
+            GET_ROUTABLE_APPLICATIONS = AllApi::configurationGetRoutableApplications;
+    public final static ApiCache.Endpoint<MetricsGetEdgeDeviceMetrics, List<MetricsGetEdgeDeviceMetricsResultItem>>
+            GET_EDGE_DEVICE_METRICS = AllApi::metricsGetEdgeDeviceMetrics;
+    public final static ApiCache.Endpoint<MetricsGetEdgeDestMetrics, List<MetricsGetEdgeDestMetricsResultItem>>
+            GET_EDGE_DEST_METRICS = AllApi::metricsGetEdgeDestMetrics;
+
+    private static final List<EdgeLinkMetric> EDGE_LINK_METRICS = Arrays.asList(
+            //bandwidth
+            EdgeLinkMetric.BPSOFBESTPATHRX,
+            EdgeLinkMetric.BPSOFBESTPATHTX,
+            //traffic
+            EdgeLinkMetric.P1BYTESRX,
+            EdgeLinkMetric.P1BYTESTX,
+            EdgeLinkMetric.P1PACKETSRX,
+            EdgeLinkMetric.P1PACKETSTX,
+            EdgeLinkMetric.P2BYTESRX,
+            EdgeLinkMetric.P2BYTESTX,
+            EdgeLinkMetric.P2PACKETSRX,
+            EdgeLinkMetric.P2PACKETSTX,
+            EdgeLinkMetric.P3BYTESRX,
+            EdgeLinkMetric.P3BYTESTX,
+            EdgeLinkMetric.P3PACKETSRX,
+            EdgeLinkMetric.P3PACKETSTX,
+            //quality
+            EdgeLinkMetric.BESTLATENCYMSRX,
+            EdgeLinkMetric.BESTLATENCYMSTX,
+            EdgeLinkMetric.BESTJITTERMSRX,
+            EdgeLinkMetric.BESTJITTERMSTX,
+            EdgeLinkMetric.BESTLOSSPCTRX,
+            EdgeLinkMetric.BESTLOSSPCTTX,
+            EdgeLinkMetric.SCORERX,
+            EdgeLinkMetric.SCORETX
+    );
+
+    private static final List<BasicMetric> EDGE_TRAFFIC_METRIC_LIST = Arrays.asList(
+            BasicMetric.BYTESRX,
+            BasicMetric.BYTESTX,
+            BasicMetric.PACKETSRX,
+            BasicMetric.PACKETSTX
+    );
+    private static final BasicMetrics EDGE_TRAFFIC_METRICS = new BasicMetrics(){{addAll(EDGE_TRAFFIC_METRIC_LIST);}};
+
+    private static final List<EdgeMetric> EDGE_SYSTEM_METRIC_LIST = Arrays.asList(
+            EdgeMetric.CPUPCT,
+            EdgeMetric.CPUCORETEMP,
+            EdgeMetric.MEMORYPCT,
+            EdgeMetric.FLOWCOUNT,
+            EdgeMetric.HANDOFFQUEUEDROPS,
+            EdgeMetric.TUNNELCOUNT,
+            EdgeMetric.TUNNELCOUNTV6
+    );
+    private static final EdgeMetrics EDGE_SYSTEM_METRICS = new EdgeMetrics(){{addAll(EDGE_SYSTEM_METRIC_LIST);}};
 
     public final static ApiCache.Endpoint<EnterpriseGetEnterpriseServices, List<EnterpriseGetEnterpriseServicesResultItem>>
             ENTERPRISE_GET_ENTERPRISE_SERVICES = AllApi::enterpriseGetEnterpriseServices;
@@ -97,11 +198,14 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     private final ApiCache.Api api;
 
     private final int enterpriseId;
+    private final int intervalMillis;
 
     public VelocloudApiCustomerClientV1(final ApiCache.Api api,
-                                        final int enterpriseId) {
+                                        final int enterpriseId,
+                                        final int intervalMillis) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseId = enterpriseId;
+        this.intervalMillis = intervalMillis;
     }
 
     public List<Path> getPaths(final int edgeId) throws VelocloudApiException {
@@ -309,4 +413,219 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
         return Optional.of(assignedGateways.getSuperGateway().getId());
     }
 
+
+    @Override
+    public MetricsEdge getEdgeMetrics(int edgeId) throws VelocloudApiException {
+
+        //all API-calls are executed parallel to reduce waiting time
+        final Future<ConfigurationGetRoutableApplicationsResult> futureRoutableApplications =
+                this.api.asyncCall("routable applications", GET_ROUTABLE_APPLICATIONS,
+                        new ConfigurationGetRoutableApplications().edgeId(edgeId).enterpriseId(enterpriseId));
+
+        final Future<EdgeStatusMetricsSummary> futureSystemMetrics =
+                this.api.asyncCall("edge system metrics", GET_EDGE_SYSTEM_METRICS,
+                        new MetricsGetEdgeStatusMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
+                                .metrics(EDGE_SYSTEM_METRICS).interval(getInterval(intervalMillis)));
+
+        final Future<List<MetricsGetEdgeAppMetricsResultItem>> futureAppMetrics =
+                this.api.asyncCall("edge traffic by applications ", GET_EDGE_APP_METRICS,
+                        new MetricsGetEdgeAppMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
+                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis)));
+
+        final Future<List<MetricsGetEdgeDeviceMetricsResultItem>> futureDeviceMetrics =
+                this.api.asyncCall("edge traffic by source", GET_EDGE_DEVICE_METRICS,
+                        new MetricsGetEdgeDeviceMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
+                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis)));
+
+        final Future<List<MetricsGetEdgeDestMetricsResultItem>> futureDestMetrics =
+                this.api.asyncCall("edge traffic by destination", GET_EDGE_DEST_METRICS,
+                        new MetricsGetEdgeDestMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
+                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis)));
+
+        final Future<LinkQualityEventGetLinkQualityEventsResult> futureQoe =
+                this.api.asyncCall("edge dest metrics", GET_LINK_QUALITY_EVENTS,
+                        new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
+                                .interval(getInterval(intervalMillis)).maxSamples(1));
+
+
+
+        final ConfigurationGetRoutableApplicationsResult routableApplications;
+        final EdgeStatusMetricsSummary systemMetrics;
+        final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications;
+        final List<MetricsGetEdgeDeviceMetricsResultItem> trafficSources;
+        final List<MetricsGetEdgeDestMetricsResultItem> trafficDestination;
+        final LinkQualityEventGetLinkQualityEventsResult qoe;
+
+        try {
+            routableApplications = futureRoutableApplications.get();
+            systemMetrics = futureSystemMetrics.get();
+            trafficApplications = futureAppMetrics.get();
+            trafficSources = futureDeviceMetrics.get();
+            trafficDestination = futureDestMetrics.get();
+            qoe = futureQoe.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new VelocloudApiException("Error while asynchronously executing API call", e);
+        }
+
+        return MetricsEdge.builder()
+                .withCpuPct(map(systemMetrics.getCpuPct()))
+                .withCpuCoreTemp(map(systemMetrics.getCpuCoreTemp()))
+                .withMemoryPct(map(systemMetrics.getMemoryPct()))
+                .withFlowCount(map(systemMetrics.getFlowCount()))
+                .withHandoffQueueDrops(map(systemMetrics.getHandoffQueueDrops()))
+                .withTunnelCount(map(systemMetrics.getTunnelCount()))
+                .withTunnelCountV6(map(systemMetrics.getTunnelCountV6()))
+                .withTrafficApplications(map(trafficApplications, routableApplications))
+                .withTrafficSources(map(trafficSources, VelocloudApiCustomerClientV1::map))
+                .withTrafficDestinations(map(trafficDestination, VelocloudApiCustomerClientV1::map))
+                .withScoreAfterOptimization(map(qoe.getOverallLinkQuality().getScore()))
+                .build();
+    }
+
+    @Override
+    public MetricsLink getLinkMetrics(int edgeId, String linkLogicalId) throws VelocloudApiException {
+
+        Objects.requireNonNull(linkLogicalId);
+
+        final Future<List<MetricsGetEdgeLinkMetricsResultItem>>futureEdgeLinkMetrics = this.api.asyncCall(
+                "edge link metrics",GET_EDGE_LINK_METRICS,
+                new MetricsGetEdgeLinkMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
+                        .interval(getInterval(intervalMillis))
+                        .metrics(EDGE_LINK_METRICS));
+        final Future<LinkQualityEventGetLinkQualityEventsResult> futureQoe =
+                this.api.asyncCall("edge dest metrics", GET_LINK_QUALITY_EVENTS,
+                        new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
+                                .interval(getInterval(intervalMillis)).maxSamples(1));
+
+        final List<MetricsGetEdgeLinkMetricsResultItem> metrics;
+        final LinkQualityEventGetLinkQualityEventsResult qoe;
+
+        try {
+             metrics = futureEdgeLinkMetrics.get();
+             qoe = futureQoe.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new VelocloudApiException("Error while asynchronously executing API call", e);
+        }
+
+        return metrics.stream().filter(item -> linkLogicalId.equals(item.getLink().getLogicalId())).findFirst().map(item ->
+                MetricsLink.builder()
+                    .withBandwidthRx(item.getBpsOfBestPathRx())
+                    .withBandwidthTx(item.getBpsOfBestPathRx())
+                    .withTrafficPriority1(Traffic.builder()
+                            .withBytesRx(item.getP1BytesRx())
+                            .withBytesTx(item.getP1BytesTx())
+                            .withPacketsRx(item.getP1PacketsRx())
+                            .withPacketsTx(item.getP1PacketsTx())
+                            .build())
+                    .withTrafficPriority2(Traffic.builder()
+                            .withBytesRx(item.getP2BytesRx())
+                            .withBytesTx(item.getP2BytesTx())
+                            .withPacketsRx(item.getP2PacketsRx())
+                            .withPacketsTx(item.getP2PacketsTx())
+                            .build())
+                    .withTrafficPriority3(Traffic.builder()
+                            .withBytesRx(item.getP3BytesRx())
+                            .withBytesTx(item.getP3BytesTx())
+                            .withPacketsRx(item.getP3PacketsRx())
+                            .withPacketsTx(item.getP3PacketsTx())
+                            .build())
+                    .withTrafficControl(Traffic.builder()
+                            .withBytesRx(item.getControlBytesRx())
+                            .withBytesTx(item.getControlBytesTx())
+                            .withPacketsRx(item.getControlPacketsRx())
+                            .withPacketsTx(item.getControlPacketsTx())
+                            .build())
+                    .withBestLatencyMsRx(item.getBestLatencyMsRx())
+                    .withBestLatencyMsTx(item.getBestLatencyMsTx())
+                    .withBestJitterMsRx(item.getBestJitterMsRx())
+                    .withBestJitterMsTx(item.getBestJitterMsTx())
+                    .withBestLossPctRx(item.getBestLossPctRx())
+                    .withBestLossPctTx(item.getBestLossPctTx())
+                    .withScoreRx(item.getScoreRx())
+                    .withScoreTx(item.getScoreTx())
+            ).orElse(null) // TODO what to do when LINK not in response
+                //add score
+                .withScoreBeforeOptimization(map(qoe.get(linkLogicalId).getScore()))//TODO is NPE Ok when qoe.get(linkLogicalId) is null?
+                .build();
+    }
+
+    private static Aggregate map(BasicMetricSummary metric) {
+        return Aggregate.builder()
+                .withMin(metric.getMin())
+                .withMax(metric.getMax())
+                .withAverage(metric.getAverage())
+                .build();
+    }
+
+    private static TrafficSource map(final MetricsGetEdgeDeviceMetricsResultItem metricsDevice) {
+        return TrafficSource.builder()
+                .withName(metricsDevice.getName())
+                .withSourceMac(metricsDevice.getSourceMac())
+                .withIpAddress(metricsDevice.getInfo().getIpAddress())
+                .withHostName(metricsDevice.getInfo().getHostName())
+                .withOsName(metricsDevice.getInfo().getOsName())
+                .withOsVersion(metricsDevice.getInfo().getOsVersion())
+                .withDeviceType(metricsDevice.getInfo().getDeviceType())
+                .withDeviceModel(metricsDevice.getInfo().getDeviceModel())
+                .withTraffic(Traffic.builder()
+                        .withBytesRx(metricsDevice.getBytesRx())
+                        .withBytesTx(metricsDevice.getBytesTx())
+                        .withPacketsRx(metricsDevice.getPacketsRx())
+                        .withPacketsTx(metricsDevice.getPacketsTx())
+                        .build())
+                .build();
+    }
+
+    private static TrafficDestination map(final MetricsGetEdgeDestMetricsResultItem metricsDest) {
+        return TrafficDestination.builder()
+                .withName(metricsDest.getName())
+                .withDestinationDomain(metricsDest.getDestDomain())
+                .withTraffic(Traffic.builder()
+                        .withBytesRx(metricsDest.getBytesRx())
+                        .withBytesTx(metricsDest.getBytesTx())
+                        .withPacketsRx(metricsDest.getPacketsRx())
+                        .withPacketsTx(metricsDest.getPacketsTx())
+                        .build())
+                .build();
+    }
+
+    private static <T,R> List<R> map(final List<T> list, final Function<T, R> mapFunction) {
+        return list.stream().map(mapFunction).collect(Collectors.toList());
+    }
+
+    private List<TrafficApplication> map(final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications,
+                                         final ConfigurationGetRoutableApplicationsResult routableApplications) {
+        final List<Application> applications = routableApplications.getApplications();
+        final int appCount = applications.size();
+        final Map<Integer, String> applicationClasses = routableApplications.getApplicationClasses().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+
+        return map(trafficApplications, (item) -> {
+            final TrafficApplication.Builder builder = TrafficApplication.builder()
+                    .withTraffic(Traffic.builder()
+                            .withBytesRx(item.getBytesRx())
+                            .withBytesRx(item.getBytesTx())
+                            .withPacketsRx(item.getPacketsRx())
+                            .withPacketsTx(item.getPacketsTx())
+                            .build());
+
+            if (item.getApplication() != null && item.getApplication() < appCount) {
+                final Application application =  applications.get(item.getApplication());
+                builder
+                        .withDescription(application.getDescription())
+                        .withName(application.getName())
+                        .withDisplayName(application.getDisplayName())
+                        .withApplicationClass(applicationClasses.get(application.getPropertyClass()));
+            }
+            return builder.build();
+        });
+    }
+
+    private Score map(Map<String, BigDecimal> score) {
+        return Score.builder()
+                .withAudio(score.get("0"))
+                .withVideo(score.get("1"))
+                .withTransactional(score.get("2"))
+                .build();
+    }
 }

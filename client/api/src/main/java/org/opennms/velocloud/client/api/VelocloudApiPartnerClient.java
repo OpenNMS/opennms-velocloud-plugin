@@ -51,6 +51,13 @@ public interface VelocloudApiPartnerClient {
     VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId);
 
     /**
+     * TODO do we need Gateways extra
+     * @param gatewayId
+     * @return
+     */
+    VelocloudApiGatewayClient getGatewayClient(final Integer gatewayId);
+
+    /**
      * Get all gateways of the partner.
      * @return list of {@link Gateway}s
      * @throws VelocloudApiException

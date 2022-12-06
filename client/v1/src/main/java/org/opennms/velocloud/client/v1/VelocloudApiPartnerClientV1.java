@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.VelocloudApiGatewayClient;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.internal.Utils;
 import org.opennms.velocloud.client.api.model.Customer;
@@ -74,16 +75,24 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     private final ApiCache.Api api;
     private final int enterpriseProxyId;
+    private final int intervalMillis;
 
     public VelocloudApiPartnerClientV1(final ApiCache.Api api,
-                                       final int enterpriseProxyId) {
+                                       final int enterpriseProxyId,
+                                       final int intervalMillis) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseProxyId = enterpriseProxyId;
+        this.intervalMillis = intervalMillis;
     }
 
     @Override
     public VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId) {
-        return new VelocloudApiCustomerClientV1(this.api, enterpriseId);
+        return new VelocloudApiCustomerClientV1(this.api, enterpriseId, intervalMillis);
+    }
+
+    @Override
+    public VelocloudApiGatewayClient getGatewayClient(final Integer gatewayId) {
+        return new VelocloudApiGatewayClientV1(this.api, gatewayId, intervalMillis);
     }
 
     @Override
