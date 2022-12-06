@@ -1,0 +1,90 @@
+= Useful Karaf Shell Commands
+:imagesdir: ../assets/images
+
+== opennms-velocloud:connection-add
+
+Add a connection to a Velocloud Orchestrator.
+
+Syntax: `opennms-velocloud:connection-add alias url apiKey`
+
+.Arguments
+[options="header, autowidth", cols="2,1"]
+|===
+
+| Argument
+| Description
+
+| alias
+| Alias for this connection
+
+| url
+| Orchestrator URL
+
+| apiKey
+| Orchestrator API Key
+
+|===
+
+== opennms-velocloud:list-customers
+
+List all customers for a given partner connection alias.
+
+Syntax: `opennms-velocloud:list-customers alias`
+
+.Arguments
+[options="header, autowidth", cols="2,1"]
+|===
+
+| Argument
+| Description
+
+| alias
+| Alias for this connection
+
+|===
+
+.Example output for a partner connection `partnerAlias`
+```
+admin@opennms()> list-customers partnerAlias
+ID  │ Name    │ Domain   │ Description
+────┼─────────┼──────────┼──────────────────────────────────────────────────
+103 │ MY_LAB  │ mylab    │ My lab
+486 │ CUSTA1  │ custa1   │ Customer A1
+516 │ CUSTB3  │ custb3   │ Customer B3
+admin@opennms()>
+```
+
+== opennms:import-requisition
+
+Import the requisition from a given URL.
+
+Syntax: `opennms:import-requisition [options] type [parameters]`
+
+.Arguments
+[options="header, autowidth", cols="2,1"]
+|===
+
+| Argument
+| Description
+
+| type
+| Type of requisition.
+Use `velocloud-customer` for a customer connection and `velocloud-partner` for a partner connection.
+
+| parameters
+| Parameters in key=value form
+
+|===
+
+.Options
+[options="header, autowidth", cols="2,1"]
+|===
+
+| Option
+| Description
+
+| -r, --rescan
+| Specify rescanExisting value.
+Valid values : 'true', 'false', 'dbonly'
+
+|===
