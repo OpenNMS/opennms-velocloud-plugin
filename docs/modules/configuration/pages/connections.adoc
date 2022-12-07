@@ -1,7 +1,158 @@
 = Connections
 :imagesdir: ../assets/images
 
-First of all, we have to define the connections the plugin uses to connect to the Orchestrator.
+First, we have to define the connections the plugin uses to connect to the Orchestrator. A connection consists of
+an orchestrator URL, an API key to authenticate against the orchestrator, and an alias used to reference it. Connections
+are saved internally in the Secure Credentials Vault.
+
+Connections can be added, validated, and modified via both ReST endpoints and karaf shell commands.
+
+== ReST
+
+NOTE: By default, the plugin will validate new connections before saving them. This can be overridden in the appropriate endpoints with the *force* query parameter.
+
+The plugin mounts all endpoints at the following location.
+```
+http://localhost:8980/opennms/rest/velocloud/
+```
+
+=== GETs (Retrieving Data)
+[options="header", cols="5,10"]
+|===
+| Resource                  | Description
+| `/connections`            | Get a list of connections.
+| `/connections/\{alias}`   | Validate an existing connection.
+|===
+
+=== POSTs (Adding Data)
+[options="header", cols="5,10, 5"]
+|===
+| Resource                   | Description | Query Options
+| `/connections`             | Validates the incoming credentials and saves the valid connection to SCV. Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format. | *dryrun* - Do not save the connection.
+
+*force* - Do not validate the connection.
+|===
+
+=== PUTs (Modifying Data)
+[options="header", cols="5,10, 5"]
+|===
+| Resource                    | Description | Query Options
+| `/connections/\{alias}`     | Edit an existing connection. Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format. | *force* - Do not validate the cconnection.
+|===
+
+== Karaf
+.Connect to Karaf shell
+[source, console]
+----
+ssh -p 8101 admin@localhost
+----
+[source, console]
+.List Existing Connections
+----
+admin@opennms()> opennms-velocloud:connection-list --help
+DESCRIPTION
+        opennms-velocloud:connection-list
+
+	List existing connections
+
+SYNTAX
+        opennms-velocloud:connection-list
+
+DETAILS
+        List all existing connections to orchestrators
+----
+
+[source, console]
+.Add a Connection
+----
+admin@opennms()> opennms-velocloud:connection-add --help
+DESCRIPTION
+        opennms-velocloud:connection-add
+
+	Add a connection
+
+SYNTAX
+        opennms-velocloud:connection-add [options] alias url apiKey
+
+ARGUMENTS
+        alias
+                Alias
+                (required)
+        url
+                Orchestrator Url
+                (required)
+        apiKey
+                Orchestrator API Key
+                (required)
+
+OPTIONS
+        -t, --test
+                Dry run mode, test the credentials but do not save them
+        --help
+                Display this help message
+        -f, --force
+                Skip validation and save the connection as-is
+
+DETAILS
+        Add a connection to a velocloud orchestrator
+----
+
+[source, console]
+.Edit an Existing Connection
+----
+admin@opennms()> opennms-velocloud:connection-edit --help
+DESCRIPTION
+        opennms-velocloud:connection-edit
+
+	Edit a connection
+
+SYNTAX
+        opennms-velocloud:connection-edit [options] alias url apiKey
+
+ARGUMENTS
+        alias
+                Alias
+                (required)
+        url
+                Orchestrator Url
+                (required)
+        apiKey
+                Orchestrator API Key
+                (required)
+
+OPTIONS
+        --help
+                Display this help message
+        -f, --force
+                Skip validation and save the connection as-is
+
+DETAILS
+        Edit an existing connection to a velocloud orchestrator
+----
+
+[source, console]
+.Validate an Existing Connection
+----
+admin@opennms()> opennms-velocloud:connection-validate --help
+DESCRIPTION
+        opennms-velocloud:connection-validate
+
+	Validate a connection
+
+SYNTAX
+        opennms-velocloud:connection-validate alias
+
+ARGUMENTS
+        alias
+                Alias
+                (required)
+
+DETAILS
+        Validate an existing connection to a velocloud orchestrator
+----
+
+== Examples
+
 The following example adds a connection with the alias `theAlias` and assumes that the Orchestrator is reachable by the URL `https://my.velocloud.orchestrator.net` and the API-key is `tHiSiS.TheAP1Key`.
 ```
 admin@opennms()> opennms-velocloud:connection-add theAlias https://my.velocloud.orchestrator.net/ tHiSiS.TheAP1Key
