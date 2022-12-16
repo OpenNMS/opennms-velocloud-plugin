@@ -35,8 +35,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.velocloud.connections.ConnectionManager;
 
-import java.util.Optional;
-
 @Command(scope = "opennms-velocloud", name = "connection-edit", description = "Edit a connection", detailedDescription = "Edit an existing connection to a velocloud orchestrator")
 @Service
 public class EditConnectionCommand implements Action {

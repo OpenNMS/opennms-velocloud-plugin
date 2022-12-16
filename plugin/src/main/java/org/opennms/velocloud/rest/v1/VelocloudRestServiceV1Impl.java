@@ -28,7 +28,6 @@
 package org.opennms.velocloud.rest.v1;
 
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.opennms.velocloud.rest.api.VelocloudRestService;
 import org.opennms.velocloud.rest.dto.ConnectionDTO;
@@ -39,7 +38,6 @@ import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class VelocloudRestServiceV1Impl implements VelocloudRestService {

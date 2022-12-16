@@ -32,10 +32,7 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.connections.ConnectionManager;
-
-import java.util.Optional;
 
 @Command(scope = "opennms-velocloud", name = "connection-validate", description = "Validate a connection", detailedDescription = "Validate an existing connection to a velocloud orchestrator")
 @Service
