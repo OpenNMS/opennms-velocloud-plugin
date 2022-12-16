@@ -63,64 +63,94 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
     public List<ConnectionListElementDTO> getConnectionList() {
         return this.connectionManager.getAliases().stream()
                 .map(alias -> {
-                    var connection = connectionManager.getConnection(alias).orElseThrow();
+                    var connection = this.connectionManager.getConnection(alias).orElseThrow();
+
                     final var connectionDTO = new ConnectionListElementDTO();
                     connectionDTO.setAlias(alias);
                     connectionDTO.setOrchestratorUrl(connection.getOrchestratorUrl());
+
                     return connectionDTO;
                 })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Response addConnection(ConnectionDTO connectionDTO, boolean dryRun, boolean force) {
-        if (this.connectionManager.contains(connectionDTO.getAlias())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Connection already exists").build();
+    public Response addConnection(ConnectionDTO connectionDTO, boolean dryRun, boolean skipValidation) {
+        if (this.connectionManager.getConnection(connectionDTO.getAlias()).isPresent()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity("Connection already exists")
+                           .build();
         }
-        if (!force) {
-            final var exception = Optional.ofNullable(connectionManager.testConnection(connectionDTO.getOrchestratorUrl(), connectionDTO.getApiKey()));
-            if (exception.isPresent()) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", exception.get().getMessage())).build();
+
+        final var connection = this.connectionManager.newConnection(connectionDTO.getAlias(),
+                                             connectionDTO.getOrchestratorUrl(),
+                                             connectionDTO.getApiKey());
+
+        if (!skipValidation) {
+            final var error = connection.validate();
+            if (error.isPresent()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                               .entity(String.format("Failed to validate credentials: %s", error.get().message))
+                               .build();
             }
         }
-        if (!dryRun) {
-            connectionManager.addConnection(connectionDTO.getAlias(), connectionDTO.getOrchestratorUrl(), connectionDTO.getApiKey());
-            return Response.ok().entity("Connection successfully added").build();
+
+        if (dryRun) {
+            return Response.ok()
+                           .entity("Dry run successful")
+                           .build();
         }
-        return Response.ok().entity("Dry run successful").build();
+
+        connection.save();
+
+        return Response.ok()
+                       .entity("Connection successfully added")
+                       .build();
+
     }
 
     @Override
-    public Response editConnection(final String alias, final ConnectionDTO connectionDTO, boolean force) {
-        if (!this.connectionManager.contains(alias)) {
-            return Response.status(Response.Status.NOT_FOUND).entity("No such connection exists").build();
+    public Response editConnection(final String alias, final ConnectionDTO connectionDTO, boolean skipValidation) {
+        final var connection = this.connectionManager.getConnection(alias);
+        if (connection.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                           .entity("No such connection exists")
+                           .build();
         }
-        if (!force) {
-            final var exception = Optional.ofNullable(this.connectionManager.testConnection(connectionDTO.getOrchestratorUrl(), connectionDTO.getApiKey()));
-            if (exception.isPresent()) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Failed to validate credentials: %s", exception.get().getMessage())).build();
+
+        connection.get().setOrchestratorUrl(connectionDTO.getOrchestratorUrl());
+        connection.get().setApiKey(connectionDTO.getApiKey());
+
+        if (!skipValidation) {
+            final var error = connection.get().validate();
+            if (error.isPresent()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                               .entity(String.format("Failed to validate credentials: %s", error.get().message))
+                               .build();
             }
         }
-        connectionManager.getConnection(alias).get().update(connectionDTO.getOrchestratorUrl(), connectionDTO.getApiKey());
+
+        connection.get().save();
+
         return Response.ok().entity("Connection successfully updated").build();
     }
 
     @Override
     public Response validateConnection(final String alias) {
-        final var connection = connectionManager.getConnection(alias);
+        final var connection = this.connectionManager.getConnection(alias);
         if (connection.isPresent()) {
-            ConnectionStateDTO response = new ConnectionStateDTO();
+            final var response = new ConnectionStateDTO();
             response.setAlias(alias);
             response.setOrchestratorUrl(connection.get().getOrchestratorUrl());
-            if (Optional.ofNullable(connection.get().validate()).isEmpty()) {
-                response.setValid(true);
-            } else {
-                response.setValid(false);
-            }
-            return Response.ok().entity(response).build();
-        }
-        else {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            response.setValid(connection.get().validate().isEmpty());
+
+            return Response.ok()
+                           .entity(response)
+                           .build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                           .entity("No such connection exists")
+                           .build();
         }
     }
 }

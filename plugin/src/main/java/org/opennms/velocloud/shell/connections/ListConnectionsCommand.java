@@ -53,14 +53,16 @@ public class ListConnectionsCommand implements Action {
                 .column(new Col("alias").maxSize(36))
                 .column(new Col("orchestratorUrl").maxSize(72));
 
-        connectionManager.getAliases().stream()
-                                      .map(alias -> connectionManager.getConnection(alias).get())
+        this.connectionManager.getAliases().stream()
+                                      .map(alias -> this.connectionManager.getConnection(alias).orElseThrow())
                                       .forEach(connection -> {
                                           final var row = table.addRow();
                                           row.addContent(connection.getAlias());
                                           row.addContent(connection.getOrchestratorUrl());
                                       });
+
         table.print(System.out, true);
+
         return null;
     }
 }

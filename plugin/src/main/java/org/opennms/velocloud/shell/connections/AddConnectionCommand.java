@@ -64,32 +64,32 @@ public class AddConnectionCommand implements Action {
     public String apiKey = null;
 
     @Override
-    public Object execute() throws Exception {
-        if (this.connectionManager.contains(this.alias)) {
+    public Object execute() {
+        if (this.connectionManager.getConnection(this.alias).isPresent()) {
             System.err.println("Connection with alias already exists: " + this.alias);
             return null;
         }
 
-        if (!skipValidation) {
-            final var exception = Optional.ofNullable(connectionManager.testConnection(url, apiKey));
-            if (exception.isPresent()) {
-                System.err.println(String.format("Failed to validate credentials: %s", exception.get().getMessage()));
+        final var connection = this.connectionManager.newConnection(this.alias,
+                                                                    this.url,
+                                                                    this.apiKey);
+
+        if (!this.skipValidation) {
+            final var error = connection.validate();
+            if (error.isPresent()) {
+                System.err.println("Failed to validate credentials: " + error.get().message);
                 return null;
             }
-            else {
-                System.out.println("Credentials are valid");
-            }
         }
-        else {
-            System.out.println("Skipping validation");
+
+        if (this.dryRun) {
+            System.out.println("Connection valid");
+            return null;
         }
-        if (!dryRun) {
-            this.connectionManager.addConnection(this.alias, this.url, this.apiKey);
-            System.out.println("Connection saved");
-        }
-        else {
-            System.out.println("In dry-run mode, connection not saved");
-        }
+
+        connection.save();
+        System.out.println("Connection created");
+
         return null;
     }
 }

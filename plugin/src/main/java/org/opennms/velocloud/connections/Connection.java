@@ -74,16 +74,9 @@ public interface Connection {
     void save();
 
     /**
-     * Update the existing connection with new credentials
-     * @param orchestratorUrl   the new orchestrator URL
-     * @param apiKey            the new apiKey
+     * Test the connection.
+     * @return The error, if any.
      */
-    void update(String orchestratorUrl, String apiKey);
-
-    /**
-     *  Test the connection
-     * @return An exception if the connection is invalid, or null if otherwise.
-     */
-    ConnectionValidationError validate();
+    Optional<ConnectionValidationError> validate();
 
 }

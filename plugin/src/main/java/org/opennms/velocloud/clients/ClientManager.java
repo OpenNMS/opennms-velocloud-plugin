@@ -109,18 +109,18 @@ public class ClientManager implements ServiceListener {
         }
     }
 
-    public ConnectionValidationError validate(final VelocloudApiClientCredentials credentials) {
+    public Optional<ConnectionValidationError> validate(final VelocloudApiClientCredentials credentials) {
         try {
             this.clientProvider.partnerClient(credentials);
-            return null;
+            return Optional.empty();
         } catch (VelocloudApiException e) {}
 
         try {
             this.clientProvider.customerClient(credentials);
-            return null;
+            return Optional.empty();
         } catch (VelocloudApiException ex) {}
 
-        return new ConnectionValidationError("Credentials could not be validated");
+        return Optional.of(new ConnectionValidationError("Credentials could not be validated"));
     }
 
     public void purgeClient(VelocloudApiClientCredentials credentials) {

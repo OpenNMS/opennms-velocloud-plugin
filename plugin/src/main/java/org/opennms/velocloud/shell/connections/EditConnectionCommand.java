@@ -58,25 +58,24 @@ public class EditConnectionCommand implements Action {
 
     @Override
     public Object execute() throws Exception {
-        if (!this.connectionManager.contains(this.alias)) {
-            System.err.println(String.format("No connection with the given alias exists: %s",  this.alias));
+        final var connection = this.connectionManager.getConnection(this.alias);
+
+        if (connection.isEmpty()) {
+            System.err.println("No connection with the given alias exists: " + this.alias);
             return null;
         }
-        if (!skipValidation) {
-            final var exception = Optional.ofNullable(this.connectionManager.testConnection(url, apiKey));
-            if (exception.isPresent()) {
-                System.err.println(String.format("Failed to validate credentials: %s", exception.get().getMessage()));
+
+        if (!this.skipValidation) {
+            final var error = connection.get().validate();
+            if (error.isPresent()) {
+                System.err.println("Failed to validate credentials: " + error.get().message);
                 return null;
             }
-            else {
-                System.out.println("Credentials are valid");
-            }
         }
-        else {
-            System.out.println("Skipping validation");
-        }
-        this.connectionManager.getConnection(alias).get().update(url, apiKey);
+
+        connection.get().save();
         System.out.println("Connection updated");
+
         return null;
     }
 }

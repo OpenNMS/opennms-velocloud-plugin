@@ -28,13 +28,13 @@
 
 package org.opennms.velocloud.connections;
 
-public class ConnectionValidationError extends RuntimeException {
+import java.util.Objects;
 
-    public ConnectionValidationError(final String alias, final String message) {
-        super(String.format("Invalid connection in SCV: %s: %s", alias, message));
-    }
+public class ConnectionValidationError {
+
+    public final String message;
 
     public ConnectionValidationError(final String message) {
-        super(String.format("Invalid connection: %s", message));
+        this.message = Objects.requireNonNull(message);
     }
 }

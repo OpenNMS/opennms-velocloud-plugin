@@ -64,6 +64,11 @@ public class VelocloudApiClientCredentials {
         private Builder() {
         }
 
+        private Builder(final VelocloudApiClientCredentials credentials) {
+            this.orchestratorUrl = credentials.orchestratorUrl;
+            this.apiKey = credentials.apiKey;
+        }
+
         public Builder withOrchestratorUrl(final String orchestratorUrl) {
             this.orchestratorUrl = orchestratorUrl;
             return this;
@@ -81,6 +86,10 @@ public class VelocloudApiClientCredentials {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public static Builder builder(final VelocloudApiClientCredentials credentials) {
+        return new Builder(credentials);
     }
 
     @Override

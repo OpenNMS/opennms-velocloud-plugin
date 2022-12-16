@@ -49,18 +49,19 @@ public class ValidateConnectionCommand implements Action {
 
     @Override
     public Object execute() throws Exception {
-        if (!this.connectionManager.contains(this.alias)) {
+        final var connection = this.connectionManager.getConnection(this.alias);
+        if (connection.isEmpty()) {
             System.err.println("No connection with the given alias exists: " + this.alias);
             return null;
         }
 
-        final var error = Optional.ofNullable(connectionManager.validateConnection(alias));
+        final var error = connection.get().validate();
         if (error.isPresent()) {
-            System.err.println(error.get().getMessage());
-        }
-        else {
+            System.err.println("Connection invalid: " + error.get().message);
+        } else {
             System.out.println("Connection is valid");
         }
+
         return null;
     }
 }
