@@ -25,16 +25,16 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
+package org.opennms.velocloud.rest.dto;
 
-package org.opennms.velocloud.connections;
+import lombok.Data;
 
-import java.util.Objects;
-
-public class ConnectionValidationError {
-
-    public final String message;
-
-    public ConnectionValidationError(final String message) {
-        this.message = Objects.requireNonNull(message);
-    }
+/**
+ *  DTO for connection information received by the API
+ */
+@Data
+public class ConnectionDTO {
+    private String alias;
+    private String orchestratorUrl;
+    private String apiKey;
 }

@@ -28,10 +28,13 @@
 
 package org.opennms.velocloud.connections;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.google.common.base.MoreObjects;
 
 import org.opennms.integration.api.v1.runtime.Container;
 import org.opennms.integration.api.v1.runtime.RuntimeInfo;
@@ -45,7 +48,6 @@ import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.clients.ClientManager;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 
 public class ConnectionManager {
 
@@ -84,80 +86,80 @@ public class ConnectionManager {
      *
      * @param alias the alias of the connection config to retrieve
      * @return The connection config or {@code Optional#empty()} of no such alias exists
-     * @throws ConnectionValidationError if the connection config is invalid
      */
-    public Optional<Connection> getConnection(final String alias) throws ConnectionValidationError {
-        final var credentials = this.vault.getCredentials(PREFIX + alias);
+    public Optional<Connection> getConnection(final String alias) {
+        final var credentials = this.vault.getCredentials(PREFIX + alias.toLowerCase());
         if (credentials == null) {
             return Optional.empty();
         }
 
-        return Optional.of(new ConnectionImpl(alias, credentials));
+        return Optional.of(new ConnectionImpl(alias, ConnectionManager.fromStore(credentials)));
     }
 
     /**
-     * Creates and saves a connection under the given alias.
-     * If a connection with the same alias already exists, it will be overwritten.
+     * Creates a connection under the given alias.
      *
      * @param alias           the alias of the connection to add
      * @param orchestratorUrl the URL of the orchestrator
      * @param apiKey          the API key used to authenticate the connection
-     * @throws ConnectionValidationError
      */
-    public Connection addConnection(final String alias, final String orchestratorUrl, final String apiKey) throws ConnectionValidationError {
-        final Connection connection = new ConnectionImpl(alias, orchestratorUrl, apiKey);
-        connection.save();
-
-        return connection;
+    public Connection newConnection(final String alias, final String orchestratorUrl, final String apiKey) {
+        return new ConnectionImpl(alias, VelocloudApiClientCredentials.builder()
+                                                                      .withOrchestratorUrl(orchestratorUrl)
+                                                                      .withApiKey(apiKey)
+                                                                      .build());
     }
 
-    public Optional<VelocloudApiPartnerClient> getPartnerClient(final String alias) throws ConnectionValidationError, VelocloudApiException {
+    public Optional<VelocloudApiPartnerClient> getPartnerClient(final String alias) throws VelocloudApiException {
         final var connection = this.getConnection(alias);
         if (connection.isEmpty()) {
             return Optional.empty();
         }
 
-        return Optional.of(this.clientManager.getPartnerClient(VelocloudApiClientCredentials.builder()
-                                                                                            .withOrchestratorUrl(connection.get().getOrchestratorUrl())
-                                                                                            .withApiKey(connection.get().getApiKey())
-                                                                                            .build()));
+        return Optional.of(this.clientManager.getPartnerClient(asVelocloudCredentials(connection.get())));
     }
 
-    public Optional<VelocloudApiCustomerClient> getCustomerClient(final String alias) throws ConnectionValidationError, VelocloudApiException {
+    public Optional<VelocloudApiCustomerClient> getCustomerClient(final String alias) throws VelocloudApiException {
         final var connection = this.getConnection(alias);
         if (connection.isEmpty()) {
             return Optional.empty();
         }
 
-        return Optional.of(this.clientManager.getCustomerClient(VelocloudApiClientCredentials.builder()
-                                                                                             .withOrchestratorUrl(connection.get().getOrchestratorUrl())
-                                                                                             .withApiKey(connection.get().getApiKey())
-                                                                                             .build()));
+        return Optional.of(this.clientManager.getCustomerClient(asVelocloudCredentials(connection.get())));
+    }
+
+    private static VelocloudApiClientCredentials asVelocloudCredentials(Connection connection) {
+        return VelocloudApiClientCredentials.builder()
+                                            .withApiKey(connection.getApiKey())
+                                            .withOrchestratorUrl(connection.getOrchestratorUrl())
+                                            .build();
+    }
+
+    private static VelocloudApiClientCredentials fromStore(final Credentials credentials) {
+        if (Strings.isNullOrEmpty(credentials.getUsername())) {
+            throw new IllegalStateException("Orchestrator URL (username) is missing");
+        }
+        final var orchestratorUrl = credentials.getUsername();
+
+        if (Strings.isNullOrEmpty(credentials.getPassword())) {
+            throw new IllegalStateException("API key (password) is missing");
+        }
+        final var apiKey = credentials.getPassword();
+
+        return VelocloudApiClientCredentials.builder()
+                                            .withOrchestratorUrl(orchestratorUrl)
+                                            .withApiKey(apiKey)
+                                            .build();
     }
 
     private class ConnectionImpl implements Connection {
         private final String alias;
-        private String orchestratorUrl;
-        private String apiKey;
 
-        private ConnectionImpl(final String alias, final String orchestratorUrl, final String apiKey) {
-            this.alias = Objects.requireNonNull(alias);
-            this.orchestratorUrl = Objects.requireNonNull(orchestratorUrl);
-            this.apiKey = Objects.requireNonNull(apiKey);
-        }
+        private VelocloudApiClientCredentials credentials;
 
-        private ConnectionImpl(final String alias, final Credentials credentials) throws ConnectionValidationError {
-            this.alias = Objects.requireNonNull(alias);
-
-            if (Strings.isNullOrEmpty(credentials.getUsername())) {
-                throw new ConnectionValidationError(alias, "Orchestrator URL (username) is missing");
-            }
-            this.orchestratorUrl = credentials.getUsername();
-
-            if (Strings.isNullOrEmpty(credentials.getPassword())) {
-                throw new ConnectionValidationError(alias, "API key (password) is missing");
-            }
-            this.apiKey = credentials.getPassword();
+        private ConnectionImpl(final String alias, final VelocloudApiClientCredentials credentials) {
+            this.alias = Objects.requireNonNull(alias).toLowerCase();
+            this.credentials = Objects.requireNonNull(credentials);
         }
 
         @Override
@@ -167,33 +169,55 @@ public class ConnectionManager {
 
         @Override
         public String getOrchestratorUrl() {
-            return this.orchestratorUrl;
+            return this.credentials.orchestratorUrl;
         }
 
         @Override
         public void setOrchestratorUrl(final String url) {
-            this.orchestratorUrl = Objects.requireNonNull(url);
+            this.credentials = VelocloudApiClientCredentials.builder(this.credentials)
+                                                            .withOrchestratorUrl(url)
+                                                            .build();
         }
 
         @Override
         public String getApiKey() {
-            return this.apiKey;
+            return this.credentials.apiKey;
         }
 
         @Override
         public void setApiKey(final String apiKey) {
-            this.apiKey = Objects.requireNonNull(apiKey);
+            this.credentials = VelocloudApiClientCredentials.builder(this.credentials)
+                                                            .withApiKey(apiKey)
+                                                            .build();
         }
 
         @Override
         public void save() {
+            // Purge cached client with old credentials
+            final var oldCredentials = ConnectionManager.this.vault.getCredentials(PREFIX + this.alias);
+            if (oldCredentials != null) {
+                ConnectionManager.this.clientManager.purgeClient(ConnectionManager.fromStore(oldCredentials));
+            }
+
             ConnectionManager.this.vault.setCredentials(PREFIX + this.alias, this.asCredentials());
         }
 
-        private Credentials asCredentials() {
-            final var attributes = ImmutableMap.<String, String>builder();
+        @Override
+        public Optional<ConnectionValidationError> validate() {
+            return ConnectionManager.this.clientManager.validate(ConnectionManager.asVelocloudCredentials(this));
+        }
 
-            return new ImmutableCredentials(this.orchestratorUrl, this.apiKey, attributes.build());
+        private Credentials asCredentials() {
+            return new ImmutableCredentials(this.credentials.orchestratorUrl, this.credentials.apiKey, Collections.emptyMap());
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this)
+                              .add("alias", this.alias)
+                              .add("orchestratorUrl", this.credentials.orchestratorUrl)
+                              .add("apiKey", "******")
+                              .toString();
         }
     }
 }

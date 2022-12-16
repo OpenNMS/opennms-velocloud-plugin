@@ -58,7 +58,8 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
 
     public static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
         final var client = new ApiClient();
-        client.setBasePath(URI.create(credentials.orchestratorUrl).resolve(PATH).toString());
+        String url = credentials.orchestratorUrl.endsWith("/") ? credentials.orchestratorUrl : credentials.orchestratorUrl + "/";
+        client.setBasePath(URI.create(url).resolve(PATH).toString());
         client.setApiKeyPrefix(AUTH_HEADER_PREFIX);
         client.setApiKey(credentials.apiKey);
         return new AllApi(client);

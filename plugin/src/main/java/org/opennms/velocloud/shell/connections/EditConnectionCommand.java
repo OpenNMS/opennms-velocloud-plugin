@@ -35,15 +35,12 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.velocloud.connections.ConnectionManager;
 
-@Command(scope = "opennms-velocloud", name = "connection-add", description = "Add a connection", detailedDescription = "Add a connection to a velocloud orchestrator")
+@Command(scope = "opennms-velocloud", name = "connection-edit", description = "Edit a connection", detailedDescription = "Edit an existing connection to a velocloud orchestrator")
 @Service
-public class AddConnectionCommand implements Action {
+public class EditConnectionCommand implements Action {
 
     @Reference
     private ConnectionManager connectionManager;
-
-    @Option(name = "-t", aliases = "--test", description = "Dry run mode, test the credentials but do not save them")
-    boolean dryRun = false;
 
     @Option(name="-f", aliases="--force", description="Skip validation and save the connection as-is")
     public boolean skipValidation = false;
@@ -58,31 +55,26 @@ public class AddConnectionCommand implements Action {
     public String apiKey = null;
 
     @Override
-    public Object execute() {
-        if (this.connectionManager.getConnection(this.alias).isPresent()) {
-            System.err.println("Connection with alias already exists: " + this.alias);
+    public Object execute() throws Exception {
+        final var connection = this.connectionManager.getConnection(this.alias);
+
+        if (connection.isEmpty()) {
+            System.err.println("No connection with the given alias exists: " + this.alias);
             return null;
         }
 
-        final var connection = this.connectionManager.newConnection(this.alias,
-                                                                    this.url,
-                                                                    this.apiKey);
-
+        connection.get().setOrchestratorUrl(url);
+        connection.get().setApiKey(apiKey);
         if (!this.skipValidation) {
-            final var error = connection.validate();
+            final var error = connection.get().validate();
             if (error.isPresent()) {
                 System.err.println("Failed to validate credentials: " + error.get().message);
                 return null;
             }
         }
 
-        if (this.dryRun) {
-            System.out.println("Connection valid");
-            return null;
-        }
-
-        connection.save();
-        System.out.println("Connection created");
+        connection.get().save();
+        System.out.println("Connection updated");
 
         return null;
     }

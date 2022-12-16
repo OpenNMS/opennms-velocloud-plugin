@@ -38,6 +38,7 @@ import org.opennms.velocloud.client.api.VelocloudApiClientProvider;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
+import org.opennms.velocloud.connections.ConnectionValidationError;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -102,6 +103,24 @@ public class ClientManager implements ServiceListener {
         } catch (ExecutionException e) {
             throw new VelocloudApiException("Error creating customer client", e);
         }
+    }
+
+    public Optional<ConnectionValidationError> validate(final VelocloudApiClientCredentials credentials) {
+        try {
+            this.clientProvider.partnerClient(credentials);
+            return Optional.empty();
+        } catch (VelocloudApiException e) {}
+
+        try {
+            this.clientProvider.customerClient(credentials);
+            return Optional.empty();
+        } catch (VelocloudApiException ex) {}
+
+        return Optional.of(new ConnectionValidationError("Credentials could not be validated"));
+    }
+
+    public void purgeClient(VelocloudApiClientCredentials credentials) {
+        this.clients.invalidate(credentials);
     }
 
     public static abstract class ClientEntry {

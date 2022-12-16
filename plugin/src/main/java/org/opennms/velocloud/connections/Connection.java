@@ -28,10 +28,14 @@
 
 package org.opennms.velocloud.connections;
 
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+
 import java.util.Optional;
 import java.util.UUID;
 
 public interface Connection {
+
     /**
      * Returns the alias of the connection.
      * The alias is a unique identifier representing a connection configuration.
@@ -68,4 +72,11 @@ public interface Connection {
      * Save the altered connection config in the underlying store.
      */
     void save();
+
+    /**
+     * Test the connection.
+     * @return The error, if any.
+     */
+    Optional<ConnectionValidationError> validate();
+
 }
