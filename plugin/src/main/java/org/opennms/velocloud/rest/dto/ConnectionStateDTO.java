@@ -31,7 +31,6 @@ import lombok.Data;
 
 @Data
 public class ConnectionStateDTO {
-
     private String alias;
     private String orchestratorUrl;
     private boolean valid;

@@ -31,8 +31,6 @@ import lombok.Data;
 
 @Data
 public class ConnectionListElementDTO {
-
     private String alias;
     private String orchestratorUrl;
-
 }

@@ -34,9 +34,7 @@ import lombok.Data;
  */
 @Data
 public class ConnectionDTO {
-
     private String alias;
     private String orchestratorUrl;
     private String apiKey;
-
 }
