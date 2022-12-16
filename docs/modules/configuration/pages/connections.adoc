@@ -5,49 +5,60 @@ First, we have to define the connections the plugin uses to connect to the Orche
 an orchestrator URL, an API key to authenticate against the orchestrator, and an alias used to reference it. Connections
 are saved internally in the Secure Credentials Vault.
 
-Connections can be added, validated, and modified via both ReST endpoints and karaf shell commands.
+You can use REST endpoints and Karaf shell commands to add, validate, and modify connections.
 
-== ReST
+== REST
 
-NOTE: By default, the plugin will validate new connections before saving them. This can be overridden in the appropriate endpoints with the *force* query parameter.
+NOTE: By default, the plugin will validate new connections before saving them.
+Use the `force` query parameter to override this behavior.
 
-The plugin mounts all endpoints at the following location.
-```
-http://localhost:8980/opennms/rest/velocloud/
-```
+The plugin mounts all endpoints at the following location: `http://localhost:8980/opennms/rest/velocloud/`.
 
-=== GETs (Retrieving Data)
-[options="header", cols="5,10"]
+=== GETs (retrieving data)
+[options="header, autowidth" cols="1,2"]
 |===
-| Resource                  | Description
-| `/connections`            | Get a list of connections.
-| `/connections/\{alias}`   | Validate an existing connection.
+| Resource
+| Description
+| `/connections`
+| Get a list of connections.
+| `/connections/\{alias}`
+| Validate an existing connection.
 |===
 
-=== POSTs (Adding Data)
-[options="header", cols="5,10, 5"]
+=== POSTs (adding data)
+[options="header, autowidth" cols="1,2,2"]
 |===
-| Resource                   | Description | Query Options
-| `/connections`             | Validates the incoming credentials and saves the valid connection to SCV. Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format. | *dryrun* - Do not save the connection.
+| Resource
+| Description
+| Query Options
+| `/connections`
+| Validates the incoming credentials and saves the valid connection to SCV. 
+Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format.
+| *dryrun* - Do not save the connection.
 
 *force* - Do not validate the connection.
 |===
 
-=== PUTs (Modifying Data)
-[options="header", cols="5,10, 5"]
+=== PUTs (modifying data)
+[options="header, autowidth" cols="1,2,2"]
 |===
-| Resource                    | Description | Query Options
-| `/connections/\{alias}`     | Edit an existing connection. Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format. | *force* - Do not validate the cconnection.
+| Resource
+| Description
+| Query Options
+| `/connections/\{alias}`
+| Edit an existing connection.
+Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format.
+| *force* - Do not validate the connection.
 |===
 
 == Karaf
-.Connect to Karaf shell
+.Connect to Karaf shell.
 [source, console]
 ----
 ssh -p 8101 admin@localhost
 ----
 [source, console]
-.List Existing Connections
+.List existing connections.
 ----
 admin@opennms()> opennms-velocloud:connection-list --help
 DESCRIPTION
@@ -63,7 +74,7 @@ DETAILS
 ----
 
 [source, console]
-.Add a Connection
+.Add a connection.
 ----
 admin@opennms()> opennms-velocloud:connection-add --help
 DESCRIPTION
@@ -98,7 +109,7 @@ DETAILS
 ----
 
 [source, console]
-.Edit an Existing Connection
+.Edit an existing connection.
 ----
 admin@opennms()> opennms-velocloud:connection-edit --help
 DESCRIPTION
@@ -131,7 +142,7 @@ DETAILS
 ----
 
 [source, console]
-.Validate an Existing Connection
+.Validate an existing connection.
 ----
 admin@opennms()> opennms-velocloud:connection-validate --help
 DESCRIPTION
