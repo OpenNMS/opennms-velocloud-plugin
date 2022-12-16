@@ -65,6 +65,8 @@ public class EditConnectionCommand implements Action {
             return null;
         }
 
+        connection.get().setOrchestratorUrl(url);
+        connection.get().setApiKey(apiKey);
         if (!this.skipValidation) {
             final var error = connection.get().validate();
             if (error.isPresent()) {
