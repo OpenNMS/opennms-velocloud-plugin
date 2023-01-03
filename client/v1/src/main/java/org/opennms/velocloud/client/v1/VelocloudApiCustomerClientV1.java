@@ -28,6 +28,7 @@
 
 package org.opennms.velocloud.client.v1;
 
+import static javax.swing.UIManager.get;
 import static org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.getInterval;
 
 import java.math.BigDecimal;
@@ -60,8 +61,11 @@ import org.opennms.velocloud.client.api.model.Link;
 import org.opennms.velocloud.client.api.model.MetricsEdge;
 import org.opennms.velocloud.client.api.model.MetricsLink;
 import org.opennms.velocloud.client.api.model.Path;
+import org.opennms.velocloud.client.api.model.Score;
 import org.opennms.velocloud.client.api.model.Traffic;
+import org.opennms.velocloud.client.api.model.TrafficApplication;
 import org.opennms.velocloud.client.api.model.TrafficDestination;
+import org.opennms.velocloud.client.api.model.TrafficSource;
 import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
@@ -417,33 +421,32 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     @Override
     public MetricsEdge getEdgeMetrics(int edgeId) throws VelocloudApiException {
 
-        //all API-calls are executed parallel to reduce waiting time
-        final Future<ConfigurationGetRoutableApplicationsResult> futureRoutableApplications =
-                this.api.asyncCall("routable applications", GET_ROUTABLE_APPLICATIONS,
+        final ConfigurationGetRoutableApplicationsResult routableApplications =
+                this.api.call("routable applications", GET_ROUTABLE_APPLICATIONS,
                         new ConfigurationGetRoutableApplications().edgeId(edgeId).enterpriseId(enterpriseId));
 
-        final Future<EdgeStatusMetricsSummary> futureSystemMetrics =
-                this.api.asyncCall("edge system metrics", GET_EDGE_SYSTEM_METRICS,
+        final EdgeStatusMetricsSummary systemMetrics =
+                this.api.call("edge system metrics", GET_EDGE_SYSTEM_METRICS,
                         new MetricsGetEdgeStatusMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
                                 .metrics(EDGE_SYSTEM_METRICS).interval(getInterval(intervalMillis)));
 
-        final Future<List<MetricsGetEdgeAppMetricsResultItem>> futureAppMetrics =
-                this.api.asyncCall("edge traffic by applications ", GET_EDGE_APP_METRICS,
+        final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications =
+                this.api.call("edge traffic by applications ", GET_EDGE_APP_METRICS,
                         new MetricsGetEdgeAppMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
                                 .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis)));
 
-        final Future<List<MetricsGetEdgeDeviceMetricsResultItem>> futureDeviceMetrics =
-                this.api.asyncCall("edge traffic by source", GET_EDGE_DEVICE_METRICS,
+        final List<MetricsGetEdgeDeviceMetricsResultItem> trafficSources =
+                this.api.call("edge traffic by source", GET_EDGE_DEVICE_METRICS,
                         new MetricsGetEdgeDeviceMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
                                 .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis)));
 
-        final Future<List<MetricsGetEdgeDestMetricsResultItem>> futureDestMetrics =
-                this.api.asyncCall("edge traffic by destination", GET_EDGE_DEST_METRICS,
+        final List<MetricsGetEdgeDestMetricsResultItem> trafficDestination =
+                this.api.call("edge traffic by destination", GET_EDGE_DEST_METRICS,
                         new MetricsGetEdgeDestMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
                                 .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis)));
 
-        final Future<LinkQualityEventGetLinkQualityEventsResult> futureQoe =
-                this.api.asyncCall("edge dest metrics", GET_LINK_QUALITY_EVENTS,
+        final LinkQualityEventGetLinkQualityEventsResult qoe =
+                this.api.call("edge dest metrics", GET_LINK_QUALITY_EVENTS,
                         new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
                                 .interval(getInterval(intervalMillis)).maxSamples(1));
 
@@ -487,25 +490,15 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
         Objects.requireNonNull(linkLogicalId);
 
-        final Future<List<MetricsGetEdgeLinkMetricsResultItem>>futureEdgeLinkMetrics = this.api.asyncCall(
+        final List<MetricsGetEdgeLinkMetricsResultItem> metrics = this.api.call(
                 "edge link metrics",GET_EDGE_LINK_METRICS,
                 new MetricsGetEdgeLinkMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
                         .interval(getInterval(intervalMillis))
                         .metrics(EDGE_LINK_METRICS));
-        final Future<LinkQualityEventGetLinkQualityEventsResult> futureQoe =
-                this.api.asyncCall("edge dest metrics", GET_LINK_QUALITY_EVENTS,
+        final LinkQualityEventGetLinkQualityEventsResult qoe =
+                this.api.call("edge dest metrics", GET_LINK_QUALITY_EVENTS,
                         new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
                                 .interval(getInterval(intervalMillis)).maxSamples(1));
-
-        final List<MetricsGetEdgeLinkMetricsResultItem> metrics;
-        final LinkQualityEventGetLinkQualityEventsResult qoe;
-
-        try {
-             metrics = futureEdgeLinkMetrics.get();
-             qoe = futureQoe.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new VelocloudApiException("Error while asynchronously executing API call", e);
-        }
 
         return metrics.stream().filter(item -> linkLogicalId.equals(item.getLink().getLogicalId())).findFirst().map(item ->
                 MetricsLink.builder()
@@ -543,9 +536,10 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                     .withBestLossPctTx(item.getBestLossPctTx())
                     .withScoreRx(item.getScoreRx())
                     .withScoreTx(item.getScoreTx())
-            ).orElse(null) // TODO what to do when LINK not in response
+            ).orElseThrow(() -> new VelocloudApiException("Error getting link metrics"))
                 //add score
-                .withScoreBeforeOptimization(map(qoe.get(linkLogicalId).getScore()))//TODO is NPE Ok when qoe.get(linkLogicalId) is null?
+                .withScoreBeforeOptimization(Optional.ofNullable(qoe.get(linkLogicalId))
+                        .map(linkQualityObject -> map(linkQualityObject.getScore())).orElse(null))
                 .build();
     }
 
