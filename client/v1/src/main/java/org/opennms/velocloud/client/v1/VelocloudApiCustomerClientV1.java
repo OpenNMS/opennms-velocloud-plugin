@@ -40,9 +40,12 @@ import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.CustomerEvent;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.Link;
+import org.opennms.velocloud.client.api.model.Path;
 import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
+import org.opennms.velocloud.client.v1.model.EdgeGetEdgeSdwanPeers;
+import org.opennms.velocloud.client.v1.model.EdgeGetEdgeSdwanPeersResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdgesResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsers;
@@ -64,6 +67,9 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     public final static ApiCache.Endpoint<MonitoringGetEnterpriseEdgeNvsTunnelStatusBody, List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>>
             MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS = AllApi::monitoringGetEnterpriseEdgeNvsTunnelStatus;
 
+    public final static ApiCache.Endpoint<EdgeGetEdgeSdwanPeers, List<EdgeGetEdgeSdwanPeersResultItem>>
+            EDGE_GET_EDGE_SDWAN_PEERS = AllApi::edgeGetEdgeSdwanPeers;
+
     private final ApiCache.Api api;
 
     private final int enterpriseId;
@@ -72,6 +78,30 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                                         final int enterpriseId) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseId = enterpriseId;
+    }
+
+    public List<Path> getPaths(final int edgeId) throws VelocloudApiException {
+        final var paths = this.api.call("paths", EDGE_GET_EDGE_SDWAN_PEERS,
+                new EdgeGetEdgeSdwanPeers()
+                        .edgeId(edgeId)
+                        .enterpriseId(this.enterpriseId)
+                        .limit(Integer.MAX_VALUE));
+
+        return paths.stream()
+                .map(p -> Path.builder()
+                        .withPeerType(p.getPeerType().toString())
+                        .withPeerName(p.getPeerName())
+                        .withEdgeLogicalId(p.getEdgeLogicalId())
+                        .withDeviceLogicalId(p.getDeviceLogicalId())
+                        .withDescription(p.getDescription())
+                        .withPathCountStable(p.getPathStatusCount().getStable())
+                        .withPathCountUnstable(p.getPathStatusCount().getUnstable())
+                        .withPathCountStandBy(p.getPathStatusCount().getStandby())
+                        .withPathCountDead(p.getPathStatusCount().getDead())
+                        .withPathCountUnknown(p.getPathStatusCount().getUnknown())
+                        .withPathCountTotal(p.getPathStatusCount().getTotal())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -97,6 +127,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                                   .withDnsName(e.getDnsName())
                                   .withLteRegion(e.getLteRegion())
                                   .withLogicalId(e.getLogicalId())
+                                  .withEdgeId(e.getId())
                                   .withModelNumber(e.getModelNumber())
                                   .withName(e.getName())
                                   .withOperatorAlertsEnabled(e.getOperatorAlertsEnabled().getValue() != 0)

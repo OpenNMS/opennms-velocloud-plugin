@@ -48,6 +48,7 @@ public class Edge {
     public final String dnsName;
     public final String lteRegion;
     public final String logicalId;
+    public final int edgeId;
     public final String modelNumber;
     public final String name;
     public final boolean operatorAlertsEnabled;
@@ -80,6 +81,7 @@ public class Edge {
         this.dnsName = Strings.emptyToNull(builder.dnsName);
         this.lteRegion = Strings.emptyToNull(builder.lteRegion);
         this.logicalId = Objects.requireNonNull(builder.logicalId);
+        this.edgeId = Objects.requireNonNull(builder.edgeId);
         this.modelNumber = Strings.emptyToNull(builder.modelNumber);
         this.name = Objects.requireNonNull(builder.name);
         this.operatorAlertsEnabled = builder.operatorAlertsEnabled;
@@ -115,6 +117,7 @@ public class Edge {
                           .add("dnsName", this.dnsName)
                           .add("lteRegion", this.lteRegion)
                           .add("logicalId", this.logicalId)
+                          .add("edgeId", this.edgeId)
                           .add("modelNumber", this.modelNumber)
                           .add("name", this.name)
                           .add("operatorAlertsEnabled", this.operatorAlertsEnabled)
@@ -151,6 +154,7 @@ public class Edge {
         private String dnsName;
         private String lteRegion;
         private String logicalId;
+        private Integer edgeId;
         private String modelNumber;
         private String name;
         private boolean operatorAlertsEnabled;
@@ -234,6 +238,11 @@ public class Edge {
 
         public Builder withLogicalId(String logicalId) {
             this.logicalId = logicalId;
+            return this;
+        }
+
+        public Builder withEdgeId(Integer edgeId) {
+            this.edgeId = edgeId;
             return this;
         }
 
