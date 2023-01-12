@@ -28,6 +28,8 @@
 
 package org.opennms.velocloud.client.api.model;
 
+import java.util.Objects;
+
 import com.google.common.base.MoreObjects;
 
 public class Path {
@@ -45,16 +47,16 @@ public class Path {
 
     private Path(Builder builder) {
         peerType = builder.peerType;
-        peerName = builder.peerName;
+        peerName = Objects.requireNonNull(builder.peerName);
         description = builder.description;
         edgeLogicalId = builder.edgeLogicalId;
-        deviceLogicalId = builder.deviceLogicalId;
+        deviceLogicalId = Objects.requireNonNull(builder.deviceLogicalId);
         pathCountStable = builder.pathCountStable;
-        pathCountUnstable = builder.pathCountUnstable;
-        pathCountStandBy = builder.pathCountStandBy;
-        pathCountDead = builder.pathCountDead;
-        pathCountUnknown = builder.pathCountUnknown;
-        pathCountTotal = builder.pathCountTotal;
+        pathCountUnstable = Objects.requireNonNull(builder.pathCountUnstable);
+        pathCountStandBy = Objects.requireNonNull(builder.pathCountStandBy);
+        pathCountDead = Objects.requireNonNull(builder.pathCountDead);
+        pathCountUnknown = Objects.requireNonNull(builder.pathCountUnknown);
+        pathCountTotal = Objects.requireNonNull(builder.pathCountTotal);
     }
 
     @Override
