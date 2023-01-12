@@ -33,6 +33,7 @@ import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionInterface;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
+import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMonitoredService;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.internal.Utils;
@@ -94,8 +95,13 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                          .build());
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                          .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                                         .setKey("edgeId")
+                                                         .setKey("logicalEdgeId")
                                                          .setValue(edge.logicalId)
+                                                         .build());
+            node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                                         .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                                         .setKey("edgeId")
+                                                         .setValue(String.valueOf(edge.edgeId))
                                                          .build());
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                          .setContext(VELOCLOUD_METADATA_CONTEXT)
@@ -148,6 +154,20 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                                .setDescription("Edge Meta");
                 iface.addMonitoredService("VelocloudEdgeConnection");
                 iface.addMonitoredService("VelocloudEdgeService");
+
+                for(final var path : client.getPaths(edge.edgeId)) {
+                    final var service = ImmutableRequisitionMonitoredService
+                            .newBuilder()
+                                    .setName(String.format("VelocloudEdgePath-%s", path.peerName))
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                            .setKey("deviceLogicalId")
+                                            .setValue(path.deviceLogicalId)
+                                            .build())
+                                    .build();
+
+                    iface.addMonitoredService(service);
+                }
 
                 node.addInterface(iface.build());
             }

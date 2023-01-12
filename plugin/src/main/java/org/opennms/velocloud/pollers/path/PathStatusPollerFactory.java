@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,34 +26,22 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.client.api;
+package org.opennms.velocloud.pollers.path;
 
-import java.time.Instant;
-import java.util.List;
+import org.opennms.velocloud.clients.ClientManager;
+import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.pollers.AbstractStatusPoller;
 
-import org.opennms.velocloud.client.api.model.Edge;
-import org.opennms.velocloud.client.api.model.CustomerEvent;
-import org.opennms.velocloud.client.api.model.Path;
-import org.opennms.velocloud.client.api.model.Tunnel;
-import org.opennms.velocloud.client.api.model.User;
+public class PathStatusPollerFactory extends AbstractStatusPoller.Factory<PathStatusPoller> {
 
-/**
- * A client for the velocloud API authenticated as a customer.
- */
-public interface VelocloudApiCustomerClient {
+    public PathStatusPollerFactory(final ClientManager clientManager,
+                                     final ConnectionManager connectionManager) {
+        super(clientManager, connectionManager, PathStatusPoller.class);
+    }
 
-    /**
-     * Get the edges of the customer.
-     * @return a list of {@link Edge}s
-     * @throws VelocloudApiException
-     */
-    List<Edge> getEdges() throws VelocloudApiException;
-
-    List<Path> getPaths(int edgeId) throws VelocloudApiException;
-
-    List<User> getUsers() throws VelocloudApiException;
-
-    List<CustomerEvent> getEvents(Instant start, Instant end) throws VelocloudApiException;
-
-    List<Tunnel> getNvsTunnels() throws VelocloudApiException;
+    @Override
+    protected PathStatusPoller createPoller(final ClientManager clientManager) {
+        return new PathStatusPoller(clientManager);
+    }
 }
+
