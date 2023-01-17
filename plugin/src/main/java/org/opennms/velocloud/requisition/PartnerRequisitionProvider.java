@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -37,6 +37,7 @@ import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableReq
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionInterface;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
+import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
@@ -52,9 +53,10 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
     public final static String TYPE = "velocloud-partner";
 
-    public PartnerRequisitionProvider(final ClientManager clientManager,
+    public PartnerRequisitionProvider(final NodeDao nodeDao,
+                                      final ClientManager clientManager,
                                       final ConnectionManager connectionManager) {
-        super(clientManager, connectionManager);
+        super(nodeDao, clientManager, connectionManager);
     }
 
     @Override
@@ -78,7 +80,8 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
             for (final var gateway : client.getGateways()) {
                 final var node = ImmutableRequisitionNode.newBuilder()
                                                          .setForeignId(gateway.gatewayName)
-                                                         .setNodeLabel(gateway.gatewayName);
+                                                         .setNodeLabel(gateway.gatewayName)
+                                                         .setLocation(context.getLocation());
                 node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                              .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                              .setKey("alias")

@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -35,6 +35,7 @@ import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableReq
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMonitoredService;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
+import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.internal.Utils;
 import org.opennms.velocloud.clients.ClientManager;
@@ -49,9 +50,10 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
     
     public static final String PARAMETER_ENTERPRISE_ID = "enterpriseId";
 
-    public CustomerRequisitionProvider(final ClientManager clientManager,
+    public CustomerRequisitionProvider(final NodeDao nodeDao,
+                                       final ClientManager clientManager,
                                        final ConnectionManager connectionManager) {
-        super(clientManager, connectionManager);
+        super(nodeDao, clientManager, connectionManager);
     }
 
     @Override
@@ -82,7 +84,8 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
         for (var edge : client.getEdges()) {
             final var node = ImmutableRequisitionNode.newBuilder()
                                                      .setForeignId(edge.name)
-                                                     .setNodeLabel(edge.name);
+                                                     .setNodeLabel(edge.name)
+                                                     .setLocation(context.getLocation());
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                          .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                          .setKey("alias")
