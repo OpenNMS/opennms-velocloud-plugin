@@ -1,7 +1,7 @@
-= ReST Endpoints
+= REST Endpoints
 :imagesdir: ../assets/images
 
-Some basic ReSTful endpoints are available for basic connection management.
+Some RESTful endpoints are available for basic connection management.
 
 NOTE: The `Content-Type` of the request and response is `application/json`.
 
@@ -26,7 +26,7 @@ NOTE: The `Content-Type` of the request and response is `application/json`.
 
 | `/plugin/velocloud/connections/\{alias}`
 | PUT
-| Update a configured connection.
+| Updates a configured connection.
 
 | `/plugin/velocloud/connections/\{alias}`
 | GET
@@ -118,7 +118,7 @@ curl -u admin:admin http://localhost:8980/opennms/rest/plugin/velocloud/connecti
 ]
 ----
 
-=== Adding a new connection
+=== Add a new connection
 
 .Request
 [source, console]
@@ -132,7 +132,7 @@ curl -H "Content-type: application/json" -X POST -u admin:admin http://localhost
 Connection successfully added
 ----
 
-=== Updating a connection
+=== Update a connection
 
 .Request
 [source, console]
@@ -146,7 +146,7 @@ curl -H "Content-type: application/json" -X PUT -u admin:admin http://localhost:
 Connection successfully updated
 ----
 
-=== Validating a configured connection
+=== Validate a configured connection
 
 .Request
 [source, console]
