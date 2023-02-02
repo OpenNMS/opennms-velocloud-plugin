@@ -42,7 +42,7 @@ public class EdgeServiceStatusPoller extends AbstractEdgeStatusPoller {
         super(clientManager);
     }
 
-    protected PollerResult poll(final Edge edge) throws VelocloudApiException {
+    protected PollerResult poll(final Context context, final Edge edge) throws VelocloudApiException {
         if (!Objects.equals(edge.serviceState, "IN_SERVICE")) {
             return ImmutablePollerResult.newBuilder()
                                         .setStatus(Status.Down)

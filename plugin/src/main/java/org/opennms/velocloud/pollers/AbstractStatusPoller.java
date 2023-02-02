@@ -47,6 +47,7 @@ import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 public abstract class AbstractStatusPoller implements ServicePoller {
@@ -145,7 +146,13 @@ public abstract class AbstractStatusPoller implements ServicePoller {
         }
 
         public VelocloudApiCustomerClient customerClient() throws VelocloudApiException {
-            return AbstractStatusPoller.this.clientManager.getCustomerClient(this.getClientCredentials());
+            final String enterpriseId = this.request.getPollerAttributes().get("enterpriseId");
+
+            if (Strings.isNullOrEmpty(enterpriseId)) {
+                return AbstractStatusPoller.this.clientManager.getCustomerClient(this.getClientCredentials());
+            } else {
+                return AbstractStatusPoller.this.clientManager.getPartnerClient(this.getClientCredentials()).getCustomerClient(Integer.parseInt(enterpriseId));
+            }
         }
 
         public Map<String, String> getPollerAttributes() {

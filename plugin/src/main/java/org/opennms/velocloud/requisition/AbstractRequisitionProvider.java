@@ -42,11 +42,11 @@ import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
-import org.opennms.velocloud.connections.ConnectionValidationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 
 public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitionProvider.Request> implements RequisitionProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
@@ -112,10 +112,6 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         }
     }
 
-    public static String createForeignSource(final String type, final String alias) {
-        return String.format("%s-%s", type, alias);
-    }
-
     protected static abstract class Request implements RequisitionRequest {
 
         private String foreignSource;
@@ -129,15 +125,16 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         public Request() {
         }
 
-        public Request(final String type, final Connection connection) {
-            this.foreignSource = createForeignSource(type, connection.getAlias());
+        public Request(final Connection connection) {
             this.alias = Objects.requireNonNull(connection.getAlias());
             this.orchestratorUrl = Objects.requireNonNull(connection.getOrchestratorUrl());
             this.apiKey = Objects.requireNonNull(connection.getApiKey());
         }
 
+        protected abstract String getDefaultForeignSource();
+
         public String getForeignSource() {
-            return this.foreignSource;
+            return Strings.isNullOrEmpty(this.foreignSource) ? this.getDefaultForeignSource() : this.foreignSource;
         }
 
         public void setForeignSource(final String foreignSource) {

@@ -33,6 +33,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
@@ -44,14 +45,21 @@ import org.opennms.velocloud.client.api.model.Path;
 import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
+import org.opennms.velocloud.client.v1.model.EdgeGetEdge;
+import org.opennms.velocloud.client.v1.model.EdgeGetEdgeGatewayAssignments;
+import org.opennms.velocloud.client.v1.model.EdgeGetEdgeGatewayAssignmentsResult;
+import org.opennms.velocloud.client.v1.model.EdgeGetEdgeResult;
 import org.opennms.velocloud.client.v1.model.EdgeGetEdgeSdwanPeers;
 import org.opennms.velocloud.client.v1.model.EdgeGetEdgeSdwanPeersResultItem;
+import org.opennms.velocloud.client.v1.model.EdgeObject;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdges;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdgesResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsers;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsersResultItem;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEvents;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEventsResult;
+import org.opennms.velocloud.client.v1.model.GatewayGetGatewayEdgeAssignments;
+import org.opennms.velocloud.client.v1.model.GatewayGetGatewayEdgeAssignmentsResultItem;
 import org.opennms.velocloud.client.v1.model.Interval;
 import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusBody;
 import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem;
@@ -66,9 +74,10 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
             EVENT_GET_ENTERPRISE_EVENTS  = AllApi::eventGetEnterpriseEvents;
     public final static ApiCache.Endpoint<MonitoringGetEnterpriseEdgeNvsTunnelStatusBody, List<MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem>>
             MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS = AllApi::monitoringGetEnterpriseEdgeNvsTunnelStatus;
-
     public final static ApiCache.Endpoint<EdgeGetEdgeSdwanPeers, List<EdgeGetEdgeSdwanPeersResultItem>>
             EDGE_GET_EDGE_SDWAN_PEERS = AllApi::edgeGetEdgeSdwanPeers;
+    public final static ApiCache.Endpoint<EdgeGetEdgeGatewayAssignments, EdgeGetEdgeGatewayAssignmentsResult>
+            EDGE_GET_GATEWAY_ASSIGNMENTS = AllApi::edgeGetEdgeGatewayAssignments;
 
     private final ApiCache.Api api;
 
@@ -239,4 +248,17 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                                            .build())
                       .collect(Collectors.toList());
     }
+
+    public Optional<Integer> getSuperGateway(final int edgeId) throws VelocloudApiException {
+        final EdgeGetEdgeGatewayAssignmentsResult assignedGateways = this.api.call(
+                "edgeGatewayAssignments",
+                EDGE_GET_GATEWAY_ASSIGNMENTS,
+                new EdgeGetEdgeGatewayAssignments()
+                        .enterpriseId(enterpriseId)
+                        .id(edgeId)
+        );
+
+        return Optional.of(assignedGateways.getSuperGateway().getId());
+    }
+
 }

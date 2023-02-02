@@ -30,6 +30,7 @@ package org.opennms.velocloud.client.api;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.CustomerEvent;
@@ -56,4 +57,6 @@ public interface VelocloudApiCustomerClient {
     List<CustomerEvent> getEvents(Instant start, Instant end) throws VelocloudApiException;
 
     List<Tunnel> getNvsTunnels() throws VelocloudApiException;
+
+    Optional<Integer> getSuperGateway(final int edgeId) throws VelocloudApiException;
 }
