@@ -29,7 +29,9 @@
 package org.opennms.velocloud.collection;
 
 import static org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller.ATTR_EDGE_ID;
+import static org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller.ATTR_LINK_ID;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -37,22 +39,24 @@ import java.util.concurrent.CompletableFuture;
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.CollectionSet;
 import org.opennms.integration.api.v1.collectors.immutables.ImmutableNumericAttribute;
-import org.opennms.integration.api.v1.collectors.resource.CollectionSetResource;
-import org.opennms.integration.api.v1.collectors.resource.GenericTypeResource;
 import org.opennms.integration.api.v1.collectors.resource.IpInterfaceResource;
 import org.opennms.integration.api.v1.collectors.resource.NumericAttribute;
+import org.opennms.integration.api.v1.collectors.resource.Resource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSet;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
-import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableGenericTypeResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableIpInterfaceResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
-import org.opennms.integration.api.v1.pollers.Status;
-import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
+import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudServiceCollector;
-import org.opennms.velocloud.client.api.model.MetricsTraffic;
+import org.opennms.velocloud.client.api.model.MetricsLink;
+import org.opennms.velocloud.client.api.model.Traffic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VelocloudServiceLinkCollector implements VelocloudServiceCollector {
+
+    private static final Logger LOG = LoggerFactory.getLogger(VelocloudServiceLinkCollector.class);
 
     private final VelocloudApiCustomerClient client;
 
@@ -66,78 +70,90 @@ public class VelocloudServiceLinkCollector implements VelocloudServiceCollector 
 
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest request, Map<String, Object> attributes) {
-TODO
-        //now()
-        //now()-5min
-        
-        final var edgeId = Objects.requireNonNull(attributes.get(ATTR_EDGE_ID),  // liefert eien String zurück
-                "Missing attribute: " + ATTR_EDGE_ID);
-        final var linkId = Objects.requireNonNull(attributes.get(ATTR_LINK_ID),
-                "Missing attribute: " + ATTR_LINK_ID);
 
-        final var link = this.client.getEdgeAppTraffic()
-                getEdges().stream()
-                .filter(e -> Objects.equals(e.logicalId, edgeId))
-                .flatMap(e -> e.links.stream())
-                .filter(l -> Objects.equals(l.logicalId, linkId))
-                .findAny();
+        Integer edgeId = null;
+        String linkId = null;
+        final MetricsLink linkMetrics;
+        final long timestamp = Instant.now().toEpochMilli();
 
-        if (link.isEmpty()) {
-            return CompletableFuture.completedFuture(ImmutablePollerResult.newBuilder()
-                    .setStatus(Status.Down)
-                    .setReason("No link with id " + edgeId + "/" + linkId)
-                    .build());
+        try {
+            edgeId = Integer.parseInt(
+                    Objects.requireNonNull(attributes.get(ATTR_EDGE_ID),"Missing attribute: " + ATTR_EDGE_ID).toString());
+            linkId = Objects.requireNonNull(attributes.get(ATTR_LINK_ID),
+                    "Missing attribute: " + ATTR_LINK_ID).toString();
+            linkMetrics = this.client.getLinkMetrics(edgeId, linkId);
+        } catch (RuntimeException | VelocloudApiException ex) {
+            LOG.warn("Error collecting Velocloud link data for link {}/{}, Error: {}", edgeId, linkId, ex.toString());
+            //TODO what to return?
+            //return  CompletableFuture.failedFuture(ex);
+            //or
+            return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
+                    .setStatus(CollectionSet.Status.FAILED).setTimestamp(timestamp).build());
         }
 
-        return CompletableFuture.completedFuture(this.poll(link.get()));        
-        
-        
-        
+        if (linkMetrics == null) {
+            return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
+                    .setStatus(CollectionSet.Status.FAILED).setTimestamp(timestamp).build());
+        }
+
         final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
         final ImmutableIpInterfaceResource interfaceResource =
                 ImmutableIpInterfaceResource.newBuilder().setNodeResource(nodeResource).setInstance(request.getAddress().toString()/*todo check format*/).build();
-        final CollectionSetResource<IpInterfaceResource> trBytes = ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class).setResource(interfaceResource).addNumericAttribute(
-                ImmutableNumericAttribute.newBuilder().setGroup("velocloud-trafic-someting...").setName("trBytes")
-                        .setValue(123.0/*todo*/).setType(NumericAttribute.Type.GAUGE)
-                        .build()).build();//todo what unit of measure?    todo pro attribute todo pro sekunde
 
-        final ImmutableCollectionSet.Builder builder = ImmutableCollectionSet.newBuilder().addCollectionSetResource(trBytes);
+        final ImmutableCollectionSetResource.Builder<IpInterfaceResource> linkAttrBuilder =
+                ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class).setResource(interfaceResource);
 
+        final int milliseconds = this.client.getIntervalMillis();
 
+        addNumAttr(linkAttrBuilder, "velocloud-link-bandwidth", "bandwidthRx", linkMetrics.getBandwidthRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-bandwidth", "bandwidthTx", linkMetrics.getBandwidthTx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-latency", "bestLatencyMsRx", linkMetrics.getBestLatencyMsRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-latency", "bestLatencyMsTx", linkMetrics.getBestLatencyMsTx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-jitter", "bestJitterMsRx", linkMetrics.getBestJitterMsRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-jitter", "bestJitterMsTx", linkMetrics.getBestJitterMsTx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-loss-pct", "bestLossPctRx", linkMetrics.getBestLossPctRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-loss.pct", "bestLossPctRx", linkMetrics.getBestLossPctTx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-score", "scoreRx", linkMetrics.getScoreRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-score", "scoreTx", linkMetrics.getScoreTx());
 
+        addTraffic(linkAttrBuilder, "velocloud-link-traffic-p1", "p1", linkMetrics.getTrafficPriority1(), milliseconds);
+        addTraffic(linkAttrBuilder, "velocloud-link-traffic-p2", "p2", linkMetrics.getTrafficPriority2(), milliseconds);
+        addTraffic(linkAttrBuilder, "velocloud-link-traffic-p3", "p3", linkMetrics.getTrafficPriority3(), milliseconds);
+        addTraffic(linkAttrBuilder, "velocloud-link-traffic-control", "control", linkMetrics.getTrafficControl(), milliseconds);
 
-
-
-        MetricsTraffic mt;
-        mt.getPerApplication().forEach( (name, appTraffic)-> {
-                    final CollectionSetResource<GenericTypeResource> appResource = ImmutableCollectionSetResource.newBuilder(GenericTypeResource.class).setResource(
-                                    ImmutableGenericTypeResource.newBuilder().setNodeResource(nodeResource)
-                                            .setType("VelocloudAppTraffic")
-                                            .setInstance(name)
-                                            .build()
-                            )
-                            .addNumericAttribute(ImmutableNumericAttribute.newBuilder().setGroup("VelCloAppGroup")
-                                    .setName("bytesRx")
-                                    .setValue((double) appTraffic.getBytesTx()).build())
-                            .addNumericAttribute(ImmutableNumericAttribute.newBuilder().setGroup("VelCloAppGroup")
-                                    .setName("bytesTx")
-                                    .setValue((double) appTraffic.getBytesTx()).build())
-                            .addNumericAttribute(ImmutableNumericAttribute.newBuilder().setGroup("VelCloAppGroup")
-                                    .setName("packetsRx")
-                                    .setValue((double) appTraffic.getBytesTx()).build())
-                            .addNumericAttribute(ImmutableNumericAttribute.newBuilder().setGroup("VelCloAppGroup")
-                                    .setName("packetsTx")
-                                    .setValue((double) appTraffic.getBytesTx()).build())
-
-                            .build();
-
-builder.addCollectionSetResource(appResource);
-                }
-
-
+        return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
+                        .setStatus(CollectionSet.Status.SUCCEEDED)
+                        .addCollectionSetResource(linkAttrBuilder.build())
+                        .build()
         );
+    }
 
-        builder.build();
-        return new CompletableFuture<>();
+    private void addNumAttr(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
+                            String name, Number value) {
+        if(value != null) {
+            builder.addNumericAttribute(createNumAttr(groupId, name, value.doubleValue()));
+        }
+    }
+
+    private void addNumAttr(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
+                            String name, Number value, long milliseconds) {
+        if(value != null) {
+            builder.addNumericAttribute(createNumAttr(groupId, name, value.doubleValue() * 1000 / milliseconds));
+        }
+    }
+
+    private NumericAttribute createNumAttr(String groupId, String name, double value) {
+        return ImmutableNumericAttribute.newBuilder().setGroup(groupId).setName(name).setValue(value)
+                .setType(NumericAttribute.Type.GAUGE).build();
+    }
+
+    private void addTraffic(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
+                            String prefix, Traffic traffic, long milliseconds) {
+        if(traffic != null) {
+            addNumAttr(builder, groupId, prefix + "BytesRx", traffic.getBytesRx(), milliseconds);
+            addNumAttr(builder, groupId, prefix + "BytesTx", traffic.getBytesTx(), milliseconds);
+            addNumAttr(builder, groupId, prefix + "PacketsRx", traffic.getPacketsRx(), milliseconds);
+            addNumAttr(builder, groupId, prefix + "PacketsTx", traffic.getPacketsTx(), milliseconds);
+        }
     }
 }

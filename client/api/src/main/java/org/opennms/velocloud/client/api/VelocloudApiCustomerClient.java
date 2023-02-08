@@ -48,6 +48,7 @@ public interface VelocloudApiCustomerClient {
 
     /**
      * Get the edges of the customer.
+     *
      * @return a list of {@link Edge}s
      * @throws VelocloudApiException
      */
@@ -68,4 +69,10 @@ public interface VelocloudApiCustomerClient {
     MetricsEdge getEdgeMetrics(int edgeId) throws VelocloudApiException;
 
     MetricsLink getLinkMetrics(int edgeId, String linkId) throws VelocloudApiException;
+
+    /**
+     * Interval in milliseconds for collecting data
+     * @return interval in milliseconds
+     */
+    int getIntervalMillis();
 }

@@ -622,4 +622,9 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                 .withTransactional(score.get("2"))
                 .build();
     }
+
+    @Override
+    public int getIntervalMillis() {
+        return intervalMillis;
+    }
 }
