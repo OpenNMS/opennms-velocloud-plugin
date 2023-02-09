@@ -128,6 +128,14 @@ public class ConnectionManager {
         return Optional.of(this.clientManager.getCustomerClient(asVelocloudCredentials(connection.get())));
     }
 
+    public Optional<VelocloudApiCustomerClient> getCustomerClient(final String alias, final Integer enterpriseId) throws VelocloudApiException {
+        if (enterpriseId == null) {
+            return getCustomerClient(alias);
+        } else {
+            return getPartnerClient(alias).map(c -> c.getCustomerClient(enterpriseId));
+        }
+    }
+
     private static VelocloudApiClientCredentials asVelocloudCredentials(Connection connection) {
         return VelocloudApiClientCredentials.builder()
                                             .withApiKey(connection.getApiKey())

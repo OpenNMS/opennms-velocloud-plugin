@@ -6,6 +6,7 @@ Various service monitors will be bound to the imported Velocloud entities in Ope
 ## Edges
 * Edge Connection Status Poller
 * Edge Service Status Poller
+* Edge Management Status Poller
 * Edge Path Status Poller
 
 ## Links

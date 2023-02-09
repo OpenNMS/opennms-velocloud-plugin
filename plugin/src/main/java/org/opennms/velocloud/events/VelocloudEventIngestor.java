@@ -116,9 +116,9 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
             final Map<String, String> map = n.getMetaData().stream()
                     .filter(metaData -> Objects.equals(metaData.getContext(), AbstractRequisitionProvider.VELOCLOUD_METADATA_CONTEXT))
                     .collect(Collectors.toMap(metaData -> metaData.getKey(), metaData -> metaData.getValue()));
-            foreignSource = n.getForeignSource();
+            foreignSource = Objects.requireNonNull(n.getForeignSource());
             enterpriseId = map.get("enterpriseId");
-            alias = map.get("alias");
+            alias = Objects.requireNonNull(map.get("alias"));
         }
 
         @Override
@@ -168,54 +168,40 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
 
         final Set<RequisitionIdentifier> requisitionIdentifiers = nodeDao.getNodes().stream()
                 .filter(node -> node.getMetaData().stream()
-                    .anyMatch(metaData -> Objects.equals(AbstractRequisitionProvider.VELOCLOUD_METADATA_CONTEXT, metaData.getContext())))
+                    .anyMatch(metaData -> Objects.equals(AbstractRequisitionProvider.VELOCLOUD_METADATA_CONTEXT, metaData.getContext()) && Objects.equals("alias", metaData.getKey())))
                 .map(node -> new RequisitionIdentifier(node))
                 .collect(Collectors.toSet());
 
         for(final RequisitionIdentifier requisitionIdentifier : requisitionIdentifiers) {
-            Optional<VelocloudApiCustomerClient> velocloudApiCustomerClient = Optional.empty();
+            final Integer enterpriseId = Strings.isNullOrEmpty(requisitionIdentifier.enterpriseId) ? null : Integer.parseInt(requisitionIdentifier.enterpriseId);
 
-            if (!Strings.isNullOrEmpty(requisitionIdentifier.enterpriseId)) {
-                try {
-                    final Optional<VelocloudApiPartnerClient> velocloudApiPartnerClient = connectionManager.getPartnerClient(requisitionIdentifier.alias);
-                    if (velocloudApiPartnerClient.isPresent()) {
-                        velocloudApiCustomerClient = Optional.of(velocloudApiPartnerClient.get().getCustomerClient(Integer.parseInt(requisitionIdentifier.enterpriseId)));
-                    } else {
-                        LOG.debug("Cannot create customer connection for the given partner alias/enterpriseId: {}/{}", requisitionIdentifier.alias, requisitionIdentifier.enterpriseId);
-                    }
-                } catch (Exception e) {
-                    LOG.debug("Error creating customer connection for the given partner alias/enterpriseId: {}/{}", requisitionIdentifier.alias, requisitionIdentifier.enterpriseId);
-                }
-            } else {
-                try {
-                    velocloudApiCustomerClient = connectionManager.getCustomerClient(requisitionIdentifier.alias);
-                } catch (Exception e) {
-                    LOG.debug("Error creating customer connection for the given credentials: {}", requisitionIdentifier.alias);
-                }
-            }
-
-            if (velocloudApiCustomerClient.isPresent()) {
-                try {
-                    processCustomerEvents(lastPoll, now, requisitionIdentifier.foreignSource, velocloudApiCustomerClient.get());
-                } catch (Exception e) {
-                    LOG.error("Error processing customer events.", e);
-                }
-                continue;
-            }
-
-            Optional<VelocloudApiPartnerClient> velocloudApiPartnerClient = Optional.empty();
             try {
-                velocloudApiPartnerClient = connectionManager.getPartnerClient(requisitionIdentifier.alias);
-            } catch (Exception e) {
-                LOG.debug("Error creating partner connection for the given credentials: {}", requisitionIdentifier.alias);
+                final Optional<VelocloudApiCustomerClient> velocloudApiCustomerClient = connectionManager.getCustomerClient(requisitionIdentifier.alias, enterpriseId);
+
+                if (velocloudApiCustomerClient.isPresent()) {
+                    try {
+                        processCustomerEvents(lastPoll, now, requisitionIdentifier.foreignSource, velocloudApiCustomerClient.get());
+                    } catch (VelocloudApiException e) {
+                        LOG.error("Cannot process customer events for alias='{}', enterpriseId='{}'", requisitionIdentifier.alias, requisitionIdentifier.enterpriseId);
+                    }
+                    continue;
+                }
+            } catch (VelocloudApiException e) {
+                LOG.debug("Cannot create customer client for alias='{}', enterpriseId='{}'", requisitionIdentifier.alias, requisitionIdentifier.enterpriseId);
             }
 
-            if (velocloudApiPartnerClient.isPresent()) {
-                try {
-                    processPartnerEvents(lastPoll, now, requisitionIdentifier.foreignSource, velocloudApiPartnerClient.get());
-                } catch (Exception e) {
-                    LOG.error("Error processing partner events.", e);
+            try {
+                final Optional<VelocloudApiPartnerClient> velocloudApiPartnerClient = connectionManager.getPartnerClient(requisitionIdentifier.alias);
+
+                if (velocloudApiPartnerClient.isPresent()) {
+                    try {
+                        processPartnerEvents(lastPoll, now, requisitionIdentifier.foreignSource, velocloudApiPartnerClient.get());
+                    } catch (VelocloudApiException e) {
+                        LOG.error("Cannot process partner events for alias='{}', enterpriseId='{}'", requisitionIdentifier.alias, requisitionIdentifier.enterpriseId);
+                    }
                 }
+            } catch (VelocloudApiException e) {
+                LOG.error("Cannot create customer or partner client for alias='{}', enterpriseId='{}'", requisitionIdentifier.alias, requisitionIdentifier.enterpriseId);
             }
         }
 
@@ -317,7 +303,6 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
                 processEvent(foreignSource, customerEvent.getEdgeName(), customerEvent);
                 processed++;
             } else {
-                LOG.debug("ignoring enterprise event #{} due to missing edgeName.", customerEvent.getId());
                 ignored++;
             }
         }
@@ -335,7 +320,6 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
                 processEvent(foreignSource, partnerEvent.getGatewayName(), partnerEvent);
                 processed++;
             } else {
-                LOG.debug("ignoring proxy event #{} due to missing gatewayName.", partnerEvent.getId());
                 ignored++;
             }
         }
