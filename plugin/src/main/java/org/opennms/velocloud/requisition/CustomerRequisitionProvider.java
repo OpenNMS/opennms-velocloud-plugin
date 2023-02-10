@@ -72,8 +72,9 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
 
     @Override
     protected Requisition handleRequest(final RequestContext context) throws VelocloudApiException {
-        final var client = (context.getRequest().enterpriseId != null)
-                           ? context.getPartnerClient().getCustomerClient(context.getRequest().enterpriseId)
+        final Integer enterpriseId = context.getRequest().enterpriseId;
+        final var client = (enterpriseId != null)
+                           ? context.getPartnerClient().getCustomerClient(enterpriseId)
                            : context.getCustomerClient();
 
         final var requisition = ImmutableRequisition.newBuilder()
@@ -83,6 +84,15 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
             final var node = ImmutableRequisitionNode.newBuilder()
                                                      .setForeignId(edge.name)
                                                      .setNodeLabel(edge.name);
+
+            if (enterpriseId != null) {
+                node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                        .setContext(VELOCLOUD_METADATA_CONTEXT)
+                        .setKey("enterpriseId")
+                        .setValue(enterpriseId.toString())
+                        .build());
+            }
+
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                          .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                          .setKey("alias")
@@ -154,6 +164,10 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                                .setDescription("Edge Meta");
                 iface.addMonitoredService("VelocloudEdgeConnection");
                 iface.addMonitoredService("VelocloudEdgeService");
+
+                if (enterpriseId != null) {
+                    iface.addMonitoredService("VelocloudEdgeManagement");
+                }
 
                 for(final var path : client.getPaths(edge.edgeId)) {
                     final var service = ImmutableRequisitionMonitoredService
@@ -289,7 +303,16 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
         }
 
         public Request(final Connection connection) {
-            super(VELOCLOUD_CUSTOMER_IDENTIFIER, connection);
+            super(connection);
+        }
+
+        @Override
+        protected String getDefaultForeignSource() {
+            if (this.enterpriseId != null) {
+                return String.format("%s-%s-%d", TYPE, this.getAlias(), this.enterpriseId);
+            } else {
+                return String.format("%s-%s", TYPE, this.getAlias());
+            }
         }
 
         public Integer getEnterpriseId() {

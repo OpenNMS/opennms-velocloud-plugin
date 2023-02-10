@@ -192,7 +192,12 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
         }
 
         public Request(final Connection connection) {
-            super(VELOCLOUD_PARNTER_IDENTIFIER, connection);
+            super(connection);
+        }
+
+        @Override
+        protected String getDefaultForeignSource() {
+            return String.format("%s-%s", TYPE, this.getAlias());
         }
     }
 }
