@@ -36,23 +36,23 @@ import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.ServiceCollectorFactory;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 
-public class VelSerLiColFactory implements ServiceCollectorFactory <VelocloudServiceLinkCollector>{
+public class VelocloudEdgeCollectorFactory implements ServiceCollectorFactory<VelocloudEdgeCollector> {
 
 
     private final VelocloudApiCustomerClient client;
 
-    public VelSerLiColFactory(VelocloudApiCustomerClient client) {
+    public VelocloudEdgeCollectorFactory(VelocloudApiCustomerClient client) {
         this.client = client;
     }
 
     @Override
-    public VelocloudServiceLinkCollector createCollector() {
-        return new VelocloudServiceLinkCollector(this.client);
+    public VelocloudEdgeCollector createCollector() {
+        return new VelocloudEdgeCollector(this.client);
     }
 
     @Override
     public String getCollectorClassName() {
-        return VelocloudServiceLinkCollector.class.getCanonicalName();
+        return VelocloudEdgeCollector.class.getCanonicalName();
     }
 
     @Override

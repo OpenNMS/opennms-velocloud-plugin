@@ -31,6 +31,7 @@ import java.time.Instant;
 import java.util.List;
 
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
+import org.opennms.velocloud.client.api.VelocloudApiGatewayClient;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Customer;
@@ -82,6 +83,11 @@ public class VelocloudApiPartnerClientV2 extends ApiClient implements VelocloudA
 
     @Override
     public VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public VelocloudApiGatewayClient getGatewayClient(Integer gatewayId) {
         throw new UnsupportedOperationException();
     }
 

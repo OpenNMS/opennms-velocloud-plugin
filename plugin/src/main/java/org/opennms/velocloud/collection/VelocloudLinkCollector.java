@@ -38,29 +38,24 @@ import java.util.concurrent.CompletableFuture;
 
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.CollectionSet;
-import org.opennms.integration.api.v1.collectors.immutables.ImmutableNumericAttribute;
 import org.opennms.integration.api.v1.collectors.resource.IpInterfaceResource;
-import org.opennms.integration.api.v1.collectors.resource.NumericAttribute;
-import org.opennms.integration.api.v1.collectors.resource.Resource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSet;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableIpInterfaceResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.VelocloudServiceCollector;
 import org.opennms.velocloud.client.api.model.MetricsLink;
-import org.opennms.velocloud.client.api.model.Traffic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VelocloudServiceLinkCollector implements VelocloudServiceCollector {
+public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
 
-    private static final Logger LOG = LoggerFactory.getLogger(VelocloudServiceLinkCollector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(VelocloudLinkCollector.class);
 
     private final VelocloudApiCustomerClient client;
 
-    public VelocloudServiceLinkCollector(VelocloudApiCustomerClient client) {
+    public VelocloudLinkCollector(VelocloudApiCustomerClient client) {
         this.client = Objects.requireNonNull(client);
     }
 
@@ -77,18 +72,14 @@ public class VelocloudServiceLinkCollector implements VelocloudServiceCollector 
         final long timestamp = Instant.now().toEpochMilli();
 
         try {
-            edgeId = Integer.parseInt(
-                    Objects.requireNonNull(attributes.get(ATTR_EDGE_ID),"Missing attribute: " + ATTR_EDGE_ID).toString());
+            edgeId = Integer.parseInt(Objects.requireNonNull(attributes.get(ATTR_EDGE_ID),
+                    "Missing attribute: " + ATTR_EDGE_ID).toString());
             linkId = Objects.requireNonNull(attributes.get(ATTR_LINK_ID),
                     "Missing attribute: " + ATTR_LINK_ID).toString();
             linkMetrics = this.client.getLinkMetrics(edgeId, linkId);
         } catch (RuntimeException | VelocloudApiException ex) {
             LOG.warn("Error collecting Velocloud link data for link {}/{}, Error: {}", edgeId, linkId, ex.toString());
-            //TODO what to return?
-            //return  CompletableFuture.failedFuture(ex);
-            //or
-            return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
-                    .setStatus(CollectionSet.Status.FAILED).setTimestamp(timestamp).build());
+            return  CompletableFuture.failedFuture(ex);
         }
 
         if (linkMetrics == null) {
@@ -126,34 +117,5 @@ public class VelocloudServiceLinkCollector implements VelocloudServiceCollector 
                         .addCollectionSetResource(linkAttrBuilder.build())
                         .build()
         );
-    }
-
-    private void addNumAttr(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
-                            String name, Number value) {
-        if(value != null) {
-            builder.addNumericAttribute(createNumAttr(groupId, name, value.doubleValue()));
-        }
-    }
-
-    private void addNumAttr(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
-                            String name, Number value, long milliseconds) {
-        if(value != null) {
-            builder.addNumericAttribute(createNumAttr(groupId, name, value.doubleValue() * 1000 / milliseconds));
-        }
-    }
-
-    private NumericAttribute createNumAttr(String groupId, String name, double value) {
-        return ImmutableNumericAttribute.newBuilder().setGroup(groupId).setName(name).setValue(value)
-                .setType(NumericAttribute.Type.GAUGE).build();
-    }
-
-    private void addTraffic(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
-                            String prefix, Traffic traffic, long milliseconds) {
-        if(traffic != null) {
-            addNumAttr(builder, groupId, prefix + "BytesRx", traffic.getBytesRx(), milliseconds);
-            addNumAttr(builder, groupId, prefix + "BytesTx", traffic.getBytesTx(), milliseconds);
-            addNumAttr(builder, groupId, prefix + "PacketsRx", traffic.getPacketsRx(), milliseconds);
-            addNumAttr(builder, groupId, prefix + "PacketsTx", traffic.getPacketsTx(), milliseconds);
-        }
     }
 }
