@@ -95,10 +95,12 @@
         <dependency>
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>common</artifactId>
+            <version>${opennms.api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>config</artifactId>
+            <version>${opennms.api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
