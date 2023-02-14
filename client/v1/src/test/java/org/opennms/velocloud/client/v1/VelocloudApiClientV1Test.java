@@ -31,12 +31,35 @@ package org.opennms.velocloud.client.v1;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.annotation.JSONP;
 import org.junit.Test;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.Tunnel;
+import org.opennms.velocloud.client.v1.api.AllApi;
+import org.opennms.velocloud.client.v1.handler.ApiException;
+import org.opennms.velocloud.client.v1.handler.JSON;
 import org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth;
+import org.opennms.velocloud.client.v1.model.EdgeRecord;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseServices;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseServicesResultItem;
+import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusBody;
+import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 
 public class VelocloudApiClientV1Test {
     public static final String AUTH_HEADER_NAME = "Authorization";
