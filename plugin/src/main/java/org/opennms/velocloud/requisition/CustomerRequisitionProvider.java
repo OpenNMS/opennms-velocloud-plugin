@@ -48,6 +48,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
     public final static String TYPE = "velocloud-customer";
     
     public static final String PARAMETER_ENTERPRISE_ID = "enterpriseId";
+    public static final String PARAMETER_FOREIGN_SOURCE = "foreignSource";
 
     public CustomerRequisitionProvider(final ClientManager clientManager,
                                        final ConnectionManager connectionManager) {
@@ -65,6 +66,10 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
 
         if (parameters.containsKey(PARAMETER_ENTERPRISE_ID)) {
             request.setEnterpriseId(Integer.parseInt(parameters.get(PARAMETER_ENTERPRISE_ID)));
+        }
+
+        if (parameters.containsKey(PARAMETER_FOREIGN_SOURCE)) {
+            request.setForeignSource(parameters.get(PARAMETER_FOREIGN_SOURCE));
         }
 
         return request;

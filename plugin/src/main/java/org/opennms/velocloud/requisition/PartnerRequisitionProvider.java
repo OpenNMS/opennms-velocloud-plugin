@@ -48,6 +48,8 @@ import com.google.common.base.Strings;
 
 public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
 
+    public static final String PARAMETER_FOREIGN_SOURCE = "foreignSource";
+
     private static final Logger LOG = LoggerFactory.getLogger(PartnerRequisitionProvider.class);
 
     public final static String TYPE = "velocloud-partner";
@@ -64,7 +66,13 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
     @Override
     protected Request createRequest(final Connection connection, final Map<String, String> parameters) {
-        return new Request(connection);
+        final var request = new PartnerRequisitionProvider.Request(connection);
+
+        if (parameters.containsKey(PARAMETER_FOREIGN_SOURCE)) {
+            request.setForeignSource(parameters.get(PARAMETER_FOREIGN_SOURCE));
+        }
+
+        return request;
     }
 
     @Override
