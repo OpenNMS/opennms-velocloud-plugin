@@ -27,7 +27,7 @@ opennms:import-requisition velocloud-customer alias=aPartnerAlias,enterpriseId=1
 ```
 
 You can specify an additional parameter, `foreignSource`, to set the foreign source and requisition name.
-The following example will create a customer requisition named `My-Customer-Requisition`.
+The following example creates a customer requisition named `My-Customer-Requisition`.
 
 ```
 opennms:import-requisition velocloud-customer alias=aCustomerAlias foreignSource=My-Customer-Requisition
