@@ -44,11 +44,9 @@ import org.opennms.velocloud.connections.ConnectionManager;
 import com.google.common.base.Strings;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
-
     public final static String TYPE = "velocloud-customer";
     
     public static final String PARAMETER_ENTERPRISE_ID = "enterpriseId";
-    public static final String PARAMETER_FOREIGN_SOURCE = "foreignSource";
 
     public CustomerRequisitionProvider(final ClientManager clientManager,
                                        final ConnectionManager connectionManager) {

@@ -47,9 +47,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 
 public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
-
-    public static final String PARAMETER_FOREIGN_SOURCE = "foreignSource";
-
     private static final Logger LOG = LoggerFactory.getLogger(PartnerRequisitionProvider.class);
 
     public final static String TYPE = "velocloud-partner";
