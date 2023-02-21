@@ -44,7 +44,6 @@ import org.opennms.velocloud.connections.ConnectionManager;
 import com.google.common.base.Strings;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
-
     public final static String TYPE = "velocloud-customer";
     
     public static final String PARAMETER_ENTERPRISE_ID = "enterpriseId";
@@ -65,6 +64,10 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
 
         if (parameters.containsKey(PARAMETER_ENTERPRISE_ID)) {
             request.setEnterpriseId(Integer.parseInt(parameters.get(PARAMETER_ENTERPRISE_ID)));
+        }
+
+        if (parameters.containsKey(PARAMETER_FOREIGN_SOURCE)) {
+            request.setForeignSource(parameters.get(PARAMETER_FOREIGN_SOURCE));
         }
 
         return request;

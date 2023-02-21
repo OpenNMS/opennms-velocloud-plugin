@@ -54,6 +54,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     public static final String VELOCLOUD_METADATA_CONTEXT = "velocloud";
     public static final String VELOCLOUD_CUSTOMER_IDENTIFIER = "velocloud-customer";
     public static final String VELOCLOUD_PARNTER_IDENTIFIER = "velocloud-partner";
+    public static final String PARAMETER_FOREIGN_SOURCE = "foreignSource";
 
     private final ClientManager clientManager;
 

@@ -25,3 +25,10 @@ The following example demonstrates the creation of a customer requisition by usi
 ```
 opennms:import-requisition velocloud-customer alias=aPartnerAlias,enterpriseId=123
 ```
+
+You can specify an additional parameter, `foreignSource`, to set the foreign source and requisition name.
+The following example creates a customer requisition named `My-Customer-Requisition`.
+
+```
+opennms:import-requisition velocloud-customer alias=aCustomerAlias foreignSource=My-Customer-Requisition
+```
