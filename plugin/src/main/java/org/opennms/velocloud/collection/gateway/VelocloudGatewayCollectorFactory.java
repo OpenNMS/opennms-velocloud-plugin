@@ -26,20 +26,28 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.client.api;
+package org.opennms.velocloud.collection.gateway;
 
-import java.time.Instant;
+import org.opennms.integration.api.v1.dao.NodeDao;
+import org.opennms.velocloud.clients.ClientManager;
+import org.opennms.velocloud.collection.AbstractVelocloudCollectorFactory;
+import org.opennms.velocloud.collection.link.VelocloudLinkCollector;
+import org.opennms.velocloud.connections.ConnectionManager;
 
-import org.opennms.velocloud.client.api.model.MetricsGateway;
+public class VelocloudGatewayCollectorFactory extends AbstractVelocloudCollectorFactory<VelocloudGatewayCollector> {
 
-public interface VelocloudApiGatewayClient {
+    public VelocloudGatewayCollectorFactory(ClientManager clientManager, ConnectionManager connectionManager, NodeDao nodeDao) {
+        super(clientManager, connectionManager, nodeDao);
+    }
 
-    /**
-     * Retrieves Gateway metrics
-     * @param start intervals starting time
-     * @param end intervals ending time
-     * @return
-     * @throws VelocloudApiException
-     */
-    MetricsGateway getMetrics() throws VelocloudApiException;
+    @Override
+    public VelocloudGatewayCollector createCollector() {
+        return new VelocloudGatewayCollector(clientManager, connectionManager);
+    }
+
+    @Override
+    public String getCollectorClassName() {
+        return VelocloudGatewayCollector.class.getCanonicalName();
+    }
+
 }

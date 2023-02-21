@@ -15,7 +15,7 @@
 
     <bean id="clientProvider" class="org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1">
         <argument ref="cache"/>
-        <argument value="{{ client.sampling.interval }}"/>
+        <argument value="${client.sampling.interval}"/>
     </bean>
 
     <service ref="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>

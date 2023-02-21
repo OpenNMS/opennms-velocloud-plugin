@@ -33,7 +33,7 @@ import com.google.common.base.MoreObjects;
 public class MetricsGateway {
     private final Aggregate cpuPercentage;
     private final Aggregate memoryUsage;
-    private final Aggregate flowCounts;
+    private final Aggregate flowCount;
     private final Aggregate handoffQueueDrops;
     private final Aggregate tunnelCount;
     private final Aggregate tunnelCountV6;
@@ -42,7 +42,7 @@ public class MetricsGateway {
     public MetricsGateway(MetricsGateway.Builder builder) {
         this.cpuPercentage = builder.cpuPercentage;
         this.memoryUsage = builder.memoryUsage;
-        this.flowCounts = builder.flowCounts;
+        this.flowCount = builder.flowCount;
         this.handoffQueueDrops = builder.handoffQueueDrops;
         this.tunnelCount = builder.tunnelCount;
         this.tunnelCountV6 = builder.tunnelCountV6;
@@ -51,7 +51,7 @@ public class MetricsGateway {
     public static class Builder {
         private Aggregate cpuPercentage;
         private Aggregate memoryUsage;
-        private Aggregate flowCounts;
+        private Aggregate flowCount;
         private Aggregate handoffQueueDrops;
         private Aggregate tunnelCount;
         private Aggregate tunnelCountV6;
@@ -65,7 +65,7 @@ public class MetricsGateway {
             return this;
         }
         public MetricsGateway.Builder withFlowCounts(final Aggregate flowCounts) {
-            this.flowCounts = flowCounts;
+            this.flowCount = flowCounts;
             return this;
         }
         public MetricsGateway.Builder withHandoffQueueDrops(final Aggregate handoffQueueDrops) {
@@ -96,11 +96,34 @@ public class MetricsGateway {
         return MoreObjects.toStringHelper(this)
                 .add("cpuPercentage", cpuPercentage)
                 .add("memoryUsage", memoryUsage)
-                .add("flowCounts", flowCounts)
+                .add("flowCounts", flowCount)
                 .add("handoffQueueDrops", handoffQueueDrops)
                 .add("tunnelCount", tunnelCount)
                 .add("tunnelCountV6", tunnelCountV6)
                 .toString();
     }
 
+    public Aggregate getCpuPercentage() {
+        return cpuPercentage;
+    }
+
+    public Aggregate getMemoryUsage() {
+        return memoryUsage;
+    }
+
+    public Aggregate getFlowCount() {
+        return flowCount;
+    }
+
+    public Aggregate getHandoffQueueDrops() {
+        return handoffQueueDrops;
+    }
+
+    public Aggregate getTunnelCount() {
+        return tunnelCount;
+    }
+
+    public Aggregate getTunnelCountV6() {
+        return tunnelCountV6;
+    }
 }

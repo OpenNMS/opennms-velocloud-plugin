@@ -27,31 +27,28 @@
  *******************************************************************************/
 package org.opennms.velocloud.client.v1;
 
+import static org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.getInterval;
+
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.VelocloudApiGatewayClient;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.internal.Utils;
+import org.opennms.velocloud.client.api.model.Aggregate;
 import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.Gateway;
-import org.opennms.velocloud.client.api.model.Link;
+import org.opennms.velocloud.client.api.model.MetricsGateway;
 import org.opennms.velocloud.client.api.model.PartnerEvent;
 import org.opennms.velocloud.client.v1.api.AllApi;
-import org.opennms.velocloud.client.v1.model.EdgeGetEdge;
-import org.opennms.velocloud.client.v1.model.EdgeGetEdgeGatewayAssignments;
-import org.opennms.velocloud.client.v1.model.EdgeGetEdgeGatewayAssignmentsResult;
-import org.opennms.velocloud.client.v1.model.EdgeGetEdgeResult;
-import org.opennms.velocloud.client.v1.model.EdgeObject;
+import org.opennms.velocloud.client.v1.model.BasicMetricSummary;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprises;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyGateways;
@@ -60,10 +57,16 @@ import org.opennms.velocloud.client.v1.model.EventGetProxyEvents;
 import org.opennms.velocloud.client.v1.model.EventGetProxyEventsResult;
 import org.opennms.velocloud.client.v1.model.GatewayGetGatewayEdgeAssignments;
 import org.opennms.velocloud.client.v1.model.GatewayGetGatewayEdgeAssignmentsResultItem;
+import org.opennms.velocloud.client.v1.model.GatewayMetric;
+import org.opennms.velocloud.client.v1.model.GatewayMetrics;
+import org.opennms.velocloud.client.v1.model.GatewayStatusMetricsSummary;
 import org.opennms.velocloud.client.v1.model.Interval;
+import org.opennms.velocloud.client.v1.model.MetricsGetGatewayStatusMetrics;
 
 public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
+    public final static ApiCache.Endpoint<MetricsGetGatewayStatusMetrics, GatewayStatusMetricsSummary>
+            GET_GATEWAY_STATUS_METRIC = AllApi::metricsGetGatewayStatusMetrics;
     public final static ApiCache.Endpoint<EnterpriseProxyGetEnterpriseProxyGateways, List<EnterpriseProxyGetEnterpriseProxyGatewaysResultItem>>
             ENTERPRISE_PROXY_GET_ENTERPRISE_PROXY_GATEWAYS = AllApi::enterpriseProxyGetEnterpriseProxyGateways;
     public final static ApiCache.Endpoint<EnterpriseProxyGetEnterpriseProxyEnterprises, List<EnterpriseProxyGetEnterpriseProxyEnterprisesResultItem>>
@@ -72,6 +75,16 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
             EVENT_GET_PROXY_EVENTS = AllApi::eventGetProxyEvents;
     public final static ApiCache.Endpoint<GatewayGetGatewayEdgeAssignments, List<GatewayGetGatewayEdgeAssignmentsResultItem>>
             GATEWAY_GET_GATEWAY_EDGE_ASSIGNMENTS = AllApi::gatewayGetGatewayEdgeAssignments;
+
+    public final static GatewayMetrics METRICS = new GatewayMetrics() {{
+        add(GatewayMetric.TUNNELCOUNT);
+        add(GatewayMetric.MEMORYPCT);
+        add(GatewayMetric.FLOWCOUNT);
+        add(GatewayMetric.CPUPCT);
+        add(GatewayMetric.HANDOFFQUEUEDROPS);
+        add(GatewayMetric.CONNECTEDEDGES);
+        add(GatewayMetric.TUNNELCOUNTV6);
+    }};
 
     private final ApiCache.Api api;
     private final int enterpriseProxyId;
@@ -88,11 +101,6 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
     @Override
     public VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId) {
         return new VelocloudApiCustomerClientV1(this.api, enterpriseId, intervalMillis);
-    }
-
-    @Override
-    public VelocloudApiGatewayClient getGatewayClient(final Integer gatewayId) {
-        return new VelocloudApiGatewayClientV1(this.api, gatewayId, intervalMillis);
     }
 
     @Override
@@ -211,5 +219,36 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
                         .withEdgeState(e.getEdgeState().getValue())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public MetricsGateway getGatewayMetrics(int gatewayId) throws VelocloudApiException {
+
+        final GatewayStatusMetricsSummary metrics = this.api.call("edges", GET_GATEWAY_STATUS_METRIC,
+                new MetricsGetGatewayStatusMetrics()
+                        .gatewayId(gatewayId)
+                        .interval(getInterval(intervalMillis))
+                        .metrics(METRICS));
+
+        return map(metrics);
+    }
+
+    private MetricsGateway map(GatewayStatusMetricsSummary metrics) {
+        return MetricsGateway.builder()
+                .withCpuPercentage(map(metrics.getCpuPct()))
+                .withMemoryUsage(map(metrics.getMemoryPct()))
+                .withFlowCounts(map(metrics.getFlowCount()))
+                .withCpuPercentage(map(metrics.getCpuPct()))
+                .withHandoffQueueDrops(map(metrics.getHandoffQueueDrops()))
+                .withTunnelCount(map(metrics.getTunnelCount()))
+                .withTunnelCountV6(map(metrics.getTunnelCountV6())).build();
+    }
+
+    private Aggregate map(BasicMetricSummary metric) {
+        return Aggregate.builder()
+                .withMin(metric.getMin())
+                .withMax(metric.getMax())
+                .withAverage(metric.getAverage())
+                .build();
     }
 }

@@ -31,12 +31,12 @@ import java.time.Instant;
 import java.util.List;
 
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
-import org.opennms.velocloud.client.api.VelocloudApiGatewayClient;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.Gateway;
+import org.opennms.velocloud.client.api.model.MetricsGateway;
 import org.opennms.velocloud.client.api.model.PartnerEvent;
 import org.opennms.velocloud.client.v2.api.AlertsApi;
 import org.opennms.velocloud.client.v2.api.ApplicationMapsApi;
@@ -87,11 +87,6 @@ public class VelocloudApiPartnerClientV2 extends ApiClient implements VelocloudA
     }
 
     @Override
-    public VelocloudApiGatewayClient getGatewayClient(Integer gatewayId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public List<Gateway> getGateways() throws VelocloudApiException {
         throw new UnsupportedOperationException();
     }
@@ -108,6 +103,11 @@ public class VelocloudApiPartnerClientV2 extends ApiClient implements VelocloudA
 
     @Override
     public List<Edge> getEdgeAssignments(int gatewayId) throws VelocloudApiException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public MetricsGateway getGatewayMetrics(int gatewayId) throws VelocloudApiException {
         throw new UnsupportedOperationException();
     }
 }

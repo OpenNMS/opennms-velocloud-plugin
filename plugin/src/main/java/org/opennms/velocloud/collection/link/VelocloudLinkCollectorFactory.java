@@ -26,7 +26,7 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.collection;
+package org.opennms.velocloud.collection.link;
 
 import java.util.Collections;
 import java.util.Map;
@@ -34,39 +34,26 @@ import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.ServiceCollectorFactory;
+import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
+import org.opennms.velocloud.clients.ClientManager;
+import org.opennms.velocloud.collection.AbstractVelocloudCollectorFactory;
+import org.opennms.velocloud.connections.ConnectionManager;
 
-public class VelocloudEdgeCollectorFactory implements ServiceCollectorFactory<VelocloudEdgeCollector> {
+public class VelocloudLinkCollectorFactory extends AbstractVelocloudCollectorFactory<VelocloudLinkCollector> {
 
-
-    private final VelocloudApiCustomerClient client;
-
-    public VelocloudEdgeCollectorFactory(VelocloudApiCustomerClient client) {
-        this.client = client;
+    public VelocloudLinkCollectorFactory(ClientManager clientManager, ConnectionManager connectionManager, NodeDao nodeDao) {
+        super(clientManager, connectionManager, nodeDao);
     }
 
     @Override
-    public VelocloudEdgeCollector createCollector() {
-        return new VelocloudEdgeCollector(this.client);
+    public VelocloudLinkCollector createCollector() {
+        return new VelocloudLinkCollector(clientManager, connectionManager);
     }
 
     @Override
     public String getCollectorClassName() {
-        return VelocloudEdgeCollector.class.getCanonicalName();
+        return VelocloudLinkCollector.class.getCanonicalName();
     }
 
-    @Override
-    public Map<String, Object> getRuntimeAttributes(CollectionRequest collectionRequest, Map<String, Object> parameters) {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public Map<String, String> marshalParameters(Map<String, Object> parameters) {
-        return parameters.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().toString()));
-    }
-
-    @Override
-    public Map<String, Object> unmarshalParameters(Map<String, String> parameters) {
-        return parameters.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
 }

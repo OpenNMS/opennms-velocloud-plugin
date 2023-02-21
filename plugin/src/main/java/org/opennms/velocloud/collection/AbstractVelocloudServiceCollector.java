@@ -28,41 +28,63 @@
 
 package org.opennms.velocloud.collection;
 
+import static org.opennms.velocloud.pollers.AbstractStatusPoller.ATTR_API_KEY;
+import static org.opennms.velocloud.pollers.AbstractStatusPoller.ATTR_ORCHESTRATOR_URL;
+
+import java.util.Map;
+import java.util.Objects;
+
 import org.opennms.integration.api.v1.collectors.immutables.ImmutableNumericAttribute;
 import org.opennms.integration.api.v1.collectors.immutables.ImmutableStringAttribute;
 import org.opennms.integration.api.v1.collectors.resource.NumericAttribute;
 import org.opennms.integration.api.v1.collectors.resource.Resource;
 import org.opennms.integration.api.v1.collectors.resource.StringAttribute;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
+import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
+import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
+import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.VelocloudServiceCollector;
 import org.opennms.velocloud.client.api.model.Aggregate;
 import org.opennms.velocloud.client.api.model.Traffic;
+import org.opennms.velocloud.clients.ClientManager;
+import org.opennms.velocloud.connections.ConnectionManager;
 
 public abstract class AbstractVelocloudServiceCollector implements VelocloudServiceCollector {
-    static void addNumAttr(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
-                            String name, Number value) {
+
+    protected final ClientManager clientManager;
+    protected final ConnectionManager connectionManager;
+
+    public AbstractVelocloudServiceCollector(ClientManager clientManager, ConnectionManager connectionManager) {
+        this.clientManager = clientManager;
+        this.connectionManager = connectionManager;
+    }
+
+    public static void addNumAttr(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
+                                  String name, Number value) {
         if(value != null) {
             builder.addNumericAttribute(createNumAttr(groupId, name, value.doubleValue()));
         }
 
     }
-    static void addNumAttr(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
+
+    public static void addNumAttr(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
                             String name, Number value, long milliseconds) {
         if(value != null) {
             builder.addNumericAttribute(createNumAttr(groupId, name, value.doubleValue() * 1000 / milliseconds));
         }
     }
 
-    static StringAttribute createStringAttribute(String groupId, String name, String value) {
+    public static StringAttribute createStringAttribute(String groupId, String name, String value) {
         return ImmutableStringAttribute.newBuilder().setGroup(groupId).setName(name).setValue(value).build();
     }
 
-    static NumericAttribute createNumAttr(String groupId, String name, double value) {
+    public static NumericAttribute createNumAttr(String groupId, String name, double value) {
         return ImmutableNumericAttribute.newBuilder().setGroup(groupId).setName(name).setValue(value)
                 .setType(NumericAttribute.Type.GAUGE).build();
     }
 
-    static void addAggregate(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
+    public static void addAggregate(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
                               String prefix, Aggregate aggregate) {
         if(aggregate != null) {
             addNumAttr(builder, groupId, prefix + "Min", aggregate.getMin());
@@ -71,7 +93,7 @@ public abstract class AbstractVelocloudServiceCollector implements VelocloudServ
         }
     }
 
-    static void addTraffic(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
+    public static void addTraffic(ImmutableCollectionSetResource.Builder<? extends Resource> builder, String groupId,
                             String prefix, Traffic traffic, long milliseconds) {
         if(traffic != null) {
             addNumAttr(builder, groupId, prefix + "BytesRx", traffic.getBytesRx(), milliseconds);
@@ -80,4 +102,25 @@ public abstract class AbstractVelocloudServiceCollector implements VelocloudServ
             addNumAttr(builder, groupId, prefix + "PacketsTx", traffic.getPacketsTx(), milliseconds);
         }
     }
+
+    protected VelocloudApiPartnerClient getPartnerClient(Map<String, Object> attributes) {
+        try {
+            return clientManager.getPartnerClient(new VelocloudApiClientCredentials(
+                    Objects.requireNonNull(attributes.get(ATTR_ORCHESTRATOR_URL),"orchestrator url required").toString(),
+                    Objects.requireNonNull(attributes.get(ATTR_API_KEY),"api key required").toString()));
+        } catch (VelocloudApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected VelocloudApiCustomerClient getCustomerClient(Map<String, Object> attributes) {
+        try {
+            return clientManager.getCustomerClient(new VelocloudApiClientCredentials(
+                    Objects.requireNonNull(attributes.get(ATTR_ORCHESTRATOR_URL),"orchestrator url required").toString(),
+                    Objects.requireNonNull(attributes.get(ATTR_API_KEY),"api key required").toString()));
+        } catch (VelocloudApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

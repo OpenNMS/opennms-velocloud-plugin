@@ -28,7 +28,6 @@
 
 package org.opennms.velocloud.client.v1;
 
-import static javax.swing.UIManager.get;
 import static org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1.getInterval;
 
 import java.math.BigDecimal;
@@ -41,19 +40,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Aggregate;
-import org.opennms.velocloud.client.api.model.Score;
-import org.opennms.velocloud.client.api.model.TrafficSource;
-import org.opennms.velocloud.client.api.model.TrafficApplication;
 import org.opennms.velocloud.client.api.model.CustomerEvent;
 import org.opennms.velocloud.client.api.model.Datacenter;
 import org.opennms.velocloud.client.api.model.Edge;
@@ -69,7 +61,6 @@ import org.opennms.velocloud.client.api.model.TrafficSource;
 import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.client.api.model.User;
 import org.opennms.velocloud.client.v1.api.AllApi;
-import org.opennms.velocloud.client.v1.model.AllOfconfigurationGetRoutableApplicationsResultApplicationClasses;
 import org.opennms.velocloud.client.v1.model.Application;
 import org.opennms.velocloud.client.v1.model.BasicMetric;
 import org.opennms.velocloud.client.v1.model.BasicMetricSummary;
@@ -95,11 +86,9 @@ import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsers;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseUsersResultItem;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEvents;
 import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEventsResult;
-import org.opennms.velocloud.client.v1.model.FlowMetricSummary;
 import org.opennms.velocloud.client.v1.model.Interval;
 import org.opennms.velocloud.client.v1.model.LinkQualityEventGetLinkQualityEvents;
 import org.opennms.velocloud.client.v1.model.LinkQualityEventGetLinkQualityEventsResult;
-import org.opennms.velocloud.client.v1.model.LinkQualityObject;
 import org.opennms.velocloud.client.v1.model.MetricsGetEdgeAppMetrics;
 import org.opennms.velocloud.client.v1.model.MetricsGetEdgeAppMetricsResultItem;
 import org.opennms.velocloud.client.v1.model.MetricsGetEdgeDestMetrics;
@@ -449,26 +438,6 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                 this.api.call("edge dest metrics", GET_LINK_QUALITY_EVENTS,
                         new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
                                 .interval(getInterval(intervalMillis)).maxSamples(1));
-
-
-
-        final ConfigurationGetRoutableApplicationsResult routableApplications;
-        final EdgeStatusMetricsSummary systemMetrics;
-        final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications;
-        final List<MetricsGetEdgeDeviceMetricsResultItem> trafficSources;
-        final List<MetricsGetEdgeDestMetricsResultItem> trafficDestination;
-        final LinkQualityEventGetLinkQualityEventsResult qoe;
-
-        try {
-            routableApplications = futureRoutableApplications.get();
-            systemMetrics = futureSystemMetrics.get();
-            trafficApplications = futureAppMetrics.get();
-            trafficSources = futureDeviceMetrics.get();
-            trafficDestination = futureDestMetrics.get();
-            qoe = futureQoe.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new VelocloudApiException("Error while asynchronously executing API call", e);
-        }
 
         return MetricsEdge.builder()
                 .withCpuPct(map(systemMetrics.getCpuPct()))

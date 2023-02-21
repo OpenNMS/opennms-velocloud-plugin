@@ -142,11 +142,26 @@
         </bean>
     </service>
 
-    //TODO put my VelSerLiColFactory
-    <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
-        <bean class="org.opennms.velocloud.pollers.tunnel.TunnelStatusPollerFactory">
+    <!--  Collection -->
+    <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
+        <bean class="org.opennms.velocloud.collection.edge.VelocloudEdgeCollectorFactory">
             <argument ref="clientManager"/>
             <argument ref="connectionManager"/>
+            <argument ref="nodeDao"/>
+        </bean>
+    </service>
+    <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
+        <bean class="org.opennms.velocloud.collection.link.VelocloudLinkCollectorFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+            <argument ref="nodeDao"/>
+        </bean>
+    </service>
+    <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
+        <bean class="org.opennms.velocloud.collection.gateway.VelocloudGatewayCollectorFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+            <argument ref="nodeDao"/>
         </bean>
     </service>
 

@@ -26,9 +26,10 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.velocloud.collection;
+package org.opennms.velocloud.collection.edge;
 
-import static org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller.ATTR_EDGE_ID;
+import static org.opennms.velocloud.collection.AbstractVelocloudCollectorFactory.PREFIX_VELOCLOUD;
+import static org.opennms.velocloud.pollers.edge.AbstractEdgeStatusPoller.ATTR_EDGE_ID;
 
 import java.time.Instant;
 import java.util.Map;
@@ -46,16 +47,17 @@ import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNo
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.MetricsEdge;
+import org.opennms.velocloud.clients.ClientManager;
+import org.opennms.velocloud.collection.AbstractVelocloudServiceCollector;
+import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
     private static final Logger LOG = LoggerFactory.getLogger(VelocloudEdgeCollector.class);
 
-    private final VelocloudApiCustomerClient client;
-
-    public VelocloudEdgeCollector(VelocloudApiCustomerClient client) {
-        this.client = Objects.requireNonNull(client);
+    public VelocloudEdgeCollector(ClientManager clientManager, ConnectionManager connectionManager) {
+        super(clientManager, connectionManager);
     }
 
     @Override
@@ -65,22 +67,18 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest request, Map<String, Object> attributes) {
 
-        Integer edgeId = null;
         final MetricsEdge edgeMetrics;
-        final long timestamp = Instant.now().toEpochMilli();
-
+        final VelocloudApiCustomerClient client;
         try {
-            edgeId = Integer.parseInt(Objects.requireNonNull(attributes.get(ATTR_EDGE_ID),
-                    "Missing attribute: " + ATTR_EDGE_ID).toString());
-            edgeMetrics = this.client.getEdgeMetrics(edgeId);
-        } catch (RuntimeException | VelocloudApiException ex) {
-            LOG.warn("Error collecting Velocloud data for edge {}, Error: {}", edgeId, ex.toString());
-            return  CompletableFuture.failedFuture(ex);
-        }
+            //ensure we have an edge
+            Objects.requireNonNull(attributes.get(PREFIX_VELOCLOUD + ATTR_EDGE_ID));
 
-        if (edgeMetrics == null) {
-            return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
-                    .setStatus(CollectionSet.Status.FAILED).setTimestamp(timestamp).build());
+            Integer edgeId = Integer.parseInt(attributes.get(PREFIX_VELOCLOUD + "id").toString());
+            client = getCustomerClient(attributes);
+            edgeMetrics = client.getEdgeMetrics(edgeId);
+        } catch (RuntimeException | VelocloudApiException ex) {
+            LOG.warn("Error collecting Velocloud data for edge {} with id {}, Message: {}", attributes.get(PREFIX_VELOCLOUD + ATTR_EDGE_ID), attributes.get(PREFIX_VELOCLOUD + "id"), ex.getMessage());
+            return  CompletableFuture.failedFuture(ex);
         }
 
         final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
@@ -88,15 +86,14 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
         final ImmutableCollectionSetResource.Builder<NodeResource> edgeAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(NodeResource.class).setResource(nodeResource);
 
-        final int milliseconds = this.client.getIntervalMillis();
-
+        final int milliseconds = client.getIntervalMillis();
         addAggregate(edgeAttrBuilder, "velocloud-edge-cpu-pct", "CpuPct", edgeMetrics.getCpuPct());
         addAggregate(edgeAttrBuilder, "velocloud-edge-cpu-core-temp", "CpuCoreTemp", edgeMetrics.getCpuCoreTemp());
         addAggregate(edgeAttrBuilder, "velocloud-edge-memory-pct", "MemoryPct", edgeMetrics.getMemoryPct());
         addAggregate(edgeAttrBuilder, "velocloud-edge-flow-count", "FlowCount", edgeMetrics.getFlowCount());
         addAggregate(edgeAttrBuilder, "velocloud-edge-queue-drops", "QueueDrops", edgeMetrics.getHandoffQueueDrops());
         addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel-count", "TunnelCount", edgeMetrics.getTunnelCount());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel-countV6", "TunnelCountV6", edgeMetrics.getTunnelCountV6());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel-count-v6", "TunnelCountV6", edgeMetrics.getTunnelCountV6());
 
         final ImmutableCollectionSet.Builder resultBuilder = ImmutableCollectionSet.newBuilder();
         resultBuilder.addCollectionSetResource(edgeAttrBuilder.build());
