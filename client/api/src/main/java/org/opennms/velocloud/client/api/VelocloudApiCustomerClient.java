@@ -57,8 +57,6 @@ public interface VelocloudApiCustomerClient {
 
     List<CustomerEvent> getEvents(Instant start, Instant end) throws VelocloudApiException;
 
-    List<Tunnel> getNvsTunnels() throws VelocloudApiException;
-
     List<Tunnel> getNvsTunnels(String tag) throws VelocloudApiException;
 
     List<Datacenter> getDatacenters() throws VelocloudApiException;

@@ -248,11 +248,6 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     }
 
     @Override
-    public List<Tunnel> getNvsTunnels() throws VelocloudApiException {
-        return getNvsTunnels(null);
-    }
-
-    @Override
     public List<Tunnel> getNvsTunnels(final String tag) throws VelocloudApiException {
 
         final var tunnels = this.api.call("nvs tunnels (" + tag + ")", MONITORING_GET_ENTERPRISE_EDGE_NVS_TUNNEL_STATUS,
