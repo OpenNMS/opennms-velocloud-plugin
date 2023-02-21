@@ -29,7 +29,6 @@
 package org.opennms.velocloud.connections;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -48,19 +47,12 @@ import org.opennms.velocloud.clients.ClientManager;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 
 public class ConnectionManager {
 
     private static final String PREFIX = "velocloud_connection_";
-    private static final String DELETED_MARKER = "DELETED VOLOCLOUD CREDENTIALS";
-    private static final Credentials EMPTY_CREDENTIALS =
-            new ImmutableCredentials("", "", ImmutableMap.of(DELETED_MARKER, DELETED_MARKER));
 
     private final SecureCredentialsVault vault;
-
-    //aliases of connections that was deleted (without the PREFIX)
-    private final Set<String> filter = new HashSet<>();
 
     private final ClientManager clientManager;
 
@@ -74,16 +66,6 @@ public class ConnectionManager {
 
         this.vault = Objects.requireNonNull(vault);
         this.clientManager = Objects.requireNonNull(clientManager);
-
-        this.vault.getAliases().stream()
-                .filter(alias -> alias.startsWith(PREFIX))
-                .map(alias -> alias.substring(PREFIX.length()))
-                .forEach(alias -> {
-                    final Credentials credentials = this.vault.getCredentials(alias);
-                    if (credentials != null && DELETED_MARKER.equals(credentials.getAttribute(DELETED_MARKER))) {
-                        filter.add(alias);
-                    }
-                });
     }
 
     /**
@@ -95,7 +77,6 @@ public class ConnectionManager {
         return this.vault.getAliases().stream()
                 .filter(alias -> alias.startsWith(PREFIX))
                 .map(alias -> alias.substring(PREFIX.length()))
-                .filter(alias -> !filter.contains(alias))
                 .collect(Collectors.toSet());
     }
 
@@ -106,9 +87,6 @@ public class ConnectionManager {
      * @return The connection config or {@code Optional#empty()} of no such alias exists
      */
     public Optional<Connection> getConnection(final String alias) {
-        if (filter.contains(alias)) {
-            return Optional.empty();
-        }
         final var credentials = this.vault.getCredentials(PREFIX + alias.toLowerCase());
         if (credentials == null) {
             return Optional.empty();
@@ -139,18 +117,13 @@ public class ConnectionManager {
      * connection with given alias was not found
      */
     public boolean deleteConnection(final String alias) {
-        final var connection = this.getConnection(alias);
-        if (connection.isEmpty()) {
+        final String vaultAlias = PREFIX + alias.toLowerCase();
+        final var credentials = this.vault.getCredentials(vaultAlias);
+        if (credentials == null) {
             return false;
         }
-
-        final var oldCredentials = ConnectionManager.this.vault.getCredentials(PREFIX + alias.toLowerCase());
-        if (oldCredentials == null) {
-            return false;
-        }
-
-        ConnectionManager.this.clientManager.purgeClient(ConnectionManager.fromStore(oldCredentials));
-        this.vault.setCredentials(PREFIX + alias.toLowerCase(), EMPTY_CREDENTIALS);
+        this.vault.deleteCredentials(vaultAlias);
+        ConnectionManager.this.clientManager.purgeClient(ConnectionManager.fromStore(credentials));
         return true;
     }
 
@@ -250,7 +223,6 @@ public class ConnectionManager {
             if (oldCredentials != null) {
                 ConnectionManager.this.clientManager.purgeClient(ConnectionManager.fromStore(oldCredentials));
             }
-            ConnectionManager.this.filter.remove(this.alias); //ensure the alias is not (more) filtered
             ConnectionManager.this.vault.setCredentials(PREFIX + this.alias, this.asCredentials());
         }
 
