@@ -63,9 +63,20 @@
         </service>
 
         <service name="VelocloudTunnel" interval="300000">
+            <pattern><![CDATA[^VelocloudTunnel-(?<name>.*)-(?<destination>.*)$]]></pattern>
             <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="dataKey" value="${velocloud:dataKey}"/>
+            <parameter key="tag" value="${velocloud:tag}"/>
+            <parameter key="destination" value="${velocloud:destination}"/>
+        </service>
+
+        <service name="VelocloudDataCenterServices" interval="300000">
+            <pattern><![CDATA[^VelocloudDataCenterServices-(?<name>.*)-(?<type>.*)$]]></pattern>
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="logicalId" value="${velocloud:logicalId}"/>
+            <parameter key="type" value="${velocloud:type}"/>
         </service>
 
         <downtime begin="0" end="300000" interval="30000"/><!-- 30s, 0, 5m -->
@@ -90,6 +101,8 @@
              class-name="org.opennms.velocloud.pollers.link.LinkServiceStatusPoller"/>
     <monitor service="VelocloudTunnel"
              class-name="org.opennms.velocloud.pollers.tunnel.TunnelStatusPoller"/>
+    <monitor service="VelocloudDataCenterServices"
+             class-name="org.opennms.velocloud.pollers.tunnel.DataCenterServicesStatusPoller"/>
     <monitor service="VelocloudEdgePath"
              class-name="org.opennms.velocloud.pollers.path.PathStatusPoller"/>
 </poller-configuration>

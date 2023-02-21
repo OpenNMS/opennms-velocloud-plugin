@@ -43,6 +43,8 @@ public class Tunnel {
 
     public final String name;
 
+    public final String destination;
+
     private Tunnel(final Builder builder) {
         this.id = builder.id;
         this.tag = Objects.requireNonNull(builder.tag);
@@ -50,6 +52,7 @@ public class Tunnel {
         this.state = Objects.requireNonNull(builder.state);
         this.link = Objects.requireNonNull(builder.link);
         this.name = Objects.requireNonNull(builder.name);
+        this.destination = builder.destination;
     }
 
     public static class Builder {
@@ -65,6 +68,8 @@ public class Tunnel {
         private String link;
 
         private String name;
+
+        private String destination;
 
         private Builder() {
         }
@@ -96,6 +101,11 @@ public class Tunnel {
 
         public Builder withName(final String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder withDestination(final String destination) {
+            this.destination = destination;
             return this;
         }
 

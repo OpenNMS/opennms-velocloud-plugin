@@ -41,6 +41,7 @@ import org.opennms.velocloud.pollers.AbstractStatusPoller;
 
 public class TunnelStatusPoller extends AbstractStatusPoller {
     public static final String ATTR_DATA_KEY = "dataKey";
+    public static final String ATTR_TAG = "tag";
 
     public TunnelStatusPoller(final ClientManager clientManager) {
         super(clientManager);
@@ -50,8 +51,10 @@ public class TunnelStatusPoller extends AbstractStatusPoller {
     protected CompletableFuture<PollerResult> poll(final Context context) throws VelocloudApiException {
         final var dataKey = Objects.requireNonNull(context.getPollerAttributes().get(ATTR_DATA_KEY),
                                                    "Missing attribute: " + ATTR_DATA_KEY);
+        final var tag = Objects.requireNonNull(context.getPollerAttributes().get(ATTR_TAG),
+                "Missing attribute: " + ATTR_TAG);
 
-        final var tunnel = context.customerClient().getNvsTunnels().stream()
+        final var tunnel = context.customerClient().getNvsTunnels(tag).stream()
                                   .filter(t -> Objects.equals(t.dataKey, dataKey))
                                   .findAny();
 
