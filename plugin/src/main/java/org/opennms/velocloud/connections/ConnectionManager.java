@@ -123,7 +123,7 @@ public class ConnectionManager {
             return false;
         }
         this.vault.deleteCredentials(vaultAlias);
-        ConnectionManager.this.clientManager.purgeClient(ConnectionManager.fromStore(credentials));
+        this.clientManager.purgeClient(ConnectionManager.fromStore(credentials));
         return true;
     }
 
