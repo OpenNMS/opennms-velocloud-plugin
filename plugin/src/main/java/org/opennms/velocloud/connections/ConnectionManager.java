@@ -117,13 +117,11 @@ public class ConnectionManager {
      * connection with given alias was not found
      */
     public boolean deleteConnection(final String alias) {
-        final String vaultAlias = PREFIX + alias.toLowerCase();
-        final var credentials = this.vault.getCredentials(vaultAlias);
-        if (credentials == null) {
+        final var connection = this.getConnection(alias);
+        if (connection.isEmpty()) {
             return false;
         }
-        this.vault.deleteCredentials(vaultAlias);
-        this.clientManager.purgeClient(ConnectionManager.fromStore(credentials));
+        connection.get().delete();
         return true;
     }
 
@@ -229,6 +227,12 @@ public class ConnectionManager {
         @Override
         public Optional<ConnectionValidationError> validate() {
             return ConnectionManager.this.clientManager.validate(ConnectionManager.asVelocloudCredentials(this));
+        }
+
+        @Override
+        public void delete() {
+            ConnectionManager.this.vault.deleteCredentials(PREFIX + this.alias);
+            ConnectionManager.this.clientManager.purgeClient(this.credentials);
         }
 
         private Credentials asCredentials() {
