@@ -30,9 +30,11 @@ package org.opennms.velocloud.shell.connections;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.shell.AliasCompleter;
 
 @Command(scope = "opennms-velocloud", name = "connection-delete", description = "Delete a connection", detailedDescription = "Deletes a connection to a velocloud orchestrator")
 @Service
@@ -41,7 +43,8 @@ public class DeleteConnectionCommand implements Action {
     @Reference
     private ConnectionManager connectionManager;
 
-    @Argument(index = 0, name = "alias", description = "Alias", required = true, multiValued = false)
+    @Argument(index = 0, name = "alias", description = "Connection alias to delete", required = true, multiValued = false)
+    @Completion(AliasCompleter.class)
     public String alias = null;
 
     @Override
