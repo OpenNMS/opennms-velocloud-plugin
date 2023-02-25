@@ -151,4 +151,15 @@ public class VelocloudRestServiceV1Impl implements VelocloudRestService {
                            .build();
         }
     }
+
+    @Override
+    public Response deleteConnection(String alias) {
+        if (this.connectionManager.deleteConnection(alias)) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("No such connection exists")
+                    .build();
+        }
+    }
 }

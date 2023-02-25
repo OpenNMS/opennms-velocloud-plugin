@@ -51,6 +51,15 @@ Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format.
 | *force* - Do not validate the connection.
 |===
 
+=== DELETE (deleting data)
+[options="header, autowidth" cols="1,2"]
+|===
+| Resource
+| Description
+| `/connections/\{alias}`
+| Delete an existing connection with specified alias.
+|===
+
 == Karaf
 .Connect to Karaf shell.
 [source, console]
@@ -160,6 +169,27 @@ ARGUMENTS
 
 DETAILS
         Validate an existing connection to a velocloud orchestrator
+----
+
+[source, console]
+.Delete an existing connection.
+----
+admin@opennms()> opennms-velocloud:connection-delete --help
+DESCRIPTION
+        opennms-velocloud:connection-delete
+
+	Deletee a connection
+
+SYNTAX
+        opennms-velocloud:connection-delete alias
+
+ARGUMENTS
+        alias
+                Alias
+                (required)
+
+DETAILS
+        Deletes a connection to a velocloud orchestrator
 ----
 
 == Examples
