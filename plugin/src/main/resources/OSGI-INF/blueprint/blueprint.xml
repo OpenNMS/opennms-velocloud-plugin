@@ -36,12 +36,14 @@
 
     <!--    Requisition-->
     <bean id="partnerRequisitionProvider" class="org.opennms.velocloud.requisition.PartnerRequisitionProvider">
+        <argument ref="nodeDao"/>
         <argument ref="clientManager"/>
         <argument ref="connectionManager"/>
     </bean>
     <service ref="partnerRequisitionProvider" interface="org.opennms.integration.api.v1.requisition.RequisitionProvider"/>
 
     <bean id="customerRequisitionProvider" class="org.opennms.velocloud.requisition.CustomerRequisitionProvider">
+        <argument ref="nodeDao"/>
         <argument ref="clientManager"/>
         <argument ref="connectionManager"/>
     </bean>
