@@ -28,11 +28,9 @@
 
 package org.opennms.velocloud.collection.link;
 
-import static org.opennms.velocloud.collection.AbstractVelocloudCollectorFactory.PREFIX_VELOCLOUD;
 import static org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller.ATTR_EDGE_ID;
 import static org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller.ATTR_LINK_ID;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -46,13 +44,14 @@ import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableIp
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.model.MetricsLink;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.collection.AbstractVelocloudServiceCollector;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.net.InetAddresses;
 
 public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
 
@@ -68,28 +67,33 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
 
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest request, Map<String, Object> attributes) {
+        final var edgeId = Integer.parseInt((String) Objects.requireNonNull(attributes.get(ATTR_EDGE_ID),
+                "Missing attribute: " + ATTR_EDGE_ID));
+        final var linkId = (String) Objects.requireNonNull(attributes.get(ATTR_LINK_ID),
+                "Missing attribute: " + ATTR_LINK_ID);
 
-        final MetricsLink linkMetrics;
         final VelocloudApiCustomerClient client;
         try {
-            //ensure we have a link
-            String linkId = attributes.get(PREFIX_VELOCLOUD + ATTR_LINK_ID).toString();
             client = getCustomerClient(attributes);
-            int edgeId = Integer.parseInt(attributes.get(PREFIX_VELOCLOUD + "id").toString());
+        } catch (VelocloudApiException ex) {
+            return  CompletableFuture.failedFuture(ex);
+        }
+
+        final MetricsLink linkMetrics;
+        try {
             linkMetrics = client.getLinkMetrics(edgeId, linkId);
-        } catch (RuntimeException | VelocloudApiException ex) {
-            LOG.warn("Error collecting Velocloud data for link on edge {} with id {}, Message: {}",
-                    attributes.get(PREFIX_VELOCLOUD + "id"), attributes.get(PREFIX_VELOCLOUD + ATTR_LINK_ID), ex.getMessage());
+        } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
         }
 
         final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
 
-        final ImmutableIpInterfaceResource interfaceResource =
-                ImmutableIpInterfaceResource.newBuilder().setNodeResource(nodeResource).setInstance(request.getAddress().toString()/*todo check format*/).build();
+        final ImmutableIpInterfaceResource ifaceResouce = ImmutableIpInterfaceResource.newBuilder().setNodeResource(nodeResource)
+                .setInstance(InetAddresses.toAddrString(request.getAddress()))
+                .build();
 
         final ImmutableCollectionSetResource.Builder<IpInterfaceResource> linkAttrBuilder =
-                ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class).setResource(interfaceResource);
+                ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class).setResource(ifaceResouce);
 
         final int milliseconds = client.getIntervalMillis();
 

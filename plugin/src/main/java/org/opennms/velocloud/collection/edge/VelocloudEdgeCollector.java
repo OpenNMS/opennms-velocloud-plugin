@@ -70,10 +70,7 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
         final MetricsEdge edgeMetrics;
         final VelocloudApiCustomerClient client;
         try {
-            //ensure we have an edge
-            Objects.requireNonNull(attributes.get(PREFIX_VELOCLOUD + ATTR_EDGE_ID));
-
-            Integer edgeId = Integer.parseInt(attributes.get(PREFIX_VELOCLOUD + "id").toString());
+            final var edgeId = Integer.parseInt((String) Objects.requireNonNull(attributes.get(ATTR_EDGE_ID)));
             client = getCustomerClient(attributes);
             edgeMetrics = client.getEdgeMetrics(edgeId);
         } catch (RuntimeException | VelocloudApiException ex) {

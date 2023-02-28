@@ -35,6 +35,7 @@ import static org.opennms.velocloud.requisition.AbstractRequisitionProvider.PARA
 import static org.opennms.velocloud.requisition.AbstractRequisitionProvider.VELOCLOUD_METADATA_CONTEXT;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -50,34 +51,24 @@ import org.opennms.velocloud.connections.ConnectionManager;
 
 abstract public class AbstractVelocloudCollectorFactory<T extends AbstractVelocloudServiceCollector> implements ServiceCollectorFactory<T> {
 
-    public static final String PREFIX_PARAMETER = "parameter.";
-    public static final String PREFIX_VELOCLOUD = VELOCLOUD_METADATA_CONTEXT + ".";
     protected final ClientManager clientManager;
     protected final ConnectionManager connectionManager;
-    private final NodeDao nodeDao;
 
-    public AbstractVelocloudCollectorFactory(ClientManager clientManager, ConnectionManager connectionManager, NodeDao nodeDao) {
+    public AbstractVelocloudCollectorFactory(final ClientManager clientManager, final ConnectionManager connectionManager) {
         this.clientManager = Objects.requireNonNull(clientManager);
         this.connectionManager = Objects.requireNonNull(connectionManager);
-        this.nodeDao = Objects.requireNonNull(nodeDao);
     }
 
     @Override
     public Map<String, Object> getRuntimeAttributes(CollectionRequest collectionRequest, Map<String, Object> parameters) {
-        final Node node = nodeDao.getNodeById(collectionRequest.getNodeId());
-        final Map<String, Object> runtimeAttributes = node.getMetaData().stream()
-                .filter(metaData -> VELOCLOUD_METADATA_CONTEXT.equals(metaData.getContext()))
-                .collect(Collectors.toMap(metaData -> PREFIX_VELOCLOUD + metaData.getKey(), MetaData::getValue));
-        if (parameters != null) {
-            for(var parameter: parameters.entrySet()) {
-                runtimeAttributes.put(PREFIX_PARAMETER + parameter.getKey(), parameter.getValue().toString());
-            }
-        }
-        final String alias = Objects.requireNonNull(runtimeAttributes.get(PREFIX_VELOCLOUD + ATTR_ALIAS)).toString();
-        final Connection connection = connectionManager.getConnection(alias).orElseThrow(() -> new IllegalStateException("Connection not found for alias: " + alias));
+        final var alias = Objects.requireNonNull(parameters.get(ATTR_ALIAS), "Missing property: " + ATTR_ALIAS);
+        final var connection = this.connectionManager.getConnection(Objects.toString(alias))
+                .orElseThrow(() -> new NullPointerException("Connection not found for alias: " + alias));
+
+        final var runtimeAttributes = new HashMap<>(parameters);
+
         runtimeAttributes.put(ATTR_ORCHESTRATOR_URL, connection.getOrchestratorUrl());
         runtimeAttributes.put(ATTR_API_KEY, connection.getApiKey());
-        runtimeAttributes.put(PARAMETER_FOREIGN_SOURCE, node.getForeignSource());
 
         return runtimeAttributes;
     }

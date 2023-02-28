@@ -68,9 +68,9 @@ public class VelocloudGatewayCollector extends AbstractVelocloudServiceCollector
         final VelocloudApiPartnerClient client;
         try {
             //ensure we have a gateway
-            Objects.requireNonNull(attributes.get(PREFIX_VELOCLOUD + ATTR_GATEWAY_ID));
+            Objects.requireNonNull(attributes.get(ATTR_GATEWAY_ID));
 
-            Integer gatewayId = Integer.parseInt(attributes.get(PREFIX_VELOCLOUD + "id").toString());
+            Integer gatewayId = Integer.parseInt(attributes.get("gatewayId").toString());
             client = getPartnerClient(attributes);
             gatewayMetrics = client.getGatewayMetrics(gatewayId);
         } catch (RuntimeException | VelocloudApiException ex) {

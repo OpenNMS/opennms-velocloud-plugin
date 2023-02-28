@@ -49,6 +49,9 @@ import org.opennms.velocloud.client.api.model.Aggregate;
 import org.opennms.velocloud.client.api.model.Traffic;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.pollers.AbstractStatusPoller;
+
+import com.google.common.base.Strings;
 
 public abstract class AbstractVelocloudServiceCollector implements VelocloudServiceCollector {
 
@@ -103,24 +106,25 @@ public abstract class AbstractVelocloudServiceCollector implements VelocloudServ
         }
     }
 
-    protected VelocloudApiPartnerClient getPartnerClient(Map<String, Object> attributes) {
-        try {
-            return clientManager.getPartnerClient(new VelocloudApiClientCredentials(
-                    Objects.requireNonNull(attributes.get(ATTR_ORCHESTRATOR_URL),"orchestrator url required").toString(),
-                    Objects.requireNonNull(attributes.get(ATTR_API_KEY),"api key required").toString()));
-        } catch (VelocloudApiException e) {
-            throw new RuntimeException(e);
+    protected VelocloudApiPartnerClient getPartnerClient(Map<String, Object> attributes) throws VelocloudApiException {
+        return clientManager.getPartnerClient(getCredentials(attributes));
+    }
+
+    protected VelocloudApiCustomerClient getCustomerClient(Map<String, Object> attributes) throws VelocloudApiException {
+        final var credentials = getCredentials(attributes);
+
+        final String enterpriseId = (String)attributes.get("enterpriseId");
+
+        if (Strings.isNullOrEmpty(enterpriseId)) {
+            return AbstractVelocloudServiceCollector.this.clientManager.getCustomerClient(credentials);
+        } else {
+            return AbstractVelocloudServiceCollector.this.clientManager.getPartnerClient(credentials).getCustomerClient(Integer.parseInt(enterpriseId));
         }
     }
 
-    protected VelocloudApiCustomerClient getCustomerClient(Map<String, Object> attributes) {
-        try {
-            return clientManager.getCustomerClient(new VelocloudApiClientCredentials(
-                    Objects.requireNonNull(attributes.get(ATTR_ORCHESTRATOR_URL),"orchestrator url required").toString(),
-                    Objects.requireNonNull(attributes.get(ATTR_API_KEY),"api key required").toString()));
-        } catch (VelocloudApiException e) {
-            throw new RuntimeException(e);
-        }
+    private static VelocloudApiClientCredentials getCredentials(Map<String, Object> attributes) {
+        return new VelocloudApiClientCredentials(
+                Objects.requireNonNull(attributes.get(ATTR_ORCHESTRATOR_URL), "orchestrator url required").toString(),
+                Objects.requireNonNull(attributes.get(ATTR_API_KEY), "api key required").toString());
     }
-
 }

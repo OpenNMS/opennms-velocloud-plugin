@@ -169,4 +169,8 @@
     <bean id="velocloudPollerConfig" class="org.opennms.velocloud.configuration.VelocloudPollerConfigurationExtension"/>
     <service ref="velocloudPollerConfig"
              interface="org.opennms.integration.api.v1.config.poller.PollerConfigurationExtension"/>
+
+    <bean id="velocloudDatacollectionConfig" class="org.opennms.velocloud.configuration.VelocloudDatacollectionConfigurationExtension"/>
+    <service ref="velocloudPollerConfig"
+             interface="org.opennms.integration.api.v1.config.datacollection.SnmpCollectionExtension"/>
 </blueprint>
