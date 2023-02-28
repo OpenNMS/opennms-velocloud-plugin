@@ -28,9 +28,6 @@
 
 package org.opennms.velocloud.collection.gateway;
 
-import static org.opennms.velocloud.collection.AbstractVelocloudCollectorFactory.PREFIX_VELOCLOUD;
-import static org.opennms.velocloud.pollers.gateway.AbstractGatewayStatusPoller.ATTR_GATEWAY_ID;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -47,6 +44,7 @@ import org.opennms.velocloud.client.api.model.MetricsGateway;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.collection.AbstractVelocloudServiceCollector;
 import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.pollers.gateway.AbstractGatewayStatusPoller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,18 +62,20 @@ public class VelocloudGatewayCollector extends AbstractVelocloudServiceCollector
 
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest request, Map<String, Object> attributes) {
-        final MetricsGateway gatewayMetrics;
+        final var gatewayId = Integer.parseInt((String) Objects.requireNonNull(attributes.get(AbstractGatewayStatusPoller.ATTR_GATEWAY_ID),
+                "Missing attribute: " + AbstractGatewayStatusPoller.ATTR_GATEWAY_ID));
+
         final VelocloudApiPartnerClient client;
         try {
-            //ensure we have a gateway
-            Objects.requireNonNull(attributes.get(ATTR_GATEWAY_ID));
-
-            Integer gatewayId = Integer.parseInt(attributes.get("gatewayId").toString());
             client = getPartnerClient(attributes);
+        } catch (VelocloudApiException ex) {
+            return  CompletableFuture.failedFuture(ex);
+        }
+
+        final MetricsGateway gatewayMetrics;
+        try {
             gatewayMetrics = client.getGatewayMetrics(gatewayId);
-        } catch (RuntimeException | VelocloudApiException ex) {
-            LOG.warn("Error collecting Velocloud data for gateway {} with id {}, Message: {}",
-                    attributes.get(PREFIX_VELOCLOUD + ATTR_GATEWAY_ID), attributes.get(PREFIX_VELOCLOUD + "id"), ex.getMessage());
+        } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
         }
 

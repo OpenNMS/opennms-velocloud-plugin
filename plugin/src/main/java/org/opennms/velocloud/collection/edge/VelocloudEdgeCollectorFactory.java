@@ -35,8 +35,8 @@ import org.opennms.velocloud.connections.ConnectionManager;
 
 public class VelocloudEdgeCollectorFactory extends AbstractVelocloudCollectorFactory<VelocloudEdgeCollector> {
 
-    public VelocloudEdgeCollectorFactory(ClientManager clientManager, ConnectionManager connectionManager, NodeDao nodeDao) {
-        super(clientManager, connectionManager, nodeDao);
+    public VelocloudEdgeCollectorFactory(ClientManager clientManager, ConnectionManager connectionManager) {
+        super(clientManager, connectionManager);
     }
 
     @Override

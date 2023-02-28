@@ -28,10 +28,6 @@
 
 package org.opennms.velocloud.collection.edge;
 
-import static org.opennms.velocloud.collection.AbstractVelocloudCollectorFactory.PREFIX_VELOCLOUD;
-import static org.opennms.velocloud.pollers.edge.AbstractEdgeStatusPoller.ATTR_EDGE_ID;
-
-import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -50,6 +46,7 @@ import org.opennms.velocloud.client.api.model.MetricsEdge;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.collection.AbstractVelocloudServiceCollector;
 import org.opennms.velocloud.connections.ConnectionManager;
+import org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,14 +64,20 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest request, Map<String, Object> attributes) {
 
-        final MetricsEdge edgeMetrics;
+        final var edgeId = Integer.parseInt((String) Objects.requireNonNull(attributes.get(AbstractLinkStatusPoller.ATTR_EDGE_ID),
+                "Missing attribute: " + AbstractLinkStatusPoller.ATTR_EDGE_ID));
+
         final VelocloudApiCustomerClient client;
         try {
-            final var edgeId = Integer.parseInt((String) Objects.requireNonNull(attributes.get(ATTR_EDGE_ID)));
             client = getCustomerClient(attributes);
+        } catch (VelocloudApiException ex) {
+            return  CompletableFuture.failedFuture(ex);
+        }
+
+        final MetricsEdge edgeMetrics;
+        try {
             edgeMetrics = client.getEdgeMetrics(edgeId);
-        } catch (RuntimeException | VelocloudApiException ex) {
-            LOG.warn("Error collecting Velocloud data for edge {} with id {}, Message: {}", attributes.get(PREFIX_VELOCLOUD + ATTR_EDGE_ID), attributes.get(PREFIX_VELOCLOUD + "id"), ex.getMessage());
+        } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
         }
 

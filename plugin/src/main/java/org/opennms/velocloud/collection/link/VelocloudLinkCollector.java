@@ -88,12 +88,12 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
 
         final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
 
-        final ImmutableIpInterfaceResource ifaceResouce = ImmutableIpInterfaceResource.newBuilder().setNodeResource(nodeResource)
-                .setInstance(InetAddresses.toAddrString(request.getAddress()))
+        final ImmutableIpInterfaceResource interfaceResource = ImmutableIpInterfaceResource.newBuilder()
+                .setNodeResource(nodeResource).setInstance(InetAddresses.toAddrString(request.getAddress()))
                 .build();
 
         final ImmutableCollectionSetResource.Builder<IpInterfaceResource> linkAttrBuilder =
-                ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class).setResource(ifaceResouce);
+                ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class).setResource(interfaceResource);
 
         final int milliseconds = client.getIntervalMillis();
 

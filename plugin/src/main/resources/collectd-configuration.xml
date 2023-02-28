@@ -1,0 +1,32 @@
+<collectd-configuration xmlns="http://xmlns.opennms.org/xsd/config/collectd" threads="50">
+
+   <!-- TODO add support for this into OpenNMS -->
+
+   <package name="Velocloud" remote="false">
+      <filter>IPADDR != '0.0.0.0'</filter>
+
+      <service name="Velocloud-Link" interval="300000" user-defined="false" status="on">
+         <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
+         <parameter key="alias" value="${velocloud:alias}"/>
+         <parameter key="edgeId" value="${velocloud:logicalEdgeId}"/>
+         <parameter key="linkId" value="${velocloud:linkId}"/>
+      </service>
+
+      <service name="Velocloud-Gateway" interval="300000" user-defined="false" status="on">
+         <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
+         <parameter key="alias" value="${velocloud:alias}"/>
+         <parameter key="gatewayId" value="${velocloud:gatewayId}"/>
+      </service>
+
+      <service name="Velocloud-Edge" interval="300000" user-defined="false" status="on">
+         <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
+         <parameter key="alias" value="${velocloud:alias}"/>
+         <parameter key="edgeId" value="${velocloud:logicalEdgeId}"/>
+      </service>
+
+   </package>
+
+   <collector service="Velocloud-Link" class-name="org.opennms.velocloud.collection.link.VelocloudLinkCollector"/>
+   <collector service="Velocloud-Gateway" class-name="org.opennms.velocloud.collection.gateway.VelocloudGatewayCollector"/>
+   <collector service="Velocloud-Edge" class-name="org.opennms.velocloud.collection.edge.VelocloudEdgeCollector"/>
+</collectd-configuration>

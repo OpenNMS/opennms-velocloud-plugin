@@ -31,13 +31,12 @@ package org.opennms.velocloud.collection.gateway;
 import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.collection.AbstractVelocloudCollectorFactory;
-import org.opennms.velocloud.collection.link.VelocloudLinkCollector;
 import org.opennms.velocloud.connections.ConnectionManager;
 
 public class VelocloudGatewayCollectorFactory extends AbstractVelocloudCollectorFactory<VelocloudGatewayCollector> {
 
     public VelocloudGatewayCollectorFactory(ClientManager clientManager, ConnectionManager connectionManager, NodeDao nodeDao) {
-        super(clientManager, connectionManager, nodeDao);
+        super(clientManager, connectionManager);
     }
 
     @Override

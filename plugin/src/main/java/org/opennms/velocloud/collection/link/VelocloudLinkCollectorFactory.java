@@ -28,14 +28,6 @@
 
 package org.opennms.velocloud.collection.link;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.opennms.integration.api.v1.collectors.CollectionRequest;
-import org.opennms.integration.api.v1.collectors.ServiceCollectorFactory;
-import org.opennms.integration.api.v1.dao.NodeDao;
-import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.collection.AbstractVelocloudCollectorFactory;
 import org.opennms.velocloud.connections.ConnectionManager;

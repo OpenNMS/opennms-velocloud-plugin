@@ -31,10 +31,7 @@ package org.opennms.velocloud.collection;
 import static org.opennms.velocloud.pollers.AbstractStatusPoller.ATTR_ALIAS;
 import static org.opennms.velocloud.pollers.AbstractStatusPoller.ATTR_API_KEY;
 import static org.opennms.velocloud.pollers.AbstractStatusPoller.ATTR_ORCHESTRATOR_URL;
-import static org.opennms.velocloud.requisition.AbstractRequisitionProvider.PARAMETER_FOREIGN_SOURCE;
-import static org.opennms.velocloud.requisition.AbstractRequisitionProvider.VELOCLOUD_METADATA_CONTEXT;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -42,11 +39,7 @@ import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.ServiceCollectorFactory;
-import org.opennms.integration.api.v1.dao.NodeDao;
-import org.opennms.integration.api.v1.model.MetaData;
-import org.opennms.integration.api.v1.model.Node;
 import org.opennms.velocloud.clients.ClientManager;
-import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 
 abstract public class AbstractVelocloudCollectorFactory<T extends AbstractVelocloudServiceCollector> implements ServiceCollectorFactory<T> {

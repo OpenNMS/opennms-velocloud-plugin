@@ -49,7 +49,6 @@ import org.opennms.velocloud.client.api.model.Aggregate;
 import org.opennms.velocloud.client.api.model.Traffic;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.ConnectionManager;
-import org.opennms.velocloud.pollers.AbstractStatusPoller;
 
 import com.google.common.base.Strings;
 
