@@ -30,6 +30,10 @@ package org.opennms.velocloud.requisition;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionInterface;
@@ -38,6 +42,7 @@ import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableReq
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.internal.Utils;
+import org.opennms.velocloud.client.api.model.CloudService;
 import org.opennms.velocloud.client.api.model.Datacenter;
 import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.clients.ClientManager;
@@ -212,60 +217,10 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                     }
                 }
 
-                final List<Tunnel> nvsFromEdgeTunnels = client.getNvsTunnels("NVS_FROM_EDGE_TUNNEL");
-
-                for (final Tunnel tunnel : nvsFromEdgeTunnels) {
-                    final var service = ImmutableRequisitionMonitoredService
-                            .newBuilder()
-                            .setName(String.format("VelocloudTunnel-%s-%s", tunnel.name, (Strings.isNullOrEmpty(tunnel.destination) ? "primary" : tunnel.destination)))
-                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                    .setKey("dataKey")
-                                    .setValue(tunnel.dataKey)
-                                    .build())
-                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                    .setKey("tag")
-                                    .setValue("NVS_FROM_EDGE_TUNNEL")
-                                    .build())
-                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                    .setKey("destination")
-                                    .setValue(tunnel.destination)
-                                    .build())
-                            .build();
-
-                    iface.addMonitoredService(service);
-                }
-
-                final List<Tunnel> edgeNvsTunnels = client.getNvsTunnels("EDGE_NVS_TUNNEL");
-
-                for (final Tunnel tunnel : edgeNvsTunnels) {
-                    final var service = ImmutableRequisitionMonitoredService
-                            .newBuilder()
-                            .setName(String.format("VelocloudTunnel-%s-%s", tunnel.name, (Strings.isNullOrEmpty(tunnel.destination) ? "primary" : tunnel.destination)))
-                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                    .setKey("dataKey")
-                                    .setValue(tunnel.dataKey)
-                                    .build())
-                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                    .setKey("tag")
-                                    .setValue("EDGE_NVS_TUNNEL")
-                                    .build())
-                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                    .setKey("destination")
-                                    .setValue(tunnel.destination)
-                                    .build())
-                            .build();
-
-                    iface.addMonitoredService(service);
-                }
-
                 node.addInterface(iface.build());
             }
+
+            final List<CloudService> cloudServices = client.getCloudServices(edge.logicalId);
 
             for (final var link : edge.links) {
                 final var iface = ImmutableRequisitionInterface.newBuilder()
@@ -350,6 +305,39 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
 
                 iface.addMonitoredService("VelocloudLinkConnection");
                 iface.addMonitoredService("VelocloudLinkService");
+
+                final Set<CloudService> cloudServicesOnLink = cloudServices.stream()
+                        .filter(c->Objects.equals(c.link, link.internalId))
+                        .collect(Collectors.toSet());
+
+                for(final CloudService cloudService : cloudServicesOnLink) {
+                    final var service = ImmutableRequisitionMonitoredService
+                            .newBuilder()
+                            .setName(String.format("VelocloudTunnel-%s-%s", cloudService.name, cloudService.role))
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("edgeId")
+                                    .setValue(edge.logicalId)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("role")
+                                    .setValue(cloudService.role)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("name")
+                                    .setValue(cloudService.name)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("dataKey")
+                                    .setValue(cloudService.pathId)
+                                    .build())
+                            .build();
+
+                    iface.addMonitoredService(service);
+                }
 
                 node.addInterface(iface.build());
             }

@@ -63,12 +63,13 @@
         </service>
 
         <service name="VelocloudTunnel" interval="300000">
-            <pattern><![CDATA[^VelocloudTunnel-(?<name>.*)-(?<destination>.*)$]]></pattern>
+            <pattern><![CDATA[^VelocloudTunnel-(?<name>.*)$]]></pattern>
             <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
-            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="edgeId" value="${velocloud:logicalEdgeId}"/>
+            <parameter key="name" value="${velocloud:name}"/>
+            <parameter key="role" value="${velocloud:role}"/>
             <parameter key="dataKey" value="${velocloud:dataKey}"/>
-            <parameter key="tag" value="${velocloud:tag}"/>
-            <parameter key="destination" value="${velocloud:destination}"/>
+            <parameter key="alias" value="${velocloud:alias}"/>
         </service>
 
         <service name="VelocloudDataCenterServices" interval="300000">
