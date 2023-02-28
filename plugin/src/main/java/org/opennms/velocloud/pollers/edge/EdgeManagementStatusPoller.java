@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -28,59 +28,30 @@
 
 package org.opennms.velocloud.pollers.edge;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.opennms.integration.api.v1.pollers.PollerResult;
 import org.opennms.integration.api.v1.pollers.Status;
 import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
 import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.clients.ClientManager;
 
-import com.google.common.base.Strings;
-
-public class EdgeConnectionStatusPoller extends AbstractEdgeStatusPoller {
-    public EdgeConnectionStatusPoller(ClientManager clientManager) {
+public class EdgeManagementStatusPoller extends AbstractEdgeStatusPoller {
+    public EdgeManagementStatusPoller(ClientManager clientManager) {
         super(clientManager);
     }
 
     protected PollerResult poll(final Context context, final Edge edge) throws VelocloudApiException {
         if (!Objects.equals(edge.edgeState, "CONNECTED")) {
-            final Optional<Integer> superGatewayId = context.customerClient().getSuperGateway(edge.edgeId);
-
-            if (superGatewayId.isEmpty()) {
-                return ImmutablePollerResult.newBuilder()
-                        .setStatus(Status.Down)
-                        .setReason("Edge is down (no super gateway found)")
-                        .build();
-            }
-
-            final VelocloudApiPartnerClient partnerClient = context.partnerClient();
-            final List<Edge> edgesAssigned = partnerClient.getEdgeAssignments(superGatewayId.get());
-
-            final Optional<Edge> edgeAssigned = edgesAssigned.stream()
-                    .filter(e -> Objects.equals(e.edgeId, edge.edgeId))
-                    .findAny();
-
-            if (edgeAssigned.isEmpty()) {
-                return ImmutablePollerResult.newBuilder()
-                        .setStatus(Status.Down)
-                        .setReason("Edge is down (edge not assigned on super gateway)")
-                        .build();
-            }
-
-            if (!Objects.equals(edgeAssigned.get().edgeState, "CONNECTED")) {
-                return ImmutablePollerResult.newBuilder()
-                        .setStatus(Status.Down)
-                        .setReason("Edge is down (verified by false-positive check)")
-                        .build();
-            }
+            return ImmutablePollerResult.newBuilder()
+                    .setStatus(Status.Down)
+                    .setReason("Edge monitoring down")
+                    .build();
         }
 
         return ImmutablePollerResult.newBuilder()
+                .addProperty("links", edge.links.size())
                 .setStatus(Status.Up)
                 .build();
     }

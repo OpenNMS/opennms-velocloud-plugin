@@ -34,8 +34,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.base.MoreObjects;
-
 import org.opennms.integration.api.v1.runtime.Container;
 import org.opennms.integration.api.v1.runtime.RuntimeInfo;
 import org.opennms.integration.api.v1.scv.Credentials;
@@ -47,6 +45,7 @@ import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.clients.ClientManager;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 
 public class ConnectionManager {
@@ -76,9 +75,9 @@ public class ConnectionManager {
      */
     public Set<String> getAliases() {
         return this.vault.getAliases().stream()
-                         .filter(alias -> alias.startsWith(PREFIX))
-                         .map(alias -> alias.substring(PREFIX.length()))
-                         .collect(Collectors.toSet());
+                .filter(alias -> alias.startsWith(PREFIX))
+                .map(alias -> alias.substring(PREFIX.length()))
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -110,6 +109,22 @@ public class ConnectionManager {
                                                                       .build());
     }
 
+    /**
+     * Deletes a connection under the given alias.
+     *
+     * @param alias the alias of the connection to delete
+     * @return <b>true</b> if an existing connection with given alias was found and deleted and <b>false</b> if no
+     * connection with given alias was not found
+     */
+    public boolean deleteConnection(final String alias) {
+        final var connection = this.getConnection(alias);
+        if (connection.isEmpty()) {
+            return false;
+        }
+        connection.get().delete();
+        return true;
+    }
+
     public Optional<VelocloudApiPartnerClient> getPartnerClient(final String alias) throws VelocloudApiException {
         final var connection = this.getConnection(alias);
         if (connection.isEmpty()) {
@@ -126,6 +141,14 @@ public class ConnectionManager {
         }
 
         return Optional.of(this.clientManager.getCustomerClient(asVelocloudCredentials(connection.get())));
+    }
+
+    public Optional<VelocloudApiCustomerClient> getCustomerClient(final String alias, final Integer enterpriseId) throws VelocloudApiException {
+        if (enterpriseId == null) {
+            return getCustomerClient(alias);
+        } else {
+            return getPartnerClient(alias).map(c -> c.getCustomerClient(enterpriseId));
+        }
     }
 
     private static VelocloudApiClientCredentials asVelocloudCredentials(Connection connection) {
@@ -198,13 +221,18 @@ public class ConnectionManager {
             if (oldCredentials != null) {
                 ConnectionManager.this.clientManager.purgeClient(ConnectionManager.fromStore(oldCredentials));
             }
-
             ConnectionManager.this.vault.setCredentials(PREFIX + this.alias, this.asCredentials());
         }
 
         @Override
         public Optional<ConnectionValidationError> validate() {
             return ConnectionManager.this.clientManager.validate(ConnectionManager.asVelocloudCredentials(this));
+        }
+
+        @Override
+        public void delete() {
+            ConnectionManager.this.vault.deleteCredentials(PREFIX + this.alias);
+            ConnectionManager.this.clientManager.purgeClient(this.credentials);
         }
 
         private Credentials asCredentials() {

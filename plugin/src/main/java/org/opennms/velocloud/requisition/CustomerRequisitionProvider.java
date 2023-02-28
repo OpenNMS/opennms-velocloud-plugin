@@ -28,6 +28,7 @@
 
 package org.opennms.velocloud.requisition;
 
+import java.util.List;
 import java.util.Map;
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
@@ -38,6 +39,8 @@ import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableReq
 import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.internal.Utils;
+import org.opennms.velocloud.client.api.model.Datacenter;
+import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
@@ -45,7 +48,6 @@ import org.opennms.velocloud.connections.ConnectionManager;
 import com.google.common.base.Strings;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
-
     public final static String TYPE = "velocloud-customer";
     
     public static final String PARAMETER_ENTERPRISE_ID = "enterpriseId";
@@ -69,13 +71,18 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
             request.setEnterpriseId(Integer.parseInt(parameters.get(PARAMETER_ENTERPRISE_ID)));
         }
 
+        if (parameters.containsKey(PARAMETER_FOREIGN_SOURCE)) {
+            request.setForeignSource(parameters.get(PARAMETER_FOREIGN_SOURCE));
+        }
+
         return request;
     }
 
     @Override
     protected Requisition handleRequest(final RequestContext context) throws VelocloudApiException {
-        final var client = (context.getRequest().enterpriseId != null)
-                           ? context.getPartnerClient().getCustomerClient(context.getRequest().enterpriseId)
+        final Integer enterpriseId = context.getRequest().enterpriseId;
+        final var client = (enterpriseId != null)
+                           ? context.getPartnerClient().getCustomerClient(enterpriseId)
                            : context.getCustomerClient();
 
         final var requisition = ImmutableRequisition.newBuilder()
@@ -86,6 +93,15 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                      .setForeignId(edge.name)
                                                      .setNodeLabel(edge.name)
                                                      .setLocation(context.getLocation());
+
+            if (enterpriseId != null) {
+                node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                        .setContext(VELOCLOUD_METADATA_CONTEXT)
+                        .setKey("enterpriseId")
+                        .setValue(enterpriseId.toString())
+                        .build());
+            }
+
             node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                          .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                          .setKey("alias")
@@ -153,21 +169,100 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
 
             {
                 final var iface = ImmutableRequisitionInterface.newBuilder()
-                                                               .setIpAddress(Utils.getValidInetAddress("0.0.0.0"))
-                                                               .setDescription("Edge Meta");
+                        .setIpAddress(Utils.getValidInetAddress("0.0.0.0"))
+                        .setDescription("Edge Meta");
                 iface.addMonitoredService("VelocloudEdgeConnection");
                 iface.addMonitoredService("VelocloudEdgeService");
 
-                for(final var path : client.getPaths(edge.edgeId)) {
+                if (enterpriseId != null) {
+                    iface.addMonitoredService("VelocloudEdgeManagement");
+                }
+
+                for (final var path : client.getPaths(edge.edgeId)) {
                     final var service = ImmutableRequisitionMonitoredService
                             .newBuilder()
-                                    .setName(String.format("VelocloudEdgePath-%s", path.peerName))
-                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
-                                            .setContext(VELOCLOUD_METADATA_CONTEXT)
-                                            .setKey("deviceLogicalId")
-                                            .setValue(path.deviceLogicalId)
-                                            .build())
-                                    .build();
+                            .setName(String.format("VelocloudEdgePath-%s", path.peerName))
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("deviceLogicalId")
+                                    .setValue(path.deviceLogicalId)
+                                    .build())
+                            .build();
+
+                    iface.addMonitoredService(service);
+                }
+
+                final List<Datacenter> datacenters = client.getDatacenters();
+
+                for (final Datacenter datacenter : datacenters) {
+                    for (final String type : new String[]{"primary", "secondary"}) {
+                        final var service = ImmutableRequisitionMonitoredService
+                                .newBuilder()
+                                .setName(String.format("VelocloudDataCenterServices-%s-%s", datacenter.name, type))
+                                .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                        .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                        .setKey("logicalId")
+                                        .setValue(datacenter.logicalId)
+                                        .build())
+                                .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                        .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                        .setKey("type")
+                                        .setValue(type)
+                                        .build())
+                                .build();
+
+                        iface.addMonitoredService(service);
+                    }
+                }
+
+                final List<Tunnel> nvsFromEdgeTunnels = client.getNvsTunnels("NVS_FROM_EDGE_TUNNEL");
+
+                for (final Tunnel tunnel : nvsFromEdgeTunnels) {
+                    final var service = ImmutableRequisitionMonitoredService
+                            .newBuilder()
+                            .setName(String.format("VelocloudTunnel-%s-%s", tunnel.name, (Strings.isNullOrEmpty(tunnel.destination) ? "primary" : tunnel.destination)))
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("dataKey")
+                                    .setValue(tunnel.dataKey)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("tag")
+                                    .setValue("NVS_FROM_EDGE_TUNNEL")
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("destination")
+                                    .setValue(tunnel.destination)
+                                    .build())
+                            .build();
+
+                    iface.addMonitoredService(service);
+                }
+
+                final List<Tunnel> edgeNvsTunnels = client.getNvsTunnels("EDGE_NVS_TUNNEL");
+
+                for (final Tunnel tunnel : edgeNvsTunnels) {
+                    final var service = ImmutableRequisitionMonitoredService
+                            .newBuilder()
+                            .setName(String.format("VelocloudTunnel-%s-%s", tunnel.name, (Strings.isNullOrEmpty(tunnel.destination) ? "primary" : tunnel.destination)))
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("dataKey")
+                                    .setValue(tunnel.dataKey)
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("tag")
+                                    .setValue("EDGE_NVS_TUNNEL")
+                                    .build())
+                            .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                    .setContext(VELOCLOUD_METADATA_CONTEXT)
+                                    .setKey("destination")
+                                    .setValue(tunnel.destination)
+                                    .build())
+                            .build();
 
                     iface.addMonitoredService(service);
                 }
@@ -292,7 +387,16 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
         }
 
         public Request(final Connection connection) {
-            super(VELOCLOUD_CUSTOMER_IDENTIFIER, connection);
+            super(connection);
+        }
+
+        @Override
+        protected String getDefaultForeignSource() {
+            if (this.enterpriseId != null) {
+                return String.format("%s-%s-%d", TYPE, this.getAlias(), this.enterpriseId);
+            } else {
+                return String.format("%s-%s", TYPE, this.getAlias());
+            }
         }
 
         public Integer getEnterpriseId() {

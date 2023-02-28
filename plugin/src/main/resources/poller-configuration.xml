@@ -12,46 +12,71 @@
 
         <service name="VelocloudEdgePath" interval="300000">
             <pattern><![CDATA[^VelocloudEdgePath-(?<name>.*)$]]></pattern>
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="edgeId" value="${velocloud:edgeId}"/>
             <parameter key="deviceLogicalId" value="${velocloud:deviceLogicalId}"/>
         </service>
 
         <service name="VelocloudGatewayConnection" interval="300000">
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="gatewayId" value="${velocloud:gatewayId}"/>
         </service>
 
         <service name="VelocloudGatewayService" interval="300000">
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="gatewayId" value="${velocloud:gatewayId}"/>
         </service>
 
         <service name="VelocloudEdgeConnection" interval="300000">
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="edgeId" value="${velocloud:logicalEdgeId}"/>
+        </service>
+
+        <service name="VelocloudEdgeManagement" interval="300000">
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="edgeId" value="${velocloud:logicalEdgeId}"/>
         </service>
 
         <service name="VelocloudEdgeService" interval="300000">
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="edgeId" value="${velocloud:logicalEdgeId}"/>
         </service>
 
         <service name="VelocloudLinkConnection" interval="300000">
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="edgeId" value="${velocloud:logicalEdgeId}"/>
             <parameter key="linkId" value="${velocloud:linkId}"/>
         </service>
 
         <service name="VelocloudLinkService" interval="300000">
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="edgeId" value="${velocloud:logicalEdgeId}"/>
             <parameter key="linkId" value="${velocloud:linkId}"/>
         </service>
 
         <service name="VelocloudTunnel" interval="300000">
+            <pattern><![CDATA[^VelocloudTunnel-(?<name>.*)-(?<destination>.*)$]]></pattern>
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
             <parameter key="alias" value="${velocloud:alias}"/>
             <parameter key="dataKey" value="${velocloud:dataKey}"/>
+            <parameter key="tag" value="${velocloud:tag}"/>
+            <parameter key="destination" value="${velocloud:destination}"/>
+        </service>
+
+        <service name="VelocloudDataCenterServices" interval="300000">
+            <pattern><![CDATA[^VelocloudDataCenterServices-(?<name>.*)-(?<type>.*)$]]></pattern>
+            <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
+            <parameter key="alias" value="${velocloud:alias}"/>
+            <parameter key="logicalId" value="${velocloud:logicalId}"/>
+            <parameter key="type" value="${velocloud:type}"/>
         </service>
 
         <downtime begin="0" end="300000" interval="30000"/><!-- 30s, 0, 5m -->
@@ -66,6 +91,8 @@
              class-name="org.opennms.velocloud.pollers.gateway.GatewayServiceStatusPoller"/>
     <monitor service="VelocloudEdgeConnection"
              class-name="org.opennms.velocloud.pollers.edge.EdgeConnectionStatusPoller"/>
+    <monitor service="VelocloudEdgeManagement"
+             class-name="org.opennms.velocloud.pollers.edge.EdgeManagementStatusPoller"/>
     <monitor service="VelocloudEdgeService"
              class-name="org.opennms.velocloud.pollers.edge.EdgeServiceStatusPoller"/>
     <monitor service="VelocloudLinkConnection"
@@ -74,6 +101,8 @@
              class-name="org.opennms.velocloud.pollers.link.LinkServiceStatusPoller"/>
     <monitor service="VelocloudTunnel"
              class-name="org.opennms.velocloud.pollers.tunnel.TunnelStatusPoller"/>
+    <monitor service="VelocloudDataCenterServices"
+             class-name="org.opennms.velocloud.pollers.tunnel.DataCenterServicesStatusPoller"/>
     <monitor service="VelocloudEdgePath"
              class-name="org.opennms.velocloud.pollers.path.PathStatusPoller"/>
 </poller-configuration>

@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 
 public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitionProvider.Request> implements RequisitionProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
@@ -54,6 +55,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     public static final String VELOCLOUD_METADATA_CONTEXT = "velocloud";
     public static final String VELOCLOUD_CUSTOMER_IDENTIFIER = "velocloud-customer";
     public static final String VELOCLOUD_PARNTER_IDENTIFIER = "velocloud-partner";
+    public static final String PARAMETER_FOREIGN_SOURCE = "foreignSource";
 
     private final NodeDao nodeDao;
 
@@ -121,10 +123,6 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         }
     }
 
-    public static String createForeignSource(final String type, final String alias) {
-        return String.format("%s-%s", type, alias);
-    }
-
     protected static abstract class Request implements RequisitionRequest {
 
         private String foreignSource;
@@ -140,15 +138,16 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         public Request() {
         }
 
-        public Request(final String type, final Connection connection) {
-            this.foreignSource = createForeignSource(type, connection.getAlias());
+        public Request(final Connection connection) {
             this.alias = Objects.requireNonNull(connection.getAlias());
             this.orchestratorUrl = Objects.requireNonNull(connection.getOrchestratorUrl());
             this.apiKey = Objects.requireNonNull(connection.getApiKey());
         }
 
+        protected abstract String getDefaultForeignSource();
+
         public String getForeignSource() {
-            return this.foreignSource;
+            return Strings.isNullOrEmpty(this.foreignSource) ? this.getDefaultForeignSource() : this.foreignSource;
         }
 
         public void setForeignSource(final String foreignSource) {

@@ -3271,6 +3271,67 @@
         }
       }
     },
+    "/edge/getEdgeGatewayAssignments": {
+      "post": {
+        "summary": "Get Edge gateway Assignments",
+        "tags": [
+          "edge",
+          "all"
+        ],
+        "description": "Gets the Gateways for the specified Edge.",
+        "operationId": "edge_get_edge_gateway_assignments",
+        "x-privileges": {
+          "excludeAuthTypes": [],
+          "allowAuthTypes": [
+            "ANY"
+          ],
+          "allowPrincipleTypes": [],
+          "excludePrincipleTypes": [
+            "EDGE",
+            "GATEWAY"
+          ],
+          "requirePrivileges": [
+            {
+              "action": "READ",
+              "object": "EDGE"
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "edge_get_edge_gateway_assignments",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "enterpriseId": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successfully processed",
+            "schema": {
+              "$ref": "#/definitions/edge_get_edge_gateway_assignments_result"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/generic_400"
+          },
+          "500": {
+            "$ref": "#/responses/generic_500"
+          }
+        }
+      }
+    },
     "/edge/getEdge": {
       "post": {
         "summary": "Get Edge",
@@ -7180,6 +7241,80 @@
         }
       }
     },
+
+    "/enterprise/getEnterpriseDataCenters": {
+      "post": {
+        "summary": "Get enterprise data centers",
+        "description": "Gets all data center JSON objects defined for the specified enterprise.",
+        "tags": [
+          "all",
+          "enterprise"
+        ],
+        "x-privileges": {
+          "excludeAuthTypes": [],
+          "allowAuthTypes": [
+            "ANY"
+          ],
+          "allowPrincipleTypes": [],
+          "excludePrincipleTypes": [
+            "EDGE",
+            "GATEWAY"
+          ],
+          "requirePrivileges": [
+            {
+              "action": "READ",
+              "object": "NETWORK_SERVICE"
+            }
+          ]
+        },
+        "operationId": "enterprise_get_enterprise_data_centers",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "enterprise_get_enterprise_data_centers",
+              "properties": {
+                "enterpriseId": {
+                  "type": "integer"
+                },
+                "with": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "profileCount",
+                      "edgeCount"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successfully processed",
+            "schema": {
+              "title": "enterprise_get_enterprise_data_centers_result",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/enterprise_get_enterprise_data_centers_result_item"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/generic_400"
+          },
+          "500": {
+            "$ref": "#/responses/generic_500"
+          }
+        }
+      }
+    },
+
     "/enterprise/getEnterpriseServices": {
       "post": {
         "summary": "Get enterprise network services",
@@ -23952,22 +24087,19 @@
           "type": "string"
         },
         "statusModified": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "previousData": {
           "type": "object"
         },
         "previousCreated": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "draftData": {
           "type": "string"
         },
         "draftCreated": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "draftComment": {
           "type": "string"
@@ -23976,8 +24108,7 @@
           "type": "object"
         },
         "lastContact": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "version": {
           "type": "string"
@@ -34304,6 +34435,2765 @@
         }
       ]
     },
+    "edge_get_edge_gateway_assignments_result": {
+        "properties": {
+          "primary": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "created": {
+                "type": "string"
+              },
+              "networkId": {
+                "type": "integer"
+              },
+              "enterpriseProxyId": {
+                "type": "null"
+              },
+              "siteId": {
+                "type": "integer"
+              },
+              "activationKey": {
+                "type": "string"
+              },
+              "activationState": {
+                "type": "string"
+              },
+              "activationTime": {
+                "type": "string"
+              },
+              "softwareVersion": {
+                "type": "string"
+              },
+              "buildNumber": {
+                "type": "string"
+              },
+              "utilization": {
+                "type": "number"
+              },
+              "utilizationDetail": {
+                "type": "object",
+                "properties": {
+                  "load": {
+                    "type": "number"
+                  },
+                  "overall": {
+                    "type": "number"
+                  },
+                  "cpu": {
+                    "type": "number"
+                  },
+                  "memory": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "load",
+                  "overall",
+                  "cpu",
+                  "memory"
+                ]
+              },
+              "connectedEdges": {
+                "type": "integer"
+              },
+              "connectedEdgeList": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  }
+                ]
+              },
+              "dataCenterVpnStates": {
+                "type": "array",
+                "items": {}
+              },
+              "deviceId": {
+                "type": "string"
+              },
+              "logicalId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "gatewayState": {
+                "type": "string"
+              },
+              "alertsEnabled": {
+                "type": "integer"
+              },
+              "description": {
+                "type": "null"
+              },
+              "dnsName": {
+                "type": "null"
+              },
+              "isLoadBalanced": {
+                "type": "integer"
+              },
+              "privateIpAddress": {
+                "type": "string"
+              },
+              "ipAddress": {
+                "type": "string"
+              },
+              "ipV6Address": {
+                "type": "string"
+              },
+              "lastContact": {
+                "type": "string"
+              },
+              "systemUpSince": {
+                "type": "string"
+              },
+              "serviceUpSince": {
+                "type": "string"
+              },
+              "serviceState": {
+                "type": "string"
+              },
+              "bastionState": {
+                "type": "string"
+              },
+              "endpointPkiMode": {
+                "type": "string"
+              },
+              "handOffDetail": {
+                "type": "null"
+              },
+              "ipsecGatewayDetail": {
+                "type": "null"
+              },
+              "modified": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "created",
+              "networkId",
+              "enterpriseProxyId",
+              "siteId",
+              "activationKey",
+              "activationState",
+              "activationTime",
+              "softwareVersion",
+              "buildNumber",
+              "utilization",
+              "utilizationDetail",
+              "connectedEdges",
+              "connectedEdgeList",
+              "dataCenterVpnStates",
+              "deviceId",
+              "logicalId",
+              "name",
+              "gatewayState",
+              "alertsEnabled",
+              "description",
+              "dnsName",
+              "isLoadBalanced",
+              "privateIpAddress",
+              "ipAddress",
+              "ipV6Address",
+              "lastContact",
+              "systemUpSince",
+              "serviceUpSince",
+              "serviceState",
+              "bastionState",
+              "endpointPkiMode",
+              "handOffDetail",
+              "ipsecGatewayDetail",
+              "modified"
+            ]
+          },
+          "secondary": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "created": {
+                "type": "string"
+              },
+              "networkId": {
+                "type": "integer"
+              },
+              "enterpriseProxyId": {
+                "type": "null"
+              },
+              "siteId": {
+                "type": "integer"
+              },
+              "activationKey": {
+                "type": "string"
+              },
+              "activationState": {
+                "type": "string"
+              },
+              "activationTime": {
+                "type": "string"
+              },
+              "softwareVersion": {
+                "type": "string"
+              },
+              "buildNumber": {
+                "type": "string"
+              },
+              "utilization": {
+                "type": "number"
+              },
+              "utilizationDetail": {
+                "type": "object",
+                "properties": {
+                  "load": {
+                    "type": "number"
+                  },
+                  "overall": {
+                    "type": "number"
+                  },
+                  "cpu": {
+                    "type": "number"
+                  },
+                  "memory": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "load",
+                  "overall",
+                  "cpu",
+                  "memory"
+                ]
+              },
+              "connectedEdges": {
+                "type": "integer"
+              },
+              "connectedEdgeList": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  }
+                ]
+              },
+              "dataCenterVpnStates": {
+                "type": "array",
+                "items": {}
+              },
+              "deviceId": {
+                "type": "string"
+              },
+              "logicalId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "gatewayState": {
+                "type": "string"
+              },
+              "alertsEnabled": {
+                "type": "integer"
+              },
+              "description": {
+                "type": "null"
+              },
+              "dnsName": {
+                "type": "null"
+              },
+              "isLoadBalanced": {
+                "type": "integer"
+              },
+              "privateIpAddress": {
+                "type": "string"
+              },
+              "ipAddress": {
+                "type": "string"
+              },
+              "ipV6Address": {
+                "type": "string"
+              },
+              "lastContact": {
+                "type": "string"
+              },
+              "systemUpSince": {
+                "type": "string"
+              },
+              "serviceUpSince": {
+                "type": "string"
+              },
+              "serviceState": {
+                "type": "string"
+              },
+              "bastionState": {
+                "type": "string"
+              },
+              "endpointPkiMode": {
+                "type": "string"
+              },
+              "handOffDetail": {
+                "type": "null"
+              },
+              "ipsecGatewayDetail": {
+                "type": "null"
+              },
+              "modified": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "created",
+              "networkId",
+              "enterpriseProxyId",
+              "siteId",
+              "activationKey",
+              "activationState",
+              "activationTime",
+              "softwareVersion",
+              "buildNumber",
+              "utilization",
+              "utilizationDetail",
+              "connectedEdges",
+              "connectedEdgeList",
+              "dataCenterVpnStates",
+              "deviceId",
+              "logicalId",
+              "name",
+              "gatewayState",
+              "alertsEnabled",
+              "description",
+              "dnsName",
+              "isLoadBalanced",
+              "privateIpAddress",
+              "ipAddress",
+              "ipV6Address",
+              "lastContact",
+              "systemUpSince",
+              "serviceUpSince",
+              "serviceState",
+              "bastionState",
+              "endpointPkiMode",
+              "handOffDetail",
+              "ipsecGatewayDetail",
+              "modified"
+            ]
+          },
+          "superGateway": {
+            "type": "object",
+            "properties": {
+              "gatewayAssocId": {
+                "type": "integer"
+              },
+              "gatewayType": {
+                "type": "string"
+              },
+              "pinned": {
+                "type": "integer"
+              },
+              "enterpriseObjectId": {
+                "type": "null"
+              },
+              "gatewayAssocModified": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "created": {
+                "type": "string"
+              },
+              "networkId": {
+                "type": "integer"
+              },
+              "enterpriseProxyId": {
+                "type": "null"
+              },
+              "siteId": {
+                "type": "integer"
+              },
+              "activationKey": {
+                "type": "string"
+              },
+              "activationState": {
+                "type": "string"
+              },
+              "activationTime": {
+                "type": "string"
+              },
+              "softwareVersion": {
+                "type": "string"
+              },
+              "buildNumber": {
+                "type": "string"
+              },
+              "utilization": {
+                "type": "number"
+              },
+              "utilizationDetail": {
+                "type": "object",
+                "properties": {
+                  "load": {
+                    "type": "number"
+                  },
+                  "overall": {
+                    "type": "number"
+                  },
+                  "cpu": {
+                    "type": "number"
+                  },
+                  "memory": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "load",
+                  "overall",
+                  "cpu",
+                  "memory"
+                ]
+              },
+              "connectedEdges": {
+                "type": "integer"
+              },
+              "connectedEdgeList": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  }
+                ]
+              },
+              "dataCenterVpnStates": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "expectedIpsecSaCount": {
+                        "type": "integer"
+                      },
+                      "ikeSaCount": {
+                        "type": "integer"
+                      },
+                      "enterpriseLogicalId": {
+                        "type": "string"
+                      },
+                      "ipsecSaCount": {
+                        "type": "integer"
+                      },
+                      "dataCenterLogicalId": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "dataCenterPublicIp": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "expectedIpsecSaCount",
+                      "ikeSaCount",
+                      "enterpriseLogicalId",
+                      "ipsecSaCount",
+                      "dataCenterLogicalId",
+                      "type",
+                      "dataCenterPublicIp"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "expectedIpsecSaCount": {
+                        "type": "integer"
+                      },
+                      "ikeSaCount": {
+                        "type": "integer"
+                      },
+                      "enterpriseLogicalId": {
+                        "type": "string"
+                      },
+                      "ipsecSaCount": {
+                        "type": "integer"
+                      },
+                      "dataCenterLogicalId": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "dataCenterPublicIp": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "expectedIpsecSaCount",
+                      "ikeSaCount",
+                      "enterpriseLogicalId",
+                      "ipsecSaCount",
+                      "dataCenterLogicalId",
+                      "type",
+                      "dataCenterPublicIp"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "expectedIpsecSaCount": {
+                        "type": "integer"
+                      },
+                      "ikeSaCount": {
+                        "type": "integer"
+                      },
+                      "enterpriseLogicalId": {
+                        "type": "string"
+                      },
+                      "ipsecSaCount": {
+                        "type": "integer"
+                      },
+                      "dataCenterLogicalId": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "dataCenterPublicIp": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "expectedIpsecSaCount",
+                      "ikeSaCount",
+                      "enterpriseLogicalId",
+                      "ipsecSaCount",
+                      "dataCenterLogicalId",
+                      "type",
+                      "dataCenterPublicIp"
+                    ]
+                  }
+                ]
+              },
+              "deviceId": {
+                "type": "string"
+              },
+              "logicalId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "gatewayState": {
+                "type": "string"
+              },
+              "alertsEnabled": {
+                "type": "integer"
+              },
+              "description": {
+                "type": "null"
+              },
+              "dnsName": {
+                "type": "null"
+              },
+              "isLoadBalanced": {
+                "type": "integer"
+              },
+              "privateIpAddress": {
+                "type": "string"
+              },
+              "ipAddress": {
+                "type": "string"
+              },
+              "ipV6Address": {
+                "type": "string"
+              },
+              "lastContact": {
+                "type": "string"
+              },
+              "systemUpSince": {
+                "type": "string"
+              },
+              "serviceUpSince": {
+                "type": "string"
+              },
+              "serviceState": {
+                "type": "string"
+              },
+              "bastionState": {
+                "type": "string"
+              },
+              "endpointPkiMode": {
+                "type": "string"
+              },
+              "handOffDetail": {
+                "type": "null"
+              },
+              "ipsecGatewayDetail": {
+                "type": "null"
+              },
+              "modified": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "gatewayAssocId",
+              "gatewayType",
+              "pinned",
+              "enterpriseObjectId",
+              "gatewayAssocModified",
+              "id",
+              "created",
+              "networkId",
+              "enterpriseProxyId",
+              "siteId",
+              "activationKey",
+              "activationState",
+              "activationTime",
+              "softwareVersion",
+              "buildNumber",
+              "utilization",
+              "utilizationDetail",
+              "connectedEdges",
+              "connectedEdgeList",
+              "dataCenterVpnStates",
+              "deviceId",
+              "logicalId",
+              "name",
+              "gatewayState",
+              "alertsEnabled",
+              "description",
+              "dnsName",
+              "isLoadBalanced",
+              "privateIpAddress",
+              "ipAddress",
+              "ipV6Address",
+              "lastContact",
+              "systemUpSince",
+              "serviceUpSince",
+              "serviceState",
+              "bastionState",
+              "endpointPkiMode",
+              "handOffDetail",
+              "ipsecGatewayDetail",
+              "modified"
+            ]
+          },
+          "superAltGateway": {
+            "type": "object",
+            "properties": {
+              "gatewayAssocId": {
+                "type": "integer"
+              },
+              "gatewayType": {
+                "type": "string"
+              },
+              "pinned": {
+                "type": "integer"
+              },
+              "enterpriseObjectId": {
+                "type": "null"
+              },
+              "gatewayAssocModified": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "created": {
+                "type": "string"
+              },
+              "networkId": {
+                "type": "integer"
+              },
+              "enterpriseProxyId": {
+                "type": "null"
+              },
+              "siteId": {
+                "type": "integer"
+              },
+              "activationKey": {
+                "type": "string"
+              },
+              "activationState": {
+                "type": "string"
+              },
+              "activationTime": {
+                "type": "string"
+              },
+              "softwareVersion": {
+                "type": "string"
+              },
+              "buildNumber": {
+                "type": "string"
+              },
+              "utilization": {
+                "type": "number"
+              },
+              "utilizationDetail": {
+                "type": "object",
+                "properties": {
+                  "load": {
+                    "type": "number"
+                  },
+                  "overall": {
+                    "type": "number"
+                  },
+                  "cpu": {
+                    "type": "number"
+                  },
+                  "memory": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "load",
+                  "overall",
+                  "cpu",
+                  "memory"
+                ]
+              },
+              "connectedEdges": {
+                "type": "integer"
+              },
+              "connectedEdgeList": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  }
+                ]
+              },
+              "dataCenterVpnStates": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "expectedIpsecSaCount": {
+                        "type": "integer"
+                      },
+                      "ikeSaCount": {
+                        "type": "integer"
+                      },
+                      "enterpriseLogicalId": {
+                        "type": "string"
+                      },
+                      "ipsecSaCount": {
+                        "type": "integer"
+                      },
+                      "dataCenterLogicalId": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "dataCenterPublicIp": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "expectedIpsecSaCount",
+                      "ikeSaCount",
+                      "enterpriseLogicalId",
+                      "ipsecSaCount",
+                      "dataCenterLogicalId",
+                      "type",
+                      "dataCenterPublicIp"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "expectedIpsecSaCount": {
+                        "type": "integer"
+                      },
+                      "ikeSaCount": {
+                        "type": "integer"
+                      },
+                      "enterpriseLogicalId": {
+                        "type": "string"
+                      },
+                      "ipsecSaCount": {
+                        "type": "integer"
+                      },
+                      "dataCenterLogicalId": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "dataCenterPublicIp": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "expectedIpsecSaCount",
+                      "ikeSaCount",
+                      "enterpriseLogicalId",
+                      "ipsecSaCount",
+                      "dataCenterLogicalId",
+                      "type",
+                      "dataCenterPublicIp"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "expectedIpsecSaCount": {
+                        "type": "integer"
+                      },
+                      "ikeSaCount": {
+                        "type": "integer"
+                      },
+                      "enterpriseLogicalId": {
+                        "type": "string"
+                      },
+                      "ipsecSaCount": {
+                        "type": "integer"
+                      },
+                      "dataCenterLogicalId": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "dataCenterPublicIp": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "expectedIpsecSaCount",
+                      "ikeSaCount",
+                      "enterpriseLogicalId",
+                      "ipsecSaCount",
+                      "dataCenterLogicalId",
+                      "type",
+                      "dataCenterPublicIp"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "expectedIpsecSaCount": {
+                        "type": "integer"
+                      },
+                      "ikeSaCount": {
+                        "type": "integer"
+                      },
+                      "enterpriseLogicalId": {
+                        "type": "string"
+                      },
+                      "ipsecSaCount": {
+                        "type": "integer"
+                      },
+                      "dataCenterLogicalId": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "dataCenterPublicIp": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "expectedIpsecSaCount",
+                      "ikeSaCount",
+                      "enterpriseLogicalId",
+                      "ipsecSaCount",
+                      "dataCenterLogicalId",
+                      "type",
+                      "dataCenterPublicIp"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "expectedIpsecSaCount": {
+                        "type": "integer"
+                      },
+                      "ikeSaCount": {
+                        "type": "integer"
+                      },
+                      "enterpriseLogicalId": {
+                        "type": "string"
+                      },
+                      "ipsecSaCount": {
+                        "type": "integer"
+                      },
+                      "dataCenterLogicalId": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "dataCenterPublicIp": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "expectedIpsecSaCount",
+                      "ikeSaCount",
+                      "enterpriseLogicalId",
+                      "ipsecSaCount",
+                      "dataCenterLogicalId",
+                      "type",
+                      "dataCenterPublicIp"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "expectedIpsecSaCount": {
+                        "type": "integer"
+                      },
+                      "ikeSaCount": {
+                        "type": "integer"
+                      },
+                      "enterpriseLogicalId": {
+                        "type": "string"
+                      },
+                      "ipsecSaCount": {
+                        "type": "integer"
+                      },
+                      "dataCenterLogicalId": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "dataCenterPublicIp": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "expectedIpsecSaCount",
+                      "ikeSaCount",
+                      "enterpriseLogicalId",
+                      "ipsecSaCount",
+                      "dataCenterLogicalId",
+                      "type",
+                      "dataCenterPublicIp"
+                    ]
+                  }
+                ]
+              },
+              "deviceId": {
+                "type": "string"
+              },
+              "logicalId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "gatewayState": {
+                "type": "string"
+              },
+              "alertsEnabled": {
+                "type": "integer"
+              },
+              "description": {
+                "type": "null"
+              },
+              "dnsName": {
+                "type": "null"
+              },
+              "isLoadBalanced": {
+                "type": "integer"
+              },
+              "privateIpAddress": {
+                "type": "string"
+              },
+              "ipAddress": {
+                "type": "string"
+              },
+              "ipV6Address": {
+                "type": "string"
+              },
+              "lastContact": {
+                "type": "string"
+              },
+              "systemUpSince": {
+                "type": "string"
+              },
+              "serviceUpSince": {
+                "type": "string"
+              },
+              "serviceState": {
+                "type": "string"
+              },
+              "bastionState": {
+                "type": "string"
+              },
+              "endpointPkiMode": {
+                "type": "string"
+              },
+              "handOffDetail": {
+                "type": "null"
+              },
+              "ipsecGatewayDetail": {
+                "type": "null"
+              },
+              "modified": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "gatewayAssocId",
+              "gatewayType",
+              "pinned",
+              "enterpriseObjectId",
+              "gatewayAssocModified",
+              "id",
+              "created",
+              "networkId",
+              "enterpriseProxyId",
+              "siteId",
+              "activationKey",
+              "activationState",
+              "activationTime",
+              "softwareVersion",
+              "buildNumber",
+              "utilization",
+              "utilizationDetail",
+              "connectedEdges",
+              "connectedEdgeList",
+              "dataCenterVpnStates",
+              "deviceId",
+              "logicalId",
+              "name",
+              "gatewayState",
+              "alertsEnabled",
+              "description",
+              "dnsName",
+              "isLoadBalanced",
+              "privateIpAddress",
+              "ipAddress",
+              "ipV6Address",
+              "lastContact",
+              "systemUpSince",
+              "serviceUpSince",
+              "serviceState",
+              "bastionState",
+              "endpointPkiMode",
+              "handOffDetail",
+              "ipsecGatewayDetail",
+              "modified"
+            ]
+          },
+          "dataCenters": {
+            "type": "array",
+            "items": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "created": {
+                    "type": "string"
+                  },
+                  "networkId": {
+                    "type": "integer"
+                  },
+                  "enterpriseProxyId": {
+                    "type": "null"
+                  },
+                  "siteId": {
+                    "type": "integer"
+                  },
+                  "activationKey": {
+                    "type": "string"
+                  },
+                  "activationState": {
+                    "type": "string"
+                  },
+                  "activationTime": {
+                    "type": "string"
+                  },
+                  "softwareVersion": {
+                    "type": "string"
+                  },
+                  "buildNumber": {
+                    "type": "string"
+                  },
+                  "utilization": {
+                    "type": "number"
+                  },
+                  "utilizationDetail": {
+                    "type": "object",
+                    "properties": {
+                      "load": {
+                        "type": "number"
+                      },
+                      "overall": {
+                        "type": "number"
+                      },
+                      "cpu": {
+                        "type": "number"
+                      },
+                      "memory": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "load",
+                      "overall",
+                      "cpu",
+                      "memory"
+                    ]
+                  },
+                  "connectedEdges": {
+                    "type": "integer"
+                  },
+                  "connectedEdgeList": {
+                    "type": "array",
+                    "items": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "vceid": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "vceid"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "vceid": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "vceid"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "vceid": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "vceid"
+                        ]
+                      }
+                    ]
+                  },
+                  "dataCenterVpnStates": {
+                    "type": "array",
+                    "items": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "expectedIpsecSaCount": {
+                            "type": "integer"
+                          },
+                          "ikeSaCount": {
+                            "type": "integer"
+                          },
+                          "enterpriseLogicalId": {
+                            "type": "string"
+                          },
+                          "ipsecSaCount": {
+                            "type": "integer"
+                          },
+                          "dataCenterLogicalId": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          },
+                          "dataCenterPublicIp": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "expectedIpsecSaCount",
+                          "ikeSaCount",
+                          "enterpriseLogicalId",
+                          "ipsecSaCount",
+                          "dataCenterLogicalId",
+                          "type",
+                          "dataCenterPublicIp"
+                        ]
+                      }
+                    ]
+                  },
+                  "deviceId": {
+                    "type": "string"
+                  },
+                  "logicalId": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "gatewayState": {
+                    "type": "string"
+                  },
+                  "alertsEnabled": {
+                    "type": "integer"
+                  },
+                  "description": {
+                    "type": "null"
+                  },
+                  "dnsName": {
+                    "type": "null"
+                  },
+                  "isLoadBalanced": {
+                    "type": "integer"
+                  },
+                  "privateIpAddress": {
+                    "type": "string"
+                  },
+                  "ipAddress": {
+                    "type": "string"
+                  },
+                  "ipV6Address": {
+                    "type": "string"
+                  },
+                  "lastContact": {
+                    "type": "string"
+                  },
+                  "systemUpSince": {
+                    "type": "string"
+                  },
+                  "serviceUpSince": {
+                    "type": "string"
+                  },
+                  "serviceState": {
+                    "type": "string"
+                  },
+                  "bastionState": {
+                    "type": "string"
+                  },
+                  "endpointPkiMode": {
+                    "type": "string"
+                  },
+                  "handOffDetail": {
+                    "type": "null"
+                  },
+                  "ipsecGatewayDetail": {
+                    "type": "null"
+                  },
+                  "modified": {
+                    "type": "string"
+                  },
+                  "dataCenterName": {
+                    "type": "string"
+                  },
+                  "dataCenterLogicalId": {
+                    "type": "string"
+                  },
+                  "isRedundant": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "created",
+                  "networkId",
+                  "enterpriseProxyId",
+                  "siteId",
+                  "activationKey",
+                  "activationState",
+                  "activationTime",
+                  "softwareVersion",
+                  "buildNumber",
+                  "utilization",
+                  "utilizationDetail",
+                  "connectedEdges",
+                  "connectedEdgeList",
+                  "dataCenterVpnStates",
+                  "deviceId",
+                  "logicalId",
+                  "name",
+                  "gatewayState",
+                  "alertsEnabled",
+                  "description",
+                  "dnsName",
+                  "isLoadBalanced",
+                  "privateIpAddress",
+                  "ipAddress",
+                  "ipV6Address",
+                  "lastContact",
+                  "systemUpSince",
+                  "serviceUpSince",
+                  "serviceState",
+                  "bastionState",
+                  "endpointPkiMode",
+                  "handOffDetail",
+                  "ipsecGatewayDetail",
+                  "modified",
+                  "dataCenterName",
+                  "dataCenterLogicalId",
+                  "isRedundant"
+                ]
+              }
+            ]
+          },
+          "handOffs": {
+            "type": "object",
+            "properties": {
+              "gateways": {
+                "type": "object",
+                "properties": {
+                  "primary": {
+                    "type": "null"
+                  },
+                  "secondary": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "primary",
+                  "secondary"
+                ]
+              }
+            },
+            "required": [
+              "gateways"
+            ]
+          },
+          "primaryCWS": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "created": {
+                "type": "string"
+              },
+              "networkId": {
+                "type": "integer"
+              },
+              "enterpriseProxyId": {
+                "type": "null"
+              },
+              "siteId": {
+                "type": "integer"
+              },
+              "activationKey": {
+                "type": "string"
+              },
+              "activationState": {
+                "type": "string"
+              },
+              "activationTime": {
+                "type": "string"
+              },
+              "softwareVersion": {
+                "type": "string"
+              },
+              "buildNumber": {
+                "type": "string"
+              },
+              "utilization": {
+                "type": "number"
+              },
+              "utilizationDetail": {
+                "type": "object",
+                "properties": {
+                  "load": {
+                    "type": "number"
+                  },
+                  "overall": {
+                    "type": "number"
+                  },
+                  "cpu": {
+                    "type": "number"
+                  },
+                  "memory": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "load",
+                  "overall",
+                  "cpu",
+                  "memory"
+                ]
+              },
+              "connectedEdges": {
+                "type": "integer"
+              },
+              "connectedEdgeList": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  }
+                ]
+              },
+              "dataCenterVpnStates": {
+                "type": "array",
+                "items": {}
+              },
+              "deviceId": {
+                "type": "string"
+              },
+              "logicalId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "gatewayState": {
+                "type": "string"
+              },
+              "alertsEnabled": {
+                "type": "integer"
+              },
+              "description": {
+                "type": "null"
+              },
+              "dnsName": {
+                "type": "null"
+              },
+              "isLoadBalanced": {
+                "type": "integer"
+              },
+              "privateIpAddress": {
+                "type": "string"
+              },
+              "ipAddress": {
+                "type": "string"
+              },
+              "ipV6Address": {
+                "type": "string"
+              },
+              "lastContact": {
+                "type": "string"
+              },
+              "systemUpSince": {
+                "type": "string"
+              },
+              "serviceUpSince": {
+                "type": "string"
+              },
+              "serviceState": {
+                "type": "string"
+              },
+              "bastionState": {
+                "type": "string"
+              },
+              "endpointPkiMode": {
+                "type": "string"
+              },
+              "handOffDetail": {
+                "type": "null"
+              },
+              "ipsecGatewayDetail": {
+                "type": "null"
+              },
+              "modified": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "created",
+              "networkId",
+              "enterpriseProxyId",
+              "siteId",
+              "activationKey",
+              "activationState",
+              "activationTime",
+              "softwareVersion",
+              "buildNumber",
+              "utilization",
+              "utilizationDetail",
+              "connectedEdges",
+              "connectedEdgeList",
+              "dataCenterVpnStates",
+              "deviceId",
+              "logicalId",
+              "name",
+              "gatewayState",
+              "alertsEnabled",
+              "description",
+              "dnsName",
+              "isLoadBalanced",
+              "privateIpAddress",
+              "ipAddress",
+              "ipV6Address",
+              "lastContact",
+              "systemUpSince",
+              "serviceUpSince",
+              "serviceState",
+              "bastionState",
+              "endpointPkiMode",
+              "handOffDetail",
+              "ipsecGatewayDetail",
+              "modified"
+            ]
+          },
+          "secondaryCWS": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "created": {
+                "type": "string"
+              },
+              "networkId": {
+                "type": "integer"
+              },
+              "enterpriseProxyId": {
+                "type": "null"
+              },
+              "siteId": {
+                "type": "integer"
+              },
+              "activationKey": {
+                "type": "string"
+              },
+              "activationState": {
+                "type": "string"
+              },
+              "activationTime": {
+                "type": "string"
+              },
+              "softwareVersion": {
+                "type": "string"
+              },
+              "buildNumber": {
+                "type": "string"
+              },
+              "utilization": {
+                "type": "number"
+              },
+              "utilizationDetail": {
+                "type": "object",
+                "properties": {
+                  "load": {
+                    "type": "number"
+                  },
+                  "overall": {
+                    "type": "number"
+                  },
+                  "cpu": {
+                    "type": "number"
+                  },
+                  "memory": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "load",
+                  "overall",
+                  "cpu",
+                  "memory"
+                ]
+              },
+              "connectedEdges": {
+                "type": "integer"
+              },
+              "connectedEdgeList": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "vceid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "vceid"
+                    ]
+                  }
+                ]
+              },
+              "dataCenterVpnStates": {
+                "type": "array",
+                "items": {}
+              },
+              "deviceId": {
+                "type": "string"
+              },
+              "logicalId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "gatewayState": {
+                "type": "string"
+              },
+              "alertsEnabled": {
+                "type": "integer"
+              },
+              "description": {
+                "type": "null"
+              },
+              "dnsName": {
+                "type": "null"
+              },
+              "isLoadBalanced": {
+                "type": "integer"
+              },
+              "privateIpAddress": {
+                "type": "string"
+              },
+              "ipAddress": {
+                "type": "string"
+              },
+              "ipV6Address": {
+                "type": "string"
+              },
+              "lastContact": {
+                "type": "string"
+              },
+              "systemUpSince": {
+                "type": "string"
+              },
+              "serviceUpSince": {
+                "type": "string"
+              },
+              "serviceState": {
+                "type": "string"
+              },
+              "bastionState": {
+                "type": "string"
+              },
+              "endpointPkiMode": {
+                "type": "string"
+              },
+              "handOffDetail": {
+                "type": "null"
+              },
+              "ipsecGatewayDetail": {
+                "type": "null"
+              },
+              "modified": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "created",
+              "networkId",
+              "enterpriseProxyId",
+              "siteId",
+              "activationKey",
+              "activationState",
+              "activationTime",
+              "softwareVersion",
+              "buildNumber",
+              "utilization",
+              "utilizationDetail",
+              "connectedEdges",
+              "connectedEdgeList",
+              "dataCenterVpnStates",
+              "deviceId",
+              "logicalId",
+              "name",
+              "gatewayState",
+              "alertsEnabled",
+              "description",
+              "dnsName",
+              "isLoadBalanced",
+              "privateIpAddress",
+              "ipAddress",
+              "ipV6Address",
+              "lastContact",
+              "systemUpSince",
+              "serviceUpSince",
+              "serviceState",
+              "bastionState",
+              "endpointPkiMode",
+              "handOffDetail",
+              "ipsecGatewayDetail",
+              "modified"
+            ]
+          }
+        },
+        "required": [
+          "primary",
+          "secondary",
+          "superGateway",
+          "superAltGateway",
+          "dataCenters",
+          "handOffs",
+          "primaryCWS",
+          "secondaryCWS"
+        ]
+      },
     "edge_get_edge_result": {
       "allOf": [
         {
@@ -35901,6 +38791,1027 @@
         }
       },
       "type": "object"
+    },
+    "enterprise_get_enterprise_data_centers_result_item": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "created": {
+              "type": "string"
+            },
+            "operatorId": {
+              "type": "null"
+            },
+            "networkId": {
+              "type": "null"
+            },
+            "enterpriseId": {
+              "type": "integer"
+            },
+            "edgeId": {
+              "type": "null"
+            },
+            "gatewayId": {
+              "type": "null"
+            },
+            "parentGroupId": {
+              "type": "null"
+            },
+            "description": {
+              "type": "null"
+            },
+            "object": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "logicalId": {
+              "type": "string"
+            },
+            "alertsEnabled": {
+              "type": "integer"
+            },
+            "operatorAlertsEnabled": {
+              "type": "integer"
+            },
+            "status": {
+              "type": "string"
+            },
+            "statusModified": {
+              "type": "string"
+            },
+            "previousData": {
+              "type": "object",
+              "properties": {
+                "subnets": {
+                  "type": "array",
+                  "items": {}
+                },
+                "isServiceEnabled": {
+                  "type": "boolean"
+                },
+                "primary": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "typeAlias": {
+                      "type": "string"
+                    },
+                    "dataCenterPublicIp": {
+                      "type": "string"
+                    },
+                    "serviceFQDN": {
+                      "type": "null"
+                    },
+                    "redundant": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "typeAlias": {
+                          "type": "string"
+                        },
+                        "dataCenterPublicIp": {
+                          "type": "string"
+                        },
+                        "serviceFQDN": {
+                          "type": "null"
+                        },
+                        "disabled": {
+                          "type": "boolean"
+                        },
+                        "gatewayPublicIp": {
+                          "type": "string"
+                        },
+                        "IKESA": {
+                          "type": "object",
+                          "properties": {
+                            "ikeVersion": {
+                              "type": "integer"
+                            },
+                            "ikeId": {
+                              "type": "null"
+                            },
+                            "ikeInitiator": {
+                              "type": "string"
+                            },
+                            "authenticationMethod": {
+                              "type": "string"
+                            },
+                            "sharedKeyType": {
+                              "type": "string"
+                            },
+                            "sharedKey": {
+                              "type": "string"
+                            },
+                            "authenticationAlgorithm": {
+                              "type": "string"
+                            },
+                            "lifeTimeSeconds": {
+                              "type": "integer"
+                            },
+                            "phaseOneNegotiationMode": {
+                              "type": "string"
+                            },
+                            "DHGroup": {
+                              "type": "integer"
+                            },
+                            "authenticationTimeSeconds": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "ikeVersion",
+                            "ikeId",
+                            "ikeInitiator",
+                            "authenticationMethod",
+                            "sharedKeyType",
+                            "sharedKey",
+                            "authenticationAlgorithm",
+                            "lifeTimeSeconds",
+                            "phaseOneNegotiationMode",
+                            "DHGroup",
+                            "authenticationTimeSeconds"
+                          ]
+                        },
+                        "IPSECSA": {
+                          "type": "object",
+                          "properties": {
+                            "protocol": {
+                              "type": "string"
+                            },
+                            "authenticationAlgorithm": {
+                              "type": "string"
+                            },
+                            "encryptionAlgorithm": {
+                              "type": "string"
+                            },
+                            "lifeTimeSeconds": {
+                              "type": "integer"
+                            },
+                            "mode": {
+                              "type": "string"
+                            },
+                            "perfectForwardSecurity": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "protocol",
+                            "authenticationAlgorithm",
+                            "encryptionAlgorithm",
+                            "lifeTimeSeconds",
+                            "mode",
+                            "perfectForwardSecurity"
+                          ]
+                        },
+                        "IPSECDPD": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "intervalSeconds": {
+                              "type": "integer"
+                            },
+                            "dpdTimeoutSeconds": {
+                              "type": "integer"
+                            },
+                            "retries": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "intervalSeconds",
+                            "dpdTimeoutSeconds",
+                            "retries"
+                          ]
+                        },
+                        "fragmentationAvoidance": {
+                          "type": "object",
+                          "properties": {
+                            "tcpMssAdjustmentBytes": {
+                              "type": "integer"
+                            },
+                            "clearDontFragmentBit": {
+                              "type": "string"
+                            },
+                            "fragmentationStyle": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "tcpMssAdjustmentBytes",
+                            "clearDontFragmentBit",
+                            "fragmentationStyle"
+                          ]
+                        },
+                        "tunnelInterface": {
+                          "type": "object",
+                          "properties": {
+                            "MTU": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "MTU"
+                          ]
+                        },
+                        "dataCenterLinkIp": {
+                          "type": "string"
+                        },
+                        "gatewayLinkIp": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "typeAlias",
+                        "dataCenterPublicIp",
+                        "serviceFQDN",
+                        "disabled",
+                        "gatewayPublicIp",
+                        "IKESA",
+                        "IPSECSA",
+                        "IPSECDPD",
+                        "fragmentationAvoidance",
+                        "tunnelInterface",
+                        "dataCenterLinkIp",
+                        "gatewayLinkIp"
+                      ]
+                    },
+                    "disabled": {
+                      "type": "boolean"
+                    },
+                    "gatewayPublicIp": {
+                      "type": "string"
+                    },
+                    "IKESA": {
+                      "type": "object",
+                      "properties": {
+                        "ikeVersion": {
+                          "type": "integer"
+                        },
+                        "ikeId": {
+                          "type": "null"
+                        },
+                        "ikeInitiator": {
+                          "type": "string"
+                        },
+                        "authenticationMethod": {
+                          "type": "string"
+                        },
+                        "sharedKeyType": {
+                          "type": "string"
+                        },
+                        "sharedKey": {
+                          "type": "string"
+                        },
+                        "authenticationAlgorithm": {
+                          "type": "string"
+                        },
+                        "lifeTimeSeconds": {
+                          "type": "integer"
+                        },
+                        "phaseOneNegotiationMode": {
+                          "type": "string"
+                        },
+                        "DHGroup": {
+                          "type": "integer"
+                        },
+                        "authenticationTimeSeconds": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "ikeVersion",
+                        "ikeId",
+                        "ikeInitiator",
+                        "authenticationMethod",
+                        "sharedKeyType",
+                        "sharedKey",
+                        "authenticationAlgorithm",
+                        "lifeTimeSeconds",
+                        "phaseOneNegotiationMode",
+                        "DHGroup",
+                        "authenticationTimeSeconds"
+                      ]
+                    },
+                    "IPSECSA": {
+                      "type": "object",
+                      "properties": {
+                        "protocol": {
+                          "type": "string"
+                        },
+                        "authenticationAlgorithm": {
+                          "type": "string"
+                        },
+                        "encryptionAlgorithm": {
+                          "type": "string"
+                        },
+                        "lifeTimeSeconds": {
+                          "type": "integer"
+                        },
+                        "mode": {
+                          "type": "string"
+                        },
+                        "perfectForwardSecurity": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "protocol",
+                        "authenticationAlgorithm",
+                        "encryptionAlgorithm",
+                        "lifeTimeSeconds",
+                        "mode",
+                        "perfectForwardSecurity"
+                      ]
+                    },
+                    "IPSECDPD": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "intervalSeconds": {
+                          "type": "integer"
+                        },
+                        "dpdTimeoutSeconds": {
+                          "type": "integer"
+                        },
+                        "retries": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "intervalSeconds",
+                        "dpdTimeoutSeconds",
+                        "retries"
+                      ]
+                    },
+                    "fragmentationAvoidance": {
+                      "type": "object",
+                      "properties": {
+                        "tcpMssAdjustmentBytes": {
+                          "type": "integer"
+                        },
+                        "clearDontFragmentBit": {
+                          "type": "string"
+                        },
+                        "fragmentationStyle": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "tcpMssAdjustmentBytes",
+                        "clearDontFragmentBit",
+                        "fragmentationStyle"
+                      ]
+                    },
+                    "tunnelInterface": {
+                      "type": "object",
+                      "properties": {
+                        "MTU": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "MTU"
+                      ]
+                    },
+                    "geoData": {
+                      "type": "object",
+                      "properties": {
+                        "target": {
+                          "type": "string"
+                        },
+                        "countryCode": {
+                          "type": "string"
+                        },
+                        "regionCode": {
+                          "type": "string"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "postalCode": {
+                          "type": "string"
+                        },
+                        "latitude": {
+                          "type": "number"
+                        },
+                        "longitude": {
+                          "type": "number"
+                        },
+                        "metroCode": {
+                          "type": "string"
+                        },
+                        "areaCode": {
+                          "type": "string"
+                        },
+                        "isp": {
+                          "type": "string"
+                        },
+                        "org": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "target",
+                        "countryCode",
+                        "regionCode",
+                        "city",
+                        "postalCode",
+                        "latitude",
+                        "longitude",
+                        "metroCode",
+                        "areaCode",
+                        "isp",
+                        "org"
+                      ]
+                    },
+                    "dataCenterLinkIp": {
+                      "type": "string"
+                    },
+                    "gatewayLinkIp": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "typeAlias",
+                    "dataCenterPublicIp",
+                    "serviceFQDN",
+                    "redundant",
+                    "disabled",
+                    "gatewayPublicIp",
+                    "IKESA",
+                    "IPSECSA",
+                    "IPSECDPD",
+                    "fragmentationAvoidance",
+                    "tunnelInterface",
+                    "geoData",
+                    "dataCenterLinkIp",
+                    "gatewayLinkIp"
+                  ]
+                },
+                "tunnelMode": {
+                  "type": "string"
+                },
+                "datacenterVersion": {
+                  "type": "string"
+                },
+                "subnetsVersion": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "subnets",
+                "isServiceEnabled",
+                "primary",
+                "tunnelMode",
+                "datacenterVersion",
+                "subnetsVersion"
+              ]
+            },
+            "previousCreated": {
+              "type": "string"
+            },
+            "draftData": {
+              "type": "null"
+            },
+            "draftCreated": {
+              "type": "string"
+            },
+            "draftComment": {
+              "type": "null"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "subnets": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "cidrIp": {
+                          "type": "string"
+                        },
+                        "cidrPrefix": {
+                          "type": "string"
+                        },
+                        "advertise": {
+                          "type": "boolean"
+                        },
+                        "netMask": {
+                          "type": "string"
+                        },
+                        "cidrIpStart": {
+                          "type": "string"
+                        },
+                        "cidrIpEnd": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "cidrIp",
+                        "cidrPrefix",
+                        "advertise",
+                        "netMask",
+                        "cidrIpStart",
+                        "cidrIpEnd"
+                      ]
+                    }
+                  ]
+                },
+                "isServiceEnabled": {
+                  "type": "boolean"
+                },
+                "primary": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "typeAlias": {
+                      "type": "string"
+                    },
+                    "dataCenterPublicIp": {
+                      "type": "string"
+                    },
+                    "serviceFQDN": {
+                      "type": "null"
+                    },
+                    "redundant": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "typeAlias": {
+                          "type": "string"
+                        },
+                        "dataCenterPublicIp": {
+                          "type": "string"
+                        },
+                        "serviceFQDN": {
+                          "type": "null"
+                        },
+                        "disabled": {
+                          "type": "boolean"
+                        },
+                        "gatewayPublicIp": {
+                          "type": "string"
+                        },
+                        "IKESA": {
+                          "type": "object",
+                          "properties": {
+                            "ikeVersion": {
+                              "type": "integer"
+                            },
+                            "ikeId": {
+                              "type": "null"
+                            },
+                            "ikeInitiator": {
+                              "type": "string"
+                            },
+                            "authenticationMethod": {
+                              "type": "string"
+                            },
+                            "sharedKeyType": {
+                              "type": "string"
+                            },
+                            "sharedKey": {
+                              "type": "string"
+                            },
+                            "authenticationAlgorithm": {
+                              "type": "string"
+                            },
+                            "lifeTimeSeconds": {
+                              "type": "integer"
+                            },
+                            "phaseOneNegotiationMode": {
+                              "type": "string"
+                            },
+                            "DHGroup": {
+                              "type": "integer"
+                            },
+                            "authenticationTimeSeconds": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "ikeVersion",
+                            "ikeId",
+                            "ikeInitiator",
+                            "authenticationMethod",
+                            "sharedKeyType",
+                            "sharedKey",
+                            "authenticationAlgorithm",
+                            "lifeTimeSeconds",
+                            "phaseOneNegotiationMode",
+                            "DHGroup",
+                            "authenticationTimeSeconds"
+                          ]
+                        },
+                        "IPSECSA": {
+                          "type": "object",
+                          "properties": {
+                            "protocol": {
+                              "type": "string"
+                            },
+                            "authenticationAlgorithm": {
+                              "type": "string"
+                            },
+                            "encryptionAlgorithm": {
+                              "type": "string"
+                            },
+                            "lifeTimeSeconds": {
+                              "type": "integer"
+                            },
+                            "mode": {
+                              "type": "string"
+                            },
+                            "perfectForwardSecurity": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "protocol",
+                            "authenticationAlgorithm",
+                            "encryptionAlgorithm",
+                            "lifeTimeSeconds",
+                            "mode",
+                            "perfectForwardSecurity"
+                          ]
+                        },
+                        "IPSECDPD": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "intervalSeconds": {
+                              "type": "integer"
+                            },
+                            "dpdTimeoutSeconds": {
+                              "type": "integer"
+                            },
+                            "retries": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "intervalSeconds",
+                            "dpdTimeoutSeconds",
+                            "retries"
+                          ]
+                        },
+                        "fragmentationAvoidance": {
+                          "type": "object",
+                          "properties": {
+                            "tcpMssAdjustmentBytes": {
+                              "type": "integer"
+                            },
+                            "clearDontFragmentBit": {
+                              "type": "string"
+                            },
+                            "fragmentationStyle": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "tcpMssAdjustmentBytes",
+                            "clearDontFragmentBit",
+                            "fragmentationStyle"
+                          ]
+                        },
+                        "tunnelInterface": {
+                          "type": "object",
+                          "properties": {
+                            "MTU": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "MTU"
+                          ]
+                        },
+                        "dataCenterLinkIp": {
+                          "type": "string"
+                        },
+                        "gatewayLinkIp": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "typeAlias",
+                        "dataCenterPublicIp",
+                        "serviceFQDN",
+                        "disabled",
+                        "gatewayPublicIp",
+                        "IKESA",
+                        "IPSECSA",
+                        "IPSECDPD",
+                        "fragmentationAvoidance",
+                        "tunnelInterface",
+                        "dataCenterLinkIp",
+                        "gatewayLinkIp"
+                      ]
+                    },
+                    "disabled": {
+                      "type": "boolean"
+                    },
+                    "gatewayPublicIp": {
+                      "type": "string"
+                    },
+                    "IKESA": {
+                      "type": "object",
+                      "properties": {
+                        "ikeVersion": {
+                          "type": "integer"
+                        },
+                        "ikeId": {
+                          "type": "null"
+                        },
+                        "ikeInitiator": {
+                          "type": "string"
+                        },
+                        "authenticationMethod": {
+                          "type": "string"
+                        },
+                        "sharedKeyType": {
+                          "type": "string"
+                        },
+                        "sharedKey": {
+                          "type": "string"
+                        },
+                        "authenticationAlgorithm": {
+                          "type": "string"
+                        },
+                        "lifeTimeSeconds": {
+                          "type": "integer"
+                        },
+                        "phaseOneNegotiationMode": {
+                          "type": "string"
+                        },
+                        "DHGroup": {
+                          "type": "integer"
+                        },
+                        "authenticationTimeSeconds": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "ikeVersion",
+                        "ikeId",
+                        "ikeInitiator",
+                        "authenticationMethod",
+                        "sharedKeyType",
+                        "sharedKey",
+                        "authenticationAlgorithm",
+                        "lifeTimeSeconds",
+                        "phaseOneNegotiationMode",
+                        "DHGroup",
+                        "authenticationTimeSeconds"
+                      ]
+                    },
+                    "IPSECSA": {
+                      "type": "object",
+                      "properties": {
+                        "protocol": {
+                          "type": "string"
+                        },
+                        "authenticationAlgorithm": {
+                          "type": "string"
+                        },
+                        "encryptionAlgorithm": {
+                          "type": "string"
+                        },
+                        "lifeTimeSeconds": {
+                          "type": "integer"
+                        },
+                        "mode": {
+                          "type": "string"
+                        },
+                        "perfectForwardSecurity": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "protocol",
+                        "authenticationAlgorithm",
+                        "encryptionAlgorithm",
+                        "lifeTimeSeconds",
+                        "mode",
+                        "perfectForwardSecurity"
+                      ]
+                    },
+                    "IPSECDPD": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "intervalSeconds": {
+                          "type": "integer"
+                        },
+                        "dpdTimeoutSeconds": {
+                          "type": "integer"
+                        },
+                        "retries": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "intervalSeconds",
+                        "dpdTimeoutSeconds",
+                        "retries"
+                      ]
+                    },
+                    "fragmentationAvoidance": {
+                      "type": "object",
+                      "properties": {
+                        "tcpMssAdjustmentBytes": {
+                          "type": "integer"
+                        },
+                        "clearDontFragmentBit": {
+                          "type": "string"
+                        },
+                        "fragmentationStyle": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "tcpMssAdjustmentBytes",
+                        "clearDontFragmentBit",
+                        "fragmentationStyle"
+                      ]
+                    },
+                    "tunnelInterface": {
+                      "type": "object",
+                      "properties": {
+                        "MTU": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "MTU"
+                      ]
+                    },
+                    "geoData": {
+                      "type": "object",
+                      "properties": {
+                        "target": {
+                          "type": "string"
+                        },
+                        "countryCode": {
+                          "type": "string"
+                        },
+                        "regionCode": {
+                          "type": "string"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "postalCode": {
+                          "type": "string"
+                        },
+                        "latitude": {
+                          "type": "number"
+                        },
+                        "longitude": {
+                          "type": "number"
+                        },
+                        "metroCode": {
+                          "type": "string"
+                        },
+                        "areaCode": {
+                          "type": "string"
+                        },
+                        "isp": {
+                          "type": "string"
+                        },
+                        "org": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "target",
+                        "countryCode",
+                        "regionCode",
+                        "city",
+                        "postalCode",
+                        "latitude",
+                        "longitude",
+                        "metroCode",
+                        "areaCode",
+                        "isp",
+                        "org"
+                      ]
+                    },
+                    "dataCenterLinkIp": {
+                      "type": "string"
+                    },
+                    "gatewayLinkIp": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "typeAlias",
+                    "dataCenterPublicIp",
+                    "serviceFQDN",
+                    "redundant",
+                    "disabled",
+                    "gatewayPublicIp",
+                    "IKESA",
+                    "IPSECSA",
+                    "IPSECDPD",
+                    "fragmentationAvoidance",
+                    "tunnelInterface",
+                    "geoData",
+                    "dataCenterLinkIp",
+                    "gatewayLinkIp"
+                  ]
+                },
+                "tunnelMode": {
+                  "type": "string"
+                },
+                "datacenterVersion": {
+                  "type": "string"
+                },
+                "subnetsVersion": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "subnets",
+                "isServiceEnabled",
+                "primary",
+                "tunnelMode",
+                "datacenterVersion",
+                "subnetsVersion"
+              ]
+            },
+            "lastContact": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "modified": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "created",
+            "operatorId",
+            "networkId",
+            "enterpriseId",
+            "edgeId",
+            "gatewayId",
+            "parentGroupId",
+            "description",
+            "object",
+            "name",
+            "type",
+            "logicalId",
+            "alertsEnabled",
+            "operatorAlertsEnabled",
+            "status",
+            "statusModified",
+            "previousData",
+            "previousCreated",
+            "draftData",
+            "draftCreated",
+            "draftComment",
+            "data",
+            "lastContact",
+            "version",
+            "modified"
+          ]
     },
     "enterprise_get_enterprise_services_result_item": {
       "allOf": [
@@ -39701,6 +43612,10 @@
         },
         "local_interface_ip": {
           "type": "string"
+        },
+        "destination": {
+          "type": "string",
+          "description": "The destination of the provider service entity"
         },
         "local_public_ip": {
           "type": "string"

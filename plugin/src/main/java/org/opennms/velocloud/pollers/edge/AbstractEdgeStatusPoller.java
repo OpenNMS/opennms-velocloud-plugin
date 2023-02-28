@@ -47,7 +47,7 @@ public abstract class AbstractEdgeStatusPoller extends AbstractStatusPoller {
         super(clientManager);
     }
 
-    protected abstract PollerResult poll(final Edge edge) throws VelocloudApiException;
+    protected abstract PollerResult poll(final Context context, final Edge edge) throws VelocloudApiException;
 
     @Override
     public CompletableFuture<PollerResult> poll(final Context context) throws VelocloudApiException {
@@ -65,7 +65,7 @@ public abstract class AbstractEdgeStatusPoller extends AbstractStatusPoller {
                                                                           .build());
         }
 
-        return CompletableFuture.completedFuture(this.poll(edge.get()));
+        return CompletableFuture.completedFuture(this.poll(context, edge.get()));
     }
 
     public static abstract class Factory<T extends AbstractEdgeStatusPoller> extends AbstractStatusPoller.Factory<T> {

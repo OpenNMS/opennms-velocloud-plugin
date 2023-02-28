@@ -1,4 +1,165 @@
-= ReST Endpoints
+= REST Endpoints
 :imagesdir: ../assets/images
 
-TODO
+Some RESTful endpoints are available for basic connection management.
+
+NOTE: The `Content-Type` of the request and response is `application/json`.
+
+[options="header, %autowidth"]
+[cols="2,1,3"]
+|===
+| Resource
+| Method
+| Description
+
+| `/plugin/velocloud/partner/\{alias}/customers`
+| GET
+| Returns the associated customers for a configured partner connection.
+
+| `/plugin/velocloud/connections`
+| GET
+| Returns the list of configured connections.
+
+| `/plugin/velocloud/connections`
+| POST
+| Adds a new connection.
+
+| `/plugin/velocloud/connections/\{alias}`
+| PUT
+| Updates a configured connection.
+
+| `/plugin/velocloud/connections/\{alias}`
+| GET
+| Validates a configured connection.
+
+|===
+
+== Examples
+
+=== Retrieve customers for a given partner connection
+
+.Request
+[source, console]
+----
+curl -X GET -u admin:admin http://localhost:8980/opennms/rest/plugin/velocloud/partner/aPartnerAlias/customers
+----
+
+.Response
+[source, json]
+----
+[
+  {
+    "enterpriseId": "78a92010-9085-4d9c-9537-92eab2522697",
+    "id": 342,
+    "networkId": 1,
+    "gatewayPoolId": 2,
+    "bastionState": "UNCONFIGURED",
+    "alertsEnabled": true,
+    "operatorAlertsEnabled": true,
+    "name": "RALEIGH_LAB",
+    "domain": "rdulab",
+    "accountNumber": "RDU-foo",
+    "description": "",
+    "address": "PO Box 362",
+    "city": "Apex",
+    "state": "North Carolina",
+    "zip": "27502",
+    "country": "US",
+    "latitude": 35.770000,
+    "longitude": -78.640000,
+    "timezone": "America/New_York",
+    "locale": "en-US"
+  },
+  {
+    "enterpriseId": "f9adcb3e-21be-451d-997f-fd21e429129c",
+    "id": 213,
+    "networkId": 1,
+    "gatewayPoolId": 2,
+    "bastionState": "UNCONFIGURED",
+    "alertsEnabled": true,
+    "operatorAlertsEnabled": true,
+    "name": "OTTAWA_LAB",
+    "domain": "yowlab",
+    "accountNumber": "YOW-bar",
+    "description": "",
+    "address": "300 March Rd, Suite 600",
+    "city": "Kanata",
+    "state": "Ontario",
+    "zip": "K2K 2E2",
+    "country": "CA",
+    "latitude": 45.300000,
+    "longitude": -75.916000,
+    "timezone": "America/Toronto",
+    "locale": "en-US"
+  }
+]
+----
+
+=== Retrieve a list of configured connections
+
+.Request
+[source, console]
+----
+curl -u admin:admin http://localhost:8980/opennms/rest/plugin/velocloud/connections
+----
+
+.Response
+[source, json]
+----
+[
+  {
+    "alias": "aPartnerAlias",
+    "orchestratorUrl": "https://something-somewhere.velocloud.net/"
+  },
+  {
+    "alias": "aCustomerAlias",
+    "orchestratorUrl": "https://something-somewhere.velocloud.net/"
+  }
+]
+----
+
+=== Add a new connection
+
+.Request
+[source, console]
+----
+curl -H "Content-type: application/json" -X POST -u admin:admin http://localhost:8980/opennms/rest/plugin/velocloud/connections --data '{"alias":"anotherAlias","orchestratorUrl":"https://something-somewhere.velocloud.net","apiKey":"juKdsndSJnsjsdH3KnedejS3kNk3mndsfks3.sad8asdkhasd8asdSDSDFhkasd8asdhasd7k32l32kKkjbsdNS01ZGRhNGRlNGU2N2IiLCJleHAiOjE2OTY1NDExODYwMDAsInV1aWQiOiJV1aWQiOiI0MDUwMDJiNS01YjQ4sInR5cCI6IkpXVCQ3OTYtOWRiOS03NmRhODUxMGMyYjEiLCJOjE2OTY1NDExODYwMDAsInV1aWQiOdsJdsSjkSDlJLJ"}'
+----
+
+.Response
+[source, text]
+----
+Connection successfully added
+----
+
+=== Update a connection
+
+.Request
+[source, console]
+----
+curl -H "Content-type: application/json" -X PUT -u admin:admin http://localhost:8980/opennms/rest/plugin/velocloud/connections/anotherAlias --data '{"orchestratorUrl":"https://something-somewhere.velocloud.net","apiKey":"juKdsndSJnsjsdH3KnedejS3kNk3mndsfks3.sad8asdkhasd8asdSDSDFhkasd8asdhasd7k32l32kKkjbsdNS01ZGRhNGRlNGU2N2IiLCJleHAiOjE2OTY1NDExODYwMDAsInV1aWQiOiJV1aWQiOiI0MDUwMDJiNS01YjQ4sInR5cCI6IkpXVCQ3OTYtOWRiOS03NmRhODUxMGMyYjEiLCJOjE2OTY1NDExODYwMDAsInV1aWQiOdsJdsSjkSDlJLJ"}'
+----
+
+.Response
+[source, text]
+----
+Connection successfully updated
+----
+
+=== Validate a configured connection
+
+.Request
+[source, console]
+----
+curl -X GET -u admin:admin http://localhost:8980/opennms/rest/plugin/velocloud/connections/anotherAlias
+----
+
+.Response
+[source, json]
+----
+{
+"alias": "anotherAlias",
+"orchestratorUrl": "https://something-somewhere.velocloud.net",
+"valid": true
+}
+----
