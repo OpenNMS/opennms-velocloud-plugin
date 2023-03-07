@@ -6505,6 +6505,120 @@
         }
       }
     },
+
+    "/enterprise/getEnterpriseEdgeList": {
+      "post": {
+        "summary": "Get enterprise Edges",
+        "tags": [
+          "enterprise",
+          "all"
+        ],
+        "description": "Gets all Edges associated with the specified enterprise, including optional site, link, and configuration details.\n\nPrivileges required:\n\n`READ` `EDGE`",
+        "operationId": "enterprise_get_enterprise_edge_list",
+        "x-privileges": {
+          "forceEnterpriseContext": true,
+          "excludeAuthTypes": [],
+          "allowAuthTypes": [
+            "ANY"
+          ],
+          "allowPrincipleTypes": [],
+          "excludePrincipleTypes": [
+            "EDGE",
+            "GATEWAY"
+          ],
+          "requirePrivileges": [
+            {
+              "action": "READ",
+              "object": "EDGE"
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "title": "enterprise_get_enterprise_edge_list",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "enterpriseId": {
+                  "type": "integer"
+                },
+                "with": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "site",
+                      "links",
+                      "recentLinks",
+                      "configuration",
+                      "cloudServices",
+                      "cloudServiceSiteStatus",
+                      "nvsFromEdge",
+                      "vnfs",
+                      "certificates",
+                      "licenses"
+                    ]
+                  }
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "nextPageLink": {
+                  "type": "string"
+                },
+                "prevPageLink": {
+                  "type": "string"
+                },
+                "_count": {
+                  "type": "boolean"
+                },
+                "quickSearch": {
+                  "$ref": "#/definitions/quick_search"
+                },
+                "filters": {
+                  "$ref": "#/definitions/enterprise_get_enterprise_edge_list_filters"
+                },
+                "_filterSpec": {
+                  "type": "boolean"
+                },
+                "fieldsNeeded": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successfully processed",
+            "schema": {
+              "title": "enterprise_get_enterprise_edge_list_result",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/enterprise_get_enterprise_edge_list_result_item"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/generic_400"
+          },
+          "500": {
+            "$ref": "#/responses/generic_500"
+          }
+        }
+      }
+    },
+
     "/enterprise/getEnterpriseGatewayHandoff": {
       "post": {
         "summary": "Get enterprise gateway handoff configuration",
@@ -38413,6 +38527,47 @@
     "enterprise_get_enterprise_edge_list_filters": {
       "$ref": "#/definitions/api_filters"
     },
+    "enterprise_get_enterprise_edge_list_result_item_provider": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "logicalId": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "primaryServer": {
+              "type": "string"
+            },
+            "secondaryServer": {
+              "type": "string"
+            },
+            "automateDeployment": {
+              "type": "boolean"
+            },
+            "enableTunnels": {
+              "type": "boolean"
+            },
+            "sharedIkeAuth": {
+              "type": "boolean"
+            },
+            "maxTunnelsPerIkeIdentity": {
+              "type": "integer"
+            },
+            "provider": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+
     "enterprise_get_enterprise_edge_list_result_item": {
       "allOf": [
         {
@@ -39826,6 +39981,33 @@
             },
             "edgeCount": {
               "type": "integer"
+            },
+
+            "edgeUsage": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "configurationId": {
+                    "type": "integer"
+                  },
+                  "segmentObjectId": {
+                    "type": "integer"
+                  },
+                  "profileId": {
+                    "type": "integer"
+                  },
+                  "edgeSpecificId": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "logicalId": {
+                    "type": "string"
+                  }
+                }
+              }
             },
             "groupCount": {
               "type": "integer"
@@ -48920,44 +49102,7 @@
             }
           },
           "provider": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "id": {
-                "type": "integer"
-              },
-              "logicalId": {
-                "type": "string"
-              },
-              "data": {
-                "type": "object",
-                "properties": {
-                  "primaryServer": {
-                    "type": "string"
-                  },
-                  "secondaryServer": {
-                    "type": "string"
-                  },
-                  "automateDeployment": {
-                    "type": "boolean"
-                  },
-                  "enableTunnels": {
-                    "type": "boolean"
-                  },
-                  "sharedIkeAuth": {
-                    "type": "boolean"
-                  },
-                  "maxTunnelsPerIkeIdentity": {
-                    "type": "integer"
-                  },
-                  "provider": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
+            "$ref": "#/definitions/enterprise_get_enterprise_edge_list_result_item_provider"
           }
         }
       }
