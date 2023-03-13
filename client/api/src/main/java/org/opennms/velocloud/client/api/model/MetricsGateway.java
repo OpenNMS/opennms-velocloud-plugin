@@ -38,7 +38,6 @@ public class MetricsGateway {
     private final Aggregate tunnelCount;
     private final Aggregate tunnelCountV6;
 
-    //TODO: Question: may values be nullable
     public MetricsGateway(MetricsGateway.Builder builder) {
         this.cpuPercentage = builder.cpuPercentage;
         this.memoryUsage = builder.memoryUsage;

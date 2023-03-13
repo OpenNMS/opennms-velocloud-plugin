@@ -191,14 +191,11 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     private final ApiCache.Api api;
 
     private final int enterpriseId;
-    private final int intervalMillis;
 
     public VelocloudApiCustomerClientV1(final ApiCache.Api api,
-                                        final int enterpriseId,
-                                        final int intervalMillis) {
+                                        final int enterpriseId) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseId = enterpriseId;
-        this.intervalMillis = intervalMillis;
     }
 
     public List<Path> getPaths(final int edgeId) throws VelocloudApiException {
@@ -408,7 +405,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
 
     @Override
-    public MetricsEdge getEdgeMetrics(int edgeId) throws VelocloudApiException {
+    public MetricsEdge getEdgeMetrics(int edgeId, int intervalMillis) throws VelocloudApiException {
 
         final ConfigurationGetRoutableApplicationsResult routableApplications =
                 this.api.call("routable applications", GET_ROUTABLE_APPLICATIONS,
@@ -455,7 +452,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     }
 
     @Override
-    public MetricsLink getLinkMetrics(int edgeId, String logicalLinkId) throws VelocloudApiException {
+    public MetricsLink getLinkMetrics(int edgeId, String logicalLinkId, int intervalMillis) throws VelocloudApiException {
 
         Objects.requireNonNull(logicalLinkId);
 
@@ -590,10 +587,5 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                 .withVideo(score.get("1"))
                 .withTransactional(score.get("2"))
                 .build();
-    }
-
-    @Override
-    public int getIntervalMillis() {
-        return intervalMillis;
     }
 }

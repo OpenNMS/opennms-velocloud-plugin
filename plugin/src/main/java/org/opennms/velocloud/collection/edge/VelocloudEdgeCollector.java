@@ -28,6 +28,8 @@
 
 package org.opennms.velocloud.collection.edge;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -74,9 +76,11 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
             return  CompletableFuture.failedFuture(ex);
         }
 
+        int milliseconds = Integer.parseInt((String) requireNonNull(attributes.get(SERVICE_INTERVAL), "Missing attribute: " + SERVICE_INTERVAL));
+
         final MetricsEdge edgeMetrics;
         try {
-            edgeMetrics = client.getEdgeMetrics(edgeId);
+            edgeMetrics = client.getEdgeMetrics(edgeId, milliseconds);
         } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
         }
@@ -86,7 +90,6 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
         final ImmutableCollectionSetResource.Builder<NodeResource> edgeAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(NodeResource.class).setResource(nodeResource);
 
-        final int milliseconds = client.getIntervalMillis();
         addAggregate(edgeAttrBuilder, "velocloud-edge-cpu-pct", "CpuPct", edgeMetrics.getCpuPct());
         addAggregate(edgeAttrBuilder, "velocloud-edge-cpu-core-temp", "CpuCoreTemp", edgeMetrics.getCpuCoreTemp());
         addAggregate(edgeAttrBuilder, "velocloud-edge-memory-pct", "MemoryPct", edgeMetrics.getMemoryPct());

@@ -28,6 +28,7 @@
 
 package org.opennms.velocloud.collection.link;
 
+import static java.util.Objects.requireNonNull;
 import static org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller.ATTR_EDGE_ID;
 import static org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller.ATTR_LINK_ID;
 
@@ -79,9 +80,11 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
             return  CompletableFuture.failedFuture(ex);
         }
 
+        int milliseconds = Integer.parseInt((String) requireNonNull(attributes.get(SERVICE_INTERVAL), "Missing attribute: " + SERVICE_INTERVAL));
+
         final MetricsLink linkMetrics;
         try {
-            linkMetrics = client.getLinkMetrics(edgeId, linkId);
+            linkMetrics = client.getLinkMetrics(edgeId, linkId, milliseconds);
         } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
         }
@@ -95,8 +98,6 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
         final ImmutableCollectionSetResource.Builder<IpInterfaceResource> linkAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class).setResource(interfaceResource);
 
-        final int milliseconds = client.getIntervalMillis();
-
         addNumAttr(linkAttrBuilder, "velocloud-link-bandwidth", "bandwidthRx", linkMetrics.getBandwidthRx());
         addNumAttr(linkAttrBuilder, "velocloud-link-bandwidth", "bandwidthTx", linkMetrics.getBandwidthTx());
         addNumAttr(linkAttrBuilder, "velocloud-link-latency", "bestLatencyMsRx", linkMetrics.getBestLatencyMsRx());
@@ -105,8 +106,10 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
         addNumAttr(linkAttrBuilder, "velocloud-link-jitter", "bestJitterMsTx", linkMetrics.getBestJitterMsTx());
         addNumAttr(linkAttrBuilder, "velocloud-link-loss-pct", "bestLossPctRx", linkMetrics.getBestLossPctRx());
         addNumAttr(linkAttrBuilder, "velocloud-link-loss.pct", "bestLossPctRx", linkMetrics.getBestLossPctTx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-score", "scoreRx", linkMetrics.getScoreRx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-score", "scoreTx", linkMetrics.getScoreTx());
+
+        //Velocloud does not wish Quality metrics
+        //addNumAttr(linkAttrBuilder, "velocloud-link-score", "scoreRx", linkMetrics.getScoreRx());
+        //addNumAttr(linkAttrBuilder, "velocloud-link-score", "scoreTx", linkMetrics.getScoreTx());
 
         addTraffic(linkAttrBuilder, "velocloud-link-traffic-p1", "p1", linkMetrics.getTrafficPriority1(), milliseconds);
         addTraffic(linkAttrBuilder, "velocloud-link-traffic-p2", "p2", linkMetrics.getTrafficPriority2(), milliseconds);

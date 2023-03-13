@@ -28,8 +28,12 @@
 
 package org.opennms.velocloud.collection.gateway;
 
+import static java.util.Objects.requireNonNull;
+
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
@@ -40,6 +44,7 @@ import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCo
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
+import org.opennms.velocloud.client.api.model.Gateway;
 import org.opennms.velocloud.client.api.model.MetricsGateway;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.collection.AbstractVelocloudServiceCollector;
@@ -62,24 +67,28 @@ public class VelocloudGatewayCollector extends AbstractVelocloudServiceCollector
 
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest request, Map<String, Object> attributes) {
-        final var gatewayId = Integer.parseInt((String) Objects.requireNonNull(attributes.get(AbstractGatewayStatusPoller.ATTR_GATEWAY_ID),
-                "Missing attribute: " + AbstractGatewayStatusPoller.ATTR_GATEWAY_ID));
-
-        final VelocloudApiPartnerClient client;
-        try {
-            client = getPartnerClient(attributes);
-        } catch (VelocloudApiException ex) {
-            return  CompletableFuture.failedFuture(ex);
-        }
-
-        final MetricsGateway gatewayMetrics;
-        try {
-            gatewayMetrics = client.getGatewayMetrics(gatewayId);
-        } catch (VelocloudApiException ex) {
-            return  CompletableFuture.failedFuture(ex);
-        }
+        final var gatewayId = (String) requireNonNull(attributes.get(AbstractGatewayStatusPoller.ATTR_GATEWAY_ID),
+                "Missing attribute: " + AbstractGatewayStatusPoller.ATTR_GATEWAY_ID);
 
         final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
+        final MetricsGateway gatewayMetrics;
+
+        int milliseconds = Integer.parseInt((String) requireNonNull(attributes.get(SERVICE_INTERVAL), "Missing attribute: " + SERVICE_INTERVAL));
+        try {
+            VelocloudApiPartnerClient client = getPartnerClient(attributes);
+
+            final Optional<Gateway> gateway = client.getGateways().stream()
+                    .filter(gw -> Objects.equals(gw.gatewayId, gatewayId)).findAny();
+            if (gateway.isEmpty()) {
+                return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
+                        .addCollectionSetResource(ImmutableCollectionSetResource.newBuilder(NodeResource.class)
+                                .setResource(nodeResource).build())
+                        .setTimestamp(Instant.now().toEpochMilli()).setStatus(CollectionSet.Status.FAILED).build());
+            }
+            gatewayMetrics = client.getGatewayMetrics(gateway.get().id, milliseconds);
+        } catch (VelocloudApiException ex) {
+            return  CompletableFuture.failedFuture(ex);
+        }
 
         final ImmutableCollectionSetResource.Builder<NodeResource> gatewayAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(NodeResource.class).setResource(nodeResource);

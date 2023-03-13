@@ -54,6 +54,8 @@ import com.google.common.base.Strings;
 
 public abstract class AbstractVelocloudServiceCollector implements VelocloudServiceCollector {
 
+    public static final String SERVICE_INTERVAL = "SERVICE_INTERVAL";
+
     protected final ClientManager clientManager;
     protected final ConnectionManager connectionManager;
 

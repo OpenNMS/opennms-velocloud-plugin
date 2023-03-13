@@ -66,13 +66,8 @@ public interface VelocloudApiCustomerClient {
 
     Optional<Integer> getSuperGateway(final int edgeId) throws VelocloudApiException;
 
-    MetricsEdge getEdgeMetrics(int edgeId) throws VelocloudApiException;
+    MetricsEdge getEdgeMetrics(final int edgeId, final int intervalMillis) throws VelocloudApiException;
 
-    MetricsLink getLinkMetrics(int edgeId, String logicalLinkId) throws VelocloudApiException;
+    MetricsLink getLinkMetrics(final int edgeId, final String logicalLinkId, final int intervalMillis) throws VelocloudApiException;
 
-    /**
-     * Interval in milliseconds for collecting data
-     * @return interval in milliseconds
-     */
-    int getIntervalMillis();
 }

@@ -107,7 +107,7 @@ public class VelocloudApiPartnerClientV2 extends ApiClient implements VelocloudA
     }
 
     @Override
-    public MetricsGateway getGatewayMetrics(int gatewayId) throws VelocloudApiException {
+    public MetricsGateway getGatewayMetrics(int gatewayId, int intervalMillis) throws VelocloudApiException {
         throw new UnsupportedOperationException();
     }
 }

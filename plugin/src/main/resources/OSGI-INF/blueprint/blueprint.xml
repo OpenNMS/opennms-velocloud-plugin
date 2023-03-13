@@ -167,7 +167,13 @@
     <service ref="velocloudPollerConfig"
              interface="org.opennms.integration.api.v1.config.poller.PollerConfigurationExtension"/>
 
+    <!-- TODO: fix Config when Opennms switched to API 1.4.0-SNAPSHOT-->
     <!--bean id="velocloudDatacollectionConfig" class="org.opennms.velocloud.configuration.VelocloudDatacollectionConfigurationExtension"/>
     <service ref="velocloudPollerConfig"
              interface="org.opennms.integration.api.v1.config.datacollection.SnmpCollectionExtension"/-->
+
+    <service interface="org.opennms.integration.api.v1.config.datacollection.graphs.GraphPropertiesExtension">
+        <bean class="org.opennms.velocloud.configuration.VelocloudGraphPropertiesExtension"/>
+    </service>
+
 </blueprint>

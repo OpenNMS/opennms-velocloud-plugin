@@ -88,19 +88,16 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
 
     private final ApiCache.Api api;
     private final int enterpriseProxyId;
-    private final int intervalMillis;
 
     public VelocloudApiPartnerClientV1(final ApiCache.Api api,
-                                       final int enterpriseProxyId,
-                                       final int intervalMillis) {
+                                       final int enterpriseProxyId) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseProxyId = enterpriseProxyId;
-        this.intervalMillis = intervalMillis;
     }
 
     @Override
     public VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId) {
-        return new VelocloudApiCustomerClientV1(this.api, enterpriseId, intervalMillis);
+        return new VelocloudApiCustomerClientV1(this.api, enterpriseId);
     }
 
     @Override
@@ -222,9 +219,9 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
     }
 
     @Override
-    public MetricsGateway getGatewayMetrics(int gatewayId) throws VelocloudApiException {
+    public MetricsGateway getGatewayMetrics(int gatewayId, int intervalMillis) throws VelocloudApiException {
 
-        final GatewayStatusMetricsSummary metrics = this.api.call("edges", GET_GATEWAY_STATUS_METRIC,
+        final GatewayStatusMetricsSummary metrics = this.api.call("Gateway metrics ", GET_GATEWAY_STATUS_METRIC,
                 new MetricsGetGatewayStatusMetrics()
                         .gatewayId(gatewayId)
                         .interval(getInterval(intervalMillis))
@@ -245,6 +242,9 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
     }
 
     private Aggregate map(BasicMetricSummary metric) {
+        if (metric == null) {
+            return null;
+        }
         return Aggregate.builder()
                 .withMin(metric.getMin())
                 .withMax(metric.getMax())

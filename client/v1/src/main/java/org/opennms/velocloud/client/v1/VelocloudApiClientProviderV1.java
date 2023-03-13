@@ -82,8 +82,6 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                 .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()));
     }
 
-    private final int intervalMillis;
-
     public static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
         final var client = new ApiClient();
         String url = credentials.orchestratorUrl.endsWith("/") ? credentials.orchestratorUrl : credentials.orchestratorUrl + "/";
@@ -95,8 +93,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
 
     private final ApiCache executor;
 
-    public VelocloudApiClientProviderV1(ApiCache executor, int intervalMillis) {
-        this.intervalMillis = intervalMillis;
+    public VelocloudApiClientProviderV1(ApiCache executor) {
         this.executor = executor;
     }
 
@@ -109,7 +106,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                                                              .getEnterpriseProxyId())
                                               .orElseThrow(() -> new VelocloudApiException("Not a partner account"));
 
-        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId, intervalMillis);
+        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId);
     }
 
     @Override
@@ -120,6 +117,6 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                                                               new EnterpriseGetEnterprise())
                                                         .getId())
                                          .orElseThrow(() -> new VelocloudApiException("Not a customer account"));
-        return new VelocloudApiCustomerClientV1(api, enterpriseId, intervalMillis);
+        return new VelocloudApiCustomerClientV1(api, enterpriseId);
     }
 }
