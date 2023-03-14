@@ -29,9 +29,12 @@
 package org.opennms.velocloud.collection.edge;
 
 import static java.util.Objects.requireNonNull;
+import static org.opennms.velocloud.pollers.edge.AbstractEdgeStatusPoller.ATTR_EDGE_ID;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
@@ -42,8 +45,11 @@ import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCo
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableGenericTypeResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
+import org.opennms.integration.api.v1.pollers.Status;
+import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.MetricsEdge;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.collection.AbstractVelocloudServiceCollector;
@@ -66,26 +72,38 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest request, Map<String, Object> attributes) {
 
-        final var edgeId = Integer.parseInt((String) Objects.requireNonNull(attributes.get(AbstractLinkStatusPoller.ATTR_EDGE_ID),
-                "Missing attribute: " + AbstractLinkStatusPoller.ATTR_EDGE_ID));
+        final var edgeId = Objects.requireNonNull(attributes.get(ATTR_EDGE_ID),
+                "Missing attribute: " + ATTR_EDGE_ID);
 
         final VelocloudApiCustomerClient client;
+        final Optional<Edge> edge;
+
         try {
             client = getCustomerClient(attributes);
+            edge = client.getEdges().stream()
+                    .filter(e -> Objects.equals(e.logicalId, edgeId))
+                    .findAny();
         } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
+        }
+
+        final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
+
+        if (edge.isEmpty()) {
+            return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
+                    .addCollectionSetResource(ImmutableCollectionSetResource.newBuilder(NodeResource.class)
+                            .setResource(nodeResource).build())
+                    .setTimestamp(Instant.now().toEpochMilli()).setStatus(CollectionSet.Status.FAILED).build());
         }
 
         int milliseconds = Integer.parseInt((String) requireNonNull(attributes.get(SERVICE_INTERVAL), "Missing attribute: " + SERVICE_INTERVAL));
 
         final MetricsEdge edgeMetrics;
         try {
-            edgeMetrics = client.getEdgeMetrics(edgeId, milliseconds);
+            edgeMetrics = client.getEdgeMetrics(edge.get().edgeId, milliseconds);
         } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
         }
-
-        final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
 
         final ImmutableCollectionSetResource.Builder<NodeResource> edgeAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(NodeResource.class).setResource(nodeResource);

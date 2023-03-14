@@ -32,19 +32,25 @@ import static java.util.Objects.requireNonNull;
 import static org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller.ATTR_EDGE_ID;
 import static org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller.ATTR_LINK_ID;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.CollectionSet;
 import org.opennms.integration.api.v1.collectors.resource.IpInterfaceResource;
+import org.opennms.integration.api.v1.collectors.resource.NodeResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSet;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableIpInterfaceResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
+import org.opennms.integration.api.v1.pollers.Status;
+import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.Link;
 import org.opennms.velocloud.client.api.model.MetricsLink;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.collection.AbstractVelocloudServiceCollector;
@@ -68,32 +74,44 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
 
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest request, Map<String, Object> attributes) {
-        final var edgeId = Integer.parseInt((String) Objects.requireNonNull(attributes.get(ATTR_EDGE_ID),
-                "Missing attribute: " + ATTR_EDGE_ID));
-        final var linkId = (String) Objects.requireNonNull(attributes.get(ATTR_LINK_ID),
+        final var edgeId = Objects.requireNonNull(attributes.get(ATTR_EDGE_ID),
+                "Missing attribute: " + ATTR_EDGE_ID);
+        final var linkId = Objects.requireNonNull(attributes.get(ATTR_LINK_ID),
                 "Missing attribute: " + ATTR_LINK_ID);
 
         final VelocloudApiCustomerClient client;
+        final Optional<Link> link;
         try {
             client = getCustomerClient(attributes);
+            link = client.getEdges().stream()
+                    .filter(e -> Objects.equals(e.logicalId, edgeId))
+                    .flatMap(e -> e.links.stream())
+                    .filter(l -> Objects.equals(l.logicalId, linkId))
+                    .findAny();
         } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
+        }
+
+        final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
+        final ImmutableIpInterfaceResource interfaceResource = ImmutableIpInterfaceResource.newBuilder()
+                .setNodeResource(nodeResource).setInstance(InetAddresses.toAddrString(request.getAddress()))
+                .build();
+
+        if (link.isEmpty()) {
+            return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
+                    .addCollectionSetResource(ImmutableCollectionSetResource.newBuilder(NodeResource.class)
+                            .setResource(nodeResource).build())
+                    .setTimestamp(Instant.now().toEpochMilli()).setStatus(CollectionSet.Status.FAILED).build());
         }
 
         int milliseconds = Integer.parseInt((String) requireNonNull(attributes.get(SERVICE_INTERVAL), "Missing attribute: " + SERVICE_INTERVAL));
 
         final MetricsLink linkMetrics;
         try {
-            linkMetrics = client.getLinkMetrics(edgeId, linkId, milliseconds);
+            linkMetrics = client.getLinkMetrics(link.get().edgeId, link.get().logicalId, milliseconds);
         } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
         }
-
-        final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
-
-        final ImmutableIpInterfaceResource interfaceResource = ImmutableIpInterfaceResource.newBuilder()
-                .setNodeResource(nodeResource).setInstance(InetAddresses.toAddrString(request.getAddress()))
-                .build();
 
         final ImmutableCollectionSetResource.Builder<IpInterfaceResource> linkAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class).setResource(interfaceResource);
