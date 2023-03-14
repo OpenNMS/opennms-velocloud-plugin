@@ -29,55 +29,55 @@
 package org.opennms.velocloud.pollers.tunnel;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.opennms.integration.api.v1.pollers.PollerResult;
 import org.opennms.integration.api.v1.pollers.Status;
 import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
 import org.opennms.velocloud.client.api.VelocloudApiException;
+import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.pollers.AbstractStatusPoller;
+import org.opennms.velocloud.pollers.edge.AbstractEdgeStatusPoller;
 
-public class TunnelStatusPoller extends AbstractStatusPoller {
-    public static final String ATTR_DATA_KEY = "dataKey";
-    public static final String ATTR_TAG = "tag";
+public class TunnelStatusPoller extends AbstractEdgeStatusPoller {
+    private final String ATTR_NAME = "name";
+    private final String ATTR_ROLE = "role";
+    private final String ATTR_DATAKEY = "dataKey";
 
     public TunnelStatusPoller(final ClientManager clientManager) {
         super(clientManager);
     }
 
     @Override
-    protected CompletableFuture<PollerResult> poll(final Context context) throws VelocloudApiException {
-        final var dataKey = Objects.requireNonNull(context.getPollerAttributes().get(ATTR_DATA_KEY),
-                                                   "Missing attribute: " + ATTR_DATA_KEY);
-        final var tag = Objects.requireNonNull(context.getPollerAttributes().get(ATTR_TAG),
-                "Missing attribute: " + ATTR_TAG);
+    protected PollerResult poll(final Context context, final Edge edge) throws VelocloudApiException {
+        final var name = Objects.requireNonNull(context.getPollerAttributes().get(ATTR_NAME),
+                "Missing attribute: " + ATTR_NAME);
+        final var role = Objects.requireNonNull(context.getPollerAttributes().get(ATTR_ROLE),
+                "Missing attribute: " + ATTR_ROLE);
+        final var dataKey = Objects.requireNonNull(context.getPollerAttributes().get(ATTR_DATAKEY),
+                "Missing attribute: " + ATTR_DATAKEY);
 
-        final var tunnel = context.customerClient().getNvsTunnels(tag).stream()
-                                  .filter(t -> Objects.equals(t.dataKey, dataKey))
-                                  .findAny();
+        final Optional<Tunnel> tunnel = context.customerClient().getTunnelState(dataKey);
 
         if (tunnel.isEmpty()) {
-            return CompletableFuture.completedFuture(ImmutablePollerResult.newBuilder()
-                                                                          .setStatus(Status.Down)
-                                                                          .setReason("No tunnel with dataKey " + dataKey)
-                                                                          .build());
+            return ImmutablePollerResult.newBuilder()
+                    .setStatus(Status.Down)
+                    .setReason("No tunnel with name " + name)
+                    .build();
         }
 
-        return CompletableFuture.completedFuture(this.poll(tunnel.get()));
-    }
-
-    private PollerResult poll(final Tunnel tunnel) {
-        if (!Objects.equals(tunnel.state, "UP")) {
+        if (!Objects.equals(tunnel.get().state, "UP")) {
             return ImmutablePollerResult.newBuilder()
-                                        .setStatus(Status.Down)
-                                        .setReason("Tunnel not up")
-                                        .build();
+                    .setStatus(Status.Down)
+                    .setReason("Tunnel not up")
+                    .build();
         }
 
         return ImmutablePollerResult.newBuilder()
-                                    .setStatus(Status.Up)
-                                    .build();
+                .setStatus(Status.Up)
+                .build();
     }
 }

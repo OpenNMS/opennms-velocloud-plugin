@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.config.requisition.Requisition;
+import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.integration.api.v1.requisition.RequisitionProvider;
 import org.opennms.integration.api.v1.requisition.RequisitionRequest;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
@@ -56,12 +57,17 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     public static final String VELOCLOUD_PARNTER_IDENTIFIER = "velocloud-partner";
     public static final String PARAMETER_FOREIGN_SOURCE = "foreignSource";
 
+    private final NodeDao nodeDao;
+
     private final ClientManager clientManager;
 
     private final ConnectionManager connectionManager;
 
-    protected AbstractRequisitionProvider(final ClientManager clientManager,
+    protected AbstractRequisitionProvider(final NodeDao nodeDao,
+                                          final ClientManager clientManager,
                                           final ConnectionManager connectionManager) {
+        this.nodeDao = Objects.requireNonNull(nodeDao);
+
         this.clientManager = Objects.requireNonNull(clientManager);
         this.connectionManager = Objects.requireNonNull(connectionManager);
     }
@@ -73,11 +79,15 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     @Override
     public final RequisitionRequest getRequest(final Map<String, String> parameters) {
         final var alias = Objects.requireNonNull(parameters.get("alias"), "Missing requisition parameter: alias");
+        final var location = Objects.requireNonNullElse(parameters.get("location"), nodeDao.getDefaultLocationName());
 
         final var connection = this.connectionManager.getConnection(alias)
                                                      .orElseThrow(() -> new NullPointerException("Connection not found for alias: " + alias));
 
-        return Objects.requireNonNull(this.createRequest(connection, parameters));
+        final var request = Objects.requireNonNull(this.createRequest(connection, parameters));
+        request.setLocation(location);
+
+        return request;
     }
 
     @Override
@@ -123,6 +133,8 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
         private String apiKey;
 
+        private String location;
+
         public Request() {
         }
 
@@ -165,6 +177,14 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         public void setApiKey(final String apiKey) {
             this.apiKey = apiKey;
         }
+
+        public String getLocation() {
+            return this.location;
+        }
+
+        public void setLocation(String location) {
+            this.location = Objects.requireNonNull(location);
+        }
     }
 
     public class RequestContext {
@@ -198,6 +218,10 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
         public String getAlias() {
             return this.request.getAlias();
+        }
+
+        public String getLocation() {
+            return this.request.getLocation();
         }
     }
 }

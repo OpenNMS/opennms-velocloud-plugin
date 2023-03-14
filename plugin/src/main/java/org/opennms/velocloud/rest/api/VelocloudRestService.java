@@ -33,6 +33,7 @@ import org.opennms.velocloud.rest.dto.ConnectionListElementDTO;
 import org.opennms.velocloud.rest.dto.EnterpriseDTO;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -71,4 +72,9 @@ public interface VelocloudRestService {
     @Path("/connections/{alias}")
     @Produces(value = {MediaType.APPLICATION_JSON})
     Response validateConnection(@PathParam("alias") String alias);
+
+    @DELETE
+    @Path("/connections/{alias}")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    Response deleteConnection(@PathParam("alias") String alias);
 }

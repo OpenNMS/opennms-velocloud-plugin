@@ -79,4 +79,6 @@ public interface Connection {
      */
     Optional<ConnectionValidationError> validate();
 
+    void delete();
+
 }
