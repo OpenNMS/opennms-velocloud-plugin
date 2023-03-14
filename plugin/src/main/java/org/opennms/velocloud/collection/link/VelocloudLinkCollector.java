@@ -46,8 +46,6 @@ import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCo
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableIpInterfaceResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
-import org.opennms.integration.api.v1.pollers.Status;
-import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Link;
@@ -108,7 +106,7 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
 
         final MetricsLink linkMetrics;
         try {
-            linkMetrics = client.getLinkMetrics(link.get().edgeId, link.get().logicalId, milliseconds);
+            linkMetrics = client.getLinkMetrics(link.get().edgeId, link.get().internalId, milliseconds);
         } catch (VelocloudApiException ex) {
             return  CompletableFuture.failedFuture(ex);
         }

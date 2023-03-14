@@ -45,8 +45,6 @@ import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCo
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableGenericTypeResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
-import org.opennms.integration.api.v1.pollers.Status;
-import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Edge;
@@ -54,7 +52,6 @@ import org.opennms.velocloud.client.api.model.MetricsEdge;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.collection.AbstractVelocloudServiceCollector;
 import org.opennms.velocloud.connections.ConnectionManager;
-import org.opennms.velocloud.pollers.link.AbstractLinkStatusPoller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

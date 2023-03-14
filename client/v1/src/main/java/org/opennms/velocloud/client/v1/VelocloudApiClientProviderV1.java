@@ -78,8 +78,8 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
             end = Instant.ofEpochMilli(millis);
         }
         return new Interval()
-                .start(OffsetDateTime.ofInstant(end.minusMillis(intervalMillis), ZoneId.systemDefault()))
-                .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()));
+                //.end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))
+                .start(OffsetDateTime.ofInstant(end.minusMillis(intervalMillis),ZoneId.systemDefault()));
     }
 
     public static AllApi connectApi(final VelocloudApiClientCredentials credentials) {

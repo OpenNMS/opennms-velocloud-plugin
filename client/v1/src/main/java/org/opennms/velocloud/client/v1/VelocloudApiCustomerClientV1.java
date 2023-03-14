@@ -479,9 +479,9 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     }
 
     @Override
-    public MetricsLink getLinkMetrics(int edgeId, String logicalLinkId, int intervalMillis) throws VelocloudApiException {
+    public MetricsLink getLinkMetrics(int edgeId, String internalLinkId, int intervalMillis) throws VelocloudApiException {
 
-        Objects.requireNonNull(logicalLinkId);
+        Objects.requireNonNull(internalLinkId);
 
         final List<MetricsGetEdgeLinkMetricsResultItem> metrics = this.api.call(
                 "edge link metrics",GET_EDGE_LINK_METRICS,
@@ -493,7 +493,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                         new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
                                 .interval(getInterval(intervalMillis)).maxSamples(1));
 
-        return metrics.stream().filter(item -> logicalLinkId.equals(item.getLink().getLogicalId())).findFirst().map(item ->
+        return metrics.stream().filter(item -> internalLinkId.equals(item.getLink().getLogicalId())).findFirst().map(item ->
                 MetricsLink.builder()
                     .withBandwidthRx(item.getBpsOfBestPathRx())
                     .withBandwidthTx(item.getBpsOfBestPathRx())
@@ -531,7 +531,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                     .withScoreTx(item.getScoreTx())
             ).orElseThrow(() -> new VelocloudApiException("Error getting link metrics"))
                 //add score
-                .withScoreBeforeOptimization(Optional.ofNullable(qoe.get(logicalLinkId))
+                .withScoreBeforeOptimization(Optional.ofNullable(qoe.get(internalLinkId))
                         .map(linkQualityObject -> map(linkQualityObject.getScore())).orElse(null))
                 .build();
     }

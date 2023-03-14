@@ -31,8 +31,6 @@ package org.opennms.velocloud.collection.gateway;
 import static java.util.Objects.requireNonNull;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
