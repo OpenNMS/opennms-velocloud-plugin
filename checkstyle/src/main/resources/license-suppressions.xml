@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+    "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<!-- NOTE: We use '[\\/]' instead of '/' in the paths in order to match
+     the files when compiling with both Linux and Windows. -->
+<suppressions>
+    <!-- ignore generated directories -->
+    <suppress files="[/\\]target[/\\]" checks=".*"/>
+    <suppress files="[/\\]generated-test-sources[/\\]" checks=".*"/>
+</suppressions>
