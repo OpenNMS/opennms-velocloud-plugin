@@ -45,7 +45,6 @@ import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.internal.Utils;
 import org.opennms.velocloud.client.api.model.CloudService;
 import org.opennms.velocloud.client.api.model.Datacenter;
-import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
@@ -237,7 +236,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                 iface.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                               .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                               .setKey("interface")
-                                                              .setValue(link._interface)
+                                                              .setValue(link.deviceInterface)
                                                               .build());
                 if (link.macAddress != null) {
                     iface.addMetaData(ImmutableRequisitionMetaData.newBuilder()

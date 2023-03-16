@@ -163,7 +163,7 @@ public class Link {
             return this;
         }
 
-        public Builder withInterface(String interface) {
+        public Builder withInterface(String deviceInterface) {
             this.deviceInterface = deviceInterface;
             return this;
         }
@@ -257,3 +257,4 @@ public class Link {
         return new Builder();
     }
 }
+
