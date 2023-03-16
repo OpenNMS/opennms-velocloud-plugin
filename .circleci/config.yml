@@ -10,10 +10,49 @@ executors:
 workflows:
   build-deploy:
     jobs:
-      - build
+      - build:
+          context:
+            - gpg-signing
+          filters:
+            tags:
+              only:
+                - /^v.*/
       - tests:
           requires:
             - build
+          filters:
+            tags:
+              only:
+                - /^v.*/
+      - deploy:
+          context:
+            - OSSRH Principal
+            - gpg-signing
+          requires:
+            - tests
+          filters:
+            tags:
+              only:
+                - /^v.*/
+            branches:
+              only:
+                - main
+                - /release-.*/
+      #- deploy-packages:
+      #    context: 
+      #      - gpg-signing
+      #      - cloudsmith-publish-account
+      #    requires:
+      #      - tests
+      #    filters:
+      #      tags:
+      #        only:
+      #          - /^v.*/
+      #      branches:
+      #        only:
+      #          - main
+      #          - /release-.*/
+
 
 jobs:
   build:
@@ -58,3 +97,33 @@ jobs:
 
       - store_test_results:
           path: ~/junit
+
+  deploy:
+    executor: build-executor
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+
+      - sign-packages/setup-env:
+          skip_if_forked_pr: true
+      - run:
+          name: Deploy to Maven
+          command: |
+            mvn -Prelease -s .circleci/.circleci.settings.xml -Ddisable.checkstyle=true -DskipTests -Dmaven.verify.skip=true -Dmaven.install.skip=true deploy
+
+  deploy-packages:
+    executor: cloudsmith/default
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: ~/
+
+      - cloudsmith/ensure-api-key
+      - cloudsmith/install-cli
+
+      - run:
+          name: Push packages to CloudSmith
+          command: .circleci/scripts/publish-cloudsmith.sh

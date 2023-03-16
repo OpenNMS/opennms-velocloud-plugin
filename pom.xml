@@ -185,6 +185,99 @@
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties>
+                <disable.checkstyle>true</disable.checkstyle>
+                <package.version>${project.version}</package.version>
+                <!-- for release expect to pass in command line -DbuildNumber=XXX rpm > release  deb > bundle in version -->
+                <package.buildNumber>${buildNumber}</package.buildNumber>
+            </properties>
+        </profile>
+        <profile>
+            <id>checkstyle</id>
+            <activation>
+                <property>
+                    <name>!disable.checkstyle</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>3.2.0</version><!-- contains checkstyle version 9.3 -->
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.opennms.plugins.cloud</groupId>
+                                <artifactId>checkstyle</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <configLocation>nms_checks.xml</configLocation>
+                            <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+                           <includeResources>true</includeResources>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <includeTestResources>true</includeTestResources>
+                            <failsOnError>false</failsOnError>
+                            <consoleOutput>true</consoleOutput>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>check-license</id>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <phase>process-sources</phase>
+                                <configuration>
+                                    <configLocation>check-license.xml</configLocation>
+                                    <suppressionsLocation>license-suppressions.xml</suppressionsLocation>
+                                    <headerLocation>AGPL-LICENSE.regexp.txt</headerLocation>
+                                    <includeResources>false</includeResources>
+                                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                                    <includeTestResources>false</includeTestResources>
+                                    <failsOnError>false</failsOnError>
+                                    <consoleOutput>true</consoleOutput>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>check-style</id>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <phase>process-sources</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <modules>
+                <module>checkstyle</module>
+            </modules>
+        </profile>
+    </profiles>
+
+
     <repositories>
         <repository>
             <id>sonatype.org-snapshot</id>
@@ -194,6 +287,7 @@
                 <enabled>false</enabled>
             </releases>
             <snapshots>
+                <enabled>true</enabled>                
             </snapshots>
         </repository>
     </repositories>
