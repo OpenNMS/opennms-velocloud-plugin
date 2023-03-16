@@ -83,7 +83,6 @@ jobs:
             - project
       - store_artifacts:
           path: ~/project/assembly/kar/target/opennms-velocloud-plugin.kar
-          destination: /
   tests:
     executor: build-executor
     steps:
