@@ -40,7 +40,7 @@ public class Link {
     public final int edgeId;
     public final String logicalId;
     public final String internalId;
-    public final String interface;
+    public final String deviceInterface;
     public final String macAddress;
     public final String ipAddress;
     public final String ipv6Address;
@@ -64,7 +64,7 @@ public class Link {
         this.edgeId = Objects.requireNonNull(builder.edgeId);
         this.logicalId = Objects.requireNonNull(builder.logicalId);
         this.internalId = Objects.requireNonNull(builder.internalId);
-        this.interface = Objects.requireNonNull(builder.interface);
+        this.deviceInterface = Objects.requireNonNull(builder.deviceInterface);
         this.macAddress = Strings.emptyToNull(builder.macAddress);
         this.ipAddress = Strings.emptyToNull(builder.ipAddress);
         this.ipv6Address = Strings.emptyToNull(builder.ipv6Address);
@@ -91,7 +91,7 @@ public class Link {
                 .add("edgeId", this.edgeId)
                 .add("logicalId", this.logicalId)
                 .add("internalId", this.internalId)
-                .add("interface", this.interface)
+                .add("interface", this.deviceInterface)
                 .add("macAddress", this.macAddress)
                 .add("ipAddress", this.ipAddress)
                 .add("ipv6Address", this.ipv6Address)
@@ -117,7 +117,7 @@ public class Link {
         private Integer edgeId;
         private String logicalId;
         private String internalId;
-        private String interface;
+        private String deviceInterface;
         private String macAddress;
         private String ipAddress;
         private String ipv6Address;
@@ -164,7 +164,7 @@ public class Link {
         }
 
         public Builder withInterface(String interface) {
-            this.interface = interface;
+            this.deviceInterface = deviceInterface;
             return this;
         }
 
