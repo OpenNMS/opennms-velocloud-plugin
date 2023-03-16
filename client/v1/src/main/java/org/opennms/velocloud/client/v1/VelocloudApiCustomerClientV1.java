@@ -497,7 +497,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                         new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
                                 .interval(getInterval(intervalMillis, delayInMilliseconds)).maxSamples(1));
 
-        return metrics.stream().filter(item -> internalLinkId.equals(item.getLink().getLogicalId())).findFirst().map(item ->
+        return metrics.stream().filter(item -> internalLinkId.equals(item.getLink().getInternalId())).findFirst().map(item ->
                 MetricsLink.builder()
                     .withBandwidthRx(item.getBpsOfBestPathRx())
                     .withBandwidthTx(item.getBpsOfBestPathRx())
@@ -533,7 +533,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                     .withBestLossPctTx(item.getBestLossPctTx())
                     .withScoreRx(item.getScoreRx())
                     .withScoreTx(item.getScoreTx())
-            ).orElseThrow(() -> new VelocloudApiException("Error getting link metrics"))
+                ).orElseThrow(() -> new VelocloudApiException("Error getting link metrics"))
                 //add score
                 .withScoreBeforeOptimization(Optional.ofNullable(qoe.get(internalLinkId))
                         .map(linkQualityObject -> map(linkQualityObject.getScore())).orElse(null))

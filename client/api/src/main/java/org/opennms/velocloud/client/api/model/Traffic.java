@@ -32,10 +32,10 @@ import com.google.common.base.MoreObjects;
 
 public class Traffic {
 
-    private final long bytesRx;
-    private final long bytesTx;
-    private final long packetsRx;
-    private final long packetsTx;
+    private final Long bytesRx;
+    private final Long bytesTx;
+    private final Long packetsRx;
+    private final Long packetsTx;
 
     private Traffic(final Builder builder) {
         this.bytesRx = builder.bytesRx;
@@ -45,27 +45,27 @@ public class Traffic {
     }
 
     public static class Builder {
-        private long bytesRx = 0;
-        private long bytesTx = 0;
-        private long packetsRx = 0;
-        private long packetsTx = 0;
+        private Long bytesRx;
+        private Long bytesTx;
+        private Long packetsRx;
+        private Long packetsTx;
 
-        public Builder withBytesRx(long bytesRx) {
+        public Builder withBytesRx(Long bytesRx) {
             this.bytesRx = bytesRx;
             return this;
         }
 
-        public Builder withBytesTx(long bytesTx) {
+        public Builder withBytesTx(Long bytesTx) {
             this.bytesTx = bytesTx;
             return this;
         }
 
-        public Builder withPacketsRx(long packetsRx) {
+        public Builder withPacketsRx(Long packetsRx) {
             this.packetsRx = packetsRx;
             return this;
         }
 
-        public Builder withPacketsTx(long packetsTx) {
+        public Builder withPacketsTx(Long packetsTx) {
             this.packetsTx = packetsTx;
             return this;
         }
@@ -79,19 +79,19 @@ public class Traffic {
         return new Builder();
     }
 
-    public long getBytesRx() {
+    public Long getBytesRx() {
         return bytesRx;
     }
 
-    public long getBytesTx() {
+    public Long getBytesTx() {
         return bytesTx;
     }
 
-    public long getPacketsRx() {
+    public Long getPacketsRx() {
         return packetsRx;
     }
 
-    public long getPacketsTx() {
+    public Long getPacketsTx() {
         return packetsTx;
     }
 
