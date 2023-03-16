@@ -7,6 +7,10 @@ executors:
         environment:
           MAVEN_OPTS: -Xmx1g
 
+orbs:
+  cloudsmith: cloudsmith/cloudsmith@1.0.5
+  sign-packages: opennms/sign-packages@2.3.0
+  
 workflows:
   build-deploy:
     jobs:
