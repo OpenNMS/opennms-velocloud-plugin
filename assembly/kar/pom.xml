@@ -6,7 +6,8 @@
         <version>0.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>kar</artifactId>
+    <groupId>org.opennms.plugins.velocloud.assembly</groupId>
+    <artifactId>org.opennms.plugins.velocloud</artifactId>
     <name>OpenNMS :: Plugins :: Velocloud Intergration :: Assembly :: KAR</name>
     <packaging>kar</packaging>
 
