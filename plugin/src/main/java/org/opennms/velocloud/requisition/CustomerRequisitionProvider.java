@@ -52,7 +52,7 @@ import org.opennms.velocloud.connections.ConnectionManager;
 import com.google.common.base.Strings;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
-    public final static String TYPE = "velocloud-customer";
+    public static final String TYPE = "velocloud-customer";
     
     public static final String PARAMETER_ENTERPRISE_ID = "enterpriseId";
 
@@ -171,7 +171,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                              .build());
             }
 
-            {
+                {
                 final var iface = ImmutableRequisitionInterface.newBuilder()
                         .setIpAddress(Utils.getValidInetAddress("0.0.0.0"))
                         .setDescription("Edge Meta");
@@ -220,7 +220,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                 }
 
                 node.addInterface(iface.build());
-            }
+                }
 
             final List<CloudService> cloudServices = client.getCloudServices(edge.logicalId);
 
@@ -309,10 +309,10 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                 iface.addMonitoredService("VelocloudLinkService");
 
                 final Set<CloudService> cloudServicesOnLink = cloudServices.stream()
-                        .filter(c->Objects.equals(c.link, link.internalId))
+                        .filter(c -> Objects.equals(c.link, link.internalId))
                         .collect(Collectors.toSet());
 
-                for(final CloudService cloudService : cloudServicesOnLink) {
+                for (final CloudService cloudService : cloudServicesOnLink) {
                     final var service = ImmutableRequisitionMonitoredService
                             .newBuilder()
                             .setName(String.format("VelocloudTunnel-%s-%s", cloudService.name, cloudService.role))
