@@ -72,6 +72,8 @@ jobs:
           name: Compile source without tests
           command: |
             mvn -DskipITs=true -DskipTests=true clean install
+            mkdir ~/kar
+            mv ~/project/assembly/kar/target/org.opennms.plugins.velocloud-*.kar ~/kar
       - save_cache:
           paths:
             - ~/.m2
@@ -82,7 +84,7 @@ jobs:
             - .m2
             - project
       - store_artifacts:
-          path: ~/project/assembly/kar/target/
+          path: ~/kar
   tests:
     executor: build-executor
     steps:
