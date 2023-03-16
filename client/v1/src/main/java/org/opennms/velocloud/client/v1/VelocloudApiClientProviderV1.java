@@ -59,10 +59,11 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
     public static final String PATH = "portal/rest";
+    private final int delayInMilliseconds;
 
-    public static Interval getInterval(long intervalMillis) {
+    public static Interval getInterval(long intervalMillis, int delayInMilliseconds) {
         // to increase cache usage we align time either to 10s, 5s, 1s, 100ms or 10ms when the interval is big enough
-        final long millis = Instant.now().toEpochMilli();
+        final long millis = Instant.now().toEpochMilli() - delayInMilliseconds;
         final Instant end;
         if (intervalMillis > 10_000) {
             end = Instant.ofEpochMilli(millis / 10_000 * 10_000);
@@ -78,7 +79,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
             end = Instant.ofEpochMilli(millis);
         }
         return new Interval()
-                //.end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))
+                .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))
                 .start(OffsetDateTime.ofInstant(end.minusMillis(intervalMillis),ZoneId.systemDefault()));
     }
 
@@ -93,8 +94,12 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
 
     private final ApiCache executor;
 
-    public VelocloudApiClientProviderV1(ApiCache executor) {
+    public VelocloudApiClientProviderV1(ApiCache executor, int delayInMinutes) {
         this.executor = executor;
+        if (delayInMinutes <= 0 ) {
+            throw new IllegalArgumentException("Delay must be bigger than 0");
+        }
+        this.delayInMilliseconds = delayInMinutes * 60 * 1000;
     }
 
     @Override
@@ -106,7 +111,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                                                              .getEnterpriseProxyId())
                                               .orElseThrow(() -> new VelocloudApiException("Not a partner account"));
 
-        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId);
+        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId, delayInMilliseconds);
     }
 
     @Override
@@ -117,6 +122,6 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                                                               new EnterpriseGetEnterprise())
                                                         .getId())
                                          .orElseThrow(() -> new VelocloudApiException("Not a customer account"));
-        return new VelocloudApiCustomerClientV1(api, enterpriseId);
+        return new VelocloudApiCustomerClientV1(api, enterpriseId, delayInMilliseconds);
     }
 }

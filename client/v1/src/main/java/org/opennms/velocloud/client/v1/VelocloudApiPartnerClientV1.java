@@ -89,15 +89,18 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
     private final ApiCache.Api api;
     private final int enterpriseProxyId;
 
+    private final int delayInMilliseconds;
+
     public VelocloudApiPartnerClientV1(final ApiCache.Api api,
-                                       final int enterpriseProxyId) {
+                                       final int enterpriseProxyId, int delayInMilliseconds) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseProxyId = enterpriseProxyId;
+        this.delayInMilliseconds = delayInMilliseconds;
     }
 
     @Override
     public VelocloudApiCustomerClient getCustomerClient(final Integer enterpriseId) {
-        return new VelocloudApiCustomerClientV1(this.api, enterpriseId);
+        return new VelocloudApiCustomerClientV1(this.api, enterpriseId, delayInMilliseconds);
     }
 
     @Override
@@ -224,7 +227,7 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
         final GatewayStatusMetricsSummary metrics = this.api.call("Gateway metrics ", GET_GATEWAY_STATUS_METRIC,
                 new MetricsGetGatewayStatusMetrics()
                         .gatewayId(gatewayId)
-                        .interval(getInterval(intervalMillis))
+                        .interval(getInterval(intervalMillis, delayInMilliseconds))
                         .metrics(METRICS));
 
         return map(metrics);

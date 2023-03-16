@@ -201,10 +201,14 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
     private final int enterpriseId;
 
+    private final int delayInMilliseconds;
+
     public VelocloudApiCustomerClientV1(final ApiCache.Api api,
-                                        final int enterpriseId) {
+                                        final int enterpriseId,
+                                        int delayInMilliseconds) {
         this.api = Objects.requireNonNull(api);
         this.enterpriseId = enterpriseId;
+        this.delayInMilliseconds = delayInMilliseconds;
     }
 
     public List<Path> getPaths(final int edgeId) throws VelocloudApiException {
@@ -441,27 +445,27 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
         final EdgeStatusMetricsSummary systemMetrics =
                 this.api.call("edge system metrics", GET_EDGE_SYSTEM_METRICS,
                         new MetricsGetEdgeStatusMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
-                                .metrics(EDGE_SYSTEM_METRICS).interval(getInterval(intervalMillis)));
+                                .metrics(EDGE_SYSTEM_METRICS).interval(getInterval(intervalMillis, delayInMilliseconds)));
 
         final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications =
                 this.api.call("edge traffic by applications ", GET_EDGE_APP_METRICS,
                         new MetricsGetEdgeAppMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis)));
+                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis, delayInMilliseconds)));
 
         final List<MetricsGetEdgeDeviceMetricsResultItem> trafficSources =
                 this.api.call("edge traffic by source", GET_EDGE_DEVICE_METRICS,
                         new MetricsGetEdgeDeviceMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis)));
+                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis, delayInMilliseconds)));
 
         final List<MetricsGetEdgeDestMetricsResultItem> trafficDestination =
                 this.api.call("edge traffic by destination", GET_EDGE_DEST_METRICS,
                         new MetricsGetEdgeDestMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis)));
+                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis, delayInMilliseconds)));
 
         final LinkQualityEventGetLinkQualityEventsResult qoe =
                 this.api.call("edge dest metrics", GET_LINK_QUALITY_EVENTS,
                         new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .interval(getInterval(intervalMillis)).maxSamples(1));
+                                .interval(getInterval(intervalMillis, delayInMilliseconds)).maxSamples(1));
 
         return MetricsEdge.builder()
                 .withCpuPct(map(systemMetrics.getCpuPct()))
@@ -486,12 +490,12 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
         final List<MetricsGetEdgeLinkMetricsResultItem> metrics = this.api.call(
                 "edge link metrics",GET_EDGE_LINK_METRICS,
                 new MetricsGetEdgeLinkMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
-                        .interval(getInterval(intervalMillis))
+                        .interval(getInterval(intervalMillis, delayInMilliseconds))
                         .metrics(EDGE_LINK_METRICS));
         final LinkQualityEventGetLinkQualityEventsResult qoe =
                 this.api.call("edge dest metrics", GET_LINK_QUALITY_EVENTS,
                         new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .interval(getInterval(intervalMillis)).maxSamples(1));
+                                .interval(getInterval(intervalMillis, delayInMilliseconds)).maxSamples(1));
 
         return metrics.stream().filter(item -> internalLinkId.equals(item.getLink().getLogicalId())).findFirst().map(item ->
                 MetricsLink.builder()
