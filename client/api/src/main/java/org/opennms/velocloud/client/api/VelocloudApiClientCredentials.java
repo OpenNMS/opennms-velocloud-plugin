@@ -109,8 +109,8 @@ public class VelocloudApiClientCredentials {
             return false;
         }
         final VelocloudApiClientCredentials that = (VelocloudApiClientCredentials) o;
-        return Objects.equals(this.orchestratorUrl, that.orchestratorUrl) &&
-               Objects.equals(this.apiKey, that.apiKey);
+        return Objects.equals(this.orchestratorUrl, that.orchestratorUrl) 
+        && Objects.equals(this.apiKey, that.apiKey);
     }
 
     @Override

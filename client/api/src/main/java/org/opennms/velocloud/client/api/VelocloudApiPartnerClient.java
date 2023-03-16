@@ -25,7 +25,8 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package org.opennms.velocloud.client.api;
+
+ package org.opennms.velocloud.client.api;
 
 import java.time.Instant;
 import java.util.List;
