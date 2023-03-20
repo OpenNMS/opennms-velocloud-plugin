@@ -120,6 +120,25 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.commonjava.maven.plugins</groupId>
+                    <artifactId>directory-maven-plugin</artifactId>
+                    <version>1.0</version>
+                    <executions>
+                      <execution>
+                        <id>directories</id>
+                          <goals><goal>directory-of</goal></goals>
+                          <phase>initialize</phase>
+                          <configuration>
+                            <property>my.toplevel.basedir</property>
+                            <project>
+                              <groupId>org.opennms.plugins.velocloud</groupId>
+                              <artifactId>velocloud-plugin-parent</artifactId>
+                            </project>
+                          </configuration>
+                        </execution>
+                      </executions>
+                  </plugin>                
+                <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>4.2.1</version>
@@ -234,8 +253,8 @@
               </dependency>
             </dependencies>
             <configuration>
-              <configLocation>src/main/resources/nms_checks.xml</configLocation>
-              <suppressionsLocation>src/main/resources/checkstyle-suppressions.xml</suppressionsLocation>
+              <configLocation>${my.toplevel.basedir}/src/main/resources/nms_checks.xml</configLocation>
+              <suppressionsLocation>${my.toplevel.basedir}/src/main/resources/checkstyle-suppressions.xml</suppressionsLocation>
               <!-- <sourceDirectory> is needed so that checkstyle ignores the generated sources directory -->
               <sourceDirectories>${project.build.sourceDirectory}</sourceDirectories>
               <includeResources>true</includeResources>
@@ -252,9 +271,9 @@
                 </goals>
                 <phase>process-resources</phase>
                 <configuration>
-                  <configLocation>src/main/resources/check-license.xml</configLocation>
-                  <suppressionsLocation>src/main/resources/license-suppressions.xml</suppressionsLocation>
-                  <headerLocation>src/main/resources/AGPL-LICENSE.regexp.txt</headerLocation>
+                  <configLocation>${my.toplevel.basedir}/src/main/resources/check-license.xml</configLocation>
+                  <suppressionsLocation>${my.toplevel.basedir}/src/main/resources/license-suppressions.xml</suppressionsLocation>
+                  <headerLocation>${my.toplevel.basedir}/src/main/resources/AGPL-LICENSE.regexp.txt</headerLocation>
                   <includeResources>false</includeResources>
                   <includeTestSourceDirectory>true</includeTestSourceDirectory>
                   <includeTestResources>false</includeTestResources>
