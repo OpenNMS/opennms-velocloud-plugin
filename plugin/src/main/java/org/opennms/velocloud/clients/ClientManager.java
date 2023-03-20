@@ -109,12 +109,12 @@ public class ClientManager implements ServiceListener {
         try {
             this.clientProvider.partnerClient(credentials);
             return Optional.empty();
-        } catch (VelocloudApiException e) { }
+        } catch (VelocloudApiException e) {}
 
         try {
             this.clientProvider.customerClient(credentials);
             return Optional.empty();
-        } catch (VelocloudApiException ex) { }
+        } catch (VelocloudApiException ex) {}
 
         return Optional.of(new ConnectionValidationError("Credentials could not be validated"));
     }

@@ -257,4 +257,3 @@ public class Link {
         return new Builder();
     }
 }
-

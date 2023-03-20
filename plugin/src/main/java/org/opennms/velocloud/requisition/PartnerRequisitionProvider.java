@@ -50,7 +50,7 @@ import com.google.common.base.Strings;
 public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
     private static final Logger LOG = LoggerFactory.getLogger(PartnerRequisitionProvider.class);
 
-    public static final String TYPE = "velocloud-partner";
+    public final static String TYPE = "velocloud-partner";
 
     public PartnerRequisitionProvider(final NodeDao nodeDao,
                                       final ClientManager clientManager,

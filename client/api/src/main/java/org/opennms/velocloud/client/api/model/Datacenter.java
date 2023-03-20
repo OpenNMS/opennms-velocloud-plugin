@@ -57,12 +57,8 @@ public class Datacenter {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Datacenter that = (Datacenter) o;
         return Objects.equals(name, that.name) && Objects.equals(logicalId, that.logicalId) && Objects.equals(primaryState, that.primaryState) && Objects.equals(secondaryState, that.secondaryState);
     }
@@ -105,7 +101,6 @@ public class Datacenter {
             return new Datacenter(this);
         }
     }
-    
     public static Datacenter.Builder builder() {
         return new Builder();
     }

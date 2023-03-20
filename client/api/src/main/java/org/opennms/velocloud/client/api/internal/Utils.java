@@ -25,7 +25,6 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-
 package org.opennms.velocloud.client.api.internal;
 
 import com.google.common.base.Strings;
