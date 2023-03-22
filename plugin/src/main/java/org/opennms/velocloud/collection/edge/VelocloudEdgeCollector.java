@@ -87,10 +87,7 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
         final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
 
         if (edge.isEmpty()) {
-            return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
-                    .addCollectionSetResource(ImmutableCollectionSetResource.newBuilder(NodeResource.class)
-                            .setResource(nodeResource).build())
-                    .setTimestamp(Instant.now().toEpochMilli()).setStatus(CollectionSet.Status.FAILED).build());
+            return createFailedCollectionSet(nodeResource, Instant.now().toEpochMilli());
         }
 
         int milliseconds = Integer.parseInt((String) requireNonNull(attributes.get(SERVICE_INTERVAL), "Missing attribute: " + SERVICE_INTERVAL));
@@ -132,6 +129,7 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
             resultBuilder.addCollectionSetResource(appResourceBuilder.build());
         });
 
-        return CompletableFuture.completedFuture(resultBuilder.setStatus(CollectionSet.Status.SUCCEEDED).build());
+        return CompletableFuture.completedFuture(resultBuilder.setStatus(CollectionSet.Status.SUCCEEDED)
+                .setTimestamp(edgeMetrics.getTimestamp()).build());
     }
 }

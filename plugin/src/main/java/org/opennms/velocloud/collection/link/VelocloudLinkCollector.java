@@ -96,10 +96,7 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
                 .build();
 
         if (link.isEmpty()) {
-            return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
-                    .addCollectionSetResource(ImmutableCollectionSetResource.newBuilder(NodeResource.class)
-                            .setResource(nodeResource).build())
-                    .setTimestamp(Instant.now().toEpochMilli()).setStatus(CollectionSet.Status.FAILED).build());
+            return createFailedCollectionSet(nodeResource, Instant.now().toEpochMilli());
         }
 
         int milliseconds = Integer.parseInt((String) requireNonNull(attributes.get(SERVICE_INTERVAL), "Missing attribute: " + SERVICE_INTERVAL));
@@ -132,9 +129,10 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
         addTraffic(linkAttrBuilder, "velocloud-link-traffic-control", "control", linkMetrics.getTrafficControl(), milliseconds);
 
         return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
-                        .setStatus(CollectionSet.Status.SUCCEEDED)
-                        .addCollectionSetResource(linkAttrBuilder.build())
-                        .build()
+                .setStatus(CollectionSet.Status.SUCCEEDED)
+                .setTimestamp(linkMetrics.getTimestamp())
+                .addCollectionSetResource(linkAttrBuilder.build())
+                .build()
         );
     }
 }

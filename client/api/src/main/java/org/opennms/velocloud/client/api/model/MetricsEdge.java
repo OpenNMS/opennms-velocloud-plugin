@@ -45,7 +45,7 @@ public class MetricsEdge {
     private final List<TrafficSource> trafficSources;
     private final List<TrafficDestination> trafficDestinations;
     private final Score scoreAfterOptimization;
-
+    private final Long timestamp;
 
     private MetricsEdge(Builder builder) {
         this.cpuPct = builder.cpuPct;
@@ -59,6 +59,7 @@ public class MetricsEdge {
         this.trafficSources = builder.trafficSources;
         this.trafficDestinations = builder.trafficDestinations;
         this.scoreAfterOptimization = builder.scoreAfterOptimization;
+        this.timestamp = builder.timestamp;
     }
 
     public static class Builder {
@@ -73,6 +74,7 @@ public class MetricsEdge {
         private List<TrafficSource> trafficSources;
         private List<TrafficDestination> trafficDestinations;
         private Score scoreAfterOptimization;
+        private Long timestamp;
 
         private Builder() {}
 
@@ -122,6 +124,11 @@ public class MetricsEdge {
 
         public Builder withScoreAfterOptimization(Score scoreAfterOptimization) {
             this.scoreAfterOptimization = scoreAfterOptimization;
+            return this;
+        }
+
+        public Builder withTimestamp(final Long timestamp) {
+            this.timestamp = timestamp;
             return this;
         }
 
@@ -179,6 +186,10 @@ public class MetricsEdge {
         return scoreAfterOptimization;
     }
 
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -192,6 +203,7 @@ public class MetricsEdge {
                 .add("trafficApplications", trafficApplications)
                 .add("trafficSources", trafficSources)
                 .add("scoreAfterOptimization", scoreAfterOptimization)
+                .add("timestamp", timestamp)
                 .toString();
     }
 }

@@ -31,15 +31,21 @@ package org.opennms.velocloud.collection;
 import static org.opennms.velocloud.pollers.AbstractStatusPoller.ATTR_API_KEY;
 import static org.opennms.velocloud.pollers.AbstractStatusPoller.ATTR_ORCHESTRATOR_URL;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
+import org.opennms.integration.api.v1.collectors.CollectionSet;
 import org.opennms.integration.api.v1.collectors.immutables.ImmutableNumericAttribute;
 import org.opennms.integration.api.v1.collectors.immutables.ImmutableStringAttribute;
+import org.opennms.integration.api.v1.collectors.resource.NodeResource;
 import org.opennms.integration.api.v1.collectors.resource.NumericAttribute;
 import org.opennms.integration.api.v1.collectors.resource.Resource;
 import org.opennms.integration.api.v1.collectors.resource.StringAttribute;
+import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSet;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
+import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
@@ -128,4 +134,12 @@ public abstract class AbstractVelocloudServiceCollector implements VelocloudServ
                 Objects.requireNonNull(attributes.get(ATTR_ORCHESTRATOR_URL), "orchestrator url required").toString(),
                 Objects.requireNonNull(attributes.get(ATTR_API_KEY), "api key required").toString());
     }
+
+    public static CompletableFuture<CollectionSet> createFailedCollectionSet(ImmutableNodeResource nodeResource, long timestamp) {
+        return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
+                .addCollectionSetResource(ImmutableCollectionSetResource.newBuilder(NodeResource.class)
+                        .setResource(nodeResource).build())
+                .setTimestamp(timestamp).setStatus(CollectionSet.Status.FAILED).build());
+    }
+
 }

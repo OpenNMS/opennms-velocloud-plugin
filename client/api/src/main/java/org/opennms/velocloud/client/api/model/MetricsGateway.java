@@ -37,6 +37,7 @@ public class MetricsGateway {
     private final Aggregate handoffQueueDrops;
     private final Aggregate tunnelCount;
     private final Aggregate tunnelCountV6;
+    private final Long timestamp;
 
     public MetricsGateway(MetricsGateway.Builder builder) {
         this.cpuPercentage = builder.cpuPercentage;
@@ -45,6 +46,7 @@ public class MetricsGateway {
         this.handoffQueueDrops = builder.handoffQueueDrops;
         this.tunnelCount = builder.tunnelCount;
         this.tunnelCountV6 = builder.tunnelCountV6;
+        this.timestamp = builder.timestamp;
     }
 
     public static class Builder {
@@ -54,30 +56,36 @@ public class MetricsGateway {
         private Aggregate handoffQueueDrops;
         private Aggregate tunnelCount;
         private Aggregate tunnelCountV6;
+        private Long timestamp;
 
-        public MetricsGateway.Builder withCpuPercentage(final Aggregate cpuPercentage) {
+        public Builder withCpuPercentage(final Aggregate cpuPercentage) {
             this.cpuPercentage = cpuPercentage;
             return this;
         }
-        public MetricsGateway.Builder withMemoryUsage(final Aggregate memoryUsage) {
+        public Builder withMemoryUsage(final Aggregate memoryUsage) {
             this.memoryUsage = memoryUsage;
             return this;
         }
-        public MetricsGateway.Builder withFlowCounts(final Aggregate flowCounts) {
+        public Builder withFlowCounts(final Aggregate flowCounts) {
             this.flowCount = flowCounts;
             return this;
         }
-        public MetricsGateway.Builder withHandoffQueueDrops(final Aggregate handoffQueueDrops) {
+        public Builder withHandoffQueueDrops(final Aggregate handoffQueueDrops) {
             this.handoffQueueDrops = handoffQueueDrops;
             return this;
         }
-        public MetricsGateway.Builder withTunnelCount(final Aggregate tunnelCount) {
+        public Builder withTunnelCount(final Aggregate tunnelCount) {
             this.tunnelCount = tunnelCount;
             return this;
         }
 
-        public MetricsGateway.Builder withTunnelCountV6(final Aggregate tunnelCountV6) {
+        public Builder withTunnelCountV6(final Aggregate tunnelCountV6) {
             this.tunnelCountV6 = tunnelCountV6;
+            return this;
+        }
+
+        public Builder withTimestamp(final Long timestamp) {
+            this.timestamp = timestamp;
             return this;
         }
 
@@ -86,8 +94,8 @@ public class MetricsGateway {
         }
     }
 
-    public static MetricsGateway.Builder builder() {
-        return new MetricsGateway.Builder();
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Override
@@ -99,6 +107,7 @@ public class MetricsGateway {
                 .add("handoffQueueDrops", handoffQueueDrops)
                 .add("tunnelCount", tunnelCount)
                 .add("tunnelCountV6", tunnelCountV6)
+                .add("timestamp", timestamp)
                 .toString();
     }
 
@@ -125,4 +134,9 @@ public class MetricsGateway {
     public Aggregate getTunnelCountV6() {
         return tunnelCountV6;
     }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
 }

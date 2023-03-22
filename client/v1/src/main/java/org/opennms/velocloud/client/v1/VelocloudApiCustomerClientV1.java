@@ -438,6 +438,8 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     @Override
     public MetricsEdge getEdgeMetrics(int edgeId, int intervalMillis) throws VelocloudApiException {
 
+        final Interval interval = getInterval(intervalMillis, delayInMilliseconds);
+
         final ConfigurationGetRoutableApplicationsResult routableApplications =
                 this.api.call("routable applications", GET_ROUTABLE_APPLICATIONS,
                         new ConfigurationGetRoutableApplications().edgeId(edgeId).enterpriseId(enterpriseId));
@@ -445,27 +447,27 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
         final EdgeStatusMetricsSummary systemMetrics =
                 this.api.call("edge system metrics", GET_EDGE_SYSTEM_METRICS,
                         new MetricsGetEdgeStatusMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
-                                .metrics(EDGE_SYSTEM_METRICS).interval(getInterval(intervalMillis, delayInMilliseconds)));
+                                .metrics(EDGE_SYSTEM_METRICS).interval(interval));
 
         final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications =
                 this.api.call("edge traffic by applications ", GET_EDGE_APP_METRICS,
                         new MetricsGetEdgeAppMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis, delayInMilliseconds)));
+                                .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
 
         final List<MetricsGetEdgeDeviceMetricsResultItem> trafficSources =
                 this.api.call("edge traffic by source", GET_EDGE_DEVICE_METRICS,
                         new MetricsGetEdgeDeviceMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis, delayInMilliseconds)));
+                                .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
 
         final List<MetricsGetEdgeDestMetricsResultItem> trafficDestination =
                 this.api.call("edge traffic by destination", GET_EDGE_DEST_METRICS,
                         new MetricsGetEdgeDestMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .metrics(EDGE_TRAFFIC_METRICS).interval(getInterval(intervalMillis, delayInMilliseconds)));
+                                .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
 
         final LinkQualityEventGetLinkQualityEventsResult qoe =
                 this.api.call("edge dest metrics", GET_LINK_QUALITY_EVENTS,
                         new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .interval(getInterval(intervalMillis, delayInMilliseconds)).maxSamples(1));
+                                .interval(interval).maxSamples(1));
 
         return MetricsEdge.builder()
                 .withCpuPct(map(systemMetrics.getCpuPct()))
@@ -479,6 +481,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                 .withTrafficSources(map(trafficSources, VelocloudApiCustomerClientV1::map))
                 .withTrafficDestinations(map(trafficDestination, VelocloudApiCustomerClientV1::map))
                 .withScoreAfterOptimization(map(qoe.getOverallLinkQuality().getScore()))
+                .withTimestamp(interval.getEnd().toEpochSecond())
                 .build();
     }
 
@@ -486,16 +489,16 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
     public MetricsLink getLinkMetrics(int edgeId, String internalLinkId, int intervalMillis) throws VelocloudApiException {
 
         Objects.requireNonNull(internalLinkId);
-
+        final Interval interval = getInterval(intervalMillis, delayInMilliseconds);
         final List<MetricsGetEdgeLinkMetricsResultItem> metrics = this.api.call(
                 "edge link metrics",GET_EDGE_LINK_METRICS,
                 new MetricsGetEdgeLinkMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
-                        .interval(getInterval(intervalMillis, delayInMilliseconds))
+                        .interval(interval)
                         .metrics(EDGE_LINK_METRICS));
         final LinkQualityEventGetLinkQualityEventsResult qoe =
                 this.api.call("edge dest metrics", GET_LINK_QUALITY_EVENTS,
                         new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .interval(getInterval(intervalMillis, delayInMilliseconds)).maxSamples(1));
+                                .interval(interval).maxSamples(1));
 
         return metrics.stream().filter(item -> internalLinkId.equals(item.getLink().getInternalId())).findFirst().map(item ->
                 MetricsLink.builder()
@@ -533,6 +536,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                     .withBestLossPctTx(item.getBestLossPctTx())
                     .withScoreRx(item.getScoreRx())
                     .withScoreTx(item.getScoreTx())
+                    .withTimestamp(interval.getEnd().toEpochSecond())
                 ).orElseThrow(() -> new VelocloudApiException("Error getting link metrics"))
                 //add score
                 .withScoreBeforeOptimization(Optional.ofNullable(qoe.get(internalLinkId))

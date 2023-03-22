@@ -80,10 +80,7 @@ public class VelocloudGatewayCollector extends AbstractVelocloudServiceCollector
             final Optional<Gateway> gateway = client.getGateways().stream()
                     .filter(gw -> Objects.equals(gw.gatewayId, gatewayId)).findAny();
             if (gateway.isEmpty()) {
-                return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
-                        .addCollectionSetResource(ImmutableCollectionSetResource.newBuilder(NodeResource.class)
-                                .setResource(nodeResource).build())
-                        .setTimestamp(Instant.now().toEpochMilli()).setStatus(CollectionSet.Status.FAILED).build());
+                return createFailedCollectionSet(nodeResource, Instant.now().toEpochMilli());
             }
             gatewayMetrics = client.getGatewayMetrics(gateway.get().id, milliseconds);
         } catch (VelocloudApiException ex) {
@@ -101,6 +98,7 @@ public class VelocloudGatewayCollector extends AbstractVelocloudServiceCollector
         addAggregate(gatewayAttrBuilder, "velocloud-gateway-tunnel-count-v6", "TunnelCountV6", gatewayMetrics.getTunnelCountV6());
 
         return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
-                .addCollectionSetResource(gatewayAttrBuilder.build()).setStatus(CollectionSet.Status.SUCCEEDED).build());
+                .addCollectionSetResource(gatewayAttrBuilder.build()).setStatus(CollectionSet.Status.SUCCEEDED)
+                .setTimestamp(gatewayMetrics.getTimestamp()).build());
     }
 }

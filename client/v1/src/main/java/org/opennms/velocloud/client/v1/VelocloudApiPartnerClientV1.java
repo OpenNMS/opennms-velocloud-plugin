@@ -224,16 +224,13 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
     @Override
     public MetricsGateway getGatewayMetrics(int gatewayId, int intervalMillis) throws VelocloudApiException {
 
+        final Interval interval = getInterval(intervalMillis, delayInMilliseconds);
         final GatewayStatusMetricsSummary metrics = this.api.call("Gateway metrics ", GET_GATEWAY_STATUS_METRIC,
                 new MetricsGetGatewayStatusMetrics()
                         .gatewayId(gatewayId)
-                        .interval(getInterval(intervalMillis, delayInMilliseconds))
+                        .interval(interval)
                         .metrics(METRICS));
 
-        return map(metrics);
-    }
-
-    private MetricsGateway map(GatewayStatusMetricsSummary metrics) {
         return MetricsGateway.builder()
                 .withCpuPercentage(map(metrics.getCpuPct()))
                 .withMemoryUsage(map(metrics.getMemoryPct()))
@@ -241,7 +238,9 @@ public class VelocloudApiPartnerClientV1 implements VelocloudApiPartnerClient {
                 .withCpuPercentage(map(metrics.getCpuPct()))
                 .withHandoffQueueDrops(map(metrics.getHandoffQueueDrops()))
                 .withTunnelCount(map(metrics.getTunnelCount()))
-                .withTunnelCountV6(map(metrics.getTunnelCountV6())).build();
+                .withTunnelCountV6(map(metrics.getTunnelCountV6()))
+                .withTimestamp(interval.getEnd().toEpochSecond())
+                .build();
     }
 
     private Aggregate map(BasicMetricSummary metric) {

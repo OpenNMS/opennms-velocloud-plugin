@@ -49,6 +49,7 @@ public class MetricsLink {
     private final Float bestLossPctTx;
     private final Float scoreRx;
     private final Float scoreTx;
+    private final Long timestamp;
 
     private MetricsLink(final MetricsLink.Builder builder) {
         this.bandwidthRx = Objects.requireNonNull(builder.bandwidthRx);
@@ -66,6 +67,7 @@ public class MetricsLink {
         this.bestLossPctTx = builder.bestLossPctTx;
         this.scoreRx = builder.scoreRx;
         this.scoreTx = builder.scoreTx;
+        this.timestamp = builder.timestamp;
     }
 
     public static class Builder {
@@ -85,6 +87,7 @@ public class MetricsLink {
         private Float bestLossPctTx;
         private Float scoreRx;
         private Float scoreTx;
+        private Long timestamp;
 
         private Builder() {}
 
@@ -164,6 +167,11 @@ public class MetricsLink {
             return this;
         }
 
+        public MetricsLink.Builder withTimestamp(final Long timestamp) {
+            this.timestamp = timestamp;
+            return this;
+        }
+
         public MetricsLink build() {
             return new MetricsLink(this);
         }
@@ -233,6 +241,10 @@ public class MetricsLink {
         return scoreTx;
     }
 
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -251,6 +263,7 @@ public class MetricsLink {
                 .add("bestLossPctTx", bestLossPctTx)
                 .add("scoreRx", scoreRx)
                 .add("scoreTx", scoreTx)
+                .add("timestamp", timestamp)
                 .toString();
     }
 }
