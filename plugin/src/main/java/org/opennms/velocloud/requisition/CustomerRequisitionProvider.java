@@ -60,7 +60,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
     public CustomerRequisitionProvider(final NodeDao nodeDao,
                                        final ClientManager clientManager,
                                        final ConnectionManager connectionManager) {
-        super(nodeDao, clientManager, connectionManager);
+        super(nodeDao, clientManager, connectionManager, Request.class);
     }
 
     @Override

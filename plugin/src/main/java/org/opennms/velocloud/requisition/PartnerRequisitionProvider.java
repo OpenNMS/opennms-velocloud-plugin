@@ -55,7 +55,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
     public PartnerRequisitionProvider(final NodeDao nodeDao,
                                       final ClientManager clientManager,
                                       final ConnectionManager connectionManager) {
-        super(nodeDao, clientManager, connectionManager);
+        super(nodeDao, clientManager, connectionManager, Request.class);
     }
 
     @Override
