@@ -4,8 +4,41 @@
     <artifactId>velocloud-plugin-parent</artifactId>
     <groupId>org.opennms.plugins.velocloud</groupId>
     <name>OpenNMS :: Plugins :: Velocloud Intergration :: Parent</name>
+    <url>https://github.com/OpenNMS/opennms-velocloud-plugin</url>
+    <description>Velocloud Intergration Plugin for OpenNMS</description>
     <packaging>pom</packaging>
 
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License</name>
+            <url>http://www.gnu.org/licenses/agpl.html</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/OpenNMS/opennms-velocloud-plugin</url>
+        <connection>scm:git:git@github.com:OpenNMS/opennms-velocloud-plugin.git</connection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>fooker</id>
+            <name>Dustin Frisch</name>
+            <email>dustin@opennms.com</email>
+        </developer>
+        <developer>
+            <id>dherdt</id>
+            <name>Dmitri Herdt</name>
+            <email>dherdt@opennms.com</email>
+        </developer>
+        <developer>
+            <id>christianpape</id>
+            <name>Christian Pape</name>
+            <email>christian@opennms.com</email>
+        </developer>
+    </developers>
+    
     <properties>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
