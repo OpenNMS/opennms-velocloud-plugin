@@ -111,22 +111,22 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
         final ImmutableCollectionSetResource.Builder<IpInterfaceResource> linkAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class).setResource(interfaceResource);
 
-        addNumAttr(linkAttrBuilder, "velocloud-link-bandwidth", "bandwidthRx", linkMetrics.getBandwidthRx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-bandwidth", "bandwidthTx", linkMetrics.getBandwidthTx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-latency", "bestLatencyMsRx", linkMetrics.getBestLatencyMsRx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-latency", "bestLatencyMsTx", linkMetrics.getBestLatencyMsTx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-jitter", "bestJitterMsRx", linkMetrics.getBestJitterMsRx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-jitter", "bestJitterMsTx", linkMetrics.getBestJitterMsTx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-loss-pct", "bestLossPctRx", linkMetrics.getBestLossPctRx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-loss.pct", "bestLossPctRx", linkMetrics.getBestLossPctTx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-bandwidth", "LinkBandwidthRx", linkMetrics.getBandwidthRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-bandwidth", "LinkBandwidthTx", linkMetrics.getBandwidthTx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-latency", "LinkBestLatencyMsRx", linkMetrics.getBestLatencyMsRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-latency", "LinkBestLatencyMsTx", linkMetrics.getBestLatencyMsTx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-jitter", "LinkBestJitterMsRx", linkMetrics.getBestJitterMsRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-jitter", "LinkBestJitterMsTx", linkMetrics.getBestJitterMsTx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-loss-pct", "LinkBestLossPctRx", linkMetrics.getBestLossPctRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-loss.pct", "LinkBestLossPctRx", linkMetrics.getBestLossPctTx());
 
-        addNumAttr(linkAttrBuilder, "velocloud-link-score", "scoreRx", linkMetrics.getScoreRx());
-        addNumAttr(linkAttrBuilder, "velocloud-link-score", "scoreTx", linkMetrics.getScoreTx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-score", "LinkScoreRx", linkMetrics.getScoreRx());
+        addNumAttr(linkAttrBuilder, "velocloud-link-score", "LinkScoreTx", linkMetrics.getScoreTx());
 
-        addTraffic(linkAttrBuilder, "velocloud-link-traffic-p1", "p1", linkMetrics.getTrafficPriority1(), milliseconds);
-        addTraffic(linkAttrBuilder, "velocloud-link-traffic-p2", "p2", linkMetrics.getTrafficPriority2(), milliseconds);
-        addTraffic(linkAttrBuilder, "velocloud-link-traffic-p3", "p3", linkMetrics.getTrafficPriority3(), milliseconds);
-        addTraffic(linkAttrBuilder, "velocloud-link-traffic-control", "control", linkMetrics.getTrafficControl(), milliseconds);
+        addTraffic(linkAttrBuilder, "velocloud-link-traffic-p1", "LinkTrafficP1", linkMetrics.getTrafficPriority1(), milliseconds);
+        addTraffic(linkAttrBuilder, "velocloud-link-traffic-p2", "LinkTrafficP2", linkMetrics.getTrafficPriority2(), milliseconds);
+        addTraffic(linkAttrBuilder, "velocloud-link-traffic-p3", "LinkTrafficP3", linkMetrics.getTrafficPriority3(), milliseconds);
+        addTraffic(linkAttrBuilder, "velocloud-link-traffic-control", "LinkTrafficControl", linkMetrics.getTrafficControl(), milliseconds);
 
         return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
                 .setStatus(CollectionSet.Status.SUCCEEDED)

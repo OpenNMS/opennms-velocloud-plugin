@@ -90,12 +90,12 @@ public class VelocloudGatewayCollector extends AbstractVelocloudServiceCollector
         final ImmutableCollectionSetResource.Builder<NodeResource> gatewayAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(NodeResource.class).setResource(nodeResource);
 
-        addAggregate(gatewayAttrBuilder, "velocloud-gateway-cpu-pct", "CpuPercentage", gatewayMetrics.getCpuPercentage());
-        addAggregate(gatewayAttrBuilder, "velocloud-gateway-handoff-queue-drop", "HandoffQueueDrops", gatewayMetrics.getHandoffQueueDrops());
-        addAggregate(gatewayAttrBuilder, "velocloud-gateway-memory-pct", "MemoryUsage", gatewayMetrics.getMemoryUsage());
-        addAggregate(gatewayAttrBuilder, "velocloud-gateway-flow-count", "FlowCount", gatewayMetrics.getFlowCount());
-        addAggregate(gatewayAttrBuilder, "velocloud-gateway-tunnel-count", "TunnelCount", gatewayMetrics.getTunnelCount());
-        addAggregate(gatewayAttrBuilder, "velocloud-gateway-tunnel-count-v6", "TunnelCountV6", gatewayMetrics.getTunnelCountV6());
+        addAggregate(gatewayAttrBuilder, "velocloud-gateway-cpu-pct", "GatewayCpuPct", gatewayMetrics.getCpuPercentage());
+        addAggregate(gatewayAttrBuilder, "velocloud-gateway-handoff-queue-drop", "GatewayHandoffQueueDrops", gatewayMetrics.getHandoffQueueDrops());
+        addAggregate(gatewayAttrBuilder, "velocloud-gateway-memory-pct", "GatewayMemoryPct", gatewayMetrics.getMemoryUsage());
+        addAggregate(gatewayAttrBuilder, "velocloud-gateway-flow-count", "GatewayFlowCount", gatewayMetrics.getFlowCount());
+        addAggregate(gatewayAttrBuilder, "velocloud-gateway-tunnel-count", "GatewayTunnelCount", gatewayMetrics.getTunnelCount());
+        addAggregate(gatewayAttrBuilder, "velocloud-gateway-tunnel-count-v6", "GatewayTunnelCountV6", gatewayMetrics.getTunnelCountV6());
 
         return CompletableFuture.completedFuture(ImmutableCollectionSet.newBuilder()
                 .addCollectionSetResource(gatewayAttrBuilder.build()).setStatus(CollectionSet.Status.SUCCEEDED)

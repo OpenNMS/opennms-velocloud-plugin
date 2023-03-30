@@ -102,13 +102,13 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
         final ImmutableCollectionSetResource.Builder<NodeResource> edgeAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(NodeResource.class).setResource(nodeResource);
 
-        addAggregate(edgeAttrBuilder, "velocloud-edge-cpu-pct", "CpuPct", edgeMetrics.getCpuPct());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-cpu-core-temp", "CpuCoreTemp", edgeMetrics.getCpuCoreTemp());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-memory-pct", "MemoryPct", edgeMetrics.getMemoryPct());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-flow-count", "FlowCount", edgeMetrics.getFlowCount());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-queue-drops", "QueueDrops", edgeMetrics.getHandoffQueueDrops());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel-count", "TunnelCount", edgeMetrics.getTunnelCount());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel-count-v6", "TunnelCountV6", edgeMetrics.getTunnelCountV6());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-cpu-pct", "EdgeCpuPct", edgeMetrics.getCpuPct());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-cpu-core-temp", "EdgeCpuCoreTemp", edgeMetrics.getCpuCoreTemp());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-memory-pct", "EdgeMemoryPct", edgeMetrics.getMemoryPct());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-flow-count", "EdgeFlowCount", edgeMetrics.getFlowCount());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-queue-drops", "EdgeQueueDrops", edgeMetrics.getHandoffQueueDrops());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel-count", "EdgeTunnelCount", edgeMetrics.getTunnelCount());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel-count-v6", "EdgeTunnelCountV6", edgeMetrics.getTunnelCountV6());
 
         final ImmutableCollectionSet.Builder resultBuilder = ImmutableCollectionSet.newBuilder();
         resultBuilder.addCollectionSetResource(edgeAttrBuilder.build());

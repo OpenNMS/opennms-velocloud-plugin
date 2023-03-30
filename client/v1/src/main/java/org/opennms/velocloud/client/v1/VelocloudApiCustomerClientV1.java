@@ -94,6 +94,7 @@ import org.opennms.velocloud.client.v1.model.EventGetEnterpriseEventsResult;
 import org.opennms.velocloud.client.v1.model.Interval;
 import org.opennms.velocloud.client.v1.model.LinkQualityEventGetLinkQualityEvents;
 import org.opennms.velocloud.client.v1.model.LinkQualityEventGetLinkQualityEventsResult;
+import org.opennms.velocloud.client.v1.model.LinkQualityObject;
 import org.opennms.velocloud.client.v1.model.MetricsGetEdgeAppMetrics;
 import org.opennms.velocloud.client.v1.model.MetricsGetEdgeAppMetricsResultItem;
 import org.opennms.velocloud.client.v1.model.MetricsGetEdgeDestMetrics;
@@ -105,6 +106,8 @@ import org.opennms.velocloud.client.v1.model.MetricsGetEdgeLinkMetricsResultItem
 import org.opennms.velocloud.client.v1.model.MetricsGetEdgeStatusMetrics;
 import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusBody;
 import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -112,6 +115,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient {
 
+    private static final Logger LOG = LoggerFactory.getLogger(VelocloudApiCustomerClientV1.class);
     public final static ApiCache.Endpoint<EnterpriseGetEnterpriseEdges, List<EnterpriseGetEnterpriseEdgesResultItem>>
             ENTERPRISE_GET_ENTERPRISE_EDGES = AllApi::enterpriseGetEnterpriseEdges;
 
@@ -440,49 +444,67 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
 
         final Interval interval = getInterval(intervalMillis, delayInMilliseconds);
 
-        final ConfigurationGetRoutableApplicationsResult routableApplications =
-                this.api.call("routable applications", GET_ROUTABLE_APPLICATIONS,
-                        new ConfigurationGetRoutableApplications().edgeId(edgeId).enterpriseId(enterpriseId));
-
+        final MetricsEdge.Builder builder = MetricsEdge.builder();
         final EdgeStatusMetricsSummary systemMetrics =
                 this.api.call("edge system metrics", GET_EDGE_SYSTEM_METRICS,
                         new MetricsGetEdgeStatusMetrics().enterpriseId(enterpriseId).edgeId(edgeId)
                                 .metrics(EDGE_SYSTEM_METRICS).interval(interval));
 
-        final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications =
-                this.api.call("edge traffic by applications ", GET_EDGE_APP_METRICS,
-                        new MetricsGetEdgeAppMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
-
-        final List<MetricsGetEdgeDeviceMetricsResultItem> trafficSources =
-                this.api.call("edge traffic by source", GET_EDGE_DEVICE_METRICS,
-                        new MetricsGetEdgeDeviceMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
-
-        final List<MetricsGetEdgeDestMetricsResultItem> trafficDestination =
-                this.api.call("edge traffic by destination", GET_EDGE_DEST_METRICS,
-                        new MetricsGetEdgeDestMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
-
-        final LinkQualityEventGetLinkQualityEventsResult qoe =
-                this.api.call("edge dest metrics", GET_LINK_QUALITY_EVENTS,
-                        new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
-                                .interval(interval).maxSamples(1));
-
-        return MetricsEdge.builder()
-                .withCpuPct(map(systemMetrics.getCpuPct()))
+        builder.withCpuPct(map(systemMetrics.getCpuPct()))
                 .withCpuCoreTemp(map(systemMetrics.getCpuCoreTemp()))
                 .withMemoryPct(map(systemMetrics.getMemoryPct()))
                 .withFlowCount(map(systemMetrics.getFlowCount()))
                 .withHandoffQueueDrops(map(systemMetrics.getHandoffQueueDrops()))
                 .withTunnelCount(map(systemMetrics.getTunnelCount()))
                 .withTunnelCountV6(map(systemMetrics.getTunnelCountV6()))
-                .withTrafficApplications(map(trafficApplications, routableApplications))
-                .withTrafficSources(map(trafficSources, VelocloudApiCustomerClientV1::map))
-                .withTrafficDestinations(map(trafficDestination, VelocloudApiCustomerClientV1::map))
-                .withScoreAfterOptimization(map(qoe.getOverallLinkQuality().getScore()))
-                .withTimestamp(interval.getEnd().toEpochSecond())
-                .build();
+                .withTimestamp(interval.getEnd().toEpochSecond());
+
+        try {
+            final ConfigurationGetRoutableApplicationsResult routableApplications = this.api.call(
+                    "routable applications", GET_ROUTABLE_APPLICATIONS,
+                    new ConfigurationGetRoutableApplications().edgeId(edgeId).enterpriseId(enterpriseId));
+
+            final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications = this.api.call(
+                    "edge traffic by applications ", GET_EDGE_APP_METRICS,
+                    new MetricsGetEdgeAppMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
+                                    .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
+
+            builder.withTrafficApplications(map(trafficApplications, routableApplications));
+        } catch (VelocloudApiException ex) {
+            LOG.debug("Cannot get routable applications for edge with edgeId={}, enterpriseId={}. Error message: {}", edgeId, enterpriseId, ex.getMessage());
+        }
+
+        try {
+            final List<MetricsGetEdgeDeviceMetricsResultItem> trafficSources =
+                    this.api.call("edge traffic by source", GET_EDGE_DEVICE_METRICS,
+                            new MetricsGetEdgeDeviceMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
+                                    .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
+            builder.withTrafficSources(map(trafficSources, VelocloudApiCustomerClientV1::map));
+        } catch (VelocloudApiException ex) {
+            LOG.debug("Cannot get device metrics for edge with edgeId={}, enterpriseId={}. Error message: {}", edgeId, enterpriseId, ex.getMessage());
+        }
+
+        try {
+            final List<MetricsGetEdgeDestMetricsResultItem> trafficDestination =
+                    this.api.call("edge traffic by destination", GET_EDGE_DEST_METRICS,
+                            new MetricsGetEdgeDestMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
+                                    .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
+            builder.withTrafficDestinations(map(trafficDestination, VelocloudApiCustomerClientV1::map));
+        } catch (VelocloudApiException ex) {
+            LOG.debug("Cannot get destination metrics for edge with edgeId={}, enterpriseId={}. Error message: {}", edgeId, enterpriseId, ex.getMessage());
+        }
+
+        try {
+            final LinkQualityEventGetLinkQualityEventsResult qoe =
+                    this.api.call("edge dest metrics", GET_LINK_QUALITY_EVENTS,
+                            new LinkQualityEventGetLinkQualityEvents().edgeId(edgeId).enterpriseId(enterpriseId)
+                                    .interval(interval).maxSamples(1));
+            builder.withScoreAfterOptimization(getScore(qoe));
+        } catch (VelocloudApiException ex) {
+            LOG.debug("Cannot get quality events for edge with edgeId={}, enterpriseId={}. Error message: {}", edgeId, enterpriseId, ex.getMessage());
+        }
+
+        return builder.build();
     }
 
     @Override
@@ -540,11 +562,14 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                 ).orElseThrow(() -> new VelocloudApiException("Error getting link metrics"))
                 //add score
                 .withScoreBeforeOptimization(Optional.ofNullable(qoe.get(internalLinkId))
-                        .map(linkQualityObject -> map(linkQualityObject.getScore())).orElse(null))
+                        .map(linkQualityObject -> mapScore(linkQualityObject.getScore())).orElse(null))
                 .build();
     }
 
     private static Aggregate map(BasicMetricSummary metric) {
+        if (metric == null) {
+            return null;
+        }
         return Aggregate.builder()
                 .withMin(metric.getMin())
                 .withMax(metric.getMax())
@@ -592,8 +617,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                                          final ConfigurationGetRoutableApplicationsResult routableApplications) {
         final List<Application> applications = routableApplications.getApplications();
         final int appCount = applications.size();
-        final Map<Integer, String> applicationClasses = routableApplications.getApplicationClasses().entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        final List<String> applicationClasses = routableApplications.getApplicationClasses();
 
         return map(trafficApplications, (item) -> {
             final TrafficApplication.Builder builder = TrafficApplication.builder()
@@ -616,7 +640,29 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
         });
     }
 
-    private Score map(Map<String, BigDecimal> score) {
+    private Score mapScore(Map<String, BigDecimal> score) {
+        if (score == null) {
+            return null;
+        }
+        return Score.builder()
+                .withAudio(score.get("0"))
+                .withVideo(score.get("1"))
+                .withTransactional(score.get("2"))
+                .build();
+    }
+
+    private Score getScore(LinkQualityEventGetLinkQualityEventsResult qoe) {
+        if (qoe == null) {
+            return null;
+        }
+        final LinkQualityObject overallLinkQuality = qoe.get("overallLinkQuality");
+        if (overallLinkQuality == null) {
+            return null;
+        }
+        final Map<String, BigDecimal> score = overallLinkQuality.getScore();
+        if (score == null) {
+            return null;
+        }
         return Score.builder()
                 .withAudio(score.get("0"))
                 .withVideo(score.get("1"))

@@ -1,0 +1,3251 @@
+{
+  "applicationClasses": [
+    "Unclassified",
+    "Anonymizers and Proxies",
+    "Real Time Audio/Video",
+    "Authentication",
+    "Business Application",
+    "Business Collaboration",
+    "Email",
+    "File Sharing",
+    "Gaming",
+    "Infrastructure",
+    "Internet Instant Messaging",
+    "Management",
+    "Media",
+    "Network Service",
+    "Peer to Peer",
+    "Remote Desktop",
+    "Social Networking",
+    "Storage and Backup",
+    "Tunneling and VPN",
+    "Web",
+    "SD-WAN",
+    "Other TCP/UDP"
+  ],
+  "applications": [
+    {
+      "id": 13,
+      "name": "APP_BGP",
+      "displayName": "Border Gateway Protocol",
+      "class": 13,
+      "description": "Border Gateway Protocol (BGP) is an inter Autonomous Systems routing protocol used by most ISPs.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          179
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "name": "APP_DNS",
+      "displayName": "Domain Name Service",
+      "class": 13,
+      "description": "The DNS protocol is used to translate internet names (www.site.com) into IP addresses and vice versa.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          53
+        ],
+        "udpPorts": [
+          53
+        ]
+      }
+    },
+    {
+      "id": 45,
+      "name": "APP_FTP",
+      "displayName": "File Transfer Protocol",
+      "class": 7,
+      "description": "The FTP protocol is used for reliable data transfer between a client and a server.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          21
+        ]
+      }
+    },
+    {
+      "id": 46,
+      "name": "APP_FTP_DATA",
+      "displayName": "File Transfer Protocol Data",
+      "class": 7,
+      "description": "This protocol is used to transport data in data connection of FTP communication.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          20
+        ]
+      }
+    },
+    {
+      "id": 73,
+      "name": "APP_IDENT",
+      "displayName": "Identification Protocol",
+      "class": 3,
+      "description": "The Identification Protocol provides a means to determine the identity of a user of a specific TCP connection.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          113
+        ]
+      }
+    },
+    {
+      "id": 75,
+      "name": "APP_IMAP",
+      "displayName": "Internet Message Access Protocol version 4",
+      "class": 6,
+      "description": "The IMAP protocol (Internet Message Access Protocol Version 4) enables a client to access and manipulate electronic mail messages on a server.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          143
+        ]
+      }
+    },
+    {
+      "id": 76,
+      "name": "APP_IMAPS",
+      "displayName": "Internet Message Access Protocol Secure",
+      "class": 6,
+      "description": "IMAPS is the secure version of the IMAP protocol.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          993
+        ]
+      }
+    },
+    {
+      "id": 84,
+      "name": "APP_IPP",
+      "displayName": "Internet Printing Protocol",
+      "class": 4,
+      "description": "Internet Printing Protocol (IPP) is a standard used for remote printing using Internet tools and technologies.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          631
+        ],
+        "udpPorts": [
+          631
+        ]
+      }
+    },
+    {
+      "id": 85,
+      "name": "APP_IPSEC",
+      "displayName": "IPsec (AH and ESP)",
+      "class": 18,
+      "description": "IPSec protocol provides services for securing hosts communications. IPsec provides two security services: Authentication Header (AH), which allows authentication of the sender and Encapsulating Security Payload (ESP), which allows both authentication of the sender and encryption of data.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          500,
+          4500
+        ]
+      }
+    },
+    {
+      "id": 94,
+      "name": "APP_JABBER",
+      "displayName": "XMPP Protocol (Jabber)",
+      "class": 5,
+      "description": "Jabber is an open standard instant messaging and presence system involving the XMPP protocol. [Note: jabber is also known as xmpp.]",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          5222,
+          5269
+        ]
+      }
+    },
+    {
+      "id": 95,
+      "name": "APP_JETDIRECT",
+      "displayName": "HP Printer Job Language",
+      "class": 4,
+      "description": "The Jetdirect protocol is used by HP network printers.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          9100
+        ]
+      }
+    },
+    {
+      "id": 97,
+      "name": "APP_KRB5",
+      "displayName": "Kerberos",
+      "class": 3,
+      "description": "Kerberos provides a means to verify the identities of the different workstations on an open (unprotected) network.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          88
+        ]
+      }
+    },
+    {
+      "id": 98,
+      "name": "APP_L2TP",
+      "displayName": "Layer 2 Tunneling Protocol",
+      "class": 18,
+      "description": "Layer Two Tunneling Protocol (L2TP) is an extension of the Point-to-Point Tunneling Protocol (PPTP) used by an Internet service provider (ISP) to enable the operation of a virtual private network (VPN) over the Internet.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          1701
+        ]
+      }
+    },
+    {
+      "id": 100,
+      "name": "APP_LDAP",
+      "displayName": "Lighweight Directory Access Protocol",
+      "class": 3,
+      "description": "LDAP (Lightweight Directory Access Protocol) is a protocol used for accessing directory services. Windows environments use this protocol to send queries to Active Directory. [Note: ldap is also known as cldap.]",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          389
+        ]
+      }
+    },
+    {
+      "id": 101,
+      "name": "APP_LDAPS",
+      "displayName": "Lighweight Directory Access Protocol Secure",
+      "class": 3,
+      "description": "Secure LDAP is the Secure version of the LDAP protocol.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          636
+        ]
+      }
+    },
+    {
+      "id": 129,
+      "name": "APP_NETBIOS",
+      "displayName": "Netbios",
+      "class": 7,
+      "description": "NetBIOS defines a software interface and standard methods providing a communication interface between the application program and the attached medium. NetBIOS is used in various LAN (Ethernet, Token Ring etc) as well as WAN environments such TCP/IP, PPP and X.25 networks.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          138
+        ]
+      }
+    },
+    {
+      "id": 131,
+      "name": "APP_NFS",
+      "displayName": "Network File System",
+      "class": 7,
+      "description": "The NFS protocol provides transparent remote access to shared file systems across networks as described in RFC 1813. This plug-in also classifies the experimental legacy version of NFS (v1) developed by Sun, but does not provide attribute extraction for this version.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          944
+        ]
+      }
+    },
+    {
+      "id": 134,
+      "name": "APP_NNTP",
+      "displayName": "Network News Transport Protocol",
+      "class": 13,
+      "description": "The Network News Transport Protocol (NNTP) is used for the distribution, inquiry, retrieval and posting of net news articles using a reliable stream-based mechanism.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          119
+        ]
+      }
+    },
+    {
+      "id": 137,
+      "name": "APP_NTP",
+      "displayName": "Network Time Protocol",
+      "class": 13,
+      "description": "Network Time Protocol (NTP) is a time synchronization system for computer clocks through the Internet network. It provides mechanisms to synchronize time and coordinate time distribution in a large network.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          123
+        ],
+        "udpPorts": [
+          123
+        ]
+      }
+    },
+    {
+      "id": 147,
+      "name": "APP_POP3",
+      "displayName": "Post Office Protocol (Version 3)",
+      "class": 6,
+      "description": "Post Office Protocol - Version 3 (POP3) allows a workstation to simply and dynamically access a mail stored on a mail server.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          110
+        ]
+      }
+    },
+    {
+      "id": 148,
+      "name": "APP_POP3S",
+      "displayName": "Secure POP3",
+      "class": 6,
+      "description": "Secure version of the POP3 protocol.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          995
+        ],
+        "udpPorts": [
+          995
+        ]
+      }
+    },
+    {
+      "id": 153,
+      "name": "APP_PPTP",
+      "displayName": "Point-to-Point Tunneling Protocol",
+      "class": 18,
+      "description": "Point-to-Point Tunneling Protocol allows the Point to Point Protocol (PPP) to be tunnelled through an IP network.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          1723
+        ],
+        "udpPorts": [
+          1723
+        ]
+      }
+    },
+    {
+      "id": 158,
+      "name": "APP_RADIUS",
+      "displayName": "Remote Authentication Dial-In User Service",
+      "class": 3,
+      "description": "RADIUS (Remote Authentication Dial-In User Service) is a client/server protocol that enables remote access servers to communicate with a central server to authenticate dial-in users and authorize their access to the requested system or service.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          1812,
+          1813,
+          2083,
+          3799
+        ],
+        "udpPorts": [
+          1812,
+          1813,
+          2083,
+          3799
+        ]
+      }
+    },
+    {
+      "id": 159,
+      "name": "APP_RDP",
+      "displayName": "Remote Desktop Protocol (Windows Terminal Server)",
+      "class": 15,
+      "description": "A key component of Terminal Server is the Remote Desktop Protocol which allows a thin client to communicate with the Terminal Server over the network. This protocol is based on International Telecommunications Union's (ITU) T.120 protocol, an international, standard multichannel conferencing protocol currently used in the Microsoft NetMeeting conferencing software product. It is tuned for high-bandwidth enterprise environments and will also support encrypted sessions.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          2179,
+          3389,
+          3399
+        ],
+        "udpPorts": [
+          2179,
+          3389
+        ]
+      }
+    },
+    {
+      "id": 167,
+      "name": "APP_RPC",
+      "displayName": "Remote Procedure Call",
+      "class": 13,
+      "description": "RPC (Remote Procedure Call) is an easy and popular paradigm for implementing the client-server model of distributed computing. A request is sent to a remote system to execute a designated procedure, using arguments supplied, and the result is returned to the caller.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          111
+        ],
+        "udpPorts": [
+          111
+        ]
+      }
+    },
+    {
+      "id": 176,
+      "name": "APP_RTSP",
+      "displayName": "Real Time Streaming Protocol",
+      "class": 12,
+      "description": "The Real Time Streaming Protocol (RTSP) is an application-level protocol for control over the delivery of data with real-time properties. RTSP provides an extensible framework to enable controlled, on-demand delivery of real-time data, such as audio and video.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          554
+        ],
+        "udpPorts": [
+          554
+        ]
+      }
+    },
+    {
+      "id": 182,
+      "name": "APP_SIP",
+      "displayName": "Session Initiation Protocol",
+      "class": 4,
+      "description": "Session Initiation Protocol (SIP) is the Internet Engineering Task Force's (IETF's) standard for multimedia conferencing over IP. Like other VoIP protocols, SIP is designed to address the functions of signaling and session management within a packet telephony network.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          5060,
+          5061
+        ],
+        "udpPorts": [
+          5060,
+          5061
+        ]
+      },
+      "mustUseGateway": 1
+    },
+    {
+      "id": 185,
+      "name": "APP_SMB",
+      "displayName": "Server Message Block (Windows File Server)",
+      "class": 7,
+      "description": "The Server Message Block Protocol (SMB/SMB2) provides a method for client applications to read and write to files and to request services from server programs in a computers network.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          139,
+          445
+        ]
+      },
+      "doNotSlowLearn": 1
+    },
+    {
+      "id": 186,
+      "name": "APP_SMTP",
+      "displayName": "Simple Mail Transfer Protocol",
+      "class": 6,
+      "description": "The Simple Mail Transfer Protocol (SMTP) is a protocol used for transfering mail reliably and efficiently.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          25,
+          2525
+        ]
+      }
+    },
+    {
+      "id": 190,
+      "name": "APP_SNMP",
+      "displayName": "Simple Network Management Protocol",
+      "class": 11,
+      "description": "SNMP is a request/response protocol that communicates management information between two types of SNMP software entities: SNMP applications (also called SNMP managers) and SNMP agents.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          161,
+          162
+        ],
+        "udpPorts": [
+          161,
+          162
+        ]
+      }
+    },
+    {
+      "id": 196,
+      "name": "APP_SRVLOC",
+      "displayName": "Service Location Protocol",
+      "class": 13,
+      "description": "Service Location Protocol is a decentralized, lightweight, scalable and extensible protocol for service discovery within a local area network.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          5440
+        ]
+      }
+    },
+    {
+      "id": 197,
+      "name": "APP_SSDP",
+      "displayName": "Simple Service Discovery Protocol",
+      "class": 13,
+      "description": "Simple Service Discovery Protocol (SSDP) provides a mechanism whereby network clients can discover desired network services.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          1900
+        ]
+      }
+    },
+    {
+      "id": 198,
+      "name": "APP_SSH",
+      "displayName": "Secure Shell",
+      "class": 18,
+      "description": "Secure Shell (SSH), sometimes known as Secure Socket Shell, is a UNIX-based command interface and a protocol for obtaining secure access to a remote computer.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          22
+        ]
+      }
+    },
+    {
+      "id": 204,
+      "name": "APP_SYSLOG",
+      "displayName": "Syslog",
+      "class": 11,
+      "description": "Syslog protocol is used for the transmission of event notification messages across networks between a client and a server.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          514
+        ]
+      }
+    },
+    {
+      "id": 209,
+      "name": "APP_TELNET",
+      "displayName": "Telnet",
+      "class": 13,
+      "description": "Telnet provides a fairly general, bi-directional, eight-bit byte oriented communications facility. Its primary aim is to provide a standard method of interfacing between terminal devices and terminal-oriented processes.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          23
+        ]
+      }
+    },
+    {
+      "id": 210,
+      "name": "APP_TELNETS",
+      "displayName": "Secure TELNET",
+      "class": 13,
+      "description": "Secure version of the Telnet.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          992
+        ]
+      }
+    },
+    {
+      "id": 211,
+      "name": "APP_TFTP",
+      "displayName": "Trivial File Transfer Protocol",
+      "class": 7,
+      "description": "Trivial File Transfer Protocol (TFTP) is a file transfer protocol that is simpler to use than the File Transfer Protocol (FTP) but that proposes less features. TFTP uses the User Datagram Protocol (UDP) rather than the Transmission Control Protocol (TCP).",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          69
+        ]
+      }
+    },
+    {
+      "id": 264,
+      "name": "APP_SNPP",
+      "displayName": "Simple Network Paging Protocol",
+      "class": 13,
+      "description": "This protocol defines a method by which a pager can receive a message over the Internet",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          444
+        ]
+      }
+    },
+    {
+      "id": 337,
+      "name": "APP_RTMP",
+      "displayName": "Real Time Messaging Protocol",
+      "class": 13,
+      "description": "Real Time Messaging Protocol (RTMP) is a proprietary protocol developed by Adobe Systems for streaming audio, video and data over the Internet, between a Flash player and a server.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          1935
+        ]
+      }
+    },
+    {
+      "id": 530,
+      "name": "APP_ITUNES",
+      "displayName": "iTunes",
+      "class": 12,
+      "description": "iTunes is an Apple proprietary digital media player application, used for playing and organizing digital music and video files.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          3689
+        ]
+      }
+    },
+    {
+      "id": 534,
+      "name": "APP_SPOTIFY",
+      "displayName": "Spotify",
+      "class": 12,
+      "description": "Spotify is an application of musical streaming.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          4070
+        ]
+      }
+    },
+    {
+      "id": 545,
+      "name": "APP_TEAMVIEWER",
+      "displayName": "TeamViewer",
+      "class": 15,
+      "description": "TeamViewer is an application that enables a connection to a remote computer in order to perform maintenance operations. It is also possible to show the current display to a remote computer, to transfer files, and to create a VPN tunnel.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          5938
+        ],
+        "udpPorts": [
+          5938
+        ]
+      }
+    },
+    {
+      "id": 734,
+      "name": "APP_NETFLIX",
+      "displayName": "Netflix.com",
+      "class": 12,
+      "description": "NetFlix is a site using Silverlight protocol to stream videos.",
+      "knownIpPortMapping": {
+        "subnets": [
+          "108.175.32.0/24",
+          "108.175.33.0/24",
+          "108.175.34.0/24",
+          "108.175.35.0/24",
+          "108.175.36.0/24",
+          "108.175.37.0/24",
+          "108.175.38.0/24",
+          "108.175.39.0/24",
+          "108.175.40.0/24",
+          "108.175.41.0/24",
+          "108.175.42.0/24",
+          "108.175.43.0/24",
+          "108.175.44.0/24",
+          "108.175.45.0/24",
+          "108.175.46.0/24",
+          "108.175.47.0/24",
+          "185.2.220.0/24",
+          "185.2.221.0/24",
+          "185.2.222.0/24",
+          "185.2.223.0/24",
+          "185.9.188.0/24",
+          "185.9.189.0/24",
+          "185.9.190.0/23",
+          "192.173.112.0/20",
+          "192.173.64.0/20",
+          "192.173.64.0/24",
+          "192.173.80.0/20",
+          "192.173.96.0/20",
+          "198.38.100.0/24",
+          "198.38.102.0/23",
+          "198.38.102.0/24",
+          "198.38.108.0/24",
+          "198.38.109.0/24",
+          "198.38.110.0/24",
+          "198.38.111.0/24",
+          "198.38.112.0/24",
+          "198.38.113.0/24",
+          "198.38.114.0/24",
+          "198.38.115.0/24",
+          "198.38.116.0/24",
+          "198.38.117.0/24",
+          "198.38.118.0/24",
+          "198.38.119.0/24",
+          "198.38.120.0/24",
+          "198.38.121.0/24",
+          "198.38.122.0/24",
+          "198.38.123.0/24",
+          "198.38.124.0/24",
+          "198.38.125.0/24",
+          "198.38.96.0/24",
+          "198.38.97.0/24",
+          "198.38.98.0/24",
+          "198.38.99.0/24",
+          "198.45.48.0/24",
+          "198.45.49.0/24",
+          "198.45.50.0/24",
+          "198.45.51.0/24",
+          "198.45.52.0/24",
+          "198.45.53.0/24",
+          "198.45.54.0/24",
+          "198.45.55.0/24",
+          "198.45.56.0/24",
+          "198.45.57.0/24",
+          "198.45.58.0/24",
+          "198.45.59.0/24",
+          "198.45.60.0/24",
+          "198.45.61.0/24",
+          "198.45.62.0/24",
+          "198.45.63.0/24",
+          "208.75.77.0/24",
+          "23.246.0.0/18",
+          "23.246.10.0/24",
+          "23.246.11.0/24",
+          "23.246.12.0/24",
+          "23.246.13.0/24",
+          "23.246.14.0/24",
+          "23.246.15.0/24",
+          "23.246.16.0/24",
+          "23.246.17.0/24",
+          "23.246.18.0/24",
+          "23.246.19.0/24",
+          "23.246.20.0/24",
+          "23.246.2.0/24",
+          "23.246.22.0/24",
+          "23.246.23.0/24",
+          "23.246.24.0/24",
+          "23.246.25.0/24",
+          "23.246.26.0/24",
+          "23.246.27.0/24",
+          "23.246.28.0/24",
+          "23.246.29.0/24",
+          "23.246.30.0/24",
+          "23.246.3.0/24",
+          "23.246.31.0/24",
+          "23.246.36.0/24",
+          "23.246.37.0/24",
+          "23.246.38.0/24",
+          "23.246.39.0/24",
+          "23.246.40.0/24",
+          "23.246.4.0/24",
+          "23.246.41.0/24",
+          "23.246.42.0/24",
+          "23.246.44.0/24",
+          "23.246.46.0/24",
+          "23.246.47.0/24",
+          "23.246.48.0/24",
+          "23.246.49.0/24",
+          "23.246.50.0/24",
+          "23.246.5.0/24",
+          "23.246.51.0/24",
+          "23.246.54.0/24",
+          "23.246.55.0/24",
+          "23.246.56.0/24",
+          "23.246.57.0/24",
+          "23.246.58.0/24",
+          "23.246.59.0/24",
+          "23.246.6.0/24",
+          "23.246.62.0/24",
+          "23.246.63.0/24",
+          "23.246.7.0/24",
+          "23.246.8.0/24",
+          "23.246.9.0/24",
+          "37.77.184.0/24",
+          "37.77.185.0/24",
+          "37.77.186.0/24",
+          "37.77.187.0/24",
+          "37.77.188.0/24",
+          "37.77.189.0/24",
+          "37.77.190.0/24",
+          "37.77.191.0/24",
+          "69.53.224.0/24",
+          "69.53.225.0/24",
+          "69.53.226.0/24",
+          "69.53.229.0/24",
+          "69.53.231.0/24",
+          "69.53.234.0/24",
+          "69.53.236.0/24",
+          "69.53.237.0/24",
+          "69.53.238.0/24",
+          "69.53.249.0/24",
+          "69.53.255.0/24"
+        ],
+        "tcpPorts": [
+          80,
+          443
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotUseGateway": 1,
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 773,
+      "name": "APP_CONCUR",
+      "displayName": "Concur",
+      "class": 4,
+      "description": "This protocol plug-in classifies the http traffic to the hosts concur.com and concursolutions.com. It also classifies the ssl traffic to the Common Names concursolutions.com and .concur.com.",
+      "knownIpPortMapping": {
+        "subnets": [
+          "12.129.29.0/24",
+          "12.129.32.0/22",
+          "84.14.175.224/27",
+          "62.23.83.128/25"
+        ],
+        "tcpPorts": [
+          80,
+          443
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 844,
+      "name": "APP_SALESFORCE",
+      "displayName": "Salesforce",
+      "class": 4,
+      "description": "This protocol plug-in classifies the ssl traffic to the Common Name .salesforce.com.",
+      "knownIpPortMapping": {
+        "subnets": [
+          "13.108.0.0/15",
+          "13.110.0.0/16",
+          "96.43.144.0/20",
+          "136.146.0.0/15",
+          "182.50.76.0/22",
+          "185.79.140.0/22",
+          "202.129.242.0/23",
+          "204.14.232.0/21"
+        ],
+        "tcpPorts": [
+          80,
+          443
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 889,
+      "name": "APP_GOTOMEETING",
+      "displayName": "GoToMeeting Online Meeting",
+      "class": 5,
+      "description": "GoToMeeting is an online meeting service developed by Citrix.",
+      "knownIpPortMapping": {
+        "subnets": [
+          "216.115.208.0/20",
+          "216.219.112.0/20",
+          "66.151.158.0/24",
+          "66.151.150.160/27",
+          "66.151.115.128/26",
+          "64.74.80.0/24",
+          "202.173.24.0/21",
+          "67.217.64.0/19",
+          "78.108.112.0/20",
+          "68.64.0.0/19",
+          "206.183.100.0/22",
+          "173.199.0.0/18",
+          "103.15.16.0/22",
+          "180.153.30.0/23",
+          "140.207.108.0/23",
+          "23.239.224.0/19",
+          "185.36.20.0/22",
+          "2620:0:c70::/48",
+          "2a04:6660::/30"
+        ],
+        "tcpPorts": [
+          80,
+          443
+        ],
+        "udpPorts": [
+          1853,
+          8200
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 890,
+      "name": "APP_WEBEX",
+      "displayName": "WebEx",
+      "class": 5,
+      "description": "WebEx is an online meeting, videoconferencing and collaborative application",
+      "knownIpPortMapping": {
+        "subnets": [
+          "173.243.12.0/24",
+          "62.109.192.0/18",
+          "64.68.96.0/19",
+          "66.114.160.0/20",
+          "66.163.32.0/19",
+          "69.26.160.0/19",
+          "114.29.192.0/19",
+          "150.253.128.0/17",
+          "170.133.128.0/18",
+          "173.39.224.0/19",
+          "173.243.0.0/20",
+          "207.182.160.0/19",
+          "209.197.192.0/19",
+          "210.4.192.0/20",
+          "216.151.128.0/19"
+        ],
+        "tcpPorts": [
+          80,
+          443,
+          5060,
+          5061,
+          5065,
+          1719,
+          1720,
+          5004
+        ],
+        "udpPorts": [
+          1719,
+          1720,
+          9000
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 891,
+      "name": "APP_WINS",
+      "displayName": "Windows Internet Naming Service",
+      "class": 13,
+      "description": "WINS (Windows Internet Naming Service) is Microsoft's implementation of NetBIOS Name Service (NBNS), which is a name server and service for NetBIOS computer names. This plug-in classifies replication flows between servers. Client-to-Server flows are handled by the nbns plug-in.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          137
+        ]
+      }
+    },
+    {
+      "id": 894,
+      "name": "APP_GOTOMYPC",
+      "displayName": "GoToMyPC Remote Access",
+      "class": 15,
+      "description": "Citrix GoToMyPC is a secured web-based remote access solution, enabling to take control of a PC/MAC from a web browser.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          8200
+        ]
+      }
+    },
+    {
+      "id": 935,
+      "name": "APP_ECHO",
+      "displayName": "Echo",
+      "class": 11,
+      "description": "The echo service simply sends back to the originating source any data it receives.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          7
+        ],
+        "udpPorts": [
+          7
+        ]
+      }
+    },
+    {
+      "id": 1085,
+      "name": "APP_TACACS_PLUS",
+      "displayName": "Terminal Access Controller Access-Control System Plus",
+      "class": 3,
+      "description": "TACACS+ (Terminal Access Controller Access-Control System Plus) is a Cisco Systems proprietary protocol which provides access control for routers, network access servers and other networked computing devices via one or more centralized servers.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          49
+        ]
+      }
+    },
+    {
+      "id": 1294,
+      "name": "APP_YAHOO",
+      "displayName": "Yahoo.com",
+      "class": 19,
+      "description": "Yahoo is a pseudo-protocol which classifies generic web services related to Yahoo.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          5050
+        ]
+      }
+    },
+    {
+      "id": 1441,
+      "name": "APP_GTALK",
+      "displayName": "Google Talk (incl. Hangouts and Allo and Duo)",
+      "class": 2,
+      "description": "Google Hangouts is an instant messaging service, using XMPP, and provides both text and voice communication. [Note: Google Hangouts used to be known as Gtalk.]",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          19305,
+          19306,
+          19307,
+          19308,
+          19309
+        ],
+        "udpPorts": [
+          19302,
+          19303,
+          19304,
+          19305,
+          19306,
+          19307,
+          19308,
+          19309
+        ]
+      }
+    },
+    {
+      "id": 1448,
+      "name": "APP_OFFICE365",
+      "displayName": "Microsoft Office 365",
+      "class": 5,
+      "description": "Office 365 is a Microsoft on-line service which gives access to Office applications from the internet.",
+      "knownIpPortMapping": {
+        "subnets": [
+          "13.107.6.152/31",
+          "13.107.18.10/31",
+          "13.107.128.0/22",
+          "13.107.18.15/32",
+          "23.103.160.0/20",
+          "40.96.0.0/13",
+          "40.104.0.0/15",
+          "52.96.0.0/14",
+          "131.253.33.215/32",
+          "132.245.0.0/16",
+          "150.171.32.0/22",
+          "204.79.197.215/32",
+          "40.92.0.0/15",
+          "40.107.0.0/16",
+          "52.100.0.0/14",
+          "52.238.78.88/32",
+          "104.47.0.0/17",
+          "13.107.64.0/18",
+          "52.112.0.0/14",
+          "52.120.0.0/14",
+          "52.238.119.141/32",
+          "52.244.160.207/32",
+          "13.107.136.0/22",
+          "40.108.128.0/17",
+          "52.104.0.0/14",
+          "104.146.128.0/17",
+          "150.171.40.0/22",
+          "13.107.6.171/32",
+          "13.107.140.6/32",
+          "52.108.0.0/14",
+          "52.238.106.116/32",
+          "52.244.37.168/32",
+          "52.244.203.72/32",
+          "52.244.207.172/32",
+          "52.244.223.198/32",
+          "52.247.150.191/32",
+          "20.190.128.0/18",
+          "40.126.0.0/18",
+          "13.80.125.22/32",
+          "13.91.91.243/32",
+          "13.107.6.156/31",
+          "13.107.7.190/31",
+          "13.107.9.156/31",
+          "40.81.156.154/32",
+          "40.90.218.198/32",
+          "52.174.56.180/32",
+          "52.183.75.62/32",
+          "52.184.165.82/32",
+          "104.42.230.91/32",
+          "157.55.145.0/25",
+          "157.55.155.0/25",
+          "157.55.227.192/26",
+          "2603:1006::/40",
+          "2603:1016::/36",
+          "2603:1026::/36",
+          "2603:1036::/36",
+          "2603:1046::/36",
+          "2603:1056::/36",
+          "2603:1096::/38",
+          "2603:1096:400::/40",
+          "2603:1096:600::/40",
+          "2603:1096:a00::/39",
+          "2603:1096:c00::/40",
+          "2603:10a6:200::/40",
+          "2603:10a6:400::/40",
+          "2603:10a6:600::/40",
+          "2603:10a6:800::/40",
+          "2603:10d6:200::/40",
+          "2620:1ec:4::152/128",
+          "2620:1ec:4::153/128",
+          "2620:1ec:c::10/128",
+          "2620:1ec:c::11/128",
+          "2620:1ec:d::10/128",
+          "2620:1ec:d::11/128",
+          "2620:1ec:8f0::/46",
+          "2620:1ec:900::/46",
+          "2620:1ec:a92::152/128",
+          "2620:1ec:a92::153/128",
+          "2a01:111:f400::/48",
+          "2a01:111:f403::/48",
+          "2620:1ec:8f8::/46",
+          "2620:1ec:908::/46",
+          "2a01:111:f402::/48",
+          "2603:1047::/48",
+          "2603:1057::/48",
+          "2620:1ec:6::/48",
+          "2620:1ec:40::/42",
+          "2603:1010:2::cb/128",
+          "2603:1010:200::c7/128",
+          "2603:1020:200::682f:a0fd/128",
+          "2603:1020:201:9::c6/128",
+          "2603:1020:600::a1/128",
+          "2603:1020:700::a2/128",
+          "2603:1020:800:2::6/128",
+          "2603:1020:900::8/128",
+          "2603:1030:7::749/128",
+          "2603:1030:800:5::bfee:ad3c/128",
+          "2603:1030:f00::17/128",
+          "2603:1030:1000::21a/128",
+          "2603:1040:200::4f3/128",
+          "2603:1040:401::762/128",
+          "2603:1040:601::60f/128",
+          "2603:1040:a01::1e/128",
+          "2603:1040:c01::28/128",
+          "2603:1040:e00:1::2f/128",
+          "2603:1040:f00::1f/128",
+          "2603:1050:1::cd/128",
+          "2620:1ec:c::15/128",
+          "2620:1ec:8fc::6/128",
+          "2620:1ec:a92::171/128",
+          "2a01:111:f100:2000::a83e:3019/128",
+          "2a01:111:f100:2002::8975:2d79/128",
+          "2a01:111:f100:2002::8975:2da8/128",
+          "2a01:111:f100:7000::6fdd:6cd5/128",
+          "2a01:111:f100:a004::bfeb:88cf/128",
+          "2603:1006:2000::/48",
+          "2603:1007:200::/48",
+          "2603:1016:1400::/48",
+          "2603:1017::/48",
+          "2603:1026:3000::/48",
+          "2603:1027:1::/48",
+          "2603:1036:3000::/48",
+          "2603:1037:1::/48",
+          "2603:1046:2000::/48",
+          "2603:1047:1::/48",
+          "2603:1056:2000::/48",
+          "2603:1057:2::/48",
+          "2603:1006:1400::/40",
+          "2603:1016:2400::/40",
+          "2603:1026:2400::/40",
+          "2603:1036:2400::/40",
+          "2603:1046:1400::/40",
+          "2603:1056:1400::/40",
+          "2a01:111:200a:a::/64",
+          "2a01:111:2035:8::/64",
+          "2a01:111:f406:1::/64",
+          "2a01:111:f406:c00::/64",
+          "2a01:111:f406:1004::/64",
+          "2a01:111:f406:1805::/64",
+          "2a01:111:f406:3404::/64",
+          "2a01:111:f406:8000::/64",
+          "2a01:111:f406:8801::/64",
+          "2a01:111:f406:a003::/64"
+        ],
+        "tcpPorts": [
+          25,
+          80,
+          143,
+          443,
+          587,
+          993,
+          995
+        ]
+      },
+      "protocolPortMapping": {}
+    },
+    {
+      "id": 1454,
+      "name": "APP_SKYPE4BUSINESS_ONLINE",
+      "displayName": "Microsoft Skype for Business (formerly Microsoft Lync Online) (Office 365)",
+      "class": 5,
+      "description": "On-line version of the Microsoft Lync IM and VoIP services (included in Office 365).",
+      "knownIpPortMapping": {
+        "subnets": [
+          "23.103.128.0/25",
+          "23.103.128.128/25",
+          "23.103.129.0/25",
+          "23.103.130.0/26",
+          "23.103.130.64/26",
+          "23.103.130.128/26",
+          "65.55.121.128/27",
+          "65.55.127.0/24",
+          "66.119.157.0/25",
+          "66.119.157.192/26",
+          "66.119.158.0/25",
+          "111.221.17.128/27",
+          "111.221.22.64/26",
+          "111.221.76.96/27",
+          "111.221.76.128/25",
+          "111.221.77.0/26",
+          "132.245.0.0/24",
+          "132.245.1.0/25",
+          "132.245.112.0/24",
+          "132.245.113.0/25",
+          "132.245.128.0/24",
+          "132.245.129.0/25",
+          "132.245.161.0/24",
+          "132.245.162.0/25",
+          "132.245.192.0/24",
+          "132.245.193.0/25",
+          "132.245.208.0/24",
+          "132.245.209.0/25",
+          "134.170.0.0/25",
+          "134.170.53.32/27",
+          "134.170.54.0/26",
+          "134.170.54.128/25",
+          "134.170.113.192/26",
+          "134.170.115.0/27",
+          "134.170.115.128/25",
+          "157.55.40.128/25",
+          "157.55.46.0/27",
+          "157.55.46.64/26",
+          "157.55.229.128/27",
+          "157.55.232.128/26",
+          "157.55.238.0/25",
+          "157.56.135.64/26",
+          "157.56.135.160/27",
+          "157.56.184.224/27",
+          "157.56.185.0/26",
+          "191.232.80.96/27",
+          "191.232.83.0/27",
+          "191.232.83.32/27",
+          "207.46.5.0/24",
+          "207.46.7.128/27",
+          "207.46.57.0/25"
+        ],
+        "tcpPorts": [
+          80,
+          443
+        ],
+        "udpPorts": [
+          3478
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 1461,
+      "name": "APP_IPERF",
+      "displayName": "iperf",
+      "class": 7,
+      "description": "The iperf protocol is used by the self-titled tool for network performance measures.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          5001,
+          5201
+        ],
+        "udpPorts": [
+          5001,
+          5201
+        ]
+      }
+    },
+    {
+      "id": 1465,
+      "name": "APP_SPEEDTEST",
+      "displayName": "Speedtest",
+      "class": 7,
+      "description": "Web site and mobile application for testing both bandwidth and latency of any internet connection.",
+      "knownIpPortMapping": {
+        "subnets": [
+          "72.21.92.82/32",
+          "72.21.81.253/32",
+          "137.229.3.231/32",
+          "216.137.210.97/32",
+          "209.112.131.106/32",
+          "209.165.174.130/32",
+          "209.161.164.6/32",
+          "216.67.93.214/32",
+          "194.105.179.1/32",
+          "78.155.250.130/32",
+          "31.22.2.67/32",
+          "62.232.171.117/32",
+          "5.133.40.66/32",
+          "80.249.242.195/32",
+          "5.153.225.223/32",
+          "146.255.104.69/32",
+          "87.102.26.38/32",
+          "37.152.41.13/32",
+          "5.61.120.11/32",
+          "188.94.79.18/32",
+          "91.212.90.200/32",
+          "37.61.233.114/32",
+          "109.169.94.40/32",
+          "78.129.209.244/32",
+          "185.36.77.2/32",
+          "85.12.99.14/32",
+          "212.74.36.51/32",
+          "94.125.132.5/32",
+          "91.240.224.50/32",
+          "92.48.71.150/32",
+          "213.171.197.46/32",
+          "94.126.42.150/32",
+          "77.89.191.238/32",
+          "31.210.128.57/32",
+          "213.229.119.169/32",
+          "78.129.169.250/32",
+          "95.87.104.39/32",
+          "5.10.97.132/32",
+          "194.8.255.60/32",
+          "213.187.54.10/32",
+          "105.16.187.3/32",
+          "50.7.152.4/32",
+          "212.183.159.229/32",
+          "80.87.30.218/32",
+          "212.58.131.254/32",
+          "85.233.160.167/32",
+          "81.91.192.53/32",
+          "46.227.144.15/32",
+          "188.165.85.132/32",
+          "91.194.46.51/32",
+          "185.38.148.73/32",
+          "31.210.128.36/32",
+          "78.143.240.253/32",
+          "91.239.125.30/32",
+          "109.74.240.174/32",
+          "91.227.220.13/32",
+          "77.72.2.2/32",
+          "37.152.48.72/32",
+          "86.63.6.34/32",
+          "84.45.105.93/32",
+          "195.47.219.100/32",
+          "195.64.183.1/32",
+          "66.114.32.168/32",
+          "64.184.158.133/32",
+          "91.212.80.146/32",
+          "208.123.195.70/32",
+          "208.72.145.124/32",
+          "64.38.130.66/32",
+          "69.46.40.5/32",
+          "64.85.6.26/32",
+          "67.228.112.250/32",
+          "74.212.128.3/32",
+          "208.93.88.155/32",
+          "69.241.105.50/32",
+          "76.191.115.62/32",
+          "50.7.72.4/32",
+          "208.76.152.210/32",
+          "209.191.196.90/32",
+          "207.66.190.10/32",
+          "206.130.130.56/32",
+          "74.50.204.105/32",
+          "208.68.24.149/32",
+          "141.219.155.233/32",
+          "162.254.158.2/32",
+          "65.183.225.198/32",
+          "216.147.165.50/32",
+          "205.149.159.114/32",
+          "206.51.127.52/32",
+          "74.221.67.120/32",
+          "206.127.64.156/32",
+          "192.30.117.3/32",
+          "209.200.205.36/32",
+          "69.144.192.129/32",
+          "64.90.65.100/32",
+          "108.174.112.199/32",
+          "72.10.4.118/32",
+          "65.23.160.7/32",
+          "69.145.85.249/32",
+          "98.142.41.9/32",
+          "69.144.192.131/32",
+          "199.187.28.26/32",
+          "162.218.102.22/32",
+          "209.216.162.10/32",
+          "76.9.240.69/32",
+          "69.163.82.62/32",
+          "216.166.168.70/32",
+          "76.191.75.242/32",
+          "24.220.1.99/32",
+          "66.191.66.94/32",
+          "38.126.89.2/32",
+          "69.241.76.230/32",
+          "162.221.46.2/32",
+          "173.241.172.9/32",
+          "216.228.202.66/32",
+          "206.212.234.232/32",
+          "216.17.38.140/32",
+          "68.115.71.31/32",
+          "192.159.144.11/32",
+          "216.245.225.202/32",
+          "65.91.162.18/32",
+          "206.192.232.47/32",
+          "69.59.192.253/32",
+          "64.62.168.212/32",
+          "72.21.65.55/32",
+          "206.40.101.98/32",
+          "72.15.4.101/32",
+          "204.13.40.80/32",
+          "65.19.68.45/32",
+          "209.94.172.170/32",
+          "64.251.173.4/32",
+          "206.230.105.239/32",
+          "69.241.114.162/32",
+          "70.35.96.40/32",
+          "141.233.19.170/32",
+          "157.201.130.77/32",
+          "142.0.2.26/32",
+          "66.231.1.165/32",
+          "66.181.127.42/32",
+          "66.232.64.26/32",
+          "207.241.137.2/32",
+          "67.209.250.193/32",
+          "24.220.1.97/32",
+          "69.20.128.69/32",
+          "66.232.66.4/32",
+          "69.1.97.180/32",
+          "216.25.191.110/32",
+          "216.66.108.14/32",
+          "69.36.48.33/32",
+          "208.87.120.15/32",
+          "133.242.224.106/32",
+          "66.32.4.51/32",
+          "96.31.0.5/32",
+          "162.248.233.154/32",
+          "205.196.146.128/32",
+          "173.229.4.5/32",
+          "71.115.150.35/32",
+          "24.24.36.130/32",
+          "67.133.76.2/32",
+          "24.247.15.49/32",
+          "141.216.10.15/32",
+          "69.41.0.38/32",
+          "192.3.11.114/32",
+          "198.23.203.162/32",
+          "66.119.48.151/32",
+          "69.144.192.133/32",
+          "199.38.168.22/32",
+          "69.63.226.198/32",
+          "64.91.230.32/32",
+          "64.246.132.194/32",
+          "204.11.32.41/32",
+          "208.98.188.4/32",
+          "147.202.2.254/32",
+          "162.210.240.7/32",
+          "69.174.176.200/32",
+          "173.215.43.249/32",
+          "66.172.197.205/32",
+          "192.34.85.150/32",
+          "208.25.96.30/32",
+          "173.48.87.215/32",
+          "69.241.108.46/32",
+          "66.228.71.17/32",
+          "204.11.148.35/32",
+          "69.241.100.18/32",
+          "68.185.0.37/32",
+          "216.195.0.233/32",
+          "216.250.146.62/32",
+          "50.206.31.99/32",
+          "198.108.61.124/32",
+          "64.20.201.74/32",
+          "199.204.32.12/32",
+          "216.211.240.166/32",
+          "68.112.226.205/32",
+          "104.171.32.34/32",
+          "71.184.91.63/32",
+          "168.215.99.55/32",
+          "66.55.82.2/32",
+          "69.5.139.10/32",
+          "207.109.170.10/32",
+          "216.7.123.7/32",
+          "97.107.80.25/32",
+          "64.112.192.16/32",
+          "216.75.112.230/32",
+          "50.31.131.222/32",
+          "76.96.127.98/32",
+          "208.53.133.42/32",
+          "108.160.196.251/32",
+          "50.7.0.240/32",
+          "68.235.39.83/32",
+          "64.9.76.204/32",
+          "67.218.95.42/32",
+          "216.152.52.250/32",
+          "208.131.138.28/32",
+          "206.212.246.121/32",
+          "68.233.36.206/32",
+          "64.246.100.34/32",
+          "64.7.103.2/32",
+          "216.99.174.160/32",
+          "209.211.254.18/32",
+          "209.74.224.251/32",
+          "65.170.242.242/32",
+          "208.123.225.30/32",
+          "198.27.86.72/32",
+          "76.77.112.206/32",
+          "166.230.100.102/32",
+          "23.236.57.160/32",
+          "204.11.183.142/32",
+          "137.48.1.44/32",
+          "208.89.163.194/32",
+          "69.144.192.135/32",
+          "104.37.144.108/32",
+          "162.253.238.2/32",
+          "65.39.103.254/32",
+          "24.154.1.57/32",
+          "65.181.127.85/32",
+          "8.34.103.179/32",
+          "204.186.0.101/32",
+          "192.48.105.40/32",
+          "173.219.119.82/32",
+          "24.140.1.162/32",
+          "67.22.16.250/32",
+          "66.45.228.115/32",
+          "207.179.255.33/32",
+          "66.168.128.33/32",
+          "216.194.115.245/32",
+          "198.60.22.18/32",
+          "69.58.94.20/32",
+          "8.22.12.170/32",
+          "198.91.48.2/32",
+          "205.122.210.6/32",
+          "66.232.89.10/32",
+          "76.96.43.78/32",
+          "69.38.136.72/32",
+          "69.9.32.245/32",
+          "192.92.237.75/32",
+          "167.206.8.148/32",
+          "50.7.68.4/32",
+          "107.152.13.7/32",
+          "192.34.115.210/32",
+          "66.39.66.63/32",
+          "209.195.138.71/32",
+          "104.37.13.6/32",
+          "69.241.69.2/32",
+          "209.191.58.60/32",
+          "50.114.237.221/32",
+          "204.14.15.86/32",
+          "107.1.225.24/32",
+          "128.187.223.254/32",
+          "66.253.230.37/32",
+          "74.218.88.168/32",
+          "69.58.115.61/32",
+          "162.217.20.75/32",
+          "104.153.120.150/32",
+          "24.238.0.54/32",
+          "198.204.208.181/32",
+          "104.37.102.195/32",
+          "64.132.164.151/32",
+          "173.219.54.66/32",
+          "209.34.112.38/32",
+          "198.204.208.180/32",
+          "216.241.39.64/32",
+          "204.45.252.110/32",
+          "76.96.34.196/32",
+          "76.73.64.4/32",
+          "199.88.135.249/32",
+          "199.15.252.242/32",
+          "192.69.51.26/32",
+          "66.214.102.186/32",
+          "129.19.183.30/32",
+          "184.105.30.199/32",
+          "162.210.111.14/32",
+          "72.13.111.154/32",
+          "216.127.143.196/32",
+          "208.84.76.55/32",
+          "69.43.9.253/32",
+          "4.34.2.62/32",
+          "69.241.110.50/32",
+          "66.76.193.38/32",
+          "173.195.184.6/32",
+          "216.147.229.134/32",
+          "184.170.114.134/32",
+          "8.29.132.68/32",
+          "192.52.250.5/32",
+          "199.91.174.197/32",
+          "208.122.95.227/32",
+          "72.166.224.124/32",
+          "69.144.192.137/32",
+          "192.104.1.17/32",
+          "204.111.0.58/32",
+          "204.9.61.36/32",
+          "208.85.240.29/32",
+          "199.168.117.17/32",
+          "204.111.12.62/32",
+          "67.208.74.124/32",
+          "212.124.105.15/32",
+          "64.126.4.183/32",
+          "208.75.96.130/32",
+          "64.195.18.2/32",
+          "216.106.88.248/32",
+          "173.195.176.6/32",
+          "50.22.217.218/32",
+          "208.43.102.250/32",
+          "209.114.127.2/32",
+          "64.111.20.2/32",
+          "192.30.129.250/32",
+          "63.238.47.66/32",
+          "204.111.5.18/32",
+          "24.217.2.210/32",
+          "108.59.8.145/32",
+          "216.87.32.148/32",
+          "208.84.156.145/32",
+          "12.9.104.12/32",
+          "198.179.56.35/32",
+          "129.71.208.186/32",
+          "207.192.233.210/32",
+          "173.219.94.150/32",
+          "208.117.66.166/32",
+          "173.243.64.16/32",
+          "199.193.180.19/32",
+          "64.191.128.76/32",
+          "204.68.228.241/32",
+          "69.174.146.78/32",
+          "199.119.144.27/32",
+          "173.219.81.46/32",
+          "192.225.240.90/32",
+          "216.38.158.170/32",
+          "66.76.194.122/32",
+          "208.69.40.37/32",
+          "69.241.90.30/32",
+          "204.11.104.30/32",
+          "209.203.160.80/32",
+          "66.38.1.227/32",
+          "64.250.48.14/32",
+          "72.12.244.6/32",
+          "208.64.129.79/32",
+          "208.74.11.48/32",
+          "208.77.120.17/32",
+          "74.214.178.41/32",
+          "203.208.196.67/32",
+          "66.201.42.23/32",
+          "68.64.126.166/32",
+          "209.148.113.35/32",
+          "69.241.48.22/32",
+          "50.23.64.58/32",
+          "50.121.240.100/32",
+          "206.123.192.130/32",
+          "69.24.208.101/32",
+          "66.119.1.35/32",
+          "208.65.0.7/32",
+          "209.33.214.137/32",
+          "199.21.205.202/32",
+          "207.162.163.12/32",
+          "69.71.0.20/32",
+          "208.93.183.6/32",
+          "205.237.128.40/32",
+          "184.170.66.230/32",
+          "66.38.0.227/32",
+          "66.37.65.244/32",
+          "162.212.136.12/32",
+          "216.155.216.34/32",
+          "108.39.81.54/32",
+          "208.94.88.7/32",
+          "65.79.193.111/32",
+          "162.208.7.11/32",
+          "208.76.94.200/32",
+          "173.240.143.217/32",
+          "192.171.201.14/32",
+          "8.28.86.51/32",
+          "63.135.176.25/32",
+          "216.134.224.10/32",
+          "63.246.240.13/32",
+          "216.115.93.9/32",
+          "69.241.93.18/32",
+          "216.16.136.6/32",
+          "66.248.128.86/32",
+          "152.3.101.212/32",
+          "67.217.151.132/32",
+          "208.180.158.146/32",
+          "192.34.128.72/32",
+          "66.76.75.98/32",
+          "147.97.1.20/32",
+          "208.86.227.2/32",
+          "216.152.1.251/32",
+          "69.8.160.142/32",
+          "180.240.197.1/32",
+          "69.167.192.2/32",
+          "74.51.15.142/32",
+          "207.192.227.226/32",
+          "72.250.252.24/32",
+          "64.147.208.194/32",
+          "74.112.94.25/32",
+          "69.196.208.154/32",
+          "24.246.130.30/32",
+          "104.152.10.17/32",
+          "24.205.224.18/32",
+          "165.166.8.60/32",
+          "104.245.79.229/32",
+          "167.88.66.88/32",
+          "50.27.149.214/32",
+          "69.241.38.70/32",
+          "216.31.50.150/32",
+          "69.241.36.74/32",
+          "104.219.87.195/32",
+          "74.205.130.131/32",
+          "64.201.105.2/32",
+          "208.104.0.47/32",
+          "209.198.1.194/32",
+          "64.18.101.107/32",
+          "220.211.12.118/32",
+          "69.241.120.74/32",
+          "97.107.96.164/32",
+          "66.44.213.4/32",
+          "192.34.172.12/32",
+          "209.213.16.12/32",
+          "68.66.82.143/32",
+          "66.0.32.10/32",
+          "69.36.64.250/32",
+          "64.130.80.201/32",
+          "165.166.15.17/32",
+          "64.185.235.74/32",
+          "162.254.119.11/32",
+          "104.255.32.138/32",
+          "208.97.141.21/32",
+          "192.69.242.244/32",
+          "64.201.104.2/32",
+          "206.214.45.37/32",
+          "192.240.108.4/32",
+          "66.55.90.14/32",
+          "207.171.2.34/32",
+          "107.161.48.70/32",
+          "208.78.31.118/32",
+          "142.129.0.65/32",
+          "120.28.25.86/32",
+          "24.197.160.53/32",
+          "165.166.29.35/32",
+          "199.30.107.1/32",
+          "12.227.114.15/32",
+          "66.153.250.2/32",
+          "165.166.253.254/32",
+          "130.207.244.27/32",
+          "162.212.176.124/32",
+          "98.142.209.234/32",
+          "68.234.128.74/32",
+          "69.241.37.98/32",
+          "63.160.156.38/32",
+          "216.167.161.42/32",
+          "50.27.149.218/32",
+          "216.48.244.187/32",
+          "207.223.124.123/32",
+          "50.30.208.77/32",
+          "96.45.225.80/32",
+          "98.143.34.237/32",
+          "74.50.130.111/32",
+          "216.130.138.22/32",
+          "69.241.91.138/32",
+          "64.20.30.58/32",
+          "65.48.80.11/32",
+          "66.182.208.104/32",
+          "74.50.130.112/32",
+          "174.137.71.115/32",
+          "198.52.214.170/32",
+          "162.252.124.245/32",
+          "67.210.150.21/32",
+          "173.192.68.18/32",
+          "43.242.70.4/32",
+          "71.14.149.178/32",
+          "199.187.247.10/32",
+          "66.181.25.10/32",
+          "208.85.242.118/32",
+          "216.98.140.252/32",
+          "66.208.114.146/32",
+          "65.49.170.162/32",
+          "69.241.95.58/32",
+          "173.219.70.194/32",
+          "50.27.149.210/32",
+          "74.50.130.113/32",
+          "208.180.43.202/32",
+          "162.216.200.133/32",
+          "66.175.141.42/32",
+          "67.212.192.35/32",
+          "192.195.240.6/32",
+          "209.136.143.67/32",
+          "69.94.165.10/32",
+          "65.19.152.255/32",
+          "201.174.42.38/32",
+          "69.7.80.141/32",
+          "72.21.97.231/32",
+          "50.27.149.222/32",
+          "66.196.0.132/32",
+          "64.39.144.19/32",
+          "69.85.242.199/32",
+          "69.85.209.49/32",
+          "208.180.1.165/32",
+          "108.161.214.100/32",
+          "173.219.72.130/32",
+          "207.29.218.115/32",
+          "24.158.223.25/32",
+          "216.162.128.28/32",
+          "69.241.106.106/32",
+          "208.180.1.54/32",
+          "69.57.112.4/32",
+          "24.175.43.249/32",
+          "24.155.96.97/32",
+          "162.251.8.24/32",
+          "209.124.239.106/32",
+          "173.219.70.198/32",
+          "69.1.183.6/32",
+          "69.4.62.77/32",
+          "66.90.138.147/32",
+          "69.241.80.166/32",
+          "173.193.70.98/32",
+          "216.136.28.35/32",
+          "8.40.137.20/32",
+          "216.53.195.195/32",
+          "208.65.55.17/32",
+          "205.201.148.2/32",
+          "68.233.224.34/32",
+          "65.90.11.25/32",
+          "69.94.230.87/32",
+          "216.150.32.33/32",
+          "162.222.140.11/32",
+          "210.154.134.164/32",
+          "66.115.32.5/32",
+          "192.249.53.3/32",
+          "208.138.47.213/32",
+          "38.127.220.216/32",
+          "199.27.244.34/32",
+          "206.191.134.9/32",
+          "50.7.64.4/32",
+          "192.240.114.82/32",
+          "69.241.6.18/32",
+          "74.212.160.26/32",
+          "104.185.211.133/32",
+          "162.251.179.2/32",
+          "77.67.116.41/32",
+          "24.25.227.17/32",
+          "64.65.64.114/32",
+          "128.171.104.148/32",
+          "72.234.36.241/32",
+          "208.111.48.80/32",
+          "173.227.179.143/32",
+          "72.136.172.138/32",
+          "202.166.127.226/32",
+          "218.189.98.82/32",
+          "172.102.73.17/32"
+        ],
+        "tcpPorts": [
+          80,
+          5060,
+          8000,
+          8080
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 1532,
+      "name": "APP_FUZE_MEETING",
+      "displayName": "Fuze meeting",
+      "class": 5,
+      "description": "Video-conferencing application (audio, video HD, desktop sharing, file transfer)",
+      "knownIpPortMapping": {
+        "subnets": [
+          "206.81.176.0/26",
+          "206.81.177.0/26",
+          "206.81.176.128/25",
+          "206.81.177.128/25",
+          "206.81.181.0/26",
+          "206.81.181.128/25",
+          "206.81.185.0/26",
+          "206.81.185.128/25"
+        ],
+        "tcpPorts": [
+          80,
+          443
+        ],
+        "udpPorts": [
+          [
+            50000,
+            65000
+          ]
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 2928,
+      "name": "APP_ZOOM_MEETINGS",
+      "displayName": "ZoomMeetings",
+      "class": 5,
+      "description": "Zoom Video Meetings",
+      "knownIpPortMapping": {
+        "subnets": [
+          "3.7.35.0/25",
+          "3.21.137.128/25",
+          "3.22.11.0/24",
+          "3.23.93.0/24",
+          "3.25.41.128/25",
+          "3.25.42.0/25",
+          "3.25.49.0/24",
+          "3.80.20.128/25",
+          "3.96.19.0/24",
+          "3.101.32.128/25",
+          "3.101.52.0/25",
+          "3.104.34.128/25",
+          "3.120.121.0/25",
+          "3.127.194.128/25",
+          "3.208.72.0/25",
+          "3.211.241.0/25",
+          "3.235.69.0/25",
+          "3.235.82.0/23",
+          "3.235.71.128/25",
+          "3.235.72.128/25",
+          "3.235.73.0/25",
+          "3.235.96.0/23",
+          "4.34.125.128/25",
+          "4.35.64.128/25",
+          "8.5.128.0/23",
+          "13.52.6.128/25",
+          "13.52.146.0/25",
+          "18.157.88.0/24",
+          "18.205.93.128/25",
+          "50.239.202.0/23",
+          "50.239.204.0/24",
+          "52.61.100.128/25",
+          "52.81.151.128/25",
+          "52.81.215.0/24",
+          "52.202.62.192/26",
+          "52.215.168.0/25",
+          "64.125.62.0/24",
+          "64.211.144.0/24",
+          "65.39.152.0/24",
+          "69.174.57.0/24",
+          "69.174.108.0/22",
+          "99.79.20.0/25",
+          "101.36.167.0/24",
+          "103.122.166.0/23",
+          "109.94.160.0/22",
+          "111.33.115.0/25",
+          "111.33.181.0/25",
+          "115.110.154.192/26",
+          "115.114.56.192/26",
+          "115.114.115.0/26",
+          "115.114.131.0/26",
+          "120.29.148.0/24",
+          "129.151.0.0/20",
+          "129.159.0.0/20",
+          "130.61.164.0/22",
+          "134.224.0.0/16",
+          "140.238.128.0/24",
+          "140.238.232.0/22",
+          "144.195.0.0/16",
+          "147.124.96.0/19",
+          "149.137.0.0/17",
+          "152.67.20.0/24",
+          "152.67.118.0/24",
+          "152.67.168.0/22",
+          "152.67.180.0/24",
+          "152.67.184.0/22",
+          "152.67.240.0/21",
+          "158.101.64.0/24",
+          "160.1.56.128/25",
+          "161.189.199.0/25",
+          "161.199.136.0/22",
+          "162.12.232.0/22",
+          "162.255.36.0/22",
+          "165.254.88.0/23",
+          "168.138.16.0/22",
+          "168.138.48.0/24",
+          "168.138.56.0/21",
+          "168.138.72.0/24",
+          "168.138.74.0/25",
+          "168.138.96.0/22",
+          "168.138.116.0/22",
+          "168.138.244.0/24",
+          "170.114.0.0/16",
+          "173.231.80.0/20",
+          "192.204.12.0/22",
+          "193.122.32.0/22",
+          "193.122.36.0/22",
+          "193.122.208.0/20",
+          "193.122.224.0/20",
+          "193.122.240.0/20",
+          "193.123.0.0/19",
+          "193.123.40.0/22",
+          "193.123.44.0/22",
+          "193.123.128.0/19",
+          "193.123.168.0/21",
+          "193.123.192.0/19",
+          "198.251.128.0/17",
+          "202.177.207.128/27",
+          "204.80.104.0/21",
+          "204.141.28.0/22",
+          "207.226.132.0/24",
+          "209.9.211.0/24",
+          "209.9.215.0/24",
+          "213.19.144.0/24",
+          "213.19.153.0/24",
+          "213.244.140.0/24",
+          "221.122.88.64/27",
+          "221.122.88.128/25",
+          "221.122.89.128/25",
+          "221.123.139.192/27",
+          "2620:123:2000::/40"
+        ],
+        "tcpPorts": [
+          80,
+          443,
+          8801,
+          8802
+        ],
+        "udpPorts": [
+          3478,
+          3479,
+          [
+            8801,
+            8810
+          ]
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 3205,
+      "name": "APP_AMAZON_CHIME",
+      "displayName": "Amazon Chime",
+      "class": 5,
+      "description": "Amazon Chime is a fully-managed communications service in the cloud.",
+      "knownIpPortMapping": {
+        "subnets": [
+          "99.77.128.0/18",
+          "13.248.147.139/32",
+          "76.223.18.152/32",
+          "34.212.95.128/25",
+          "34.223.21.0/25",
+          "52.55.62.128/25",
+          "52.55.63.0/25",
+          "3.80.16.0/23",
+          "99.77.253.0/24"
+        ],
+        "tcpPorts": [
+          443,
+          1720,
+          5060,
+          5061,
+          [
+            5100,
+            6200
+          ]
+        ],
+        "udpPorts": [
+          [
+            1024,
+            65535
+          ]
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 3616,
+      "name": "APP_FUZE",
+      "displayName": "Fuze",
+      "class": 4,
+      "description": "Fuze (formerly known as ThinkingPhones) is a provider of cloud-based Unified Communications as a Service (UCaaS).",
+      "knownIpPortMapping": {
+        "subnets": [
+          "70.42.233.0/24",
+          "66.151.176.0/24",
+          "162.223.96.0/23",
+          "170.76.188.0/22",
+          "45.252.184.128/29",
+          "45.252.184.136/29",
+          "162.223.96.0/22",
+          "185.155.144.0/22",
+          "45.252.184.144/29",
+          "103.197.96.0/22",
+          "64.209.246.0/24",
+          "205.139.23.0/24",
+          "45.252.184.0/22"
+        ],
+        "tcpPorts": [
+          80,
+          443,
+          1720,
+          5060,
+          5061,
+          [
+            40000,
+            40003
+          ],
+          [
+            50000,
+            60000
+          ]
+        ],
+        "udpPorts": [
+          123,
+          5060,
+          [
+            50000,
+            60000
+          ]
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 4102,
+      "name": "APP_ICA_REALTIME",
+      "displayName": "ICA Real Time",
+      "class": 15,
+      "description": "ICA Traffic with priority 0",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          1604
+        ]
+      },
+      "parentId": "69"
+    },
+    {
+      "id": 4105,
+      "name": "APP_RIVERBED",
+      "displayName": "Riverbed",
+      "class": 18,
+      "description": "Riverbed_",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          7800
+        ]
+      }
+    },
+    {
+      "id": 5000,
+      "name": "APP_RTELNET",
+      "displayName": "Rtelnet",
+      "class": 13,
+      "description": "RTelnet is a SOCKS client version of telnet in Unix-like systems",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          107
+        ]
+      }
+    },
+    {
+      "id": 5001,
+      "name": "APP_MITEL",
+      "displayName": "Mitel",
+      "class": 5,
+      "description": "Mitel hosted VoIP",
+      "knownIpPortMapping": {
+        "subnets": [
+          "64.28.113.0/24",
+          "64.28.114.0/24",
+          "64.28.116.0/24",
+          "64.28.119.0/24",
+          "64.28.123.0/24",
+          "64.28.124.0/24",
+          "64.28.118.0/24",
+          "152.194.19.192/26",
+          "69.195.209.144/28",
+          "70.105.85.0/24"
+        ],
+        "tcpPorts": [
+          80,
+          443,
+          3998,
+          5060,
+          5061,
+          6050,
+          6801,
+          6802,
+          6806,
+          6807,
+          6880,
+          48879
+        ],
+        "udpPorts": [
+          5060,
+          5061,
+          20001
+        ]
+      },
+      "protocolPortMapping": {},
+      "dropIfPartnerGatewayDown": 1,
+      "mustUseGateway": 1,
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 5002,
+      "name": "APP_BLUEJEANS",
+      "displayName": "Blue Jeans",
+      "class": 5,
+      "description": "Blue Jeans video",
+      "knownIpPortMapping": {
+        "subnets": [
+          "199.48.152.0/22",
+          "31.171.208.0/21",
+          "103.20.59.0/24",
+          "103.255.54.0/24",
+          "8.10.12.0/24"
+        ],
+        "tcpPorts": [
+          80,
+          443,
+          1720,
+          [
+            5000,
+            5999
+          ]
+        ],
+        "udpPorts": [
+          [
+            5000,
+            5999
+          ]
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 5003,
+      "name": "APP_H323",
+      "displayName": "h323",
+      "class": 2,
+      "description": "The H323 Protocol is a VoIP protocol, used for call signaling and RAS (Registration, Admission and Status).",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          1720
+        ],
+        "udpPorts": [
+          1718,
+          1719
+        ]
+      }
+    },
+    {
+      "id": 5004,
+      "name": "APP_LPD",
+      "displayName": "LPD",
+      "class": 11,
+      "description": "Line Printer Daemon is for submitting print jobs to a remote printer.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          515
+        ]
+      }
+    },
+    {
+      "id": 5005,
+      "name": "APP_SFTP",
+      "displayName": "SFTP",
+      "class": 7,
+      "description": "Simple File Transfer Protocol is for file access, transfer, and management functionalities over a reliable data stream.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "tcpPorts": [
+          115
+        ]
+      }
+    },
+    {
+      "id": 5006,
+      "name": "APP_SHORETEL",
+      "displayName": "ShoreTel",
+      "class": 5,
+      "description": "Proprietary control and media streams for the ShoreTel VoIP solution.",
+      "knownIpPortMapping": {},
+      "protocolPortMapping": {
+        "udpPorts": [
+          5004,
+          5441,
+          5442,
+          5443,
+          5445,
+          5446
+        ]
+      },
+      "mustUseGateway": 1
+    },
+    {
+      "id": 5007,
+      "name": "APP_LWAPP",
+      "displayName": "LWAPP",
+      "class": 4,
+      "description": "Protocol used to define communication guidelines between Wireless Termination points and Access Controllers",
+      "knownIpPortMapping": {
+        "subnets": [],
+        "tcpPorts": [],
+        "udpPorts": []
+      },
+      "protocolPortMapping": {
+        "tcpPorts": [],
+        "udpPorts": [
+          12222,
+          12223
+        ]
+      },
+      "mustUseGateway": 1
+    },
+    {
+      "class": 5,
+      "name": "APP_OFFICEATHAND",
+      "description": "AT&T Office@Hand Business Collaboration Service",
+      "displayName": "OfficeAtHand",
+      "id": 5008,
+      "knownIpPortMapping": {
+        "subnets": [
+          "104.245.57.1/32",
+          "104.245.57.2/32",
+          "104.245.57.3/32",
+          "199.255.120.129/32",
+          "199.255.120.130/32",
+          "199.255.120.131/32",
+          "199.255.120.132/32",
+          "199.255.120.162/32",
+          "199.255.120.163/32",
+          "199.255.120.164/32",
+          "199.255.120.165/32",
+          "199.255.120.166/32",
+          "199.255.120.167/32",
+          "199.255.120.168/32",
+          "199.255.120.201/32",
+          "199.255.120.214/32",
+          "199.255.120.215/32",
+          "199.255.120.219/32",
+          "208.87.42.10/32",
+          "208.87.42.11/32",
+          "208.87.42.8/32",
+          "208.87.42.9/32",
+          "80.81.131.1/32",
+          "80.81.131.100/32",
+          "80.81.131.101/32",
+          "80.81.131.102/32",
+          "80.81.131.2/32",
+          "80.81.131.3/32",
+          "80.81.131.51/32",
+          "80.81.131.52/32",
+          "80.81.131.53/32",
+          "80.81.131.54/32",
+          "80.81.131.55/32",
+          "80.81.131.57/32",
+          "80.81.131.58/32",
+          "80.81.131.59/32",
+          "80.81.131.60/32",
+          "80.81.131.61/32",
+          "80.81.131.62/32",
+          "80.81.131.63/32",
+          "80.81.131.64/32",
+          "80.81.131.66/32",
+          "80.81.131.67/32",
+          "80.81.131.68/32",
+          "80.81.131.69/32",
+          "80.81.131.71/32",
+          "80.81.131.72/32",
+          "80.81.131.73/32",
+          "80.81.131.74/32",
+          "80.81.131.75/32",
+          "80.81.131.78/32",
+          "80.81.131.80/32",
+          "80.81.131.93/32",
+          "80.81.131.94/32",
+          "80.81.131.95/32",
+          "80.81.131.96/32",
+          "80.81.131.99/32",
+          "80.81.132.1/32",
+          "80.81.132.2/32",
+          "80.81.132.24/32",
+          "80.81.132.25/32",
+          "80.81.132.253/32",
+          "80.81.132.254/32",
+          "80.81.132.26/32",
+          "80.81.132.27/32",
+          "80.81.132.28/32",
+          "80.81.132.29/32",
+          "80.81.132.3/32",
+          "80.81.132.31/32",
+          "80.81.132.34/32",
+          "80.81.132.35/32",
+          "80.81.132.36/32",
+          "80.81.132.37/32",
+          "80.81.132.38/32",
+          "80.81.132.39/32",
+          "80.81.132.4/32",
+          "80.81.132.40/32",
+          "80.81.132.41/32",
+          "80.81.133.1/32",
+          "80.81.133.2/32",
+          "80.81.133.21/32",
+          "80.81.133.22/32",
+          "80.81.133.23/32",
+          "80.81.133.24/32",
+          "80.81.133.25/32",
+          "80.81.133.26/32",
+          "80.81.133.27/32",
+          "80.81.133.28/32",
+          "80.81.133.29/32",
+          "80.81.133.3/32",
+          "80.81.133.30/32",
+          "80.81.133.31/32",
+          "80.81.133.32/32",
+          "80.81.133.33/32",
+          "80.81.133.34/32",
+          "80.81.133.35/32",
+          "80.81.133.36/32",
+          "80.81.133.37/32",
+          "80.81.134.1/32",
+          "80.81.134.2/32",
+          "80.81.134.20/32",
+          "80.81.134.21/32",
+          "80.81.134.22/32",
+          "80.81.134.23/32",
+          "80.81.134.24/32",
+          "80.81.134.25/32",
+          "80.81.134.253/32",
+          "80.81.134.254/32",
+          "80.81.134.29/32",
+          "80.81.134.3/32",
+          "80.81.134.31/32",
+          "80.81.134.34/32",
+          "80.81.134.35/32",
+          "80.81.134.36/32",
+          "80.81.134.37/32",
+          "80.81.134.38/32",
+          "80.81.134.39/32",
+          "80.81.134.4/32",
+          "80.81.134.40/32",
+          "80.81.135.1/32",
+          "80.81.135.2/32",
+          "80.81.135.21/32",
+          "80.81.135.22/32",
+          "80.81.135.23/32",
+          "80.81.135.24/32",
+          "80.81.135.25/32",
+          "80.81.135.26/32",
+          "80.81.135.27/32",
+          "80.81.135.28/32",
+          "80.81.135.29/32",
+          "80.81.135.3/32",
+          "80.81.135.30/32",
+          "80.81.135.31/32",
+          "80.81.135.32/32",
+          "80.81.135.33/32",
+          "80.81.135.34/32",
+          "80.81.135.35/32",
+          "80.81.135.36/32",
+          "80.81.135.37/32"
+        ],
+        "tcpPorts": [
+          636,
+          3269,
+          [
+            5090,
+            5099
+          ],
+          6182,
+          8803
+        ],
+        "udpPorts": [
+          8801,
+          8802,
+          8803,
+          [
+            5090,
+            5099
+          ],
+          [
+            8810,
+            8829
+          ],
+          [
+            8850,
+            8869
+          ],
+          [
+            10000,
+            19999
+          ],
+          [
+            20000,
+            64999
+          ]
+        ]
+      },
+      "mustUseGateway": 1,
+      "mustNotPerformDpi": 1,
+      "protocolPortMapping": {}
+    },
+    {
+      "id": 5009,
+      "name": "APP_RINGCENTRALAPP",
+      "displayName": "RingCentralApp",
+      "class": 5,
+      "description": "This plugin classifies website traffic of RingCentralApp, an application for video/audio conferencing.",
+      "knownIpPortMapping": {
+        "subnets": [
+          "80.81.128.0/20",
+          "103.44.68.0/22",
+          "104.245.56.0/21",
+          "192.209.24.0/21",
+          "199.68.212.0/22",
+          "199.255.120.0/22",
+          "208.87.40.0/22",
+          "185.23.248.0/22"
+        ],
+        "tcpPorts": [
+          80,
+          443,
+          636,
+          1720,
+          3269,
+          5060,
+          5061,
+          6182,
+          8801,
+          8802,
+          8803,
+          [
+            3000,
+            4000
+          ],
+          [
+            5090,
+            5099
+          ]
+        ],
+        "udpPorts": [
+          80,
+          443,
+          5060,
+          8801,
+          8802,
+          8803,
+          [
+            3000,
+            4000
+          ],
+          [
+            3478,
+            3479
+          ],
+          [
+            5090,
+            5099
+          ],
+          [
+            8810,
+            8829
+          ],
+          [
+            8850,
+            8869
+          ],
+          [
+            9000,
+            19999
+          ],
+          [
+            20000,
+            64999
+          ]
+        ]
+      },
+      "mustUseGateway": 1,
+      "mustNotPerformDpi": 1,
+      "protocolPortMapping": {}
+    },
+    {
+      "id": 5010,
+      "name": "APP_FUZE_AUDIO",
+      "displayName": "Fuze_Audio",
+      "class": 5,
+      "description": "Custom application created to identify Fuze Audio streams based on destination IP and port address",
+      "knownIpPortMapping": {
+        "subnets": [
+          "45.252.184.0/22",
+          "70.42.233.0/24",
+          "66.151.176.0/24",
+          "170.76.188.0/22",
+          "185.155.144.0/22",
+          "64.209.246.0/24",
+          "205.139.23.0/24",
+          "103.197.96.0/22",
+          "162.223.96.0/23"
+        ],
+        "udpPorts": [
+          [
+            4000,
+            4599
+          ],
+          [
+            9000,
+            20000
+          ]
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 5011,
+      "name": "APP_ZOOM_PHONE",
+      "displayName": "ZoomPhone",
+      "class": 5,
+      "description": "Zoom Video Phone",
+      "knownIpPortMapping": {
+        "subnets": [
+          "8.5.128.0/24",
+          "64.211.144.0/24",
+          "65.39.152.0/24",
+          "69.174.57.0/24",
+          "103.122.166.0/23",
+          "109.94.160.0/22",
+          "120.29.148.0/24",
+          "147.124.96.0/19",
+          "149.137.25.0/24",
+          "149.137.41.0/24",
+          "162.12.232.0/24",
+          "173.231.92.0/24",
+          "173.231.94.0/24",
+          "192.204.12.0/22",
+          "209.9.215.0/24",
+          "213.19.144.0/24",
+          "213.19.153.0/24",
+          "213.244.140.0/24",
+          "3.21.137.128/25",
+          "3.235.96.60/32",
+          "3.235.96.61/32",
+          "3.235.96.62/32",
+          "3.235.96.63/32",
+          "3.235.96.94/32",
+          "3.235.96.95/32",
+          "3.235.96.96/32",
+          "3.235.96.97/32",
+          "207.226.132.0/24",
+          "209.9.211.0/24"
+        ],
+        "tcpPorts": [
+          5091,
+          390
+        ],
+        "udpPorts": [
+          [
+            20000,
+            64000
+          ]
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 5012,
+      "name": "APP_ZOOM_CRC",
+      "displayName": "ZoomCRC",
+      "class": 5,
+      "description": "Zoom Cloud Room Connector",
+      "knownIpPortMapping": {
+        "subnets": [
+          "3.7.35.0/25",
+          "3.21.137.128/25",
+          "3.22.11.0/24",
+          "3.23.93.0/24",
+          "3.25.41.128/25",
+          "3.25.42.0/25",
+          "3.25.49.0/24",
+          "3.80.20.128/25",
+          "3.96.19.0/24",
+          "3.101.32.128/25",
+          "3.101.52.0/25",
+          "3.104.34.128/25",
+          "3.120.121.0/25",
+          "3.127.194.128/25",
+          "3.208.72.0/25",
+          "3.211.241.0/25",
+          "3.235.69.0/25",
+          "3.235.82.0/23",
+          "3.235.71.128/25",
+          "3.235.72.128/25",
+          "3.235.73.0/25",
+          "3.235.96.0/23",
+          "4.34.125.128/25",
+          "4.35.64.128/25",
+          "8.5.128.0/23",
+          "13.52.6.128/25",
+          "13.52.146.0/25",
+          "18.157.88.0/24",
+          "18.205.93.128/25",
+          "50.239.202.0/23",
+          "50.239.204.0/24",
+          "52.61.100.128/25",
+          "52.81.151.128/25",
+          "52.81.215.0/24",
+          "52.202.62.192/26",
+          "52.215.168.0/25",
+          "64.125.62.0/24",
+          "64.211.144.0/24",
+          "65.39.152.0/24",
+          "69.174.57.0/24",
+          "69.174.108.0/22",
+          "99.79.20.0/25",
+          "101.36.167.0/24",
+          "103.122.166.0/23",
+          "109.94.160.0/22",
+          "111.33.115.0/25",
+          "111.33.181.0/25",
+          "115.110.154.192/26",
+          "115.114.56.192/26",
+          "115.114.115.0/26",
+          "115.114.131.0/26",
+          "120.29.148.0/24",
+          "129.151.0.0/20",
+          "129.159.0.0/20",
+          "130.61.164.0/22",
+          "134.224.0.0/16",
+          "140.238.128.0/24",
+          "140.238.232.0/22",
+          "144.195.0.0/16",
+          "147.124.96.0/19",
+          "149.137.0.0/17",
+          "152.67.20.0/24",
+          "152.67.118.0/24",
+          "152.67.168.0/22",
+          "152.67.180.0/24",
+          "152.67.184.0/22",
+          "152.67.240.0/21",
+          "158.101.64.0/24",
+          "160.1.56.128/25",
+          "161.189.199.0/25",
+          "161.199.136.0/22",
+          "162.12.232.0/22",
+          "162.255.36.0/22",
+          "165.254.88.0/23",
+          "168.138.16.0/22",
+          "168.138.48.0/24",
+          "168.138.56.0/21",
+          "168.138.72.0/24",
+          "168.138.74.0/25",
+          "168.138.96.0/22",
+          "168.138.116.0/22",
+          "168.138.244.0/24",
+          "170.114.0.0/16",
+          "173.231.80.0/20",
+          "192.204.12.0/22",
+          "193.122.32.0/22",
+          "193.122.36.0/22",
+          "193.122.208.0/20",
+          "193.122.224.0/20",
+          "193.122.240.0/20",
+          "193.123.0.0/19",
+          "193.123.40.0/22",
+          "193.123.44.0/22",
+          "193.123.128.0/19",
+          "193.123.168.0/21",
+          "193.123.192.0/19",
+          "198.251.128.0/17",
+          "202.177.207.128/27",
+          "204.80.104.0/21",
+          "204.141.28.0/22",
+          "207.226.132.0/24",
+          "209.9.211.0/24",
+          "209.9.215.0/24",
+          "213.19.144.0/24",
+          "213.19.153.0/24",
+          "213.244.140.0/24",
+          "221.122.88.64/27",
+          "221.122.88.128/25",
+          "221.122.89.128/25",
+          "221.123.139.192/27",
+          "2620:123:2000::/40"
+        ],
+        "tcpPorts": [
+          443,
+          1720,
+          5060,
+          5061,
+          [
+            3000,
+            4000
+          ]
+        ],
+        "udpPorts": [
+          5060,
+          [
+            3000,
+            4000
+          ],
+          [
+            9000,
+            10000
+          ]
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 5013,
+      "name": "APP_DING_TALK",
+      "displayName": "DingTalk",
+      "class": 5,
+      "description": "Alibaba DingTalk",
+      "knownIpPortMapping": {
+        "subnets": [
+          "101.133.112.0/21",
+          "101.133.240.0/21",
+          "101.133.248.0/22",
+          "101.133.96.0/21",
+          "101.91.143.0/24",
+          "112.64.218.0/24",
+          "112.65.200.0/24",
+          "117.144.237.0/24",
+          "117.144.238.0/23",
+          "140.206.220.0/24",
+          "140.206.225.128/25",
+          "140.207.195.128/25",
+          "180.163.196.0/24",
+          "180.163.202.0/25",
+          "180.163.203.0/25",
+          "180.163.54.0/23",
+          "183.192.205.128/25",
+          "47.116.144.0/20",
+          "47.116.224.0/19",
+          "47.116.80.0/22",
+          "47.116.88.0/21",
+          "140.205.0.0/16",
+          "106.11.0.0/16",
+          "203.119.0.0/16",
+          "101.91.142.0/24",
+          "112.64.217.0/24",
+          "112.95.242.0/24",
+          "113.96.56.0/24",
+          "117.144.236.0/24",
+          "140.206.225.0/24",
+          "180.163.51.0/24",
+          "183.192.205.0/24",
+          "47.102.83.0/24",
+          "110.173.196.0/24",
+          "113.96.58.0/24",
+          "157.255.168.0/24",
+          "39.98.205.0/24",
+          "39.98.22.0/24",
+          "120.241.10.0/24",
+          "106.8.130.0/24",
+          "111.63.207.0/24",
+          "116.132.223.0/24",
+          "106.15.0.0/16",
+          "161.117.0.0/16",
+          "47.246.109.0/24",
+          "47.246.75.0/24",
+          "198.11.0.0/16",
+          "47.89.92.0/24",
+          "47.89.94.0/24",
+          "114.0.0.0/8",
+          "147.0.0.0/8",
+          "59.0.0.0/8",
+          "8.0.0.0/8",
+          "106.0.0.0/8",
+          "116.0.0.0/8",
+          "139.0.0.0/8",
+          "121.0.0.0/8",
+          "123.0.0.0/8",
+          "149.0.0.0/8",
+          "120.0.0.0/8",
+          "39.0.0.0/8",
+          "47.0.0.0/8",
+          "101.0.0.0/8",
+          "110.76.0.0/16",
+          "110.75.0.0/16",
+          "42.120.0.0/15",
+          "100.68.0.0/16",
+          "106.16.0.0/16",
+          "203.107.1.0/24"
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    },
+    {
+      "id": 5014,
+      "name": "APP_TENCENT_MEETING",
+      "displayName": "TencentMeeting",
+      "class": 5,
+      "description": "Tencent and VooV Meeting",
+      "knownIpPortMapping": {
+        "subnets": [
+          "119.29.29.29/32",
+          "162.14.14.150/32",
+          "162.14.10.152/32",
+          "162.14.16.143/32",
+          "162.14.16.201/32",
+          "183.232.95.158/32",
+          "182.254.116.116/32",
+          "183.3.225.54/32",
+          "101.226.233.199/32",
+          "123.151.137.108/32",
+          "157.255.196.82/32",
+          "223.167.154.46/32",
+          "123.126.122.69/32",
+          "183.232.95.188/32",
+          "183.194.184.121/32",
+          "111.30.144.145/32",
+          "203.205.253.149/32",
+          "49.235.255.182/32",
+          "49.235.243.233/32",
+          "49.235.242.160/32",
+          "49.234.211.247/32",
+          "49.234.127.99/32",
+          "175.24.122.244/32",
+          "175.24.121.211/32",
+          "175.24.121.160/32",
+          "175.24.120.20/32",
+          "175.24.117.241/32",
+          "175.24.116.232/32",
+          "106.54.194.151/32",
+          "49.235.254.209/32",
+          "49.235.248.123/32",
+          "49.235.245.212/32",
+          "102.133.132.0/24",
+          "102.37.17.0/24",
+          "106.52.7.0/24",
+          "106.55.124.0/24",
+          "106.55.127.0/24",
+          "106.55.88.0/24",
+          "109.244.131.0/24",
+          "109.244.146.0/24",
+          "109.244.147.0/24",
+          "109.244.170.0/24",
+          "109.244.171.0/24",
+          "109.244.194.0/24",
+          "109.244.196.0/24",
+          "109.244.217.0/24",
+          "109.244.219.0/24",
+          "109.244.244.0/24",
+          "109.244.245.0/24",
+          "109.244.246.0/24",
+          "109.244.248.0/24",
+          "109.244.249.0/24",
+          "111.10.12.0/24",
+          "111.13.13.0/24",
+          "111.30.182.0/24",
+          "111.33.183.0/24",
+          "113.108.237.0/24",
+          "113.249.145.0/24",
+          "113.250.24.0/24",
+          "114.221.151.0/24",
+          "116.162.35.0/24",
+          "116.162.36.0/24",
+          "119.28.123.0/24",
+          "119.28.244.0/24",
+          "119.45.68.0/24",
+          "120.201.8.0/24",
+          "120.241.138.0/24",
+          "120.53.198.0/24",
+          "123.184.80.0/24",
+          "124.156.234.0/24",
+          "124.156.235.0/24",
+          "124.95.224.0/24",
+          "125.39.3.0/24",
+          "129.226.1.0/24",
+          "129.226.103.0/24",
+          "129.226.2.0/24",
+          "129.226.27.0/24",
+          "129.226.3.0/24",
+          "14.29.105.0/24",
+          "150.109.161.0/24",
+          "150.109.162.0/24",
+          "150.109.249.0/24",
+          "150.109.250.0/24",
+          "153.3.247.0/24",
+          "153.37.100.0/24",
+          "157.148.37.0/24",
+          "162.62.177.0/24",
+          "162.62.4.0/24",
+          "162.62.97.0/24",
+          "170.106.61.0/24",
+          "175.24.208.0/24",
+          "175.24.209.0/24",
+          "175.6.91.0/24",
+          "175.97.144.0/24",
+          "175.97.145.0/24",
+          "180.109.171.0/24",
+          "191.233.28.0/24",
+          "20.195.201.0/24",
+          "202.106.18.0/24",
+          "20.40.142.0/24",
+          "20.40.144.0/24",
+          "20.46.151.0/24",
+          "20.49.145.0/24",
+          "20.49.170.0/24",
+          "20.49.240.0/24",
+          "20.49.241.0/24",
+          "20.74.5.0/24",
+          "220.194.118.0/24",
+          "221.178.66.0/24",
+          "36.155.229.0/24",
+          "36.155.234.0/24",
+          "36.155.247.0/24",
+          "36.158.247.0/24",
+          "40.119.232.0/24",
+          "40.127.12.0/24",
+          "40.127.9.0/24",
+          "40.66.56.0/24",
+          "42.187.128.0/24",
+          "42.81.181.0/24",
+          "49.51.130.0/24",
+          "49.51.131.0/24",
+          "49.51.181.0/24",
+          "49.51.67.0/24",
+          "49.51.78.0/24",
+          "49.51.79.0/24",
+          "49.7.107.0/24",
+          "49.7.72.0/24",
+          "51.103.6.0/24",
+          "51.11.0.0/24",
+          "58.144.181.0/24",
+          "111.6.235.0/24",
+          "36.99.176.0/24",
+          "42.236.81.0/24",
+          "180.109.159.0/24",
+          "180.109.159.46/32",
+          "139.186.105.0/24",
+          "42.187.185.0/24",
+          "42.187.186.0/24",
+          "1.13.136.0/24",
+          "1.13.137.0/24",
+          "106.55.204.0/24",
+          "106.55.205.0/24",
+          "129.226.104.0/24",
+          "129.226.105.0/24",
+          "175.6.90.0/24",
+          "36.158.246.0/24"
+        ],
+        "tcpPorts": [
+          80,
+          443,
+          8080,
+          15000
+        ]
+      },
+      "protocolPortMapping": {},
+      "mustNotPerformDpi": 1
+    }
+  ],
+  "applicationClassToApplication": {
+    "2": [
+      1441,
+      5003
+    ],
+    "3": [
+      73,
+      97,
+      100,
+      101,
+      158,
+      1085
+    ],
+    "4": [
+      84,
+      95,
+      182,
+      773,
+      844,
+      3616,
+      5007
+    ],
+    "5": [
+      94,
+      889,
+      890,
+      1448,
+      1454,
+      1532,
+      2928,
+      3205,
+      5001,
+      5002,
+      5006,
+      5008,
+      5009,
+      5010,
+      5011,
+      5012,
+      5013,
+      5014
+    ],
+    "6": [
+      75,
+      76,
+      147,
+      148,
+      186
+    ],
+    "7": [
+      45,
+      46,
+      129,
+      131,
+      185,
+      211,
+      1461,
+      1465,
+      5005
+    ],
+    "11": [
+      190,
+      204,
+      935,
+      5004
+    ],
+    "12": [
+      176,
+      530,
+      534,
+      734
+    ],
+    "13": [
+      13,
+      32,
+      134,
+      137,
+      167,
+      196,
+      197,
+      209,
+      210,
+      264,
+      337,
+      891,
+      5000
+    ],
+    "15": [
+      159,
+      545,
+      894,
+      4102
+    ],
+    "18": [
+      85,
+      98,
+      153,
+      198,
+      4105
+    ],
+    "19": [
+      1294
+    ]
+  },
+  "applicationToApplicationClass": {
+    "13": 13,
+    "32": 13,
+    "45": 7,
+    "46": 7,
+    "73": 3,
+    "75": 6,
+    "76": 6,
+    "84": 4,
+    "85": 18,
+    "94": 5,
+    "95": 4,
+    "97": 3,
+    "98": 18,
+    "100": 3,
+    "101": 3,
+    "129": 7,
+    "131": 7,
+    "134": 13,
+    "137": 13,
+    "147": 6,
+    "148": 6,
+    "153": 18,
+    "158": 3,
+    "159": 15,
+    "167": 13,
+    "176": 12,
+    "182": 4,
+    "185": 7,
+    "186": 6,
+    "190": 11,
+    "196": 13,
+    "197": 13,
+    "198": 18,
+    "204": 11,
+    "209": 13,
+    "210": 13,
+    "211": 7,
+    "264": 13,
+    "337": 13,
+    "530": 12,
+    "534": 12,
+    "545": 15,
+    "734": 12,
+    "773": 4,
+    "844": 4,
+    "889": 5,
+    "890": 5,
+    "891": 13,
+    "894": 15,
+    "935": 11,
+    "1085": 3,
+    "1294": 19,
+    "1441": 2,
+    "1448": 5,
+    "1454": 5,
+    "1461": 7,
+    "1465": 7,
+    "1532": 5,
+    "2928": 5,
+    "3205": 5,
+    "3616": 4,
+    "4102": 15,
+    "4105": 18,
+    "5000": 13,
+    "5001": 5,
+    "5002": 5,
+    "5003": 2,
+    "5004": 11,
+    "5005": 7,
+    "5006": 5,
+    "5007": 4,
+    "5008": 5,
+    "5009": 5,
+    "5010": 5,
+    "5011": 5,
+    "5012": 5,
+    "5013": 5,
+    "5014": 5
+  },
+  "metaData": {
+    "id": 40,
+    "networkId": 1,
+    "created": "2022-08-24T06:06:36.000Z",
+    "name": "Release 5.0.1.0 Default Application Map",
+    "logicalId": "b95b6a1b-a7c0-435f-9ea0-b7d12b04fed6",
+    "type": "APPLICATION_MAP",
+    "description": "Uploaded during VCO Upgrade - schema version 5.0.1.0",
+    "version": "1661321196308",
+    "manifest": {},
+    "blobId": 3254,
+    "modified": "2022-08-24T06:06:39.000Z",
+    "fileName": "applications_r5010.json",
+    "uploadDetails": {
+      "hash": "4f052f5e7654b7381f62fdd83278d78b40b691aa",
+      "size": 1339060
+    },
+    "timestamp": "2022-08-24T06:06:36.000Z",
+    "downloadToken": "eyJjb250ZW50IjoiMDVjMTZhMmFjOGMwZmEyYjNhYzRiNjNmMTVkYTg2NTFiZWM0NDZjNGQ4OWQ5Nzk0OTAwMWE0YzQ5NjI3ZTY0YTBjMjFkZjhkNTc2YTFkOWMxNTYxMWUxZWE0NWNkOWYyNDU3ZTdlOGEzNWU4ZmY5ODRhOWNjMjEyYzAwZmVjZTgyYTNmZjFiY2FlYmI4N2U2Y2UzZDliNzkzMTBhMDZhYTI5ZTdhMTIxYzUiLCJ0YWciOiIwNjhhNTQxYjkxNTA1MDhjYTkxMDMxYWZmZTU4YTNlYSIsIml2IjoiNWZmMWUwYTlkODIwZjJmYTYzZjlhMDNkZDFhYzY1MDQiLCJzYWx0IjoiYzU2NWY4ZWIwYzI4MzczYzVjZWRkMTZlIn0",
+    "downloadUrl": "/fileDownload"
+  }
+}

@@ -1,7 +1,7 @@
 <collectd-configuration xmlns="http://xmlns.opennms.org/xsd/config/collector/api">
 
    <package name="Velocloud" remote="false">
-      <filter>IPADDR != '0.0.0.0'</filter>
+      <filter> 1 = 1 </filter>
 
       <service name="VelocloudLinkConnection" interval="300000" user-defined="false" status="on">
          <parameter key="enterpriseId" value="${velocloud:enterpriseId}"/>
