@@ -53,8 +53,6 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
 
     public static final String VELOCLOUD_METADATA_CONTEXT = "velocloud";
-    public static final String VELOCLOUD_CUSTOMER_IDENTIFIER = "velocloud-customer";
-    public static final String VELOCLOUD_PARNTER_IDENTIFIER = "velocloud-partner";
     public static final String PARAMETER_FOREIGN_SOURCE = "foreignSource";
 
     private final NodeDao nodeDao;
@@ -63,13 +61,18 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
 
     private final ConnectionManager connectionManager;
 
+    private final Class<? extends Request> requestClass;
+
     protected AbstractRequisitionProvider(final NodeDao nodeDao,
                                           final ClientManager clientManager,
-                                          final ConnectionManager connectionManager) {
+                                          final ConnectionManager connectionManager,
+                                          final Class<? extends Request> requestClass) {
         this.nodeDao = Objects.requireNonNull(nodeDao);
 
         this.clientManager = Objects.requireNonNull(clientManager);
         this.connectionManager = Objects.requireNonNull(connectionManager);
+
+        this.requestClass = Objects.requireNonNull(requestClass);
     }
 
     protected abstract Req createRequest(final Connection connection, final Map<String, String> parameters);
@@ -117,7 +120,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
     public final RequisitionRequest unmarshalRequest(final byte[] bytes) {
         final var mapper = new ObjectMapper();
         try {
-            return mapper.readValue(bytes, RequisitionRequest.class);
+            return mapper.readValue(bytes, this.requestClass);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

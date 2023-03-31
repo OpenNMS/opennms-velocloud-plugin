@@ -10,7 +10,6 @@ executors:
 orbs:
   cloudsmith: cloudsmith/cloudsmith@1.0.5
   sign-packages: opennms/sign-packages@2.3.0
-  
 workflows:
   build-deploy:
     jobs:
@@ -28,10 +27,9 @@ workflows:
             tags:
               only:
                 - /^v.*/
-      - deploy:
-          context:
-            - OSSRH Principal
-            - gpg-signing
+      - publish-github-release:
+          context: 
+            - github-releases
           requires:
             - tests
           filters:
@@ -39,24 +37,7 @@ workflows:
               only:
                 - /^v.*/
             branches:
-              only:
-                - main
-                - /release-.*/
-      #- deploy-packages:
-      #    context: 
-      #      - gpg-signing
-      #      - cloudsmith-publish-account
-      #    requires:
-      #      - tests
-      #    filters:
-      #      tags:
-      #        only:
-      #          - /^v.*/
-      #      branches:
-      #        only:
-      #          - main
-      #          - /release-.*/
-
+              ignore: /.*/     
 
 jobs:
   build:
@@ -72,8 +53,11 @@ jobs:
           name: Compile source without tests
           command: |
             mvn -DskipITs=true -DskipTests=true clean install
-            mkdir ~/kar
-            mv ~/project/assembly/kar/target/org.opennms.plugins.velocloud-*.kar ~/kar
+            mkdir ~/output
+            find ~/project -type f -regex ".*.kar" -exec cp {} ~/output \;
+      - store_artifacts:
+          path: ~/output
+          destination: artifact-file
       - save_cache:
           paths:
             - ~/.m2
@@ -83,8 +67,8 @@ jobs:
           paths:
             - .m2
             - project
-      - store_artifacts:
-          path: ~/kar
+            - output
+
   tests:
     executor: build-executor
     steps:
@@ -105,32 +89,47 @@ jobs:
       - store_test_results:
           path: ~/junit
 
-  deploy:
+  prepare-release:
     executor: build-executor
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-
-      - sign-packages/setup-env:
-          skip_if_forked_pr: true
-      - run:
-          name: Deploy to Maven
-          command: |
-            mvn -Prelease -s .circleci/.circleci.settings.xml -Ddisable.checkstyle=true -DskipTests -Dmaven.verify.skip=true -Dmaven.install.skip=true deploy
-
-  deploy-packages:
-    executor: cloudsmith/default
-    resource_class: small
+    working_directory: ~/project
     steps:
       - attach_workspace:
           at: ~/
-
-      - cloudsmith/ensure-api-key
-      - cloudsmith/install-cli
-
       - run:
-          name: Push packages to CloudSmith
-          command: .circleci/scripts/publish-cloudsmith.sh
+          name: Gather artifacts
+          command: |
+              mkdir ~/output
+              # We need a better logic here
+              find ~/project -type f -regex ".*.kar" -exec cp {} ~/output \;
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - output
+
+  publish-github-release:
+    executor: build-executor
+    working_directory: ~/project
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install GitHub CLI and Publish release on GitHub
+          command: |
+            if [ -z "${CIRCLE_TAG}" ]; then 
+              echo "Skipping step as we don't have a tag!"
+            else 
+              tag=${CIRCLE_TAG}
+
+              # Install GitHub CLI
+              type -p curl >/dev/null || sudo apt install curl -y
+              curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+              && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+              && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+              && sudo apt update \
+              && sudo apt install gh -y
+              
+              gh release create $tag --title "$tag Release" --notes "$tag prerelease!" --prerelease --generate-notes 
+
+              gh release upload $tag ~/output/*.kar
+            fi
+

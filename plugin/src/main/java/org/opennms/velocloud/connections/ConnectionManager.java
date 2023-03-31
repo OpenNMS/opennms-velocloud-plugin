@@ -52,6 +52,8 @@ public class ConnectionManager {
 
     private static final String PREFIX = "velocloud_connection_";
 
+    private final RuntimeInfo runtimeInfo;
+
     private final SecureCredentialsVault vault;
 
     private final ClientManager clientManager;
@@ -59,11 +61,7 @@ public class ConnectionManager {
     public ConnectionManager(final RuntimeInfo runtimeInfo,
                              final SecureCredentialsVault vault,
                              final ClientManager clientManager) {
-
-        if (runtimeInfo.getContainer() != Container.OPENNMS) {
-            throw new IllegalStateException("Operation only allowed on OpenNMS instance");
-        }
-
+        this.runtimeInfo = Objects.requireNonNull(runtimeInfo);
         this.vault = Objects.requireNonNull(vault);
         this.clientManager = Objects.requireNonNull(clientManager);
     }
@@ -74,6 +72,8 @@ public class ConnectionManager {
      * @return the list of aliases
      */
     public Set<String> getAliases() {
+        this.ensureCore();
+
         return this.vault.getAliases().stream()
                 .filter(alias -> alias.startsWith(PREFIX))
                 .map(alias -> alias.substring(PREFIX.length()))
@@ -87,6 +87,8 @@ public class ConnectionManager {
      * @return The connection config or {@code Optional#empty()} of no such alias exists
      */
     public Optional<Connection> getConnection(final String alias) {
+        this.ensureCore();
+
         final var credentials = this.vault.getCredentials(PREFIX + alias.toLowerCase());
         if (credentials == null) {
             return Optional.empty();
@@ -103,6 +105,8 @@ public class ConnectionManager {
      * @param apiKey          the API key used to authenticate the connection
      */
     public Connection newConnection(final String alias, final String orchestratorUrl, final String apiKey) {
+        this.ensureCore();
+
         return new ConnectionImpl(alias, VelocloudApiClientCredentials.builder()
                                                                       .withOrchestratorUrl(orchestratorUrl)
                                                                       .withApiKey(apiKey)
@@ -117,6 +121,8 @@ public class ConnectionManager {
      * connection with given alias was not found
      */
     public boolean deleteConnection(final String alias) {
+        this.ensureCore();
+
         final var connection = this.getConnection(alias);
         if (connection.isEmpty()) {
             return false;
@@ -126,6 +132,8 @@ public class ConnectionManager {
     }
 
     public Optional<VelocloudApiPartnerClient> getPartnerClient(final String alias) throws VelocloudApiException {
+        this.ensureCore();
+
         final var connection = this.getConnection(alias);
         if (connection.isEmpty()) {
             return Optional.empty();
@@ -135,6 +143,8 @@ public class ConnectionManager {
     }
 
     public Optional<VelocloudApiCustomerClient> getCustomerClient(final String alias) throws VelocloudApiException {
+        this.ensureCore();
+
         final var connection = this.getConnection(alias);
         if (connection.isEmpty()) {
             return Optional.empty();
@@ -144,6 +154,8 @@ public class ConnectionManager {
     }
 
     public Optional<VelocloudApiCustomerClient> getCustomerClient(final String alias, final Integer enterpriseId) throws VelocloudApiException {
+        this.ensureCore();
+
         if (enterpriseId == null) {
             return getCustomerClient(alias);
         } else {
@@ -246,6 +258,12 @@ public class ConnectionManager {
                               .add("orchestratorUrl", this.credentials.orchestratorUrl)
                               .add("apiKey", "******")
                               .toString();
+        }
+    }
+
+    private void ensureCore() {
+        if (this.runtimeInfo.getContainer() != Container.OPENNMS) {
+            throw new IllegalStateException("Operation only allowed on OpenNMS instance");
         }
     }
 }
