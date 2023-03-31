@@ -28,20 +28,11 @@ workflows:
             tags:
               only:
                 - /^v.*/
-      - prepare-release:
-          requires:
-            - tests
-          filters:
-            tags:
-              only:
-                - /^v.*/
-            branches:
-              ignore: /.*/
       - publish-github-release:
           context: 
             - github-releases
           requires:
-            - prepare-release
+            - tests
           filters:
             tags:
               only:
@@ -63,6 +54,11 @@ jobs:
           name: Compile source without tests
           command: |
             mvn -DskipITs=true -DskipTests=true clean install
+            mkdir ~/output
+            find ~/project -type f -regex ".*.kar" -exec cp {} ~/output \;
+      - store_artifacts:
+          path: ~/output
+          destination: artifact-file
       - save_cache:
           paths:
             - ~/.m2
@@ -72,6 +68,7 @@ jobs:
           paths:
             - .m2
             - project
+            - output
 
   tests:
     executor: build-executor
