@@ -34,46 +34,22 @@ import com.google.common.base.MoreObjects;
 
 public class TrafficApplication {
 
-    private final String description;
-    private final String displayName;
     private final String name;
-    private final String applicationClass;
     private final Traffic traffic;
 
     private TrafficApplication(final TrafficApplication.Builder builder) {
-        this.description = Objects.requireNonNull(builder.description);
-        this.displayName = Objects.requireNonNull(builder.displayName);
         this.name = Objects.requireNonNull(builder.name);
-        this.applicationClass = Objects.requireNonNull(builder.applicationClass);
-        this.traffic = Objects.requireNonNull(builder.traffic);
+        this.traffic = builder.traffic;
     }
 
     public static class Builder {
-        private String description = null;
-        private String displayName = null;
-        private String applicationClass = null;
         private String name = null;
         private Traffic traffic = null;
-
-        public TrafficApplication.Builder withDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public TrafficApplication.Builder withDisplayName(String displayName) {
-            this.displayName = displayName;
-            return this;
-        }
 
         public TrafficApplication.Builder withName(String name) {
             this.name = name;
             return this;
         }
-        public TrafficApplication.Builder withApplicationClass(String applicationClass) {
-            this.applicationClass = applicationClass;
-            return this;
-        }
-
         public TrafficApplication.Builder withTraffic(Traffic traffic) {
             this.traffic = traffic;
             return this;
@@ -88,18 +64,6 @@ public class TrafficApplication {
         return new TrafficApplication.Builder();
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getApplicationClass() {
-        return applicationClass;
-    }
-
     public String getName() {
         return name;
     }
@@ -111,10 +75,7 @@ public class TrafficApplication {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("description", description)
-                .add("displayName", displayName)
                 .add("name", name)
-                .add("applicationClass", applicationClass)
                 .add("traffic", traffic)
                 .toString();
     }

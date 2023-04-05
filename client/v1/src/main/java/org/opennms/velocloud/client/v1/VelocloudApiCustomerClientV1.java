@@ -136,8 +136,6 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
             GET_LINK_QUALITY_EVENTS = AllApi::linkQualityEventGetLinkQualityEvents;
     public final static ApiCache.Endpoint<MetricsGetEdgeStatusMetrics, EdgeStatusMetricsSummary>
             GET_EDGE_SYSTEM_METRICS = AllApi::metricsGetEdgeStatusMetrics;
-    public final static ApiCache.Endpoint<ConfigurationGetRoutableApplications, ConfigurationGetRoutableApplicationsResult>
-            GET_ROUTABLE_APPLICATIONS = AllApi::configurationGetRoutableApplications;
     public final static ApiCache.Endpoint<MetricsGetEdgeDeviceMetrics, List<MetricsGetEdgeDeviceMetricsResultItem>>
             GET_EDGE_DEVICE_METRICS = AllApi::metricsGetEdgeDeviceMetrics;
     public final static ApiCache.Endpoint<MetricsGetEdgeDestMetrics, List<MetricsGetEdgeDestMetricsResultItem>>
@@ -460,16 +458,12 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                 .withTimestamp(interval.getEnd().toEpochSecond());
 
         try {
-            final ConfigurationGetRoutableApplicationsResult routableApplications = this.api.call(
-                    "routable applications", GET_ROUTABLE_APPLICATIONS,
-                    new ConfigurationGetRoutableApplications().edgeId(edgeId).enterpriseId(enterpriseId));
-
             final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications = this.api.call(
                     "edge traffic by applications ", GET_EDGE_APP_METRICS,
                     new MetricsGetEdgeAppMetrics().edgeId(edgeId).enterpriseId(enterpriseId)
-                                    .metrics(EDGE_TRAFFIC_METRICS).interval(interval));
+                                    .metrics(EDGE_TRAFFIC_METRICS).interval(interval).resolveApplicationNames(true));
 
-            builder.withTrafficApplications(map(trafficApplications, routableApplications));
+            builder.withTrafficApplications(map(trafficApplications));
         } catch (VelocloudApiException ex) {
             LOG.debug("Cannot get routable applications for edge with edgeId={}, enterpriseId={}. Error message: {}", edgeId, enterpriseId, ex.getMessage());
         }
@@ -613,30 +607,18 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
         return list.stream().map(mapFunction).collect(Collectors.toList());
     }
 
-    private List<TrafficApplication> map(final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications,
-                                         final ConfigurationGetRoutableApplicationsResult routableApplications) {
-        final List<Application> applications = routableApplications.getApplications();
-        final int appCount = applications.size();
-        final List<String> applicationClasses = routableApplications.getApplicationClasses();
-
+    private List<TrafficApplication> map(final List<MetricsGetEdgeAppMetricsResultItem> trafficApplications) {
         return map(trafficApplications, (item) -> {
-            final TrafficApplication.Builder builder = TrafficApplication.builder()
+            return TrafficApplication.builder()
+                    .withName(item.getName())
                     .withTraffic(Traffic.builder()
                             .withBytesRx(item.getBytesRx())
                             .withBytesRx(item.getBytesTx())
                             .withPacketsRx(item.getPacketsRx())
                             .withPacketsTx(item.getPacketsTx())
-                            .build());
+                            .build())
+                    .build();
 
-            if (item.getApplication() != null && item.getApplication() < appCount) {
-                final Application application =  applications.get(item.getApplication());
-                builder
-                        .withDescription(application.getDescription())
-                        .withName(application.getName())
-                        .withDisplayName(application.getDisplayName())
-                        .withApplicationClass(applicationClasses.get(application.getPropertyClass()));
-            }
-            return builder.build();
         });
     }
 

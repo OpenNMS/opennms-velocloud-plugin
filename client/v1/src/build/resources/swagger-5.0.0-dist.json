@@ -42164,11 +42164,6 @@
     },
     "link_quality_event_get_link_quality_events_result": {
       "type": "object",
-      "properties": {
-        "overallLinkQuality": {
-          "$ref": "#/definitions/link_quality_object"
-        }
-      },
       "additionalProperties": {
         "$ref": "#/definitions/link_quality_object"
       }
@@ -42648,7 +42643,7 @@
               "type": "integer"
             },
             "name": {
-              "type": "integer"
+              "type": "string"
             },
             "linkId": {
               "type": "integer"
