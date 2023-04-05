@@ -178,4 +178,8 @@
         <bean class="org.opennms.velocloud.configuration.VelocloudGraphPropertiesExtension"/>
     </service>
 
+    <service interface="org.opennms.integration.api.v1.config.datacollection.ResourceTypesExtension">
+        <bean class="org.opennms.velocloud.collection.VelocloudResourceTypesExtension"/>
+    </service>
+
 </blueprint>
