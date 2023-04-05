@@ -1,4 +1,22 @@
 = Data Collection
 :imagesdir: ../assets/images
 
-TODO
+Various collectors exist to gather key metrics of the Velocloud entities in OpenNMS:
+
+## Edges
+* CPU and Memory usage
+* Flows counter and Queue drops
+* Tunnel IPv4/IPv6 counter
+* Received/transmitted bytes and packets per Application
+
+## Links
+* Bandwidth, Latency and Jitter
+* Data loss (reception, transmission)
+* Link score (reception, transmission)
+* Traffic statistics for Priority Groups and Control Traffic
+
+## Gateways
+* CPU and Memory usage
+* Flows counter and Handoff Queue Drops
+* Tunnel IPv4/IPv6 counter
+
