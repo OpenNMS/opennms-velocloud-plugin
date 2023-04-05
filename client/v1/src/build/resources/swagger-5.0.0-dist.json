@@ -33276,9 +33276,6 @@
         "id": {
           "type": "integer"
         },
-        "knownIpPortMapping": {
-          "$ref": "#/definitions/ip_port_mapping"
-        },
         "protocolPortMapping": {
           "$ref": "#/definitions/protocol_port_mapping"
         }
@@ -33721,7 +33718,7 @@
         "applicationToApplicationClass": {
           "allOf": [
             {
-              "$ref": "#/definitions/id_map_one_to_many"
+              "$ref": "#/definitions/id_map_one_to_one"
             }
           ],
           "description": "Maps application IDs (strings) to class IDs (integers)"
