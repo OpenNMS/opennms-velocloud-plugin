@@ -36,4 +36,8 @@ Replace `<VERSION>` with the version you built and want to deploy.
 admin@opennms()> feature:repo-add mvn:org.opennms.plugins.velocloud/karaf-features/<VERSION>/xml
 admin@opennms()> feature:install opennms-plugins-velocloud
 ```
+To ensure that the feature is activated on future service restarts, add the feature to a file in `featuresBoot.d`:
 
+
+[source, console]
+echo "opennms-plugins-velocloud wait-for-kar=opennms-plugins-velocloud" | sudo tee ${OPENNMS_HOME}/etc/featuresBoot.d/plugin-velocloud.boot
