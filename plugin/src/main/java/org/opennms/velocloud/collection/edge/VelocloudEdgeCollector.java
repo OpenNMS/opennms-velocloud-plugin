@@ -102,13 +102,13 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
         final ImmutableCollectionSetResource.Builder<NodeResource> edgeAttrBuilder =
                 ImmutableCollectionSetResource.newBuilder(NodeResource.class).setResource(nodeResource);
 
-        addAggregate(edgeAttrBuilder, "velocloud-edge-cpu", "CpuPct", edgeMetrics.getCpuPct());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-cpu", "CpuCoreTemp", edgeMetrics.getCpuCoreTemp());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-memory-pct", "MemoryPct", edgeMetrics.getMemoryPct());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-flow-count", "FlowCount", edgeMetrics.getFlowCount());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-queue-drops", "QueueDrops", edgeMetrics.getHandoffQueueDrops());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel", "TunnelCnt", edgeMetrics.getTunnelCount());
-        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel", "TunnelCntV6", edgeMetrics.getTunnelCountV6());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-cpu", "EdgeCpuPct", edgeMetrics.getCpuPct());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-cpu", "EdgeCpuCoreTemp", edgeMetrics.getCpuCoreTemp());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-memory-pct", "EdgeMemoryPct", edgeMetrics.getMemoryPct());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-flow-count", "EdgeFlowCnt", edgeMetrics.getFlowCount());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-queue-drops", "EdgeQueueDrops", edgeMetrics.getHandoffQueueDrops());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel", "EdgeTunnelCnt", edgeMetrics.getTunnelCount());
+        addAggregate(edgeAttrBuilder, "velocloud-edge-tunnel", "EdgeTunnelCntV6", edgeMetrics.getTunnelCountV6());
 
         final ImmutableCollectionSet.Builder resultBuilder = ImmutableCollectionSet.newBuilder();
         resultBuilder.addCollectionSetResource(edgeAttrBuilder.build());
@@ -121,9 +121,9 @@ public class VelocloudEdgeCollector extends AbstractVelocloudServiceCollector {
                                     .setInstance(appTraffic.getName())
                                     .build())
                             .addStringAttribute(createStringAttribute("velocloud-app", "application", appTraffic.getName()))
-                            .addStringAttribute(createStringAttribute("velocloud-app", "edge", edge.get().name));
+                            .addStringAttribute(createStringAttribute("velocloud-app", "edgeName", edge.get().name));
 
-            addTraffic(appResourceBuilder, "velocloud-app-traffic", appTraffic.getName(), appTraffic.getTraffic(), milliseconds);
+            addTraffic(appResourceBuilder, "velocloud-app-traffic", "", appTraffic.getTraffic(), milliseconds);
 
             resultBuilder.addCollectionSetResource(appResourceBuilder.build());
         });

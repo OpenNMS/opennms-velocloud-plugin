@@ -99,7 +99,7 @@ public abstract class AbstractVelocloudServiceCollector implements VelocloudServ
         if(aggregate != null) {
             addNumAttr(builder, groupId, prefix + "Min", aggregate.getMin());
             addNumAttr(builder, groupId, prefix + "Max", aggregate.getMax());
-            addNumAttr(builder, groupId, prefix + "Average", aggregate.getAverage());
+            addNumAttr(builder, groupId, prefix + "Avg", aggregate.getAverage());
         }
     }
 
