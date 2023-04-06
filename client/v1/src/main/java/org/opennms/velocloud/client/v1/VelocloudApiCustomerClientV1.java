@@ -613,7 +613,7 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                     .withName(item.getName())
                     .withTraffic(Traffic.builder()
                             .withBytesRx(item.getBytesRx())
-                            .withBytesRx(item.getBytesTx())
+                            .withBytesTx(item.getBytesTx())
                             .withPacketsRx(item.getPacketsRx())
                             .withPacketsTx(item.getPacketsTx())
                             .build())
