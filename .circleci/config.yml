@@ -159,13 +159,13 @@ jobs:
           committer_email: "cicd-system@opennms.com"
           committer_name: "CI/CD System"
           from: release-1.x
-          to: master
+          to: main
 
       # make sure the build passes after merge
       - build
 
       - run:
           name: "Push to Main"
-          command: git push --no-verify origin master:master
+          command: git push --no-verify origin main:main
 
 
