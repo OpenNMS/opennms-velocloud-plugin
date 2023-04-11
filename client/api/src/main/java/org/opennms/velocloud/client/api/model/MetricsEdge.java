@@ -202,6 +202,7 @@ public class MetricsEdge {
                 .add("tunnelCountV6", tunnelCountV6)
                 .add("trafficApplications", trafficApplications)
                 .add("trafficSources", trafficSources)
+                .add("trafficDestinations", trafficDestinations)
                 .add("scoreAfterOptimization", scoreAfterOptimization)
                 .add("timestamp", timestamp)
                 .toString();
