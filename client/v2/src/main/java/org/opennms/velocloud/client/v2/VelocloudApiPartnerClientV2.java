@@ -36,6 +36,7 @@ import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.model.Customer;
 import org.opennms.velocloud.client.api.model.Edge;
 import org.opennms.velocloud.client.api.model.Gateway;
+import org.opennms.velocloud.client.api.model.MetricsGateway;
 import org.opennms.velocloud.client.api.model.PartnerEvent;
 import org.opennms.velocloud.client.v2.api.AlertsApi;
 import org.opennms.velocloud.client.v2.api.ApplicationMapsApi;
@@ -102,6 +103,11 @@ public class VelocloudApiPartnerClientV2 extends ApiClient implements VelocloudA
 
     @Override
     public List<Edge> getEdgeAssignments(int gatewayId) throws VelocloudApiException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public MetricsGateway getGatewayMetrics(int gatewayId, int intervalMillis) throws VelocloudApiException {
         throw new UnsupportedOperationException();
     }
 }

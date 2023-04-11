@@ -58,7 +58,8 @@
         <log4j.version>2.17.2</log4j.version>
         <metrics.version>4.1.12.1</metrics.version>
         <mockito.version>2.18.0</mockito.version>
-        <opennms.api.version>1.3.0</opennms.api.version>
+        <!--TODO replace with 1.4.0-SNAPSHOT later-->
+        <opennms.api.version>1.4.0</opennms.api.version>
         <osgi.version>7.0.0</osgi.version>
         <osgi.compendium.version>5.0.0</osgi.compendium.version>
         <osgi.enterprise.version>5.0.0</osgi.enterprise.version>

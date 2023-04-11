@@ -4,7 +4,6 @@
     <feature name="opennms-plugins-velocloud" description="OpenNMS :: Plugins :: Velocloud Intergration" version="${project.version}">
         <feature dependency="true">aries-blueprint</feature>
         <feature dependency="true">shell</feature>
-        <feature version="${opennms.api.version}" dependency="true">opennms-integration-api</feature>
         <feature version="${guava.version}" dependency="true">guava</feature>
         <feature version="${snakeyaml.version}" dependency="true">snakeyaml</feature>
 
@@ -41,6 +40,8 @@
         <feature version="${jackson.version}" dependency="true">jackson</feature>
         <feature version="${guava.version}" dependency="true">guava</feature>
 
+        <feature version="${opennms.api.version}" dependency="true">opennms-integration-api</feature>
+
         <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.version}</bundle>
 
         <bundle dependency="true">mvn:javax.ws.rs/javax.ws.rs-api/2.1.1</bundle>
@@ -64,6 +65,8 @@
 
         <feature version="${jackson.version}" dependency="true">jackson</feature>
         <feature version="${guava.version}" dependency="true">guava</feature>
+
+        <feature version="${opennms.api.version}" dependency="true">opennms-integration-api</feature>
 
         <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.version}</bundle>
 

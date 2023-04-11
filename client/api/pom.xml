@@ -33,5 +33,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opennms.integration.api</groupId>
+            <artifactId>api</artifactId>
+            <version>${opennms.api.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

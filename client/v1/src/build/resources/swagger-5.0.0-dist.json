@@ -33276,9 +33276,6 @@
         "id": {
           "type": "integer"
         },
-        "knownIpPortMapping": {
-          "$ref": "#/definitions/ip_port_mapping"
-        },
         "protocolPortMapping": {
           "$ref": "#/definitions/protocol_port_mapping"
         }
@@ -33721,17 +33718,16 @@
         "applicationToApplicationClass": {
           "allOf": [
             {
-              "$ref": "#/definitions/id_map_one_to_many"
+              "$ref": "#/definitions/id_map_one_to_one"
             }
           ],
           "description": "Maps application IDs (strings) to class IDs (integers)"
         },
         "applicationClasses": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/id_map_one_to_one"
-            }
-          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
           "description": "Map of application class IDs to class names"
         },
         "applications": {
@@ -42112,7 +42108,10 @@
     },
     "id_map_one_to_many": {
       "additionalProperties": {
-        "type": "integer"
+        "type": "array",
+        "items": {
+          "type": "integer"
+        }
       },
       "type": "object"
     },
@@ -42165,11 +42164,6 @@
     },
     "link_quality_event_get_link_quality_events_result": {
       "type": "object",
-      "properties": {
-        "overallLinkQuality": {
-          "$ref": "#/definitions/link_quality_object"
-        }
-      },
       "additionalProperties": {
         "$ref": "#/definitions/link_quality_object"
       }
@@ -42649,7 +42643,7 @@
               "type": "integer"
             },
             "name": {
-              "type": "integer"
+              "type": "string"
             },
             "linkId": {
               "type": "integer"
