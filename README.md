@@ -1,4 +1,4 @@
-# OpenNMS Velocloud Integration Plugin [![CircleCI](https://circleci.com/gh/OpenNMS/opennms-velocloud-plugin.svg?style=svg)](https://circleci.com/gh/OpenNMS/opennms-velocloud-plugin)
+# OpenNMS Velocloud Integration Plugin [![CircleCI](https://circleci.com/gh/OpenNMS/opennms-velocloud-plugin/tree/release-1.x.svg?style=svg)](https://circleci.com/gh/OpenNMS/opennms-velocloud-plugin)
 
 
 Build and install the plugin into your local Maven repository using:
