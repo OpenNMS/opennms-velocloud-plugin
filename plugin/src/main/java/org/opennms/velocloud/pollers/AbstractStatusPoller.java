@@ -53,10 +53,10 @@ import com.google.common.collect.ImmutableMap;
 public abstract class AbstractStatusPoller implements ServicePoller {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractStatusPoller.class);
 
-    private static final String ATTR_ALIAS = "alias";
+    public static final String ATTR_ALIAS = "alias";
 
-    private static final String ATTR_ORCHESTRATOR_URL = "orchestratorUrl";
-    private static final String ATTR_API_KEY = "apiKey";
+    public static final String ATTR_ORCHESTRATOR_URL = "orchestratorUrl";
+    public static final String ATTR_API_KEY = "apiKey";
 
     private final ClientManager clientManager;
 
@@ -109,6 +109,9 @@ public abstract class AbstractStatusPoller implements ServicePoller {
             return this.clazz.getCanonicalName();
         }
 
+
+
+        //TODO get this to my factory
         @Override
         public final Map<String, String> getRuntimeAttributes(final PollerRequest pollerRequest) {
             final var alias = Objects.requireNonNull(pollerRequest.getPollerAttributes().get(ATTR_ALIAS), "Missing property: " + ATTR_ALIAS);

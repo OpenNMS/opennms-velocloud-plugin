@@ -29,6 +29,9 @@
 package org.opennms.velocloud.client.v1;
 
 import java.net.URI;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
@@ -40,6 +43,7 @@ import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterprise;
 import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseResult;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyProperty;
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyPropertyResult;
+import org.opennms.velocloud.client.v1.model.Interval;
 
 public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
 
@@ -55,6 +59,29 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
      */
     public static final String AUTH_HEADER_PREFIX = "Token";
     public static final String PATH = "portal/rest";
+    private final int delayInMilliseconds;
+
+    public static Interval getInterval(long intervalMillis, int delayInMilliseconds) {
+        // to increase cache usage we align time either to 10s, 5s, 1s, 100ms or 10ms when the interval is big enough
+        final long millis = Instant.now().toEpochMilli() - delayInMilliseconds;
+        final Instant end;
+        if (intervalMillis > 10_000) {
+            end = Instant.ofEpochMilli(millis / 10_000 * 10_000);
+        } else if (intervalMillis > 5_000) {
+            end = Instant.ofEpochMilli(millis / 5_000 * 5_000);
+        } else if (intervalMillis > 1_000) {
+            end = Instant.ofEpochMilli(millis / 1_000 * 1_000);
+        } else if (intervalMillis > 100) {
+            end = Instant.ofEpochMilli(millis / 100 * 100);
+        } else if (intervalMillis > 10) {
+            end = Instant.ofEpochMilli(millis / 10 * 10);
+        } else {
+            end = Instant.ofEpochMilli(millis);
+        }
+        return new Interval()
+                .end(OffsetDateTime.ofInstant(end, ZoneId.systemDefault()))
+                .start(OffsetDateTime.ofInstant(end.minusMillis(intervalMillis),ZoneId.systemDefault()));
+    }
 
     public static AllApi connectApi(final VelocloudApiClientCredentials credentials) {
         final var client = new ApiClient();
@@ -67,8 +94,12 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
 
     private final ApiCache executor;
 
-    public VelocloudApiClientProviderV1(ApiCache executor) {
+    public VelocloudApiClientProviderV1(ApiCache executor, int delayInMinutes) {
         this.executor = executor;
+        if (delayInMinutes <= 0 ) {
+            throw new IllegalArgumentException("Delay must be bigger than 0");
+        }
+        this.delayInMilliseconds = delayInMinutes * 60 * 1000;
     }
 
     @Override
@@ -80,7 +111,7 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                                                              .getEnterpriseProxyId())
                                               .orElseThrow(() -> new VelocloudApiException("Not a partner account"));
 
-        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId);
+        return new VelocloudApiPartnerClientV1(api, enterpriseProxyId, delayInMilliseconds);
     }
 
     @Override
@@ -91,6 +122,6 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
                                                               new EnterpriseGetEnterprise())
                                                         .getId())
                                          .orElseThrow(() -> new VelocloudApiException("Not a customer account"));
-        return new VelocloudApiCustomerClientV1(api, enterpriseId);
+        return new VelocloudApiCustomerClientV1(api, enterpriseId, delayInMilliseconds);
     }
 }

@@ -144,8 +144,41 @@
         </bean>
     </service>
 
+    <!--  Collection -->
+    <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
+        <bean class="org.opennms.velocloud.collection.edge.VelocloudEdgeCollectorFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+        </bean>
+    </service>
+    <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
+        <bean class="org.opennms.velocloud.collection.link.VelocloudLinkCollectorFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+        </bean>
+    </service>
+    <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
+        <bean class="org.opennms.velocloud.collection.gateway.VelocloudGatewayCollectorFactory">
+            <argument ref="clientManager"/>
+            <argument ref="connectionManager"/>
+        </bean>
+    </service>
+
     <!-- Configuration -->
     <bean id="velocloudPollerConfig" class="org.opennms.velocloud.configuration.VelocloudPollerConfigurationExtension"/>
     <service ref="velocloudPollerConfig"
              interface="org.opennms.integration.api.v1.config.poller.PollerConfigurationExtension"/>
+
+    <bean id="velocloudCollectorConfig" class="org.opennms.velocloud.configuration.VelocloudCollectorConfigurationExtension"/>
+    <service ref="velocloudCollectorConfig"
+             interface="org.opennms.integration.api.v1.config.collector.CollectorConfigurationExtension"/>
+
+    <service interface="org.opennms.integration.api.v1.config.datacollection.graphs.GraphPropertiesExtension">
+        <bean class="org.opennms.velocloud.configuration.VelocloudGraphPropertiesExtension"/>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.config.datacollection.ResourceTypesExtension">
+        <bean class="org.opennms.velocloud.collection.VelocloudResourceTypesExtension"/>
+    </service>
+
 </blueprint>

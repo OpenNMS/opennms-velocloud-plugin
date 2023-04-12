@@ -109,7 +109,6 @@ public class ApiCache {
             } catch (final Exception e) {
                 throw new VelocloudApiException("Failed to execute API call: " + desc, e);
             }
-
         }
     }
 

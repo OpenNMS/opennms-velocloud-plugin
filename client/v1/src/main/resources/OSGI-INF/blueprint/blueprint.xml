@@ -4,16 +4,25 @@
 
     <cm:property-placeholder id="velocloudProperties" persistent-id="org.opennms.velocloud" update-strategy="reload">
         <cm:default-properties>
-            <cm:property name="client.cache.duration" value="300000"/>
+
+            <!-- Use cache duration a bit smaller than all sampling intervals specified in collectd-configuration.xml
+            Default value is 300_000 (5 minutes) -->
+            <cm:property name="velocloud.client.cache.duration" value="290000"/>
+
+            <!-- Velocloud V1 can only provide data with some delay. E.g collecting data for last 5 minutes does not work.
+            But it works for [now()-15min .. now()-10min]. So we need a delay here-->
+            <cm:property name="velocloud.collection.delay.minutes" value="10"/>
+
         </cm:default-properties>
     </cm:property-placeholder>
 
     <bean id="cache" class="org.opennms.velocloud.client.v1.ApiCache">
-        <argument value="${client.cache.duration}"/>
+        <argument value="${velocloud.client.cache.duration}"/>
     </bean>
 
     <bean id="clientProvider" class="org.opennms.velocloud.client.v1.VelocloudApiClientProviderV1">
         <argument ref="cache"/>
+        <argument value="${velocloud.collection.delay.minutes}"/>
     </bean>
 
     <service ref="clientProvider" interface="org.opennms.velocloud.client.api.VelocloudApiClientProvider"/>
