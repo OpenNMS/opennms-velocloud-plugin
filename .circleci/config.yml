@@ -79,7 +79,7 @@ workflows:
               ignore: /.*/     
       - merge:
           requires:
-            - test
+            - tests
           filters:
             branches:
               only:
