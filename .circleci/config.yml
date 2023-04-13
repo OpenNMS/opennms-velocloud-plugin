@@ -31,6 +31,23 @@ commands:
               else
                 git checkout --force -B "${CIRCLE_BRANCH}" "${CIRCLE_SHA1}"
               fi
+  build:
+    description: "Build Velocloud Plugin"
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Compile source without tests
+          command: |
+            mvn -DskipITs=true -DskipTests=true clean install
+            mkdir ~/output
+            find ~/project -type f -regex ".*.kar" -exec cp {} ~/output \;
+      - store_artifacts:
+          path: ~/output
+          destination: artifact-file
 
 workflows:
   build-deploy:
@@ -74,20 +91,7 @@ jobs:
     executor: build-executor
     steps:
       - shallow-clone
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run:
-          name: Compile source without tests
-          command: |
-            mvn -DskipITs=true -DskipTests=true clean install
-            mkdir ~/output
-            find ~/project -type f -regex ".*.kar" -exec cp {} ~/output \;
-      - store_artifacts:
-          path: ~/output
-          destination: artifact-file
+      - build
       - save_cache:
           paths:
             - ~/.m2
