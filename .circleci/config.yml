@@ -3,7 +3,7 @@ version: 2.1
 executors:
   build-executor:
     docker:
-      - image: cimg/openjdk:11.0.13
+      - image: cimg/openjdk:11.0
         environment:
           MAVEN_OPTS: -Xmx1g
 
@@ -91,6 +91,16 @@ jobs:
     executor: build-executor
     steps:
       - shallow-clone
+      - run:
+          name: Check releasability
+          command: |
+            curl -L -O https://raw.githubusercontent.com/OpenNMS/opennms-repo/master/script/release-lint.sh
+            chmod 755 release-lint.sh
+            if [ -z "${CIRCLE_TAG}" ]; then
+              ./release-lint.sh -w
+            else
+              ./release-lint.sh
+            fi
       - build
       - save_cache:
           paths:
