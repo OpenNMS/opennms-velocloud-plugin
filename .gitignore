@@ -29,3 +29,12 @@ yarn-error.log
 # Antora artifacts
 /build/
 /public/
+pom.xml.versionsBackup
+assembly/pom.xml.versionsBackup
+assembly/kar/pom.xml.versionsBackup
+client/pom.xml.versionsBackup
+client/api/pom.xml.versionsBackup
+client/v1/pom.xml.versionsBackup
+client/v2/pom.xml.versionsBackup
+karaf-features/pom.xml.versionsBackup
+plugin/pom.xml.versionsBackup

@@ -10,6 +10,8 @@ executors:
 orbs:
   cloudsmith: cloudsmith/cloudsmith@1.0.5
   sign-packages: opennms/sign-packages@2.3.0
+  branch-management: opennms/branch-management@2.3.0
+
 
 workflows:
   build-deploy:
@@ -39,6 +41,14 @@ workflows:
                 - /^v.*/
             branches:
               ignore: /.*/     
+      #- merge:
+      #    requires:
+      #      - test
+      #    filters:
+      #      branches:
+      #        only:
+      #         - /^release-.*/
+
 
 jobs:
   build:
@@ -133,4 +143,29 @@ jobs:
 
               gh release upload $tag ~/output/*.kar
             fi
+
+  merge:
+    executor: build-executor
+    environment:
+      MAVEN_OPTS: -Xmx1024m
+
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "27:c8:b4:c2:27:cf:78:ae:5f:1f:3a:ee:d7:bb:e8:ca"
+
+      - cached-checkout
+      - branch-management/merge-branch:
+          committer_email: "cicd-system@opennms.com"
+          committer_name: "CI/CD System"
+          from: release-1.x
+          to: main
+
+      # make sure the build passes after merge
+      - build
+
+      - run:
+          name: "Push to Main"
+          command: git push --no-verify origin main:main
+
 
