@@ -13,6 +13,25 @@ orbs:
   branch-management: opennms/branch-management@2.3.0
 
 
+commands:
+  shallow-clone:
+      description: "Quick shallow checkout (if possible)"
+      steps:
+        - run:
+            name: git clone
+            command: |
+              install -d -m 700 ~/.ssh
+              ssh-keyscan github.com >> ~/.ssh/known_hosts
+              ssh-keyscan -p 443 ssh.github.com >> ~/.ssh/known_hosts
+              chmod 600 ~/.ssh/known_hosts
+              git clone --no-checkout --filter=tree:0 "${CIRCLE_REPOSITORY_URL}" .
+              if [ -n "${CIRCLE_TAG}" ]; then
+                git checkout --force "${CIRCLE_TAG}"
+                git reset --hard "${CIRCLE_SHA1}"
+              else
+                git checkout --force -B "${CIRCLE_BRANCH}" "${CIRCLE_SHA1}"
+              fi
+
 workflows:
   build-deploy:
     jobs:
@@ -54,7 +73,7 @@ jobs:
   build:
     executor: build-executor
     steps:
-      - checkout
+      - shallow-clone
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
@@ -154,7 +173,7 @@ jobs:
           fingerprints:
             - "27:c8:b4:c2:27:cf:78:ae:5f:1f:3a:ee:d7:bb:e8:ca"
 
-      - cached-checkout
+      - shallow-clone
       - branch-management/merge-branch:
           committer_email: "cicd-system@opennms.com"
           committer_name: "CI/CD System"
