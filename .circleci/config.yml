@@ -41,13 +41,13 @@ workflows:
                 - /^v.*/
             branches:
               ignore: /.*/     
-      #- merge:
-      #    requires:
-      #      - test
-      #    filters:
-      #      branches:
-      #        only:
-      #         - /^release-.*/
+      - merge:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+               - /^release-.*/
 
 
 jobs:
