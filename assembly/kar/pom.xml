@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>kar</artifactId>
-    <name>OpenNMS :: Plugins :: Velocloud Intergration :: Assembly :: KAR</name>
+    <name>OpenNMS :: Plugins :: Velocloud Integration :: Assembly :: KAR</name>
     <packaging>kar</packaging>
 
     <build>

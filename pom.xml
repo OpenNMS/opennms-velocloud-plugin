@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>velocloud-plugin-parent</artifactId>
     <groupId>org.opennms.plugins.velocloud</groupId>
-    <name>OpenNMS :: Plugins :: Velocloud Intergration :: Parent</name>
+    <name>OpenNMS :: Plugins :: Velocloud Integration :: Parent</name>
     <url>https://github.com/OpenNMS/opennms-velocloud-plugin</url>
-    <description>Velocloud Intergration Plugin for OpenNMS</description>
+    <description>Velocloud Integration Plugin for OpenNMS</description>
     <packaging>pom</packaging>
 
     <licenses>

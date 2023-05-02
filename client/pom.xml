@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
 
     <artifactId>velocloud-client</artifactId>
-    <name>OpenNMS :: Plugins :: Velocloud Intergration :: Client</name>
+    <name>OpenNMS :: Plugins :: Velocloud Integration :: Client</name>
 
     <modules>
         <module>api</module>

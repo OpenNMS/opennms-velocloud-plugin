@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>karaf-features</artifactId>
-    <name>OpenNMS :: Plugins :: Velocloud Intergration :: Karaf Features</name>
+    <name>OpenNMS :: Plugins :: Velocloud Integration :: Karaf Features</name>
     <packaging>pom</packaging>
 
     <build>
