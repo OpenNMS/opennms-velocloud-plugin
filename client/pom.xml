@@ -6,7 +6,7 @@
     <parent>
         <artifactId>velocloud-plugin-parent</artifactId>
         <groupId>org.opennms.plugins.velocloud</groupId>
-        <version>1.0.2</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
     <packaging>pom</packaging>
 

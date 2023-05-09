@@ -1,5 +1,5 @@
 name: velocloud
-version: '1.0.2'
+version: '1.0.3-SNAPSHOT'
 title: Velocloud Plugin
 nav:
   - modules/ROOT/nav.adoc
