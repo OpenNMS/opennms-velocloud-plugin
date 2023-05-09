@@ -25,7 +25,7 @@ A customer requisition can be created using a partner connection alias by provid
 The following example demonstrates the creation of a customer requisition by using a partner alias and an additional ´enterpriseId` parameter with the value set to `123`.
 
 ```
-opennms:import-requisition velocloud-customer alias=aPartnerAlias,enterpriseId=123
+opennms:import-requisition velocloud-customer alias=aPartnerAlias enterpriseId=123
 ```
 
 You can specify an additional parameter, `foreignSource`, to set the foreign source and requisition name.
