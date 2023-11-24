@@ -1,9 +1,11 @@
 = Connections
 :imagesdir: ../assets/images
 
-First, we have to define the connections the plugin uses to connect to the Orchestrator. A connection consists of
-an orchestrator URL, an API key to authenticate against the orchestrator, and an alias used to reference it. Connections
-are saved internally in the Secure Credentials Vault.
+:description: Learn how to define connections to the orchestrator in OpenNMS Velocloud plugin, to monitor and collect events and performance metrics of Velocloud entities.
+
+First, we have to define the connections the plugin uses to connect to the orchestrator.
+A connection consists of an orchestrator URL, an API key to authenticate against the orchestrator, and an alias used to reference it.
+Connections are saved internally in the Secure Credentials Vault.
 
 You can use REST endpoints and Karaf shell commands to add, validate, and modify connections.
 
@@ -32,7 +34,7 @@ The plugin mounts all endpoints at the following location: `http://localhost:898
 | Description
 | Query Options
 | `/connections`
-| Validates the incoming credentials and saves the valid connection to SCV. 
+| Validates the incoming credentials and saves the valid connection to SCV.
 Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format.
 | *dryrun* - Do not save the connection.
 

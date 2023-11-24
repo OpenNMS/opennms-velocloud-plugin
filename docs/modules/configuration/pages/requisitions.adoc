@@ -1,13 +1,16 @@
 = Requisitions
 :imagesdir: ../assets/images
 
+:description: Learn how to create a requisition to import Velocloud gateways, edges, and links into OpenNMS Horizon/Meridian through the Velocloud plugin.
+
 In order to monitor the Velocloud gateways, edges, and links, you need to import these entities into OpenNMS.
 To do so, create a requisition for a given connection alias.
+
 A connection alias can represent a customer connection or a partner connection.
-While a customer connection only allows you to query for entities associated with the customer itself, a partner connection has access to top-level entities that are shared by customers.
+While a customer connection only allows you to query for entities associated with the customer itself, a partner connection has access to top-level entities that customers share.
 All nodes created by a requisition are assigned to the same location controlled by the `location' parameter, which uses the default location if not specified.
 
-Furthermore, a partner connection can also be used to import customer entities by providing the customer's `enterpriseId` as an additional parameter.
+Furthermore, you can also use a partner connection to import customer entities by providing the customer's `enterpriseId` as an additional parameter.
 
 Specify the requisition type `velocloud-customer` to import all entities of a customer connection:
 
@@ -21,7 +24,7 @@ Specify the requisition type `velocloud-partner` to import all entities of a par
 opennms:import-requisition velocloud-partner alias=aPartnerAlias location=utopia
 ```
 
-A customer requisition can be created using a partner connection alias by providing the `enterpriseId` as an additional parameter.
+Use a partner connection alias to create a customer requisition by providing the `enterpriseId` as an additional parameter.
 The following example demonstrates the creation of a customer requisition by using a partner alias and an additional ´enterpriseId` parameter with the value set to `123`.
 
 ```

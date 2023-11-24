@@ -3,7 +3,6 @@
 * xref:about:terminology.adoc[Terminology]
 
 .Installation
-* xref:installation:requirements.adoc[Requirements]
 * xref:installation:installation.adoc[Installation]
 
 .Configuration
@@ -18,5 +17,5 @@
 
 .Reference
 * xref:reference:config-properties.adoc[Config Properties]
-* xref:reference:endpoints.adoc[ReST Endpoints]
+* xref:reference:endpoints.adoc[REST Endpoints]
 * xref:reference:shell-commands.adoc[Useful Karaf Shell Commands]
