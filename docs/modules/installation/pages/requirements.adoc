@@ -1,4 +1,0 @@
-= Requirements
-:imagesdir: ../assets/images
-
-The OpenNMS Velocloud Plugin can only be used with OpenNMS Horizon 31+ or OpenNMS Meridian 2023+.

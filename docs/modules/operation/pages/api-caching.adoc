@@ -1,7 +1,9 @@
 = API Caching
 :imagesdir: ../assets/images
 
+:description: Learn how to adjust the cache retention period in OpenNMS Velocloud plugin.
+
 Access to the Velocloud Orchestrator REST APIs is rate limited for its clients.
-In order to respect these rate limits, we use caching on API calls.
+To respect these rate limits, we use caching on API calls.
 
 The cache retention period can be altered by modifying the `cache.retention` configuration property.

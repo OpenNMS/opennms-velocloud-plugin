@@ -1,20 +1,22 @@
 = Service Assurance
 :imagesdir: ../assets/images
 
+:description: Learn about the service monitors bound to imported Velocloud entities in OpenNMS Horizon/Meridian through the Velocloud plugin.
+
 Various service monitors will be bound to the imported Velocloud entities in OpenNMS:
 
-## Edges
+== Edges
 * Edge Connection Status Poller
 * Edge Service Status Poller
 * Edge Management Status Poller
 * Edge Path Status Poller
 * Edge Data Center Services Poller
 
-## Links
+== Links
 * Link Connection Status Poller
 * Link Service Status Poller
 * Link Tunnel Status Poller
 
-## Gateways
+== Gateways
 * Gateway Connection Status Poller
 * Gateway Service Status Poller

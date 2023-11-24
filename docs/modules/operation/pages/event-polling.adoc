@@ -1,8 +1,11 @@
 = Events
 :imagesdir: ../assets/images
 
+:description: View the event definitions the OpenNMS Velocloud plugin uses to associate collected events and entities in Horizon/Meridian.
+
 After installation, the plugin starts to collect events for the configured connections.
 These events will be associated with the corresponding entities in the OpenNMS system, using the following event definitions:
+
 ```
 <events xmlns="http://xmlns.opennms.org/xsd/eventconf">
     <event>

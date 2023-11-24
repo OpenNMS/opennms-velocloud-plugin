@@ -1,6 +1,8 @@
 = Useful Karaf Shell Commands
 :imagesdir: ../assets/images
 
+:description: View Karaf shell commands in the OpenNMS Velocloud plugin: add connections, list customers, and import requisition.
+
 == opennms-velocloud:connection-add
 
 Add a connection to a Velocloud Orchestrator.

@@ -1,6 +1,8 @@
 = Configuration Properties
 :imagesdir: ../assets/images
 
+:description: Learn how to set the event polling interval and the retention period for API calls in the OpenNMS Velocloud plugin.
+
 Some configuration properties let you fine-tune the plugin's behavior:
 
 .Configuration protperties for `org.opennms.velocloud`
