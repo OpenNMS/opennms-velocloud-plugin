@@ -46,7 +46,8 @@ Syntax: `opennms-velocloud:list-customers alias`
 |===
 
 .Example output for a partner connection `partnerAlias`
-```
+[source, shell]
+----
 admin@opennms()> list-customers partnerAlias
 ID  │ Name    │ Domain   │ Description
 ────┼─────────┼──────────┼──────────────────────────────────────────────────
@@ -54,7 +55,7 @@ ID  │ Name    │ Domain   │ Description
 486 │ CUSTA1  │ custa1   │ Customer A1
 516 │ CUSTB3  │ custb3   │ Customer B3
 admin@opennms()>
-```
+----
 
 == opennms:import-requisition
 
@@ -90,3 +91,8 @@ Use `velocloud-customer` for a customer connection and `velocloud-partner` for a
 Valid values : 'true', 'false', 'dbonly'
 
 |===
+
+== opennms:show-import
+
+This command takes the same parameters as the `import-requisition` command, though it will only simulate generating a requisition.
+The result will be displayed on the console and will not be sent to provisiond for processing.

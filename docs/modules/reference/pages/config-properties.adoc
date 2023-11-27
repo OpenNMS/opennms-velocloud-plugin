@@ -5,7 +5,7 @@
 
 Some configuration properties let you fine-tune the plugin's behavior:
 
-.Configuration protperties for `org.opennms.velocloud`
+.Configuration properties for `$\{OPENNMS_HOME}\etc\opennms.properties.d\velocloud.properties`
 [options="header, autowidth", cols="3,2,1"]
 |===
 
@@ -13,11 +13,11 @@ Some configuration properties let you fine-tune the plugin's behavior:
 | Description
 | Default
 
-| events.delay
+| org.opennms.velocloud.events.delay
 | Event polling interval in milliseconds
 | 300000 ms
 
-| cache.retention
+| org.opennms.velocloud.cache.retention
 | Retention cache for API calls in milliseconds
 | 3600000 ms
 
