@@ -7,60 +7,11 @@ First, we have to define the connections the plugin uses to connect to the orche
 A connection consists of an orchestrator URL, an API key to authenticate against the orchestrator, and an alias used to reference it.
 Connections are saved internally in the Secure Credentials Vault.
 
-You can use REST endpoints and Karaf shell commands to add, validate, and modify connections.
-
-== REST
+You can use Karaf shell commands and REST endpoints to add, validate, and modify connections.
 
 NOTE: By default, the plugin will validate new connections before saving them.
 Use the `force` query parameter to override this behavior.
 
-The plugin mounts all endpoints at the following location: `http://localhost:8980/opennms/rest/velocloud/`.
-
-=== GETs (retrieving data)
-[options="header, autowidth" cols="1,2"]
-|===
-| Resource
-| Description
-| `/connections`
-| Get a list of connections.
-| `/connections/\{alias}`
-| Validate an existing connection.
-|===
-
-=== POSTs (adding data)
-[options="header, autowidth" cols="1,2,2"]
-|===
-| Resource
-| Description
-| Query Options
-| `/connections`
-| Validates the incoming credentials and saves the valid connection to SCV.
-Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format.
-| *dryrun* - Do not save the connection.
-
-*force* - Do not validate the connection.
-|===
-
-=== PUTs (modifying data)
-[options="header, autowidth" cols="1,2,2"]
-|===
-| Resource
-| Description
-| Query Options
-| `/connections/\{alias}`
-| Edit an existing connection.
-Input requires `alias`, `orchestratorUrl`, and `apiKey` in JSON format.
-| *force* - Do not validate the connection.
-|===
-
-=== DELETE (deleting data)
-[options="header, autowidth" cols="1,2"]
-|===
-| Resource
-| Description
-| `/connections/\{alias}`
-| Delete an existing connection with specified alias.
-|===
 
 == Karaf
 .Connect to Karaf shell.
@@ -75,7 +26,7 @@ admin@opennms()> opennms-velocloud:connection-list --help
 DESCRIPTION
         opennms-velocloud:connection-list
 
-	List existing connections
+        List existing connections
 
 SYNTAX
         opennms-velocloud:connection-list
@@ -91,7 +42,7 @@ admin@opennms()> opennms-velocloud:connection-add --help
 DESCRIPTION
         opennms-velocloud:connection-add
 
-	Add a connection
+        Add a connection
 
 SYNTAX
         opennms-velocloud:connection-add [options] alias url apiKey
@@ -159,7 +110,7 @@ admin@opennms()> opennms-velocloud:connection-validate --help
 DESCRIPTION
         opennms-velocloud:connection-validate
 
-	Validate a connection
+        Validate a connection
 
 SYNTAX
         opennms-velocloud:connection-validate alias
@@ -180,7 +131,7 @@ admin@opennms()> opennms-velocloud:connection-delete --help
 DESCRIPTION
         opennms-velocloud:connection-delete
 
-	Deletee a connection
+        Delete a connection
 
 SYNTAX
         opennms-velocloud:connection-delete alias
@@ -194,11 +145,17 @@ DETAILS
         Deletes a connection to a velocloud orchestrator
 ----
 
+== REST
+
+See the reference section for information on the xref:reference:endpoints.adoc[REST endpoints].
+
 == Examples
 
-The following example adds a connection with the alias `theAlias` and assumes that the Orchestrator is reachable by the URL `https://my.velocloud.orchestrator.net` and the API-key is `tHiSiS.TheAP1Key`.
-```
+The following example adds a connection with the alias `theAlias` and assumes that the Orchestrator is reachable by the URL `\https://my.velocloud.orchestrator.net` and the API-key is `tHiSiS.TheAP1Key`.
+
+[source, shell]
+----
 admin@opennms()> opennms-velocloud:connection-add theAlias https://my.velocloud.orchestrator.net/ tHiSiS.TheAP1Key
-```
+----
 
 NOTE: If the connection represents a partner connection, you can list the associated customers by invoking `opennms-velocloud:list-customers aPartnerAlias`.

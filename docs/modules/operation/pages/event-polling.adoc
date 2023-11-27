@@ -6,7 +6,8 @@
 After installation, the plugin starts to collect events for the configured connections.
 These events will be associated with the corresponding entities in the OpenNMS system, using the following event definitions:
 
-```
+[source, xml]
+----
 <events xmlns="http://xmlns.opennms.org/xsd/eventconf">
     <event>
         <uei>uei.opennms.org/vendor/vmware/velocloud/proxyEvents</uei>
@@ -23,6 +24,6 @@ These events will be associated with the corresponding entities in the OpenNMS s
         <severity>Indeterminate</severity>
     </event>
 </events>
-```
+----
 
 The default polling interval is set to five minutes and can be modified by using the configuration property `events.delay`.
