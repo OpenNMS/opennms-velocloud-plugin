@@ -60,7 +60,7 @@ public class Link {
 
     private Link(final Builder builder) {
         this.id = Objects.requireNonNull(builder.id);
-        this.created = Objects.requireNonNull(builder.created);
+        this.created = builder.created;
         this.edgeId = Objects.requireNonNull(builder.edgeId);
         this.logicalId = Objects.requireNonNull(builder.logicalId);
         this.internalId = Objects.requireNonNull(builder.internalId);

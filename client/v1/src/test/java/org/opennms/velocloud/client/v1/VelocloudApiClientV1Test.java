@@ -29,37 +29,34 @@ package org.opennms.velocloud.client.v1;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.annotation.JSONP;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
-import org.opennms.velocloud.client.api.VelocloudApiException;
-import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.client.v1.api.AllApi;
-import org.opennms.velocloud.client.v1.handler.ApiException;
-import org.opennms.velocloud.client.v1.handler.JSON;
+import org.opennms.velocloud.client.v1.handler.ApiClient;
 import org.opennms.velocloud.client.v1.handler.auth.ApiKeyAuth;
-import org.opennms.velocloud.client.v1.model.EdgeRecord;
-import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseServices;
-import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseServicesResultItem;
-import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusBody;
-import org.opennms.velocloud.client.v1.model.MonitoringGetEnterpriseEdgeNvsTunnelStatusResultItem;
+import org.opennms.velocloud.client.v1.model.EnterpriseGetEnterpriseEdgesResultItem;
+import org.opennms.velocloud.client.v1.model.Link;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.common.collect.Lists;
 
 public class VelocloudApiClientV1Test {
     public static final String AUTH_HEADER_NAME = "Authorization";
@@ -95,5 +92,45 @@ public class VelocloudApiClientV1Test {
         auth.applyToParams(new ArrayList<>(), mapResult);
 
         assertEquals(mapResult.get(AUTH_HEADER_NAME), AUTH_HEADER_PREFIX + " " + key);
+    }
+
+    @Test
+    public void testDeserialization() throws Exception {
+        // prepare ApiClient
+        final VelocloudApiClientCredentials credentials = new VelocloudApiClientCredentials("orchestratorUrl", "apiKey");
+        final AllApi allApi = VelocloudApiClientProviderV1.connectApi(credentials);
+        final ApiClient apiClient = allApi.getApiClient();
+
+        // prepare invalid json data
+        final OffsetDateTime currentDate = OffsetDateTime.now();
+        final DateTimeFormatter customDateTimeFormatter = new DateTimeFormatterBuilder()
+                .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                .optionalStart()
+                .appendOffset("+HH:MM", "+00:00")
+                .optionalEnd()
+                .toFormatter();
+
+        final EnterpriseGetEnterpriseEdgesResultItem edge = new EnterpriseGetEnterpriseEdgesResultItem();
+        final Link link = new Link();
+        link.setCreated(currentDate);
+        edge.setLinks(Lists.newArrayList(link));
+
+        final ObjectMapper objectMapper = apiClient.getJSON().getContext(null);
+
+        final String originalJsonString = objectMapper.writeValueAsString(edge);
+        final String currentDateString = customDateTimeFormatter.format(currentDate);
+
+        assertTrue(originalJsonString.contains(currentDateString));
+
+        final String invalidDateString = "0000-00-00 00:00:00";
+        final String invalidJsonString = originalJsonString.replace(currentDateString, invalidDateString);
+
+        // check invalid created
+        final EnterpriseGetEnterpriseEdgesResultItem edgeInvalidCreated = objectMapper.readValue(invalidJsonString, EnterpriseGetEnterpriseEdgesResultItem.class);
+        assertNull(edgeInvalidCreated.getLinks().get(0).getCreated());
+
+        // check correct created
+        final EnterpriseGetEnterpriseEdgesResultItem edgeCorrectCreated = objectMapper.readValue(originalJsonString, EnterpriseGetEnterpriseEdgesResultItem.class);
+        assertNotNull(edgeCorrectCreated.getLinks().get(0).getCreated());
     }
 }
