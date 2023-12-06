@@ -1,7 +1,9 @@
 = REST Endpoints
 :imagesdir: ../assets/images
 
-Some RESTful endpoints are available for basic connection management.
+:description: Learn about the REST endpoints available for basic connection management in the OpenNMS Velocloud plugin.
+
+Some REST endpoints are available for basic connection management.
 
 NOTE: The `Content-Type` of the request and response is `application/json`.
 

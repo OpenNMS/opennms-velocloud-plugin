@@ -1,16 +1,18 @@
 = Terminology
 :imagesdir: ../assets/images
 
+:description: Learn some terms used with the OpenNMS Velocloud plugin, which lets you monitor the status and collect events and performance metrics of Velocloud entities.
+
 This section introduces some of the basic terms we use in this documentation.
 
 Partner:: A business entity that resells Velocloud as a solution.
 
 Customer:: A client of a partner.
 
-Orchestrator:: The Velocloud's SD-WAN controller, that hosts REST APIs, including endpoints to retrieve inventory, events, fault data, and performance data. 
+Orchestrator:: The Velocloud's SD-WAN controller, that hosts REST APIs, including endpoints to retrieve inventory, events, fault data, and performance data.
 It is used to manage gateways, edges, and links.
 
-Gateway:: The key components of the Velocloud multi-tenant, scalable, and redundant network that are deployed in cloud data centers around the world. 
+Gateway:: The key components of the Velocloud multi-tenant, scalable, and redundant network that are deployed in cloud data centers around the world.
 These network devices periodically send heartbeat packets and performance metrics to the Orchestrator.
 
 Edge:: A branded physical device that provides secure connectivity to private, public, or hybrid applications for a branch site.

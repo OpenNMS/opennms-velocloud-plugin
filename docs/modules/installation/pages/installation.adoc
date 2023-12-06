@@ -1,7 +1,12 @@
 = Installation
 :imagesdir: ../assets/images
 
-## Deployment via KAR file
+:description: Learn how to install the OpenNMS Velocloud plugin, which lets you monitor the status and collect events and performance metrics of Velocloud entities.
+
+== Requirements
+The OpenNMS Velocloud Plugin can be used only with OpenNMS Horizon 31+ or OpenNMS Meridian 2023+.
+
+== Deployment via KAR file
 
 The installation of the plugin is simple.
 Just copy the provided KAR file to your OpenNMS `deploy` directory.
@@ -19,9 +24,9 @@ admin@opennms()> feature:install opennms-plugins-velocloud
 
 After installation, Velocloud-specific Karaf commands are available to configure the plugin.
 
-## Deploy from source
+== Deploy from source
 
-After checking out the repository, you can build and install the plugin into your local Maven repository using:
+After checking out the repository, you can build and install the plugin into your local Maven repository using the following:
 
 ```
 $ mvn clean install
