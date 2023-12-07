@@ -7,33 +7,51 @@ In order to monitor the Velocloud gateways, edges, and links, you need to import
 To do so, create a requisition for a given connection alias.
 
 A connection alias can represent a customer connection or a partner connection.
-While a customer connection only allows you to query for entities associated with the customer itself, a partner connection has access to top-level entities that customers share.
-All nodes created by a requisition are assigned to the same location controlled by the `location' parameter, which uses the default location if not specified.
+While a customer connection only allows you to query for entities associated with that specific customer, a partner connection has access to top-level gateway entities that shared by multiple customers.
 
-Furthermore, you can also use a partner connection to import customer entities by providing the customer's `enterpriseId` as an additional parameter.
+You can use a partner connection to perform separate imports for individual customer entities by providing the customer's `enterpriseId` as an additional parameter.
+
+You can specify a `foreignSource` parameter to set a custom requisition name.
+
+All nodes created by a requisition are assigned to the same location, controlled by the `location` parameter.
+The default location will be used if not specified.
+
+
+IMPORTANT: The status of a connection alias being "partner" or "customer" is based on the scope of the API key used.
+
+== Examples
+
+=== Customer connection
 
 Specify the requisition type `velocloud-customer` to import all entities of a customer connection:
 
-```
+[source, shell]
+----
 opennms:import-requisition velocloud-customer alias=aCustomerAlias location=atlantis
-```
+----
 
-Specify the requisition type `velocloud-partner` to import all entities of a partner connection:
-
-```
-opennms:import-requisition velocloud-partner alias=aPartnerAlias location=utopia
-```
-
-Use a partner connection alias to create a customer requisition by providing the `enterpriseId` as an additional parameter.
-The following example demonstrates the creation of a customer requisition by using a partner alias and an additional ´enterpriseId` parameter with the value set to `123`.
-
-```
-opennms:import-requisition velocloud-customer alias=aPartnerAlias enterpriseId=123
-```
-
-You can specify an additional parameter, `foreignSource`, to set the foreign source and requisition name.
 The following example creates a customer requisition named `My-Customer-Requisition`.
 
-```
+[source, shell]
+----
 opennms:import-requisition velocloud-customer alias=aCustomerAlias foreignSource=My-Customer-Requisition
-```
+----
+
+=== Partner connection
+
+Specify the requisition type `velocloud-partner` to import all partner-level entities of a partner connection.
+This will import only gateway entities that apply to all customer instances.
+
+[source, shell]
+----
+opennms:import-requisition velocloud-partner alias=aPartnerAlias location=utopia
+----
+
+Use a partner connection alias to create a customer requisition by providing the `enterpriseId` as an additional parameter.
+This will import only entities that are specific to this customer.
+The following example demonstrates the creation of a customer requisition by using a partner alias and an additional `enterpriseId` parameter with the value set to `123`.
+
+[source, shell]
+----
+opennms:import-requisition velocloud-customer alias=aPartnerAlias enterpriseId=123
+----

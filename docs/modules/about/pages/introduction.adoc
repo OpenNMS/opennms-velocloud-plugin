@@ -3,11 +3,9 @@
 
 :description: Read a brief overview of the OpenNMS Velocloud plugin, which lets you monitor the status and collect events and performance metrics of Velocloud entities.
 
-The OpenNMS Velocloud Plugin lets you monitor the status and collect events and performance metrics of Velocloud entities.
+The OpenNMS Velocloud Plugin lets you monitor the status, and collect events and performance metrics, of Velocloud entities.
 
-After installing the plugin, you must use the Orchestrator URLs and associated API keys to add connections.
-After that, you can import the Velocloud entities into an OpenNMS requisition.
+After installing the plugin, you must define the Orchestrator URLs and associated API keys as connections on your OpenNMS Meridian/Horizon instance.
+After that, you can import Velocloud entities into OpenNMS requisition(s).
 Services will be bound for gateways, edges, and links.
-It then collects these events and associates them with nodes in OpenNMS, as well as collecting performance metrics.
-The next section gives a brief overview of basic Velocloud terminology.
-Installation and configuration procedures follow in the next sections.
+The plugin then start collecting events and associating them with nodes in OpenNMS, as well as collecting performance metrics.
