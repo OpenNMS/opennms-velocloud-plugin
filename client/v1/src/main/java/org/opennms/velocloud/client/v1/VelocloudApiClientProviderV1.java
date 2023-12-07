@@ -45,6 +45,8 @@ import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyPr
 import org.opennms.velocloud.client.v1.model.EnterpriseProxyGetEnterpriseProxyPropertyResult;
 import org.opennms.velocloud.client.v1.model.Interval;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider {
 
     public final static ApiCache.Endpoint<EnterpriseProxyGetEnterpriseProxyProperty, EnterpriseProxyGetEnterpriseProxyPropertyResult>
@@ -89,6 +91,10 @@ public class VelocloudApiClientProviderV1 implements VelocloudApiClientProvider 
         client.setBasePath(URI.create(url).resolve(PATH).toString());
         client.setApiKeyPrefix(AUTH_HEADER_PREFIX);
         client.setApiKey(credentials.apiKey);
+
+        final ObjectMapper objectMapper = client.getJSON().getContext(null);
+        objectMapper.addHandler(new CustomDeserializationProblemHandler());
+
         return new AllApi(client);
     }
 
