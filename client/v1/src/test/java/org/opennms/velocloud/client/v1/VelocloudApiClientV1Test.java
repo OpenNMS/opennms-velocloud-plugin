@@ -35,10 +35,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
@@ -100,13 +102,12 @@ public class VelocloudApiClientV1Test {
         final VelocloudApiClientCredentials credentials = new VelocloudApiClientCredentials("orchestratorUrl", "apiKey");
         final AllApi allApi = VelocloudApiClientProviderV1.connectApi(credentials);
         final ApiClient apiClient = allApi.getApiClient();
-
         // prepare invalid json data
-        final OffsetDateTime currentDate = OffsetDateTime.now();
+        final OffsetDateTime currentDate = OffsetDateTime.now(ZoneId.of("Etc/UTC"));
         final DateTimeFormatter customDateTimeFormatter = new DateTimeFormatterBuilder()
                 .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                 .optionalStart()
-                .appendOffset("+HH:MM", "+00:00")
+                .appendOffset("+HH:MM", "Z")
                 .optionalEnd()
                 .toFormatter();
 
