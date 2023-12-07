@@ -9,7 +9,7 @@ To do so, create a requisition for a given connection alias.
 A connection alias can represent a customer connection or a partner connection.
 While a customer connection only allows you to query for entities associated with that specific customer, a partner connection has access to top-level gateway entities that shared by multiple customers.
 
-You can use a partner connection to performance separate imports for individual customer entities by providing the customer's `enterpriseId` as an additional parameter.
+You can use a partner connection to perform separate imports for individual customer entities by providing the customer's `enterpriseId` as an additional parameter.
 
 You can specify a `foreignSource` parameter to set a custom requisition name.
 
