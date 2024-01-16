@@ -40,16 +40,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.opennms.velocloud.client.api.VelocloudApiClientCredentials;
 import org.opennms.velocloud.client.v1.api.AllApi;
 import org.opennms.velocloud.client.v1.handler.ApiClient;
@@ -133,5 +126,23 @@ public class VelocloudApiClientV1Test {
         // check correct created
         final EnterpriseGetEnterpriseEdgesResultItem edgeCorrectCreated = objectMapper.readValue(originalJsonString, EnterpriseGetEnterpriseEdgesResultItem.class);
         assertNotNull(edgeCorrectCreated.getLinks().get(0).getCreated());
+    }
+
+    @Test
+    public void testGetState() {
+        final ApiCache.Api api = mock(ApiCache.Api.class);
+        final VelocloudApiCustomerClientV1 client = new VelocloudApiCustomerClientV1(api, 0, 0);
+        String json = "{ \"primary\": \"foo\", \"secondary\":\"bar\"}";
+        assertEquals(client.getState(json, "primary"), "foo");
+        assertEquals(client.getState(json, "secondary"), "bar");
+        json = "{ \"secondary\":\"bar\"}";
+        assertEquals(client.getState(json, "primary"), null);
+        assertEquals(client.getState(json, "secondary"), "bar");
+        json = "";
+        assertEquals(client.getState(json, "primary"), null);
+        assertEquals(client.getState(json, "secondary"), null);
+        json = null;
+        assertEquals(client.getState(json, "primary"), null);
+        assertEquals(client.getState(json, "secondary"), null);
     }
 }
