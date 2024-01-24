@@ -6,17 +6,17 @@
 Various service monitors will be bound to the imported Velocloud entities in OpenNMS:
 
 == Edges
-* Edge Connection Status Poller
-* Edge Service Status Poller
-* Edge Management Status Poller
-* Edge Path Status Poller
-* Edge Data Center Services Poller
+Edge Connection Status Poller:: Checks if the edge is connected to a super gateway.
+Edge Service Status Poller:: Checks if the edge service state is `in_service`.
+Edge Management Status Poller:: Checks if the edge state is `connected`.
+Edge Path Status Poller:: Checks if all edge paths are in a `stable` or `standby` state.
+Edge Data Center Services Poller:: Checks if the datacenter is in a `stable` state.
 
 == Links
-* Link Connection Status Poller
-* Link Service Status Poller
-* Link Tunnel Status Poller
+Link Connection Status Poller:: Checks if the link state is `stable`.
+Link Service Status Poller:: Checks if the link state is `in_service`.
+Link Tunnel Status Poller:: Checks if the tunnel state is `up`.
 
 == Gateways
-* Gateway Connection Status Poller
-* Gateway Service Status Poller
+Gateway Connection Status Poller:: Checks if the gateway state is `connected`.
+Gateway Service Status Poller:: Checks if the gateway state is `in_service`.
