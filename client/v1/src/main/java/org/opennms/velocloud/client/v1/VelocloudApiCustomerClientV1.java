@@ -112,6 +112,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 
 public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient {
 
@@ -400,10 +401,16 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                 .findFirst();
     }
 
-    private String getState(final String status, final String key) {
+    String getState(final String status, final String key) {
+        if (Strings.isNullOrEmpty(status)) {
+            return null;
+        }
         final ObjectMapper mapper = new ObjectMapper();
         try {
             final JsonNode node = mapper.readTree(status);
+            if (node == null || node.get(key) == null) {
+                return null;
+            }
             return node.get(key).asText();
         } catch (JsonProcessingException e) {
             return null;
