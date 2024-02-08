@@ -316,7 +316,7 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                 for(final CloudService cloudService : cloudServicesOnLink) {
                     final var service = ImmutableRequisitionMonitoredService
                             .newBuilder()
-                            .setName(String.format("VelocloudTunnel-%s-%s", cloudService.name, cloudService.role))
+                            .setName(String.format("VelocloudTunnel-%s-%s-%s", link._interface, cloudService.name, cloudService.role, link.id))
                             .addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                     .setContext(VELOCLOUD_METADATA_CONTEXT)
                                     .setKey("edgeId")
