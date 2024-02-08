@@ -65,7 +65,7 @@ public class PathStatusPoller extends AbstractStatusPoller {
     }
 
     private PollerResult poll(final Path path) {
-        if (path.pathCountStable + path.pathCountStandBy == path.pathCountTotal) {
+        if (path.pathCountStable > 0) {
             return ImmutablePollerResult.newBuilder()
                     .setStatus(Status.Up)
                     .build();
