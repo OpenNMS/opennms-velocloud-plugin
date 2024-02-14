@@ -153,6 +153,15 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>4.4.5</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <skip>${skipTests}</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>4.2.1</version>
