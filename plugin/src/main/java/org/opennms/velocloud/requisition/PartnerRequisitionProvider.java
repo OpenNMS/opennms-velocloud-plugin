@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -44,8 +44,6 @@ import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
 
 public class PartnerRequisitionProvider extends AbstractRequisitionProvider<PartnerRequisitionProvider.Request> {
     private static final Logger LOG = LoggerFactory.getLogger(PartnerRequisitionProvider.class);
@@ -132,7 +130,7 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
                                                              .setKey("description")
                                                              .setValue(gateway.description)
                                                              .build());
-                if (!Strings.isNullOrEmpty(gateway.dnsName)) {
+                if (!Objects.toString(gateway.dnsName, "").isBlank()) {
                     node.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                                  .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                                  .setKey("dnsName")
@@ -171,14 +169,14 @@ public class PartnerRequisitionProvider extends AbstractRequisitionProvider<Part
 
                 node.addInterface(iface.build());
 
-                node.addAsset("description", Strings.nullToEmpty(gateway.description));
-                node.addAsset("operatingSystem", Strings.isNullOrEmpty(gateway.softwareVersion) ? "" : String.format("VMware SD-WAN %s", gateway.softwareVersion));
-                node.addAsset("address1", Strings.nullToEmpty(gateway.address));
-                node.addAsset("address2", Strings.nullToEmpty(gateway.address2));
-                node.addAsset("city", Strings.nullToEmpty(gateway.city));
-                node.addAsset("state", Strings.nullToEmpty(gateway.state));
-                node.addAsset("zip", Strings.nullToEmpty(gateway.zip));
-                node.addAsset("country", Strings.nullToEmpty(gateway.country));
+                node.addAsset("description", Objects.toString(gateway.description, ""));
+                node.addAsset("operatingSystem", (gateway.softwareVersion == null || gateway.softwareVersion.isBlank()) ? "" : String.format("VMware SD-WAN %s", gateway.softwareVersion));
+                node.addAsset("address1", Objects.toString(gateway.address, ""));
+                node.addAsset("address2", Objects.toString(gateway.address2, ""));
+                node.addAsset("city", Objects.toString(gateway.city, ""));
+                node.addAsset("state", Objects.toString(gateway.state, ""));
+                node.addAsset("zip", Objects.toString(gateway.zip, ""));
+                node.addAsset("country", Objects.toString(gateway.country, ""));
 
                 if (gateway.longitude != null) {
                     node.addAsset("longitude", String.valueOf(gateway.longitude));

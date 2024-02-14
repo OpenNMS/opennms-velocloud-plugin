@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,8 +26,6 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 package org.opennms.velocloud.client.api.model;
-
-import com.google.common.base.Strings;
 
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -60,22 +58,22 @@ public class Customer {
         this.id = Objects.requireNonNull(builder.id);
         this.networkId = Objects.requireNonNull(builder.networkId);
         this.gatewayPoolId = Objects.requireNonNull(builder.gatewayPoolId);
-        this.bastionState = Strings.nullToEmpty(builder.bastionState);
+        this.bastionState = Objects.toString(builder.bastionState, "");
         this.alertsEnabled = Objects.requireNonNull(builder.alertsEnabled);
         this.operatorAlertsEnabled = Objects.requireNonNull(builder.operatorAlertsEnabled);
-        this.name = Strings.nullToEmpty(builder.name);
-        this.domain = Strings.nullToEmpty(builder.domain);
-        this.accountNumber = Strings.nullToEmpty(builder.accountNumber);
-        this.description = Strings.nullToEmpty(builder.description);
-        this.address = Strings.nullToEmpty(builder.address);
-        this.city = Strings.nullToEmpty(builder.city);
-        this.state = Strings.nullToEmpty(builder.state);
-        this.zip = Strings.nullToEmpty(builder.zip);
-        this.country = Strings.nullToEmpty(builder.country);
+        this.name = Objects.toString(builder.name, "");
+        this.domain = Objects.toString(builder.domain, "");
+        this.accountNumber = Objects.toString(builder.accountNumber, "");
+        this.description = Objects.toString(builder.description, "");
+        this.address = Objects.toString(builder.address, "");
+        this.city = Objects.toString(builder.city, "");
+        this.state = Objects.toString(builder.state, "");
+        this.zip = Objects.toString(builder.zip, "");
+        this.country = Objects.toString(builder.country, "");
         this.latitude = Objects.requireNonNull(builder.latitude);
         this.longitude = Objects.requireNonNull(builder.longitude);
-        this.timezone = Strings.nullToEmpty(builder.timezone);
-        this.locale = Strings.nullToEmpty(builder.locale);
+        this.timezone = Objects.toString(builder.timezone, "");
+        this.locale = Objects.toString(builder.locale, "");
     }
 
     public static class Builder {

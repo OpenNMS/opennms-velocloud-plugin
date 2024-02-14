@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -27,21 +27,25 @@
  *******************************************************************************/
 package org.opennms.velocloud.client.api.internal;
 
-import com.google.common.base.Strings;
-import com.google.common.net.InetAddresses;
+import org.opennms.integration.api.utils.InetAddressUtils;
 import java.net.InetAddress;
 
-public class Utils {
+public interface Utils {
     public static InetAddress getValidInetAddress(final String ip) {
-        if (Strings.isNullOrEmpty(ip)) {
+        if (ip == null || ip.isBlank()) {
             return null;
         }
 
         try {
-            final InetAddress address = InetAddresses.forString(ip);
-            return address;
+            return InetAddressUtils.addr(ip);
         } catch (IllegalArgumentException ex) {
             return null;
         }
+    }
+
+    public static String emptyToNull(final String val) {
+        if (val == null) return null;
+        if (val.isEmpty()) return null;
+        return val;
     }
 }

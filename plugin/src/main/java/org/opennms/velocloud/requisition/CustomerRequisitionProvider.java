@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -49,8 +49,6 @@ import org.opennms.velocloud.client.api.model.Tunnel;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.Connection;
 import org.opennms.velocloud.connections.ConnectionManager;
-
-import com.google.common.base.Strings;
 
 public class CustomerRequisitionProvider extends AbstractRequisitionProvider<CustomerRequisitionProvider.Request> {
     public final static String TYPE = "velocloud-customer";
@@ -291,14 +289,14 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                                                               .setKey("lon")
                                                               .setValue(String.valueOf(link.lon))
                                                               .build());
-                if (!Strings.isNullOrEmpty(link.ipv6Address)) {
+                if (!Objects.toString(link.ipv6Address, "").isBlank()) {
                     iface.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                                   .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                                   .setKey("ipv6Address")
                                                                   .setValue(link.ipv6Address)
                                                                   .build());
                 }
-                if (!Strings.isNullOrEmpty(link.linkMode)) {
+                if (!Objects.toString(link.linkMode, "").isBlank()) {
                     iface.addMetaData(ImmutableRequisitionMetaData.newBuilder()
                                                                   .setContext(VELOCLOUD_METADATA_CONTEXT)
                                                                   .setKey("linkMode")
@@ -345,14 +343,14 @@ public class CustomerRequisitionProvider extends AbstractRequisitionProvider<Cus
                 node.addInterface(iface.build());
             }
 
-            node.addAsset("description", Strings.nullToEmpty(edge.description));
-            node.addAsset("operatingSystem", Strings.isNullOrEmpty(edge.softwareVersion) ? "" : String.format("VMware SD-WAN %s", edge.softwareVersion));
-            node.addAsset("address1", Strings.nullToEmpty(edge.address));
-            node.addAsset("address2", Strings.nullToEmpty(edge.address2));
-            node.addAsset("city", Strings.nullToEmpty(edge.city));
-            node.addAsset("state", Strings.nullToEmpty(edge.state));
-            node.addAsset("zip", Strings.nullToEmpty(edge.zip));
-            node.addAsset("country", Strings.nullToEmpty(edge.country));
+            node.addAsset("description", Objects.toString(edge.description, ""));
+            node.addAsset("operatingSystem", (edge.softwareVersion == null || edge.softwareVersion.isBlank()) ? "" : String.format("VMware SD-WAN %s", edge.softwareVersion));
+            node.addAsset("address1", Objects.toString(edge.address, ""));
+            node.addAsset("address2", Objects.toString(edge.address2, ""));
+            node.addAsset("city", Objects.toString(edge.city, ""));
+            node.addAsset("state", Objects.toString(edge.state, ""));
+            node.addAsset("zip", Objects.toString(edge.zip, ""));
+            node.addAsset("country", Objects.toString(edge.country, ""));
 
             if (edge.longitude != null) {
                 node.addAsset("longitude", String.valueOf(edge.longitude));

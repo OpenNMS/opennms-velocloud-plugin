@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -28,8 +28,6 @@
 
 package org.opennms.velocloud.client.api.model;
 
-import com.google.common.base.MoreObjects;
-
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
@@ -50,16 +48,17 @@ public class CloudService {
         this.role = Objects.requireNonNull(builder.role);
     }
 
+
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("link", this.link)
-                .add("name", this.name)
-                .add("role", this.role)
-                .add("state", this.state)
-                .add("pathId", this.pathId)
-                .add("timestamp", this.timestamp)
-                .toString();
+        return "CloudService ["
+                + "link=" + link
+                + ", state=" + state
+                + ", pathId=" + pathId
+                + ", timestamp=" + timestamp
+                + ", name=" + name
+                + ", role=" + role
+                + "]";
     }
 
     public static class Builder {

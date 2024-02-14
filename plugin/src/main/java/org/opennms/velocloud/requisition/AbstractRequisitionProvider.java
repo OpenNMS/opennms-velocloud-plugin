@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -47,7 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Strings;
 
 public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitionProvider.Request> implements RequisitionProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRequisitionProvider.class);
@@ -150,7 +149,7 @@ public abstract class AbstractRequisitionProvider<Req extends AbstractRequisitio
         protected abstract String getDefaultForeignSource();
 
         public String getForeignSource() {
-            return Strings.isNullOrEmpty(this.foreignSource) ? this.getDefaultForeignSource() : this.foreignSource;
+            return (this.foreignSource == null || this.foreignSource.isBlank()) ? this.getDefaultForeignSource() : this.foreignSource;
         }
 
         public void setForeignSource(final String foreignSource) {

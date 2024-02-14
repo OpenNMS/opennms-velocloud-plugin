@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -28,11 +28,10 @@
 
 package org.opennms.velocloud.client.api.model;
 
+import static org.opennms.velocloud.client.api.internal.Utils.emptyToNull;
+
 import java.util.List;
 import java.util.Objects;
-
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Strings;
 
 public class Edge {
     public final String operator;
@@ -74,15 +73,15 @@ public class Edge {
         this.links = Objects.requireNonNull(builder.links);
         this.alertsEnabled = builder.alertsEnabled;
         this.buildNumber = Objects.requireNonNull(builder.buildNumber);
-        this.customInfo = Strings.nullToEmpty(builder.customInfo);
-        this.description = Strings.nullToEmpty(builder.description);
-        this.deviceFamily = Strings.emptyToNull(builder.deviceFamily);
-        this.deviceId = Strings.nullToEmpty(builder.deviceId);
-        this.dnsName = Strings.emptyToNull(builder.dnsName);
-        this.lteRegion = Strings.emptyToNull(builder.lteRegion);
+        this.customInfo = Objects.toString(builder.customInfo, "");
+        this.description = Objects.toString(builder.description, "");
+        this.deviceFamily = emptyToNull(builder.deviceFamily);
+        this.deviceId = Objects.toString(builder.deviceId, "");
+        this.dnsName = emptyToNull(builder.dnsName);
+        this.lteRegion = emptyToNull(builder.lteRegion);
         this.logicalId = Objects.requireNonNull(builder.logicalId);
         this.edgeId = Objects.requireNonNull(builder.edgeId);
-        this.modelNumber = Strings.emptyToNull(builder.modelNumber);
+        this.modelNumber = emptyToNull(builder.modelNumber);
         this.name = Objects.requireNonNull(builder.name);
         this.operatorAlertsEnabled = builder.operatorAlertsEnabled;
         this.selfMacAddress = Objects.requireNonNull(builder.selfMacAddress);
@@ -90,54 +89,52 @@ public class Edge {
         this.softwareVersion = Objects.requireNonNull(builder.softwareVersion);
         this.edgeState = Objects.requireNonNull(builder.edgeState);
         this.serviceState = Objects.requireNonNull(builder.serviceState);
-        this.siteName = Strings.emptyToNull(builder.siteName);
-        this.address = Strings.emptyToNull(builder.address);
-        this.address2 = Strings.emptyToNull(builder.address2);
-        this.zip = Strings.emptyToNull(builder.zip);
-        this.city = Strings.emptyToNull(builder.city);
-        this.state = Strings.emptyToNull(builder.state);
-        this.country = Strings.emptyToNull(builder.country);
+        this.siteName = emptyToNull(builder.siteName);
+        this.address = emptyToNull(builder.address);
+        this.address2 = emptyToNull(builder.address2);
+        this.zip = emptyToNull(builder.zip);
+        this.city = emptyToNull(builder.city);
+        this.state = emptyToNull(builder.state);
+        this.country = emptyToNull(builder.country);
         this.latitude = builder.latitude;
         this.longitude = builder.longitude;
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("operator", this.operator)
-                          .add("site", this.site)
-                          .add("hub", this.hub)
-                          .add("links", this.links)
-                          .add("alertsEnabled", this.alertsEnabled)
-                          .add("buildNumber", this.buildNumber)
-                          .add("customInfo", this.customInfo)
-                          .add("description", this.description)
-                          .add("deviceFamily", this.deviceFamily)
-                          .add("deviceId", this.deviceId)
-                          .add("dnsName", this.dnsName)
-                          .add("lteRegion", this.lteRegion)
-                          .add("logicalId", this.logicalId)
-                          .add("edgeId", this.edgeId)
-                          .add("modelNumber", this.modelNumber)
-                          .add("name", this.name)
-                          .add("operatorAlertsEnabled", this.operatorAlertsEnabled)
-                          .add("selfMacAddress", this.selfMacAddress)
-                          .add("edgeState", this.edgeState)
-                          .add("serviceState", this.serviceState)
-                          .add("siteId", this.siteId)
-                          .add("siteName:", this.siteName)
-                          .add("address:", this.address)
-                          .add("address2:", this.address2)
-                          .add("zip:", this.zip)
-                          .add("city:", this.city)
-                          .add("state:", this.state)
-                          .add("country:", this.country)
-                          .add("latitude:", this.latitude)
-                          .add("longitude:", this.longitude)
-                          .add("softwareVersion", this.softwareVersion)
-                          .add("edgeStatus", this.edgeState)
-                          .add("serviceStatus", this.serviceState)
-                          .toString();
+        return "Edge ["
+                + "operator=" + operator
+                + ", site=" + site
+                + ", hub=" + hub
+                + ", links=" + links
+                + ", alertsEnabled=" + alertsEnabled
+                + ", buildNumber=" + buildNumber
+                + ", customInfo=" + customInfo
+                + ", description=" + description
+                + ", deviceFamily=" + deviceFamily
+                + ", deviceId=" + deviceId
+                + ", dnsName=" + dnsName
+                + ", lteRegion=" + lteRegion
+                + ", logicalId=" + logicalId
+                + ", edgeId=" + edgeId
+                + ", modelNumber=" + modelNumber
+                + ", name=" + name
+                + ", operatorAlertsEnabled=" + operatorAlertsEnabled
+                + ", selfMacAddress=" + selfMacAddress
+                + ", siteId=" + siteId
+                + ", softwareVersion=" + softwareVersion
+                + ", edgeState=" + edgeState
+                + ", serviceState=" + serviceState
+                + ", siteName=" + siteName
+                + ", address=" + address
+                + ", address2=" + address2
+                + ", zip=" + zip
+                + ", city=" + city
+                + ", state=" + state
+                + ", country=" + country
+                + ", latitude=" + latitude
+                + ", longitude=" + longitude
+                + "]";
     }
 
     public static class Builder {

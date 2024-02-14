@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -29,8 +29,6 @@
 package org.opennms.velocloud.client.api;
 
 import java.util.Objects;
-
-import com.google.common.base.MoreObjects;
 
 /**
  * Credentials for a velocloud API connection.
@@ -94,10 +92,10 @@ public class VelocloudApiClientCredentials {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("orchestratorUrl", this.orchestratorUrl)
-                          .add("apiKey", this.apiKey)
-                          .toString();
+        return "VelocloudApiClientCredentials ["
+                + "orchestratorUrl=" + orchestratorUrl
+                + ", apiKey=" + apiKey
+                + "]";
     }
 
     @Override

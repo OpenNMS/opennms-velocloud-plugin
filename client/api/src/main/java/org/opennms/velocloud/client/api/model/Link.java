@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -28,8 +28,7 @@
 
 package org.opennms.velocloud.client.api.model;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Strings;
+import static org.opennms.velocloud.client.api.internal.Utils.emptyToNull;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -65,15 +64,15 @@ public class Link {
         this.logicalId = Objects.requireNonNull(builder.logicalId);
         this.internalId = Objects.requireNonNull(builder.internalId);
         this._interface = Objects.requireNonNull(builder._interface);
-        this.macAddress = Strings.emptyToNull(builder.macAddress);
-        this.ipAddress = Strings.emptyToNull(builder.ipAddress);
-        this.ipv6Address = Strings.emptyToNull(builder.ipv6Address);
-        this.netmask = Strings.emptyToNull(builder.netmask);
+        this.macAddress = emptyToNull(builder.macAddress);
+        this.ipAddress = emptyToNull(builder.ipAddress);
+        this.ipv6Address = emptyToNull(builder.ipv6Address);
+        this.netmask = emptyToNull(builder.netmask);
         this.networkSide = Objects.requireNonNull(builder.networkSide);
         this.networkType = Objects.requireNonNull(builder.networkType);
         this.displayName = Objects.requireNonNull(builder.displayName);
-        this.isp = Strings.emptyToNull(builder.isp);
-        this.org = Strings.emptyToNull(builder.org);
+        this.isp = emptyToNull(builder.isp);
+        this.org = emptyToNull(builder.org);
         this.lat = Objects.requireNonNull(builder.lat);
         this.lon = Objects.requireNonNull(builder.lon);
         this.linkMode = builder.linkMode;
@@ -85,30 +84,30 @@ public class Link {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", this.id)
-                .add("created", this.created)
-                .add("edgeId", this.edgeId)
-                .add("logicalId", this.logicalId)
-                .add("internalId", this.internalId)
-                .add("interface", this._interface)
-                .add("macAddress", this.macAddress)
-                .add("ipAddress", this.ipAddress)
-                .add("ipv6Address", this.ipv6Address)
-                .add("netmask", this.netmask)
-                .add("networkSide", this.networkSide)
-                .add("networkType", this.networkType)
-                .add("displayName", this.displayName)
-                .add("isp", this.isp)
-                .add("org", this.org)
-                .add("lat", this.lat)
-                .add("lon", this.lon)
-                .add("linkMode", this.linkMode)
-                .add("alertsEnabled", this.alertsEnabled)
-                .add("operatorAlertsEnabled", this.operatorAlertsEnabled)
-                .add("linkState", this.linkState)
-                .add("serviceStatus", this.serviceState)
-                .toString();
+        return "Link ["
+                + "id=" + id
+                + ", created=" + created
+                + ", edgeId=" + edgeId
+                + ", logicalId=" + logicalId
+                + ", internalId=" + internalId
+                + ", _interface=" + _interface
+                + ", macAddress=" + macAddress
+                + ", ipAddress=" + ipAddress
+                + ", ipv6Address=" + ipv6Address
+                + ", netmask=" + netmask
+                + ", networkSide=" + networkSide
+                + ", networkType=" + networkType
+                + ", displayName=" + displayName
+                + ", isp=" + isp
+                + ", org=" + org
+                + ", lat=" + lat
+                + ", lon=" + lon
+                + ", linkMode=" + linkMode
+                + ", alertsEnabled=" + alertsEnabled
+                + ", operatorAlertsEnabled=" + operatorAlertsEnabled
+                + ", linkState=" + linkState
+                + ", serviceState=" + serviceState
+                + "]";
     }
 
     public static class Builder {

@@ -4,7 +4,7 @@
     <feature name="opennms-plugins-velocloud" description="OpenNMS :: Plugins :: Velocloud Integration" version="${project.version}">
         <feature dependency="true">aries-blueprint</feature>
         <feature dependency="true">shell</feature>
-        <feature version="${guava.version}" dependency="true">guava</feature>
+        <feature version="${guava.osgi.version}" dependency="true">guava</feature>
         <feature version="${snakeyaml.version}" dependency="true">snakeyaml</feature>
 
         <bundle dependency="true">mvn:org.apache.commons/commons-jexl3/${jexl.version}</bundle>
@@ -12,12 +12,13 @@
         <bundle dependency="true">mvn:javax.ws.rs/javax.ws.rs-api/${jaxrs.version}</bundle>
         <bundle dependency="true">mvn:org.mapstruct/mapstruct/${org.mapstruct.version}</bundle>
 
+        <feature version="${project.version}">opennms-plugins-velocloud-oia</feature>
         <feature version="${project.version}">opennms-plugins-velocloud-client-v1</feature>
 
         <bundle>mvn:org.opennms.plugins.velocloud/velocloud-plugin/${project.version}</bundle>
     </feature>
 
-    <feature name="guava" description="guava" version="${guava.version}">
+    <feature name="guava" description="guava" version="${guava.osgi.version}">
         <bundle dependency="true">mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle dependency="true">mvn:com.google.guava/failureaccess/1.0.1</bundle>
     </feature>
@@ -35,13 +36,19 @@
         <bundle dependency="true">mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/${jackson.version}</bundle>
     </feature>
 
+    <feature name="opennms-plugins-velocloud-oia" description="OpenNMS Integration API" version="${project.version}" hidden="true">
+        <feature version="${opennms.api.version}" dependency="true">opennms-integration-api</feature>
+        <!-- until 1.6.1, utils was missing from the upstream OIA feature -->
+        <bundle>mvn:org.opennms.integration.api/org.opennms.integration.api.utils/${opennms.api.version}</bundle>
+    </feature>
+
     <feature name="opennms-plugins-velocloud-client-v1" description="Velocloud API client" version="${project.version}">
         <feature dependency="true">aries-blueprint</feature>
 
         <feature version="${jackson.version}" dependency="true">jackson</feature>
-        <feature version="${guava.version}" dependency="true">guava</feature>
+        <feature version="${guava.osgi.version}" dependency="true">guava</feature>
 
-        <feature version="${opennms.api.version}" dependency="true">opennms-integration-api</feature>
+        <feature version="${project.version}">opennms-plugins-velocloud-oia</feature>
 
         <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.version}</bundle>
 
@@ -68,9 +75,8 @@
         <feature dependency="true">aries-blueprint</feature>
 
         <feature version="${jackson.version}" dependency="true">jackson</feature>
-        <feature version="${guava.version}" dependency="true">guava</feature>
 
-        <feature version="${opennms.api.version}" dependency="true">opennms-integration-api</feature>
+        <feature version="${project.version}">opennms-plugins-velocloud-oia</feature>
 
         <bundle dependency="true">mvn:io.swagger.core.v3/swagger-annotations/${swagger.version}</bundle>
 

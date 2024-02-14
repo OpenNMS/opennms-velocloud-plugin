@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -68,7 +68,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 public class VelocloudEventIngestor implements Runnable, HealthCheck {
@@ -173,7 +172,7 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
                 .collect(Collectors.toSet());
 
         for(final RequisitionIdentifier requisitionIdentifier : requisitionIdentifiers) {
-            final Integer enterpriseId = Strings.isNullOrEmpty(requisitionIdentifier.enterpriseId) ? null : Integer.parseInt(requisitionIdentifier.enterpriseId);
+            final Integer enterpriseId = (requisitionIdentifier.enterpriseId == null || requisitionIdentifier.enterpriseId.isBlank()) ? null : Integer.parseInt(requisitionIdentifier.enterpriseId);
 
             try {
                 final Optional<VelocloudApiCustomerClient> velocloudApiCustomerClient = connectionManager.getCustomerClient(requisitionIdentifier.alias, enterpriseId);
@@ -258,7 +257,7 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
 
         final Optional<InetAddress> inetAddress;
 
-        if (!Strings.isNullOrEmpty(logicalId)) {
+        if (!Objects.toString(logicalId, "").isBlank()) {
             inetAddress = node.getIpInterfaces().stream()
                     .filter(iface -> logicalId.equals(getMetadataForKey(LOGICAL_ID, iface.getMetaData())))
                     .map(iface -> iface.getIpAddress()).findFirst();
@@ -299,7 +298,7 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
         int processed = 0;
         int ignored = 0;
         for (final CustomerEvent customerEvent : customerEventList) {
-            if (!Strings.isNullOrEmpty(customerEvent.getEdgeName())) {
+            if (!Objects.toString(customerEvent.getEdgeName(), "").isBlank()) {
                 processEvent(foreignSource, customerEvent.getEdgeName(), customerEvent);
                 processed++;
             } else {
@@ -316,7 +315,7 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
         int processed = 0;
         int ignored = 0;
         for (final PartnerEvent partnerEvent : enterpriseEventList) {
-            if (!Strings.isNullOrEmpty(partnerEvent.getGatewayName())) {
+            if (!Objects.toString(partnerEvent.getGatewayName(), "").isBlank()) {
                 processEvent(foreignSource, partnerEvent.getGatewayName(), partnerEvent);
                 processed++;
             } else {
@@ -338,7 +337,7 @@ public class VelocloudEventIngestor implements Runnable, HealthCheck {
     private String parseYaml(final String detail, final String key) {
         final Yaml yaml = new Yaml();
 
-        if (!Strings.isNullOrEmpty(detail)) {
+        if (!Objects.toString(detail, "").isBlank()) {
             final Object object1 = yaml.load(detail);
             return searchKey(object1, key);
         }

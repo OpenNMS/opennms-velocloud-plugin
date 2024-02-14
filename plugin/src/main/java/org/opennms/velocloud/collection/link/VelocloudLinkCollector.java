@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -38,10 +38,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import org.opennms.integration.api.utils.InetAddressUtils;
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.CollectionSet;
 import org.opennms.integration.api.v1.collectors.resource.IpInterfaceResource;
-import org.opennms.integration.api.v1.collectors.resource.NodeResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSet;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableIpInterfaceResource;
@@ -55,8 +55,6 @@ import org.opennms.velocloud.collection.AbstractVelocloudServiceCollector;
 import org.opennms.velocloud.connections.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.net.InetAddresses;
 
 public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
 
@@ -92,7 +90,7 @@ public class VelocloudLinkCollector extends AbstractVelocloudServiceCollector {
 
         final ImmutableNodeResource nodeResource = ImmutableNodeResource.newBuilder().setNodeId(request.getNodeId()).build();
         final ImmutableIpInterfaceResource interfaceResource = ImmutableIpInterfaceResource.newBuilder()
-                .setNodeResource(nodeResource).setInstance(InetAddresses.toAddrString(request.getAddress()))
+                .setNodeResource(nodeResource).setInstance(InetAddressUtils.str(request.getAddress()))
                 .build();
 
         if (link.isEmpty()) {

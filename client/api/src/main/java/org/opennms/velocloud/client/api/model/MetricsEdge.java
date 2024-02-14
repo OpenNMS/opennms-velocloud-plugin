@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -29,8 +29,6 @@
 package org.opennms.velocloud.client.api.model;
 
 import java.util.List;
-
-import com.google.common.base.MoreObjects;
 
 public class MetricsEdge {
 
@@ -192,19 +190,19 @@ public class MetricsEdge {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("cpuPct", cpuPct)
-                .add("cpuCoreTemp", cpuCoreTemp)
-                .add("memoryPct", memoryPct)
-                .add("flowCount", flowCount)
-                .add("handoffQueueDrops", handoffQueueDrops)
-                .add("tunnelCount", tunnelCount)
-                .add("tunnelCountV6", tunnelCountV6)
-                .add("trafficApplications", trafficApplications)
-                .add("trafficSources", trafficSources)
-                .add("trafficDestinations", trafficDestinations)
-                .add("scoreAfterOptimization", scoreAfterOptimization)
-                .add("timestamp", timestamp)
-                .toString();
+        return "MetricsEdge ["
+                + "cpuPct=" + cpuPct
+                + ", cpuCoreTemp=" + cpuCoreTemp
+                + ", memoryPct=" + memoryPct
+                + ", flowCount=" + flowCount
+                + ", handoffQueueDrops=" + handoffQueueDrops
+                + ", tunnelCount=" + tunnelCount
+                + ", tunnelCountV6=" + tunnelCountV6
+                + ", trafficApplications=" + trafficApplications
+                + ", trafficSources=" + trafficSources
+                + ", trafficDestinations=" + trafficDestinations
+                + ", scoreAfterOptimization=" + scoreAfterOptimization
+                + ", timestamp=" + timestamp
+                + "]";
     }
 }

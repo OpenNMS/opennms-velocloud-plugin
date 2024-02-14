@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -28,8 +28,6 @@
 
 package org.opennms.velocloud.client.api.model;
 
-import com.google.common.base.Strings;
-
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -54,18 +52,18 @@ public class User {
 
         this.id = Objects.requireNonNull(builder.id);
         this.userType = Objects.requireNonNull(builder.userType);
-        this.domain = Strings.nullToEmpty(builder.domain);
+        this.domain = Objects.toString(builder.domain, "");
         this.username = Objects.requireNonNull(builder.username);
-        this.firstName = Strings.nullToEmpty(builder.firstName);
-        this.lastName = Strings.nullToEmpty(builder.lastName);
-        this.email = Strings.nullToEmpty(builder.email);
+        this.firstName = Objects.toString(builder.firstName);
+        this.lastName = Objects.toString(builder.lastName);
+        this.email = Objects.toString(builder.email);
         this.isActive = Objects.requireNonNull(builder.isActive);
         this.isLocked = Objects.requireNonNull(builder.isLocked);
         this.isNative = Objects.requireNonNull(builder.isNative);
         this.roleId = Objects.requireNonNull(builder.roleId);
         this.roleName = Objects.requireNonNull(builder.roleName);
-        this.accessLevel = Strings.nullToEmpty(builder.accessLevel);
-        this.sshUsername = Strings.nullToEmpty(builder.sshUsername);
+        this.accessLevel = Objects.toString(builder.accessLevel);
+        this.sshUsername = Objects.toString(builder.sshUsername);
     }
 
     public static class Builder {

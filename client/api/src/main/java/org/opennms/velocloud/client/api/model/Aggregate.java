@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -30,8 +30,6 @@ package org.opennms.velocloud.client.api.model;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-
-import com.google.common.base.MoreObjects;
 
 public class Aggregate {
 
@@ -92,10 +90,10 @@ public class Aggregate {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("min", min)
-                .add("max", max)
-                .add("average", average)
-                .toString();
+        return "Aggregate ["
+                + "min=" + min
+                + ", max=" + max
+                + ", average=" + average
+                + "]";
     }
 }

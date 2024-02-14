@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -29,8 +29,6 @@
 package org.opennms.velocloud.client.api.model;
 
 import java.util.Objects;
-
-import com.google.common.base.MoreObjects;
 
 public class Path {
     public final String peerType;
@@ -61,19 +59,19 @@ public class Path {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("peerType", peerType)
-                .add("peerName", peerName)
-                .add("description", description)
-                .add("edgeLogicalId", edgeLogicalId)
-                .add("deviceLogicalId", deviceLogicalId)
-                .add("pathCountStable", pathCountStable)
-                .add("pathCountUnstable", pathCountUnstable)
-                .add("pathCountStandBy", pathCountStandBy)
-                .add("pathCountDead", pathCountDead)
-                .add("pathCountUnknown", pathCountUnknown)
-                .add("pathCountTotal", pathCountTotal)
-                .toString();
+        return "Path ["
+                + "peerType=" + peerType
+                + ", peerName=" + peerName
+                + ", description=" + description
+                + ", edgeLogicalId=" + edgeLogicalId
+                + ", deviceLogicalId=" + deviceLogicalId
+                + ", pathCountStable=" + pathCountStable
+                + ", pathCountUnstable=" + pathCountUnstable
+                + ", pathCountStandBy=" + pathCountStandBy
+                + ", pathCountDead=" + pathCountDead
+                + ", pathCountUnknown=" + pathCountUnknown
+                + ", pathCountTotal=" + pathCountTotal
+                + "]";
     }
 
     public static class Builder {

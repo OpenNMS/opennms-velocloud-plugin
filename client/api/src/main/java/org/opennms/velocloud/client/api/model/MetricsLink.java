@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -30,7 +30,6 @@ package org.opennms.velocloud.client.api.model;
 
 import java.util.Objects;
 
-import com.google.common.base.MoreObjects;
 
 public class MetricsLink {
 
@@ -247,23 +246,24 @@ public class MetricsLink {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("bandwidthRx", bandwidthRx)
-                .add("bandwidthTx", bandwidthTx)
-                .add("trafficPriority1", trafficPriority1)
-                .add("trafficPriority2", trafficPriority2)
-                .add("trafficPriority3", trafficPriority3)
-                .add("trafficControl", trafficControl)
-                .add("scoreBeforeOptimization", scoreBeforeOptimization)
-                .add("bestLatencyMsRx", bestLatencyMsRx)
-                .add("bestLatencyMsTx", bestLatencyMsTx)
-                .add("bestJitterMsRx", bestJitterMsRx)
-                .add("bestJitterMsTx", bestJitterMsTx)
-                .add("bestLossPctRx", bestLossPctRx)
-                .add("bestLossPctTx", bestLossPctTx)
-                .add("scoreRx", scoreRx)
-                .add("scoreTx", scoreTx)
-                .add("timestamp", timestamp)
-                .toString();
+        return "MetricsLink ["
+                + "bandwidthRx=" + bandwidthRx
+                + ", bandwidthTx=" + bandwidthTx
+                + ", trafficPriority1=" + trafficPriority1
+                + ", trafficPriority2=" + trafficPriority2
+                + ", trafficPriority3=" + trafficPriority3
+                + ", trafficControl=" + trafficControl
+                + ", scoreBeforeOptimization=" + scoreBeforeOptimization
+                + ", bestLatencyMsRx=" + bestLatencyMsRx
+                + ", bestLatencyMsTx=" + bestLatencyMsTx
+                + ", bestJitterMsRx=" + bestJitterMsRx
+                + ", bestJitterMsTx=" + bestJitterMsTx
+                + ", bestLossPctRx=" + bestLossPctRx
+                + ", bestLossPctTx=" + bestLossPctTx
+                + ", scoreRx=" + scoreRx
+                + ", scoreTx=" + scoreTx
+                + ", timestamp=" + timestamp
+                + "]";
     }
+
 }

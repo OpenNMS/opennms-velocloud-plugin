@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -31,7 +31,6 @@ package org.opennms.velocloud.collection;
 import static org.opennms.velocloud.pollers.AbstractStatusPoller.ATTR_API_KEY;
 import static org.opennms.velocloud.pollers.AbstractStatusPoller.ATTR_ORCHESTRATOR_URL;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -55,8 +54,6 @@ import org.opennms.velocloud.client.api.model.Aggregate;
 import org.opennms.velocloud.client.api.model.Traffic;
 import org.opennms.velocloud.clients.ClientManager;
 import org.opennms.velocloud.connections.ConnectionManager;
-
-import com.google.common.base.Strings;
 
 public abstract class AbstractVelocloudServiceCollector implements VelocloudServiceCollector {
 
@@ -122,7 +119,7 @@ public abstract class AbstractVelocloudServiceCollector implements VelocloudServ
 
         final String enterpriseId = (String)attributes.get("enterpriseId");
 
-        if (Strings.isNullOrEmpty(enterpriseId)) {
+        if (enterpriseId == null || enterpriseId.isBlank()) {
             return AbstractVelocloudServiceCollector.this.clientManager.getCustomerClient(credentials);
         } else {
             return AbstractVelocloudServiceCollector.this.clientManager.getPartnerClient(credentials).getCustomerClient(Integer.parseInt(enterpriseId));

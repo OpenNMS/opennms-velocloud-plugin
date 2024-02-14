@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -44,9 +44,6 @@ import org.opennms.velocloud.client.api.VelocloudApiCustomerClient;
 import org.opennms.velocloud.client.api.VelocloudApiException;
 import org.opennms.velocloud.client.api.VelocloudApiPartnerClient;
 import org.opennms.velocloud.clients.ClientManager;
-
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Strings;
 
 public class ConnectionManager {
 
@@ -171,15 +168,18 @@ public class ConnectionManager {
     }
 
     private static VelocloudApiClientCredentials fromStore(final Credentials credentials) {
-        if (Strings.isNullOrEmpty(credentials.getUsername())) {
+        final var username = credentials.getUsername();
+        final var password = credentials.getPassword();
+
+        if (username == null || username.isBlank()) {
             throw new IllegalStateException("Orchestrator URL (username) is missing");
         }
-        final var orchestratorUrl = credentials.getUsername();
+        final var orchestratorUrl = username;
 
-        if (Strings.isNullOrEmpty(credentials.getPassword())) {
+        if (password == null || password.isBlank()) {
             throw new IllegalStateException("API key (password) is missing");
         }
-        final var apiKey = credentials.getPassword();
+        final var apiKey = password;
 
         return VelocloudApiClientCredentials.builder()
                                             .withOrchestratorUrl(orchestratorUrl)
@@ -253,11 +253,11 @@ public class ConnectionManager {
 
         @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this)
-                              .add("alias", this.alias)
-                              .add("orchestratorUrl", this.credentials.orchestratorUrl)
-                              .add("apiKey", "******")
-                              .toString();
+            return "ConnectionManager ["
+                    + "alias=" + this.alias
+                    + "orchestratorUrl=" + this.credentials.orchestratorUrl
+                    + "apiKey=******"
+                    + "]";
         }
     }
 

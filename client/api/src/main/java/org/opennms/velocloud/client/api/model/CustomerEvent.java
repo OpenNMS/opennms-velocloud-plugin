@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -30,9 +30,6 @@ package org.opennms.velocloud.client.api.model;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import java.util.StringJoiner;
-
-import com.google.common.base.MoreObjects;
 
 public class CustomerEvent {
     private final String detail;
@@ -161,16 +158,16 @@ public class CustomerEvent {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("detail", detail)
-                .add("category", category)
-                .add("event", event)
-                .add("id", id)
-                .add("eventTime", eventTime)
-                .add("edgeName", edgeName)
-                .add("enterpriseUsername", enterpriseUsername)
-                .add("message", message)
-                .add("severity", severity)
-                .toString();
+        return "CustomerEvent ["
+                + "detail=" + detail
+                + ", category=" + category
+                + ", event=" + event
+                + ", id=" + id
+                + ", eventTime=" + eventTime
+                + ", edgeName=" + edgeName
+                + ", enterpriseUsername=" + enterpriseUsername
+                + ", message=" + message
+                + ", severity=" + severity
+                + "]";
     }
 }

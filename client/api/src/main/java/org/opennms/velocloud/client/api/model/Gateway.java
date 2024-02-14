@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2022-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -27,13 +27,12 @@
  *******************************************************************************/
 
 package org.opennms.velocloud.client.api.model;
+import static org.opennms.velocloud.client.api.internal.Utils.emptyToNull;
 
 import java.net.InetAddress;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-
-import com.google.common.base.Strings;
 
 public class Gateway {
 
@@ -69,22 +68,22 @@ public class Gateway {
         this.gatewayId = Objects.requireNonNull(builder.gatewayId);
         this.id = Objects.requireNonNull(builder.id);
         this.gatewayName = Objects.requireNonNull(builder.gatewayName);
-        this.description = Strings.nullToEmpty(builder.description);
+        this.description = Objects.toString(builder.description, "");
         this.ipAddress = Objects.requireNonNull(builder.ipAddress);
         this.isLoadBalanced = Objects.requireNonNull(builder.isLoadBalanced);
         this.gatewayState = Objects.requireNonNull(builder.gatewayState);
         this.serviceState = Objects.requireNonNull(builder.serviceState);
-        this.bastionState = Strings.nullToEmpty(builder.bastionState);
+        this.bastionState = Objects.toString(builder.bastionState, "");
         this.deviceId = Objects.requireNonNull(builder.deviceId);
-        this.dnsName = Strings.emptyToNull(builder.dnsName);
+        this.dnsName = Objects.toString(builder.dnsName, "");
         this.siteId = Objects.requireNonNull(builder.siteId);
-        this.siteName = Strings.nullToEmpty(builder.siteName);
-        this.address = Strings.emptyToNull(builder.address);
-        this.address2 = Strings.emptyToNull(builder.address2);
-        this.zip = Strings.emptyToNull(builder.zip);
-        this.city = Strings.emptyToNull(builder.city);
-        this.state = Strings.emptyToNull(builder.state);
-        this.country = Strings.emptyToNull(builder.country);
+        this.siteName = Objects.toString(builder.siteName, "");
+        this.address = emptyToNull(builder.address);
+        this.address2 = emptyToNull(builder.address2);
+        this.zip = emptyToNull(builder.zip);
+        this.city = emptyToNull(builder.city);
+        this.state = emptyToNull(builder.state);
+        this.country = emptyToNull(builder.country);
         this.latitude = builder.latitude;
         this.longitude = builder.longitude;
         this.softwareVersion = Objects.requireNonNull(builder.softwareVersion);

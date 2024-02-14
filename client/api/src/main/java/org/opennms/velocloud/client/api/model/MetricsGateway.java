@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2023 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
+ * Copyright (C) 2023-2024 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2024 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -27,8 +27,6 @@
  *******************************************************************************/
 
 package org.opennms.velocloud.client.api.model;
-
-import com.google.common.base.MoreObjects;
 
 public class MetricsGateway {
     private final Aggregate cpuPercentage;
@@ -98,19 +96,6 @@ public class MetricsGateway {
         return new Builder();
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("cpuPercentage", cpuPercentage)
-                .add("memoryUsage", memoryUsage)
-                .add("flowCounts", flowCount)
-                .add("handoffQueueDrops", handoffQueueDrops)
-                .add("tunnelCount", tunnelCount)
-                .add("tunnelCountV6", tunnelCountV6)
-                .add("timestamp", timestamp)
-                .toString();
-    }
-
     public Aggregate getCpuPercentage() {
         return cpuPercentage;
     }
@@ -137,6 +122,19 @@ public class MetricsGateway {
 
     public Long getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "MetricsGateway ["
+                + "cpuPercentage=" + cpuPercentage
+                + ", memoryUsage=" + memoryUsage
+                + ", flowCount=" + flowCount
+                + ", handoffQueueDrops=" + handoffQueueDrops
+                + ", tunnelCount=" + tunnelCount
+                + ", tunnelCountV6=" + tunnelCountV6
+                + ", timestamp=" + timestamp
+                + "]";
     }
 
 }

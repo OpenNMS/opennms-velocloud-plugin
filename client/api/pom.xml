@@ -30,12 +30,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.opennms.integration.api</groupId>
-            <artifactId>api</artifactId>
+            <artifactId>org.opennms.integration.api.utils</artifactId>
             <version>${opennms.api.version}</version>
             <scope>compile</scope>
         </dependency>
