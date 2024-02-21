@@ -55,7 +55,7 @@
         <snakeyaml.version>2.2</snakeyaml.version>
         <junit.version>4.13.2</junit.version>
         <karaf.version>4.3.10</karaf.version>
-        <log4j.version>2.17.2</log4j.version>
+        <log4j.version>2.23.0</log4j.version>
         <metrics.version>4.1.12.1</metrics.version>
         <mockito.version>2.18.0</mockito.version>
         <opennms.api.version>1.4.0</opennms.api.version>
@@ -63,7 +63,7 @@
         <osgi.compendium.version>5.0.0</osgi.compendium.version>
         <osgi.enterprise.version>5.0.0</osgi.enterprise.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
-        <swagger.version>2.1.7</swagger.version>
+        <swagger.version>2.2.20</swagger.version>
         <jakarta.version>2.1.6</jakarta.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <lombok.version>1.18.30</lombok.version>
@@ -175,7 +175,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.12.1</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
@@ -293,7 +293,7 @@
               <dependency>
                 <groupId>com.github.sevntu-checkstyle</groupId>
                 <artifactId>sevntu-checks</artifactId>
-                <version>1.41.0</version>
+                <version>1.44.1</version>
               </dependency>
             </dependencies>
             <configuration>
