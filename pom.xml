@@ -63,7 +63,7 @@
         <osgi.compendium.version>5.0.0</osgi.compendium.version>
         <osgi.enterprise.version>5.0.0</osgi.enterprise.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
-        <swagger.version>2.1.7</swagger.version>
+        <swagger.version>2.2.20</swagger.version>
         <jakarta.version>2.1.6</jakarta.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <lombok.version>1.18.30</lombok.version>
