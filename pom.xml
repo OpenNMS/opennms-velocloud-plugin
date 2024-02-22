@@ -56,7 +56,7 @@
         <junit.version>4.13.2</junit.version>
         <karaf.version>4.3.10</karaf.version>
         <log4j.version>2.23.0</log4j.version>
-        <metrics.version>4.1.12.1</metrics.version>
+        <metrics.version>4.2.25</metrics.version>
         <mockito.version>2.18.0</mockito.version>
         <opennms.api.version>1.4.0</opennms.api.version>
         <osgi.version>7.0.0</osgi.version>
