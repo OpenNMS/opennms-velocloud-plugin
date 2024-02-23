@@ -394,9 +394,9 @@ public class VelocloudApiCustomerClientV1 implements VelocloudApiCustomerClient 
                         .withId(tunnel.getId())
                         .withDataKey(tunnel.getDataKey())
                         .withState(tunnel.getState().getValue())
-                        .withLink(tunnel.getData().getLink())
-                        .withName(tunnel.getData().getName())
-                        .withDestination(tunnel.getData().getDestination() != null ? tunnel.getData().getDestination().toLowerCase() : null)
+                        .withLink(tunnel.getMonitoringGetEnterpriseEdgeNvsTunnelStatusResultItemData().getLink())
+                        .withName(tunnel.getMonitoringGetEnterpriseEdgeNvsTunnelStatusResultItemData().getName())
+                        .withDestination(tunnel.getMonitoringGetEnterpriseEdgeNvsTunnelStatusResultItemData().getDestination() != null ? tunnel.getMonitoringGetEnterpriseEdgeNvsTunnelStatusResultItemData().getDestination().toLowerCase() : null)
                         .build())
                 .findFirst();
     }
