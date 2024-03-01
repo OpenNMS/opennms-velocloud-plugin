@@ -57,7 +57,7 @@
         <karaf.version>4.3.10</karaf.version>
         <log4j.version>2.23.0</log4j.version>
         <metrics.version>4.2.25</metrics.version>
-        <mockito.version>2.18.0</mockito.version>
+        <mockito.version>5.11.0</mockito.version>
         <opennms.api.version>1.4.0</opennms.api.version>
         <osgi.version>7.0.0</osgi.version>
         <osgi.compendium.version>5.0.0</osgi.compendium.version>
