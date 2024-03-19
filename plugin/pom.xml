@@ -19,6 +19,10 @@
                 <configuration>
                     <instructions>
                         <Karaf-Commands>*</Karaf-Commands>
+                        <Import-Package>
+                            com.google.common.*;version="${guava.osgi.version}",
+                            *
+                        </Import-Package>
                         <!-- Nothing to export -->
                         <Export-Package></Export-Package>
                     </instructions>

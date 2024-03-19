@@ -21,6 +21,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Import-Package>
+                            com.google.common.*;version="${guava.osgi.version}",
+                            *
+                        </Import-Package>
                         <Export-Package>org.opennms.velocloud.client.api.*</Export-Package>
                     </instructions>
                 </configuration>
