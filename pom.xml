@@ -67,7 +67,7 @@
         <swagger.version>2.2.21</swagger.version>
         <jakarta.version>2.1.6</jakarta.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.32</lombok.version>
     </properties>
 
     <version>2.0.0-SNAPSHOT</version>
